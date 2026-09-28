@@ -434,3 +434,6 @@ app.listen(PORT, () => {
   console.log(`💎 Brand: ${process.env.BRAND_NAME || 'KryonHost'}`);
   console.log(`======================================================\n`);
 });
+
+// Export for Vercel serverless
+module.exports = app;
