@@ -311,10 +311,10 @@ class ShulkerService {
     return {
       vnc_port: 5943,
       vnc_ws_port: 6043,
-      vnc_ip: "in.shulker.in:5943",
+      vnc_ip: "node1.enderhost.cloud:5943",
       ip: sim ? sim.ip : "103.189.89.44",
       running: sim ? sim.status === 'running' : true,
-      note: "Connect via any VNC client or use the in-browser HTML5 viewer"
+      note: "Connect via any standard VNC client or use our in-browser HTML5 Web Console"
     };
   }
 
@@ -329,8 +329,8 @@ class ShulkerService {
     }
     return {
       rdp_port: 3389,
-      rdp_ip: "in.shulker.in",
-      rdp_address: "in.shulker.in:34201",
+      rdp_ip: "node1.enderhost.cloud",
+      rdp_address: "node1.enderhost.cloud:34201",
       ip: "103.189.89.44",
       running: true,
       os_protocol: "rdp"

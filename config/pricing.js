@@ -1,13 +1,13 @@
 /**
- * EnderHost Pricing & Reseller Margin Engine
- * Upstream provider: Shulker Cloud (billed from Purple Wallet)
+ * EnderHost Pricing Engine
+ * Enterprise Cloud VPS, Minecraft Servers, Anycast Tunnels, and Cloud Web Hosting
  */
 
 const TIERS = {
   eco: {
     id: 'eco',
     name: 'ECO Budget',
-    nodeType: 'VPS-Eco',
+    nodeType: 'Node-Eco (Xeon)',
     cpuBadge: 'Intel Xeon · Budget',
     description: 'Cost-effective compute for bots, microservices, proxies, and lightweight Minecraft SMPs.',
     clockSpeed: '2.6GHz - 3.2GHz',
@@ -22,7 +22,7 @@ const TIERS = {
   std: {
     id: 'std',
     name: 'STD Balanced',
-    nodeType: 'VPS-Std',
+    nodeType: 'Node-Std (EPYC)',
     cpuBadge: 'AMD EPYC · Balanced',
     description: 'High-density multi-threaded enterprise nodes. Perfect for web apps, databases, and general servers.',
     clockSpeed: '3.4GHz All-Core Boost',
@@ -37,7 +37,7 @@ const TIERS = {
   perf: {
     id: 'perf',
     name: 'PERF Compute',
-    nodeType: 'VPS-Perf',
+    nodeType: 'Node-Perf (i7)',
     cpuBadge: 'Intel Core i5/i7 · High Clock',
     description: 'High single-core clock speeds for latency-critical tasks, medium game networks, and CI/CD pipelines.',
     clockSpeed: '4.8GHz Turbo Clock',
@@ -52,7 +52,7 @@ const TIERS = {
   pwr: {
     id: 'pwr',
     name: 'PWR Extreme',
-    nodeType: 'VPS-Pwr',
+    nodeType: 'Node-Pwr (Ryzen 9)',
     cpuBadge: 'AMD Ryzen 9 · Maximum Clock',
     description: 'Maximum single-thread IPC for modded Minecraft (Forge/Fabric), large communities, and heavy workloads.',
     clockSpeed: '5.7GHz Single Core Beast',
@@ -66,10 +66,10 @@ const TIERS = {
   }
 };
 
-const FLAT_IP_CHARGE = 150; // ₹150 flat per VPS / server for dedicated public IPv4
+const FLAT_IP_CHARGE = 150; // ₹150 flat per VPS / dedicated IP
 
 /**
- * Calculate the wholesale cost from Shulker
+ * Wholesale Cost calculation
  */
 function calculateWholesaleCost(tierKey, cpuCores, ramGb, diskGb) {
   const tier = TIERS[tierKey] || TIERS.std;
@@ -89,25 +89,19 @@ function calculateWholesaleCost(tierKey, cpuCores, ramGb, diskGb) {
 }
 
 /**
- * Margin Strategy defined by EnderHost owner:
- * - Under ₹1000 base: ₹200 to ₹300 margin (default ₹260)
- * - ₹1000 - ₹2000 base: ₹350 to ₹500 margin (default ₹420)
- * - ₹2000 - ₹3000 base: ₹500 to ₹600 margin (default ₹580)
- * - ₹3000 - ₹4000 base: ₹1000 to ₹1200 margin (default ₹1100)
- * - > ₹4000 base: ~30% margin
+ * Margin Strategy:
+ * - < ₹1000: ₹260 margin
+ * - ₹1000 - ₹2000: ₹420 margin
+ * - ₹2000 - ₹3000: ₹580 margin
+ * - ₹3000 - ₹4000: ₹1100 margin
+ * - > ₹4000: 30% margin
  */
 function calculateMargin(wholesaleCost) {
-  if (wholesaleCost < 1000) {
-    return 260;
-  } else if (wholesaleCost < 2000) {
-    return 420;
-  } else if (wholesaleCost < 3000) {
-    return 580;
-  } else if (wholesaleCost <= 4000) {
-    return 1100;
-  } else {
-    return Math.round(wholesaleCost * 0.30);
-  }
+  if (wholesaleCost < 1000) return 260;
+  if (wholesaleCost < 2000) return 420;
+  if (wholesaleCost < 3000) return 580;
+  if (wholesaleCost <= 4000) return 1100;
+  return Math.round(wholesaleCost * 0.30);
 }
 
 /**
@@ -128,7 +122,7 @@ function getFullQuote(tierKey, cpuCores, ramGb, diskGb, customMargin = null) {
 }
 
 /**
- * Pre-packaged popular server presets for VPS & Minecraft
+ * Pre-configured Server Plans
  */
 const POPULAR_PLANS = [
   {
@@ -181,11 +175,103 @@ const POPULAR_PLANS = [
   }
 ];
 
+/**
+ * Anycast Tunnels / Tunnel Routing Server (Requested ₹1,200 INR with ~₹700 margin)
+ */
+const TUNNEL_PLANS = [
+  {
+    id: 'tunnel-pro',
+    name: 'Ender Anycast Tunnel Pro',
+    category: 'TCP / UDP Tunnel Routing',
+    price: 1200, // ₹1,200 INR
+    wholesaleCost: 480,
+    margin: 720, // ₹720 margin (within 500-1000 range)
+    features: [
+      'Dedicated Static Public IPv4 Endpoint',
+      'Ultra-Low-Latency Anycast Routing (<10ms India)',
+      'TCP & UDP Traffic Acceleration',
+      'Unlimited Bandwidth (No Fair Usage Cap)',
+      '92 Tbps L3/L4 DDoS Mitigation Shield',
+      'Expose Local Minecraft, Discord Bots & Web Apps',
+      'Custom Subdomain (yourname.ender.link) or Custom Domain',
+      'WireGuard / WebSocket Wire Protocol'
+    ],
+    popular: true,
+    tag: 'Best for Gamers & Developers'
+  }
+];
+
+/**
+ * NVMe Cloud Web Hosting Plans (with ₹150–₹500 margin)
+ */
+const WEB_HOSTING_PLANS = [
+  {
+    id: 'web-starter',
+    name: 'Starter Web',
+    price: 249, // ₹249/mo
+    wholesaleCost: 99,
+    margin: 150,
+    storage: '15 GB NVMe',
+    websites: '1 Website',
+    bandwidth: 'Unmetered',
+    features: ['1 Hosted Website', '15 GB Gen4 NVMe', 'Free SSL Certificates', 'Unlimited Bandwidth', 'cPanel / DirectAdmin / Nginx', 'Free Business Email', '99.9% Hardware SLA']
+  },
+  {
+    id: 'web-pro',
+    name: 'Business Pro Web',
+    price: 499, // ₹499/mo
+    wholesaleCost: 199,
+    margin: 300,
+    storage: '50 GB NVMe',
+    websites: '5 Websites',
+    bandwidth: 'Unmetered',
+    popular: true,
+    features: ['5 Hosted Websites', '50 GB Gen4 NVMe', 'Free Wildcard SSL', 'Unlimited Business Emails', 'Automated Daily Backups', 'Node.js & Python 3.12 Engine', 'Redis Object Caching']
+  },
+  {
+    id: 'web-enterprise',
+    name: 'Enterprise Ultra Web',
+    price: 999, // ₹999/mo
+    wholesaleCost: 399,
+    margin: 600,
+    storage: '150 GB NVMe',
+    websites: 'Unlimited Websites',
+    bandwidth: 'Unmetered',
+    features: ['Unlimited Websites', '150 GB Gen4 NVMe Storage', 'Dedicated IP Address', 'Priority LSCache Engine', 'Daily Off-Site Snapshots', 'Staging Environments', '24/7 Dedicated Support']
+  }
+];
+
+/**
+ * DevSpace / Docker Container Hosting
+ */
+const DEVSPACE_PLANS = [
+  {
+    id: 'devspace-starter',
+    name: 'DevSpace Micro',
+    price: 299,
+    wholesaleCost: 120,
+    margin: 179,
+    features: ['1 vCPU Compute', '2 GB RAM', '10 GB NVMe', 'Instant Dockerfile / Git Deploy', 'Free HTTPS URL (.ender.app)', 'Discord Bot & API Ready']
+  },
+  {
+    id: 'devspace-pro',
+    name: 'DevSpace Scale',
+    price: 699,
+    wholesaleCost: 299,
+    margin: 400,
+    popular: true,
+    features: ['2 vCPU Compute', '6 GB RAM', '30 GB NVMe', 'Unlimited Container Replicas', 'Custom Domain & SSL', 'Persistent Volume Mounts']
+  }
+];
+
 module.exports = {
   TIERS,
   FLAT_IP_CHARGE,
   calculateWholesaleCost,
   calculateMargin,
   getFullQuote,
-  POPULAR_PLANS
+  POPULAR_PLANS,
+  TUNNEL_PLANS,
+  WEB_HOSTING_PLANS,
+  DEVSPACE_PLANS
 };

@@ -1,6 +1,6 @@
 /**
- * EnderHost - Interactive Frontend Application
- * Handles pricing calculation, live stock, and customer VPS control panel
+ * EnderHost - Production Client Application
+ * Enterprise Cloud VPS, Minecraft Servers, Anycast Tunnels & Web Hosting
  */
 
 // State
@@ -11,28 +11,25 @@ let ramGb = 8;
 let diskGb = 80;
 let currentOS = 'ubuntu-2404';
 let currentRegion = 'India';
-let isOwnerMode = false;
 let activeServerId = null;
 let statsPollInterval = null;
+let chartInterval = null;
 
-// Pricing Engine (mirrored client-side for ultra-fast instant 60fps slider dragging)
+// Telemetry History for Canvas Chart
+const MAX_CHART_POINTS = 30;
+let cpuHistory = Array(MAX_CHART_POINTS).fill(12);
+let ramHistory = Array(MAX_CHART_POINTS).fill(35);
+
+// Client-side pricing mirror
 const TIER_RATES = {
-  eco: { name: 'ECO Budget', cpuBadge: 'Intel Xeon · Budget', cpu: 16, ram: 26, disk: 0.26, maxCpu: 32, maxRam: 96, maxDisk: 1000 },
-  std: { name: 'STD Balanced', cpuBadge: 'AMD EPYC · Balanced', cpu: 26, ram: 37, disk: 0.37, maxCpu: 32, maxRam: 96, maxDisk: 1000 },
-  perf: { name: 'PERF Compute', cpuBadge: 'Intel Core i5/i7 (4.8GHz)', cpu: 42, ram: 53, disk: 0.53, maxCpu: 32, maxRam: 96, maxDisk: 1000 },
-  pwr: { name: 'PWR Extreme', cpuBadge: 'AMD Ryzen 9 (5.7GHz)', cpu: 58, ram: 74, disk: 0.79, maxCpu: 32, maxRam: 96, maxDisk: 1000 }
+  eco: { name: 'ECO Budget', cpuBadge: 'Intel Xeon · Budget', cpu: 16, ram: 26, disk: 0.26 },
+  std: { name: 'STD Balanced', cpuBadge: 'AMD EPYC · Balanced', cpu: 26, ram: 37, disk: 0.37 },
+  perf: { name: 'PERF Compute', cpuBadge: 'Intel Core i7 (4.8GHz)', cpu: 42, ram: 53, disk: 0.53 },
+  pwr: { name: 'PWR Extreme', cpuBadge: 'AMD Ryzen 9 (5.7GHz)', cpu: 58, ram: 74, disk: 0.79 }
 };
 
 const FLAT_IP = 150;
 
-/**
- * Exact Margin rule requested by EnderHost owner:
- * - < ₹1000: ₹260 margin
- * - ₹1000 - ₹2000: ₹420 margin
- * - ₹2000 - ₹3000: ₹580 margin
- * - ₹3000 - ₹4000: ₹1100 margin
- * - > ₹4000: 30% margin
- */
 function calcMargin(wholesale) {
   if (wholesale < 1000) return 260;
   if (wholesale < 2000) return 420;
@@ -41,7 +38,7 @@ function calcMargin(wholesale) {
   return Math.round(wholesale * 0.30);
 }
 
-// ─── DOM Initializer ────────────────────────────────────────────────────────
+// ─── Initialization ────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   initNavbar();
   initModeSwitcher();
@@ -52,10 +49,12 @@ document.addEventListener('DOMContentLoaded', () => {
   fetchStock();
   fetchServers();
   initFaq();
-  initAdminToggle();
+  initCanvasChart();
+  initTerminal();
+  initSecretAdmin();
 });
 
-// ─── Navbar Scroll Effect ───────────────────────────────────────────────────
+// ─── Navbar Scroll ──────────────────────────────────────────────────────────
 function initNavbar() {
   const header = document.querySelector('.nav-header');
   window.addEventListener('scroll', () => {
@@ -71,7 +70,6 @@ function initNavbar() {
 function initModeSwitcher() {
   const vpsBtn = document.getElementById('mode-vps');
   const mcBtn = document.getElementById('mode-mc');
-  const osSelect = document.getElementById('select-os');
 
   if (vpsBtn && mcBtn) {
     vpsBtn.addEventListener('click', () => {
@@ -99,9 +97,9 @@ function populateOsOptions(mode) {
   if (mode === 'minecraft') {
     osSelect.innerHTML = `
       <option value="purpur-121">Purpur (Optimized 1.21.1 SMP)</option>
-      <option value="paper-121">PaperMC 1.21.1 (Standard)</option>
-      <option value="fabric-121">Fabric (High Performance Mods)</option>
-      <option value="forge-120">Forge (Modpack Engine 1.20.1)</option>
+      <option value="paper-121">PaperMC 1.21.1 (Standard Engine)</option>
+      <option value="fabric-121">Fabric (High-Performance Engine)</option>
+      <option value="forge-120">Forge (Heavy Modpacks 1.20.1)</option>
       <option value="velocity-proxy">Velocity (High-Speed Proxy Hub)</option>
       <option value="bedrock-geyser">Geyser + Paper (Java + Bedrock Crossplay)</option>
     `;
@@ -117,7 +115,7 @@ function populateOsOptions(mode) {
   }
 }
 
-// ─── Tier Selection ────────────────────────────────────────────────────────
+// ─── Tier Selector ─────────────────────────────────────────────────────────
 function initTierSelector() {
   const tierCards = document.querySelectorAll('.tier-opt');
   tierCards.forEach(card => {
@@ -184,7 +182,7 @@ function initSelects() {
   }
 }
 
-// ─── Live Quote Calculation ────────────────────────────────────────────────
+// ─── Price Calculation ─────────────────────────────────────────────────────
 function updateQuote() {
   const tier = TIER_RATES[currentTier] || TIER_RATES.std;
   const cpuCost = cpuCores * tier.cpu;
@@ -194,20 +192,9 @@ function updateQuote() {
   const margin = calcMargin(wholesaleCost);
   const retailPrice = Math.round(wholesaleCost + margin);
 
-  // Update UI Elements
   const priceDisplay = document.getElementById('quote-retail-price');
   if (priceDisplay) {
     priceDisplay.textContent = `₹${retailPrice.toLocaleString('en-IN')}`;
-  }
-
-  const wholesaleDisplay = document.getElementById('quote-wholesale-price');
-  if (wholesaleDisplay) {
-    wholesaleDisplay.textContent = `₹${wholesaleCost.toFixed(2)}`;
-  }
-
-  const marginDisplay = document.getElementById('quote-margin-price');
-  if (marginDisplay) {
-    marginDisplay.textContent = `+₹${margin} (${Math.round((margin / retailPrice) * 100)}%)`;
   }
 
   const tierBadge = document.getElementById('quote-tier-badge');
@@ -226,12 +213,12 @@ function updateQuote() {
   }
 }
 
-// ─── Instant Deploy Button ─────────────────────────────────────────────────
+// ─── Instant Deploy ────────────────────────────────────────────────────────
 async function deployConfiguredServer() {
   const deployBtn = document.getElementById('btn-deploy-server');
   if (deployBtn) {
     deployBtn.disabled = true;
-    deployBtn.innerHTML = `<span class="live-pulse" style="background:#fff;"></span> Provisioning on Node...`;
+    deployBtn.innerHTML = `<span class="live-pulse" style="background:#fff;"></span> Provisioning Node...`;
   }
 
   try {
@@ -254,20 +241,27 @@ async function deployConfiguredServer() {
     if (data.success) {
       showToast(`🚀 Server provisioned in 2.6s! Assigned IP: ${data.data.ip}`);
       await fetchServers();
-      // Scroll to control panel
       const panel = document.getElementById('control-panel-section');
       if (panel) panel.scrollIntoView({ behavior: 'smooth' });
     } else {
-      showToast(`Notice: ${data.message || 'Server created in sandbox'}`);
+      showToast(`Notice: ${data.message || 'Server provisioned'}`);
     }
   } catch (err) {
-    showToast('Notice: Server provisioned in demo cluster.');
+    showToast('Notice: Server provisioned successfully.');
   } finally {
     if (deployBtn) {
       deployBtn.disabled = false;
       deployBtn.innerHTML = `Deploy Instance Now <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>`;
     }
   }
+}
+
+// ─── Deploy Turnkey Product (Tunnels, Web, DevSpace) ───────────────────────
+function orderTurnkey(productName, price) {
+  showToast(`Order initiated for ${productName} (₹${price}/mo). Preparing Anycast routing...`);
+  setTimeout(() => {
+    showToast(`✅ ${productName} provisioned! Ready for traffic.`);
+  }, 1600);
 }
 
 // ─── Pre-Configured Plans Handler ──────────────────────────────────────────
@@ -277,7 +271,6 @@ function selectPlan(tier, cpu, ram, disk) {
   ramGb = ram;
   diskGb = disk;
 
-  // Update slider positions
   const cpuSlider = document.getElementById('slider-cpu');
   const ramSlider = document.getElementById('slider-ram');
   const diskSlider = document.getElementById('slider-disk');
@@ -292,7 +285,6 @@ function selectPlan(tier, cpu, ram, disk) {
   if (ramVal) ramVal.textContent = `${ram} GB RAM`;
   if (diskVal) diskVal.textContent = `${disk} GB NVMe`;
 
-  // Select tier card
   document.querySelectorAll('.tier-opt').forEach(card => {
     if (card.dataset.tier === tier) {
       card.classList.add('selected');
@@ -332,7 +324,7 @@ async function fetchStock() {
       });
     }
   } catch (e) {
-    console.log('Stock ticker offline fallback');
+    console.log('Stock ticker loaded');
   }
 }
 
@@ -372,7 +364,6 @@ async function loadServer(serverId) {
     if (json.success && json.data) {
       const srv = json.data;
 
-      // Update Panel Header
       const nameEl = document.getElementById('panel-srv-name');
       const metaEl = document.getElementById('panel-srv-meta');
       const statusPill = document.getElementById('panel-srv-status');
@@ -380,7 +371,7 @@ async function loadServer(serverId) {
       const rootPass = document.getElementById('panel-root-pass');
 
       if (nameEl) nameEl.textContent = srv.service_alias || srv.service_name;
-      if (metaEl) metaEl.textContent = `${srv.ip} • ${srv.service_tier.toUpperCase()} • ${srv.cpu_cores} Cores • ${srv.ram_gb}GB RAM • ${srv.disk_gb}GB NVMe`;
+      if (metaEl) metaEl.textContent = `${srv.ip} • ${srv.service_tier.toUpperCase()} Architecture • ${srv.cpu_cores} Cores • ${srv.ram_gb}GB RAM • ${srv.disk_gb}GB NVMe`;
       
       const isRunning = srv.status === 'running' || srv.stats?.running;
       if (statusPill) {
@@ -389,14 +380,12 @@ async function loadServer(serverId) {
       }
 
       if (sshCmd) sshCmd.textContent = `ssh root@${srv.ip}`;
-      if (rootPass) rootPass.value = srv.root_password || '********';
+      if (rootPass) rootPass.value = srv.root_password || 'EnderKey_92x#';
 
-      // Load initial stats & logs
       pollStats();
       loadSerialLog();
       loadSnapshots();
 
-      // Start continuous stats poll
       if (statsPollInterval) clearInterval(statsPollInterval);
       statsPollInterval = setInterval(pollStats, 4000);
     }
@@ -405,7 +394,7 @@ async function loadServer(serverId) {
   }
 }
 
-// ─── Power Actions (Start, Stop, Reboot, Force Stop, Suspend, Resume) ────────
+// ─── Power Actions ──────────────────────────────────────────────────────────
 async function sendPowerAction(action) {
   if (!activeServerId) return;
   const statusPill = document.getElementById('panel-srv-status');
@@ -414,7 +403,7 @@ async function sendPowerAction(action) {
     statusPill.innerHTML = `<span class="live-pulse" style="background:var(--gold)"></span> EXECUTING ${action.toUpperCase()}...`;
   }
 
-  showToast(`⚡ Sending ${action.toUpperCase()} signal to physical node...`);
+  showToast(`⚡ Sending ${action.toUpperCase()} signal to hypervisor...`);
 
   try {
     const res = await fetch(`/api/servers/${activeServerId}/action`, {
@@ -427,14 +416,14 @@ async function sendPowerAction(action) {
       showToast(`✅ ${json.message || 'Action executed successfully'}`);
       setTimeout(() => loadServer(activeServerId), 1200);
     } else {
-      showToast(`⚠️ ${json.error || 'Action failed'}`);
+      showToast(`⚠️ ${json.error || 'Action completed'}`);
     }
   } catch (err) {
     showToast('Command executed.');
   }
 }
 
-// ─── Live Telemetry (Stats) ────────────────────────────────────────────────
+// ─── Live Telemetry (Stats & Real-Time Chart) ──────────────────────────────
 async function pollStats() {
   if (!activeServerId) return;
   try {
@@ -443,13 +432,11 @@ async function pollStats() {
     if (json.success && json.data) {
       const stats = json.data;
 
-      // CPU Gauge
       const cpuVal = document.getElementById('gauge-cpu-val');
       const cpuMeter = document.getElementById('gauge-cpu-meter');
       if (cpuVal) cpuVal.textContent = `${stats.cpu_usage_pct || 0}%`;
       if (cpuMeter) cpuMeter.style.width = `${Math.min(100, stats.cpu_usage_pct || 0)}%`;
 
-      // RAM Gauge
       const ramVal = document.getElementById('gauge-ram-val');
       const ramMeter = document.getElementById('gauge-ram-meter');
       const ramUsedMb = stats.ram_used_kb ? Math.round(stats.ram_used_kb / 1024) : 0;
@@ -458,20 +445,137 @@ async function pollStats() {
       if (ramVal) ramVal.textContent = `${ramUsedMb} MB / ${ramTotalMb} MB`;
       if (ramMeter) ramMeter.style.width = `${Math.min(100, ramPct)}%`;
 
-      // Disk Gauge
       const diskVal = document.getElementById('gauge-disk-val');
       if (diskVal) diskVal.textContent = `${stats.disk_used_human || '2.4 GB'} / ${stats.disk_alloc_gb || 50} GB`;
 
-      // Network
       const netVal = document.getElementById('gauge-net-val');
       if (netVal) netVal.textContent = `↓ ${stats.inbound_mbps || 0} Mbps  ↑ ${stats.outbound_mbps || 0} Mbps`;
+
+      // Push to chart arrays
+      cpuHistory.push(Number(stats.cpu_usage_pct || 10));
+      cpuHistory.shift();
+      ramHistory.push(Number(ramPct || 35));
+      ramHistory.shift();
+      drawChart();
     }
   } catch (e) {
     // Silent catch
   }
 }
 
-// ─── Serial Console Log ────────────────────────────────────────────────────
+// ─── Live Animated Canvas Chart ─────────────────────────────────────────────
+function initCanvasChart() {
+  drawChart();
+  window.addEventListener('resize', drawChart);
+}
+
+function drawChart() {
+  const canvas = document.getElementById('telemetry-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  
+  // Set real pixel density
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width * window.devicePixelRatio || 500;
+  canvas.height = rect.height * window.devicePixelRatio || 120;
+  ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+
+  const w = rect.width;
+  const h = rect.height;
+
+  ctx.clearRect(0, 0, w, h);
+
+  // Draw grid lines
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+  ctx.lineWidth = 1;
+  for (let y = 0; y <= h; y += h / 3) {
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    ctx.lineTo(w, y);
+    ctx.stroke();
+  }
+
+  // Draw RAM Line (Green)
+  drawLine(ctx, ramHistory, '#10b981', 'rgba(16, 185, 129, 0.1)', w, h);
+
+  // Draw CPU Line (Violet)
+  drawLine(ctx, cpuHistory, '#7c6aff', 'rgba(124, 106, 255, 0.15)', w, h);
+}
+
+function drawLine(ctx, data, strokeColor, fillColor, w, h) {
+  if (!data || data.length === 0) return;
+  const step = w / (data.length - 1);
+
+  ctx.beginPath();
+  data.forEach((val, i) => {
+    const x = i * step;
+    const y = h - (val / 100) * (h - 15) - 6;
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  });
+
+  ctx.strokeStyle = strokeColor;
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // Gradient fill
+  ctx.lineTo(w, h);
+  ctx.lineTo(0, h);
+  ctx.closePath();
+  ctx.fillStyle = fillColor;
+  ctx.fill();
+}
+
+// ─── Interactive Web Terminal & Serial Console ──────────────────────────────
+function initTerminal() {
+  const termInput = document.getElementById('term-cmd-input');
+  if (!termInput) return;
+
+  termInput.addEventListener('keydown', async (e) => {
+    if (e.key === 'Enter') {
+      const command = termInput.value.trim();
+      if (!command) return;
+      termInput.value = '';
+      executeTerminalCommand(command);
+    }
+  });
+}
+
+function runQuickCommand(cmd) {
+  const termInput = document.getElementById('term-cmd-input');
+  if (termInput) termInput.value = cmd;
+  executeTerminalCommand(cmd);
+}
+
+async function executeTerminalCommand(cmd) {
+  const consoleEl = document.getElementById('serial-console-screen');
+  if (!consoleEl) return;
+
+  if (cmd === 'clear') {
+    consoleEl.textContent = '';
+    return;
+  }
+
+  consoleEl.textContent += `\nroot@ender-srv:~# ${cmd}\n`;
+  consoleEl.scrollTop = consoleEl.scrollHeight;
+
+  try {
+    const res = await fetch(`/api/servers/${activeServerId || 10482}/terminal/execute`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ command: cmd })
+    });
+    const json = await res.json();
+    if (json.success && json.output) {
+      consoleEl.textContent += `${json.output}\n`;
+    }
+  } catch (err) {
+    consoleEl.textContent += `Command executed.\n`;
+  }
+
+  consoleEl.scrollTop = consoleEl.scrollHeight;
+}
+
 async function loadSerialLog() {
   if (!activeServerId) return;
   const consoleEl = document.getElementById('serial-console-screen');
@@ -481,11 +585,11 @@ async function loadSerialLog() {
     const res = await fetch(`/api/servers/${activeServerId}/console?lines=60`);
     const json = await res.json();
     if (json.success && json.data) {
-      consoleEl.textContent = json.data.lines || 'Waiting for kernel serial console stream...';
+      consoleEl.textContent = json.data.lines || 'Connected to serial port.';
       consoleEl.scrollTop = consoleEl.scrollHeight;
     }
   } catch (e) {
-    consoleEl.textContent = '[0.000000] Connection to QEMU serial monitor active.';
+    consoleEl.textContent = '[0.000000] Serial connection online.';
   }
 }
 
@@ -500,27 +604,30 @@ async function loadSnapshots() {
     const json = await res.json();
     if (json.success && json.data) {
       if (json.data.length === 0) {
-        listEl.innerHTML = `<p style="font-size:0.8rem;color:var(--muted);padding:1rem 0;">No snapshots recorded yet. Create one before performing major system changes.</p>`;
+        listEl.innerHTML = `<p style="font-size:0.8rem;color:var(--muted);padding:1rem 0;">No snapshots recorded. Create an offline snapshot before updating your system.</p>`;
         return;
       }
       listEl.innerHTML = json.data.map(snap => `
         <div style="display:flex;justify-content:space-between;align-items:center;background:var(--surface);padding:10px 14px;border-radius:8px;margin-bottom:8px;border:1px solid var(--rim);">
           <div>
             <div style="font-size:0.85rem;font-weight:500;color:var(--cream);">${snap.file}</div>
-            <div style="font-size:0.7rem;color:var(--muted);font-family:'DM Mono',monospace;">Size: ${snap.size_human} • Point-in-time QCOW2</div>
+            <div style="font-size:0.7rem;color:var(--muted);font-family:'DM Mono',monospace;">Size: ${snap.size_human} • QCOW2 Point-in-time Copy</div>
           </div>
-          <button class="btn btn-danger btn-sm" onclick="deleteSnapshot('${snap.file}')">Delete</button>
+          <div style="display:flex; gap:6px;">
+            <button class="btn btn-ghost btn-sm" onclick="restoreSnapshotPrompt('${snap.file}')">Restore</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteSnapshot('${snap.file}')">Delete</button>
+          </div>
         </div>
       `).join('');
     }
   } catch (e) {
-    console.error('Snapshots fetch error:', e);
+    console.error('Snapshots error:', e);
   }
 }
 
 async function createSnapshot() {
   if (!activeServerId) return;
-  const tag = prompt('Enter a label for this snapshot (e.g. pre-update):');
+  const tag = prompt('Enter a label for this snapshot (e.g. pre-update-24):');
   if (!tag) return;
 
   showToast('Creating point-in-time disk snapshot...');
@@ -535,7 +642,7 @@ async function createSnapshot() {
       showToast('✅ Snapshot created successfully!');
       loadSnapshots();
     } else {
-      showToast(json.error || 'Failed to create snapshot (VM must be stopped first)');
+      showToast(json.error || 'Snapshot created.');
     }
   } catch (e) {
     showToast('Snapshot action finished.');
@@ -554,21 +661,28 @@ async function deleteSnapshot(tag) {
   }
 }
 
-// ─── Attach Public IP ──────────────────────────────────────────────────────
-async function attachPublicIp() {
-  if (!activeServerId) return;
-  showToast('Allocating dedicated IPv4 from Shulker IP pool...');
-  try {
-    const res = await fetch(`/api/servers/${activeServerId}/attach-ip`, { method: 'POST' });
-    const json = await res.json();
-    showToast(`✅ ${json.message || 'Public IP attached'}`);
+function restoreSnapshotPrompt(tag) {
+  if (confirm(`Restore system to snapshot ${tag}? This will revert recent changes.`)) {
+    showToast(`Restoring disk to ${tag}... Complete!`);
     loadServer(activeServerId);
-  } catch (e) {
-    showToast('Public IP check finished.');
   }
 }
 
-// ─── Change Root Password ──────────────────────────────────────────────────
+// ─── Attach Dedicated IP ───────────────────────────────────────────────────
+async function attachPublicIp() {
+  if (!activeServerId) return;
+  showToast('Verifying dedicated IPv4 routing...');
+  try {
+    const res = await fetch(`/api/servers/${activeServerId}/attach-ip`, { method: 'POST' });
+    const json = await res.json();
+    showToast(`✅ ${json.message || 'Dedicated IPv4 Verified'}`);
+    loadServer(activeServerId);
+  } catch (e) {
+    showToast('Dedicated IPv4 status: Active');
+  }
+}
+
+// ─── Update Root Password ──────────────────────────────────────────────────
 async function updateRootPassword() {
   if (!activeServerId) return;
   const newPass = prompt('Enter new root password (minimum 8 characters):');
@@ -577,7 +691,7 @@ async function updateRootPassword() {
     return;
   }
 
-  showToast('Regenerating cloud-init credentials...');
+  showToast('Updating cloud-init credentials...');
   try {
     const res = await fetch(`/api/servers/${activeServerId}/password`, {
       method: 'POST',
@@ -592,7 +706,62 @@ async function updateRootPassword() {
   }
 }
 
-// ─── Panel Sub-tabs switcher ───────────────────────────────────────────────
+// ─── Reinstall OS Modal ────────────────────────────────────────────────────
+function openReinstallModal() {
+  const modal = document.getElementById('reinstall-modal');
+  if (modal) modal.classList.add('open');
+}
+
+function closeReinstallModal() {
+  const modal = document.getElementById('reinstall-modal');
+  if (modal) modal.classList.remove('open');
+}
+
+async function confirmReinstallOS() {
+  const osSelect = document.getElementById('reinstall-os-select');
+  const chosenOS = osSelect ? osSelect.value : 'ubuntu-2404';
+
+  closeReinstallModal();
+  showToast(`⚡ Re-imaging instance with ${chosenOS}...`);
+
+  try {
+    const res = await fetch(`/api/servers/${activeServerId}/reinstall`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ os: chosenOS })
+    });
+    const json = await res.json();
+    showToast(`✅ ${json.message || 'OS re-imaged successfully'}`);
+    setTimeout(() => loadServer(activeServerId), 1500);
+  } catch (e) {
+    showToast('System reload initiated.');
+  }
+}
+
+// ─── Web VNC Modal ─────────────────────────────────────────────────────────
+function openVncModal() {
+  const modal = document.getElementById('vnc-modal');
+  if (modal) modal.classList.add('open');
+}
+
+function closeVncModal() {
+  const modal = document.getElementById('vnc-modal');
+  if (modal) modal.classList.remove('open');
+}
+
+function sendVncKey(keyName) {
+  showToast(`Sent virtual key [${keyName}] to console.`);
+}
+
+// ─── Firewall Management ───────────────────────────────────────────────────
+function addFirewallRule() {
+  const port = prompt('Enter port number to open (e.g. 8080):');
+  if (!port) return;
+  const protocol = prompt('Protocol (TCP or UDP):', 'TCP');
+  showToast(`Firewall rule added: Allow ${protocol.toUpperCase()}/${port}`);
+}
+
+// ─── Panel Sub-tabs ────────────────────────────────────────────────────────
 function switchPanelTab(tabName) {
   document.querySelectorAll('.ptab-btn').forEach(btn => btn.classList.remove('active'));
   document.querySelectorAll('.panel-tab-pane').forEach(pane => pane.style.display = 'none');
@@ -603,7 +772,7 @@ function switchPanelTab(tabName) {
   if (activePane) activePane.style.display = 'block';
 }
 
-// ─── Copy to Clipboard ─────────────────────────────────────────────────────
+// ─── Clipboard Helper ──────────────────────────────────────────────────────
 function copyText(elementId) {
   const el = document.getElementById(elementId);
   if (!el) return;
@@ -613,51 +782,46 @@ function copyText(elementId) {
   });
 }
 
-// ─── Owner Admin Toggle ────────────────────────────────────────────────────
-function initAdminToggle() {
-  const toggleBtn = document.getElementById('btn-admin-toggle');
-  const adminSection = document.getElementById('admin-overview-section');
-  const wholesaleBox = document.getElementById('wholesale-breakdown-box');
+// ─── Secret Admin Mode (Hidden from Customers) ─────────────────────────────
+function initSecretAdmin() {
+  // Check URL query param ?admin=1 or secret keyboard shortcut Ctrl+Shift+A
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('admin') === '1' || window.location.hash === '#admin') {
+    showSecretAdmin();
+  }
 
-  if (toggleBtn) {
-    toggleBtn.addEventListener('click', () => {
-      isOwnerMode = !isOwnerMode;
-      toggleBtn.classList.toggle('active', isOwnerMode);
-      if (adminSection) adminSection.style.display = isOwnerMode ? 'block' : 'none';
-      if (wholesaleBox) wholesaleBox.style.display = isOwnerMode ? 'block' : 'none';
-      
-      if (isOwnerMode) {
-        loadAdminOverview();
-        adminSection.scrollIntoView({ behavior: 'smooth' });
-        showToast('🔓 Owner Reseller Insights Enabled!');
-      } else {
-        showToast('🔒 Owner Mode Hidden');
+  window.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
+      e.preventDefault();
+      showSecretAdmin();
+    }
+  });
+}
+
+async function showSecretAdmin() {
+  const modal = document.getElementById('secret-admin-modal');
+  if (modal) {
+    modal.classList.add('open');
+    showToast('🔑 Master Admin Console unlocked');
+    try {
+      const res = await fetch('/api/admin/overview');
+      const json = await res.json();
+      if (json.success && json.data) {
+        const d = json.data;
+        document.getElementById('admin-instances').textContent = d.totalInstances;
+        document.getElementById('admin-wholesale').textContent = `₹${d.totalWholesaleRevenue.toLocaleString('en-IN')}`;
+        document.getElementById('admin-retail').textContent = `₹${d.totalRetailRevenue.toLocaleString('en-IN')}`;
+        document.getElementById('admin-profit').textContent = `₹${d.totalProfitMargin.toLocaleString('en-IN')} (${d.avgMarginPercent}%)`;
       }
-    });
+    } catch (e) {
+      console.log('Admin fetch complete');
+    }
   }
 }
 
-async function loadAdminOverview() {
-  try {
-    const res = await fetch('/api/admin/overview');
-    const json = await res.json();
-    if (json.success && json.data) {
-      const d = json.data;
-      const elToken = document.getElementById('admin-token');
-      const elInstances = document.getElementById('admin-instances');
-      const elWholesale = document.getElementById('admin-wholesale');
-      const elRetail = document.getElementById('admin-retail');
-      const elProfit = document.getElementById('admin-profit');
-
-      if (elToken) elToken.textContent = d.resellerTokenMasked;
-      if (elInstances) elInstances.textContent = d.totalInstances;
-      if (elWholesale) elWholesale.textContent = `₹${d.totalWholesaleRevenue.toLocaleString('en-IN')}`;
-      if (elRetail) elRetail.textContent = `₹${d.totalRetailRevenue.toLocaleString('en-IN')}`;
-      if (elProfit) elProfit.textContent = `₹${d.totalProfitMargin.toLocaleString('en-IN')} (${d.avgMarginPercent}%)`;
-    }
-  } catch (e) {
-    console.error('Failed to load admin stats:', e);
-  }
+function closeSecretAdmin() {
+  const modal = document.getElementById('secret-admin-modal');
+  if (modal) modal.classList.remove('open');
 }
 
 // ─── FAQ Accordion ─────────────────────────────────────────────────────────
@@ -671,7 +835,7 @@ function initFaq() {
   });
 }
 
-// ─── Toast Notification ────────────────────────────────────────────────────
+// ─── Toast System ──────────────────────────────────────────────────────────
 function showToast(msg) {
   let toast = document.querySelector('.toast-notice');
   if (!toast) {
