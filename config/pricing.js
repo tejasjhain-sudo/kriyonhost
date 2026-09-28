@@ -1,5 +1,5 @@
 /**
- * EnderHost Pricing Engine
+ * KryonHost Pricing Engine
  * Synchronized with live upstream physical nodes
  */
 

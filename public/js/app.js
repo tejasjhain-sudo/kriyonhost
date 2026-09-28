@@ -1,5 +1,5 @@
 /**
- * EnderHost - Production Client Application
+ * KryonHost - Production Client Application
  * Enterprise Cloud VPS, Minecraft Servers, Anycast Tunnels & Web Hosting
  */
 

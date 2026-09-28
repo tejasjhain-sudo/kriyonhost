@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const { createClient } = require('@supabase/supabase-js');
 const { 
   TIERS, 
   FLAT_IP_CHARGE, 
@@ -14,6 +15,12 @@ const {
   DEVSPACE_PLANS
 } = require('./config/pricing');
 const shulker = require('./services/shulkerService');
+
+// Supabase admin client (service_role — server-side only, never exposed to browser)
+const supabaseAdmin = createClient(
+  'https://gqxacwybumcroargnwkq.supabase.co',
+  process.env.SUPABASE_SERVICE_KEY || ''
+);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -29,12 +36,30 @@ app.get('/tunnels', (req, res) => res.sendFile(path.join(__dirname, 'public', 't
 app.get('/devspace', (req, res) => res.sendFile(path.join(__dirname, 'public', 'devspace.html')));
 app.get('/web-hosting', (req, res) => res.sendFile(path.join(__dirname, 'public', 'web-hosting.html')));
 app.get('/dedicated', (req, res) => res.sendFile(path.join(__dirname, 'public', 'dedicated.html')));
+app.get('/panel', (req, res) => res.sendFile(path.join(__dirname, 'public', 'panel.html')));
+app.get('/login', (req, res) => res.sendFile(path.join(__dirname, 'public', 'login.html')));
+app.get('/admin', (req, res) => res.sendFile(path.join(__dirname, 'public', 'admin.html')));
+
+// ─── Admin: Lookup user UUID by email (service role) ─────────────────────────
+app.get('/api/admin/user-id', async (req, res) => {
+  const { email } = req.query;
+  if (!email) return res.status(400).json({ error: 'Email required' });
+  try {
+    const { data, error } = await supabaseAdmin.auth.admin.listUsers();
+    if (error) return res.json({ user_id: null, error: error.message });
+    const user = data.users.find(u => u.email === email);
+    if (!user) return res.json({ user_id: null, error: 'User not found' });
+    res.json({ user_id: user.id, email: user.email });
+  } catch (err) {
+    res.json({ user_id: null, error: err.message });
+  }
+});
 
 // ─── Health check ──────────────────────────────────────────────────────────
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'ok',
-    brand: process.env.BRAND_NAME || 'EnderHost',
+    brand: process.env.BRAND_NAME || 'KryonHost',
     time: new Date().toISOString()
   });
 });
@@ -193,7 +218,7 @@ app.post('/api/servers/:id/terminal/execute', async (req, res) => {
     if (!cmd) {
       output = '';
     } else if (cmd === 'help') {
-      output = `EnderHost Cloud Shell v2.4 (x86_64-pc-linux-gnu)
+      output = `KryonHost Cloud Shell v2.4 (x86_64-pc-linux-gnu)
 Available commands:
   status          - View hypervisor and container health
   neofetch        - Display hardware and OS system info
@@ -219,7 +244,7 @@ Available commands:
       output = `       _,met$$$$$gg.          root@ender-srv
     ,g$$$$$$$$$$$$$$$P.       --------------
   ,g$$P"     """Y$$.".        OS: Ubuntu 24.04 LTS x86_64
- ,$$P'              \`$$$.     Host: EnderHost KVM Hypervisor Gen4
+ ,$$P'              \`$$$.     Host: KryonHost KVM Hypervisor Gen4
 ',$$P       ,ggs.     \`$$b:   Kernel: 6.8.0-45-generic
 \`d$$'     ,$P"'   .    $$$    Uptime: 14 days, 6 hours, 32 mins
  $$P      d$'     ,    $$P    Packages: 642 (dpkg)
@@ -382,13 +407,13 @@ app.get('/api/admin/overview', async (req, res) => {
     res.json({
       success: true,
       data: {
-        brand: process.env.BRAND_NAME || 'EnderHost',
+        brand: process.env.BRAND_NAME || 'KryonHost',
         totalInstances: services.length,
         totalWholesaleRevenue: Math.round(totalWholesale),
         totalRetailRevenue: Math.round(totalRetail),
         totalProfitMargin: Math.round(totalProfit),
         avgMarginPercent: totalRetail > 0 ? Math.round((totalProfit / totalRetail) * 100) : 0,
-        activeRegions: ['India (Mumbai)', 'India (Delhi)', 'Germany (Frankfurt)'],
+        services: services, activeRegions: ['India (Mumbai)', 'India (Delhi)', 'Germany (Frankfurt)'],
         ddosProtection: '92 Tbps Anycast Shield'
       }
     });
@@ -404,8 +429,8 @@ app.get('*', (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`\n======================================================`);
-  console.log(`🚀 EnderHost Cloud Platform running at http://localhost:${PORT}`);
+  console.log(`🚀 KryonHost Cloud Platform running at http://localhost:${PORT}`);
   console.log(`📡 Bare-Metal Node Orchestration: Connected`);
-  console.log(`💎 Brand: ${process.env.BRAND_NAME || 'EnderHost'}`);
+  console.log(`💎 Brand: ${process.env.BRAND_NAME || 'KryonHost'}`);
   console.log(`======================================================\n`);
 });

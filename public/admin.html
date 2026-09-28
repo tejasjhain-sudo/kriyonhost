@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KryonHost — Admin Control Center</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    body { background: #05050a; color: #fff; font-family: 'Inter', sans-serif; display: flex; min-height: 100vh; overflow-x: hidden; }
+    .sidebar { width: 260px; background: #0a0914; border-right: 1px solid var(--rim); display: flex; flex-direction: column; flex-shrink: 0; }
+    .sidebar-brand { padding: 24px; border-bottom: 1px solid var(--rim); display: flex; align-items: center; gap: 10px; }
+    .sidebar-brand span { font-family: 'Bricolage Grotesque', sans-serif; font-size: 1.1rem; color: #f59e0b; }
+    .sidebar-nav { flex: 1; padding: 16px 10px; display: flex; flex-direction: column; gap: 4px; }
+    .sidebar-link { padding: 11px 16px; border-radius: 8px; color: var(--muted2); text-decoration: none; display: flex; align-items: center; gap: 12px; font-size: 0.9rem; transition: 0.2s; cursor: pointer; }
+    .sidebar-link:hover, .sidebar-link.active { background: rgba(255,255,255,0.05); color: #fff; }
+    .sidebar-link svg { width: 18px; height: 18px; flex-shrink: 0; }
+    .sidebar-user { padding: 20px; border-top: 1px solid var(--rim); font-size: 0.8rem; color: var(--muted); }
+    .user-email { color: #f59e0b; font-weight: 500; font-family: 'DM Mono', monospace; font-size: 0.75rem; overflow: hidden; text-overflow: ellipsis; }
+    
+    .main-content { flex: 1; padding: 40px; display: flex; flex-direction: column; max-height: 100vh; overflow-y: auto; }
+    .page-title { font-family: 'Bricolage Grotesque', sans-serif; font-size: 2rem; font-weight: 400; color: #f59e0b; margin-bottom: 8px; }
+    .page-sub { color: var(--muted); font-size: 0.9rem; margin-bottom: 30px; }
+    
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 36px; }
+    .stat-card { background: #11101a; border: 1px solid var(--rim); border-radius: 12px; padding: 20px; }
+    .stat-title { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+    .stat-val { font-size: 1.8rem; font-weight: 600; font-family: 'Bricolage Grotesque', sans-serif; }
+
+    .admin-card { background: #11101a; border: 1px solid var(--rim); border-radius: 12px; overflow: hidden; margin-bottom: 24px; }
+    .admin-card-head { padding: 20px 24px; border-bottom: 1px solid var(--rim); display: flex; justify-content: space-between; align-items: center; }
+    .admin-card-title { font-weight: 600; font-size: 1rem; }
+    
+    table { width: 100%; border-collapse: collapse; text-align: left; }
+    th { padding: 14px 20px; font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid rgba(255,255,255,0.05); white-space: nowrap; }
+    td { padding: 14px 20px; font-size: 0.88rem; border-bottom: 1px solid rgba(255,255,255,0.03); }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(255,255,255,0.02); }
+    
+    .status-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 6px; }
+    .status-running { background: #22c55e; box-shadow: 0 0 6px #22c55e; }
+    .status-stopped { background: #ef4444; }
+    
+    .btn-sm { padding: 5px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; border: 1px solid rgba(255,255,255,0.1); background: transparent; color: #fff; cursor: pointer; transition: 0.2s; }
+    .btn-sm:hover { background: rgba(255,255,255,0.08); }
+    .btn-danger { color: #ef4444; border-color: rgba(239,68,68,0.3); }
+    .btn-danger:hover { background: rgba(239,68,68,0.1) !important; }
+    .btn-amber { color: #f59e0b; border-color: rgba(245,158,11,0.3); }
+    .btn-amber:hover { background: rgba(245,158,11,0.1) !important; }
+    .btn-add { background: var(--purple-bright); border: none; color: #fff; padding: 8px 16px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: 0.2s; }
+    .btn-add:hover { background: #6855e0; }
+    
+    /* Modal */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; z-index: 1000; }
+    .modal-overlay.open { display: flex; }
+    .modal-box { background: #0a0914; border: 1px solid var(--rim); border-radius: 16px; padding: 32px; width: 100%; max-width: 520px; }
+    .modal-title { font-family: 'Bricolage Grotesque', sans-serif; font-size: 1.5rem; margin-bottom: 24px; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-group { display: flex; flex-direction: column; gap: 8px; }
+    .form-group.full { grid-column: 1 / -1; }
+    label { font-size: 0.8rem; color: var(--muted); font-weight: 500; }
+    input, select { padding: 10px 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: #11101a; color: #fff; font-family: inherit; font-size: 0.9rem; outline: none; transition: 0.2s; }
+    input:focus, select:focus { border-color: var(--purple-bright); }
+    select option { background: #11101a; }
+    .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; }
+    .btn-cancel { padding: 10px 20px; border-radius: 8px; border: 1px solid var(--rim); background: transparent; color: var(--muted); font-size: 0.9rem; cursor: pointer; }
+    .btn-save { padding: 10px 24px; border-radius: 8px; background: var(--purple-bright); border: none; color: #fff; font-size: 0.9rem; font-weight: 600; cursor: pointer; }
+    .modal-msg { font-size: 0.85rem; margin-top: 12px; text-align: center; }
+    
+    .badge { font-size: 0.65rem; padding: 2px 8px; border-radius: 20px; font-weight: 600; text-transform: uppercase; }
+    
+    @media (max-width: 768px) {
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .sidebar { display: none; }
+      .form-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar">
+    <div class="sidebar-brand">
+      <img src="/images/logo.jpg" alt="KryonHost" style="width:26px;height:26px;object-fit:contain;border-radius:5px;">
+      <span>Admin Center</span>
+    </div>
+    <div class="sidebar-nav">
+      <a href="#" class="sidebar-link active" onclick="loadSection('overview')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Overview
+      </a>
+      <a href="#" class="sidebar-link" onclick="loadSection('servers')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+        All Servers
+      </a>
+      <a href="#" class="sidebar-link" onclick="loadSection('users')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Users
+      </a>
+      <a href="/" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Back to Website
+      </a>
+    </div>
+    <div class="sidebar-user">
+      <div style="margin-bottom:4px;">Signed in as Admin</div>
+      <div class="user-email" id="u-email">Loading...</div>
+      <button onclick="handleLogout()" style="margin-top:10px; background:transparent; border:1px solid rgba(255,255,255,0.1); color:var(--muted); font-size:0.75rem; padding:6px 12px; border-radius:6px; cursor:pointer; width:100%; transition:0.2s;" onmouseover="this.style.borderColor='#ef4444';this.style.color='#ef4444'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='var(--muted)'">Sign Out</button>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content" id="main-content">
+    <div style="color:var(--muted); margin-top:4rem; text-align:center;">Loading dashboard...</div>
+  </div>
+
+  <!-- ADD SERVER MODAL -->
+  <div class="modal-overlay" id="add-modal">
+    <div class="modal-box">
+      <div class="modal-title" id="modal-title">Add Server for User</div>
+      <div class="form-grid">
+        <div class="form-group full">
+          <label>User Email (exact Supabase email)</label>
+          <input type="email" id="f-email" placeholder="client@example.com">
+        </div>
+        <div class="form-group">
+          <label>Server Alias / Name</label>
+          <input type="text" id="f-alias" placeholder="My Minecraft Server">
+        </div>
+        <div class="form-group">
+          <label>Service Type</label>
+          <select id="f-type">
+            <option value="vps">VPS</option>
+            <option value="minecraft">Minecraft</option>
+            <option value="dedicated">Dedicated</option>
+            <option value="tunnel">Tunnel</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Service Tier</label>
+          <select id="f-tier">
+            <option value="eco">Eco</option>
+            <option value="std">Standard</option>
+            <option value="perf">Performance</option>
+            <option value="pwr">Power</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Status</label>
+          <select id="f-status">
+            <option value="running">Running</option>
+            <option value="stopped">Stopped</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>CPU Cores</label>
+          <input type="number" id="f-cpu" placeholder="4" min="1">
+        </div>
+        <div class="form-group">
+          <label>RAM (GB)</label>
+          <input type="number" id="f-ram" placeholder="8" min="1">
+        </div>
+        <div class="form-group">
+          <label>Disk (GB)</label>
+          <input type="number" id="f-disk" placeholder="80" min="1">
+        </div>
+        <div class="form-group">
+          <label>IP Address</label>
+          <input type="text" id="f-ip" placeholder="e.g. 103.42.75.10">
+        </div>
+        <div class="form-group">
+          <label>Region</label>
+          <input type="text" id="f-region" placeholder="India (Mumbai)" value="India (Mumbai)">
+        </div>
+        <div class="form-group">
+          <label>OS</label>
+          <input type="text" id="f-os" placeholder="Ubuntu 24.04 LTS" value="Ubuntu 24.04 LTS">
+        </div>
+        <div class="form-group">
+          <label>Monthly Price (₹)</label>
+          <input type="number" id="f-price" placeholder="849">
+        </div>
+      </div>
+      <div class="modal-msg" id="modal-msg"></div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+        <button class="btn-save" onclick="saveServer()">Save Server</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/supabase-config.js"></script>
+  <script>
+    const ADMIN_EMAIL = 'admin@kryonhost.com';
+    let editingId = null;
+
+    /* ── Auth Guard ─────────────────────────────────────────────────────────── */
+    async function init() {
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (!session) { window.location.href = '/login'; return; }
+      if (session.user.email !== ADMIN_EMAIL) { window.location.href = '/panel'; return; }
+      document.getElementById('u-email').textContent = session.user.email;
+      loadSection('overview');
+    }
+
+    async function handleLogout() {
+      await supabaseClient.auth.signOut();
+      window.location.href = '/login';
+    }
+
+    /* ── Sections ───────────────────────────────────────────────────────────── */
+    function loadSection(name) {
+      document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+      event?.target?.closest('.sidebar-link')?.classList.add('active');
+      if (name === 'overview') renderOverview();
+      else if (name === 'servers') renderServers();
+      else if (name === 'users') renderUsers();
+    }
+
+    /* ── Overview ───────────────────────────────────────────────────────────── */
+    async function renderOverview() {
+      const main = document.getElementById('main-content');
+      main.innerHTML = `<div style="color:var(--muted);">Loading overview...</div>`;
+      
+      const { data: servers } = await supabaseClient.from('servers').select('*');
+      const { data: { users: authUsers } } = await supabaseClient.auth.admin?.listUsers?.() || { data: { users: [] } };
+      
+      const total = servers?.length || 0;
+      const running = servers?.filter(s => s.status === 'running').length || 0;
+      const totalRevenue = servers?.reduce((acc, s) => acc + (s.price || 0), 0) || 0;
+      const uniqueUsers = [...new Set(servers?.map(s => s.user_email))].length;
+
+      main.innerHTML = `
+        <h1 class="page-title">Admin Overview</h1>
+        <p class="page-sub">Real-time platform metrics pulled from Supabase.</p>
+        
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-title">Total Servers</div>
+            <div class="stat-val" style="color:#a78bfa;">${total}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-title">Active / Running</div>
+            <div class="stat-val" style="color:#22c55e;">${running}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-title">Unique Clients</div>
+            <div class="stat-val" style="color:#38bdf8;">${uniqueUsers}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-title">Monthly Revenue</div>
+            <div class="stat-val" style="color:#f59e0b;">₹${totalRevenue.toLocaleString('en-IN')}</div>
+          </div>
+        </div>
+
+        <div class="admin-card">
+          <div class="admin-card-head">
+            <span class="admin-card-title">Recent Server Deployments</span>
+            <button class="btn-add" onclick="openAddModal()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add Server for Client
+            </button>
+          </div>
+          <table>
+            <thead><tr>
+              <th>Name</th><th>Client</th><th>Type</th><th>IP</th><th>Status</th><th>Added</th>
+            </tr></thead>
+            <tbody>
+              ${(servers?.slice(0,8) || []).map(s => `
+                <tr>
+                  <td style="font-weight:500;">${s.service_alias}</td>
+                  <td style="font-family:'DM Mono',monospace; font-size:0.8rem; color:#38bdf8;">${s.user_email}</td>
+                  <td><span class="badge" style="background:rgba(124,106,255,0.1);color:#a78bfa;">${s.service_type||'vps'}</span></td>
+                  <td style="font-family:'DM Mono',monospace; font-size:0.8rem;">${s.ip}</td>
+                  <td><span class="status-dot ${s.status==='running'?'status-running':'status-stopped'}"></span>${s.status}</td>
+                  <td style="color:var(--muted); font-size:0.8rem;">${new Date(s.created_at).toLocaleDateString('en-IN')}</td>
+                </tr>`).join('') || `<tr><td colspan="6" style="text-align:center;padding:30px;color:var(--muted);">No servers yet. Add the first one!</td></tr>`}
+            </tbody>
+          </table>
+        </div>`;
+    }
+
+    /* ── All Servers ─────────────────────────────────────────────────────────── */
+    async function renderServers() {
+      const main = document.getElementById('main-content');
+      main.innerHTML = `<div style="color:var(--muted);">Loading servers...</div>`;
+      
+      const { data: servers, error } = await supabaseClient.from('servers').select('*').order('created_at', { ascending: false });
+      if (error) { main.innerHTML = `<div style="color:#ef4444;">Error: ${error.message}</div>`; return; }
+
+      main.innerHTML = `
+        <h1 class="page-title">All Servers</h1>
+        <p class="page-sub">Every server deployed across all clients on the platform.</p>
+
+        <div class="admin-card">
+          <div class="admin-card-head">
+            <span class="admin-card-title">${servers?.length || 0} Total Services</span>
+            <button class="btn-add" onclick="openAddModal()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add Server for Client
+            </button>
+          </div>
+          <table>
+            <thead><tr>
+              <th>Alias</th><th>Client Email</th><th>Specs</th><th>IP Address</th><th>Status</th><th>Price</th><th>Actions</th>
+            </tr></thead>
+            <tbody id="servers-tbody">
+              ${(servers||[]).map(s => `
+                <tr id="row-${s.id}">
+                  <td><span style="font-weight:500;">${s.service_alias}</span><br><span style="font-size:0.72rem;color:var(--muted);">${s.service_type||'vps'} · ${s.service_tier||'std'}</span></td>
+                  <td style="font-family:'DM Mono',monospace; font-size:0.78rem; color:#38bdf8;">${s.user_email}</td>
+                  <td style="font-size:0.82rem; color:var(--muted2);">${s.cpu_cores}c / ${s.ram_gb}GB / ${s.disk_gb}GB</td>
+                  <td style="font-family:'DM Mono',monospace; font-size:0.8rem;">${s.ip}</td>
+                  <td>
+                    <select onchange="updateStatus('${s.id}', this.value)" style="background:#11101a; border:1px solid rgba(255,255,255,0.08); color:${s.status==='running'?'#22c55e':'#ef4444'}; border-radius:6px; padding:4px 8px; font-size:0.8rem; cursor:pointer;">
+                      <option value="running" ${s.status==='running'?'selected':''}>● Running</option>
+                      <option value="stopped" ${s.status==='stopped'?'selected':''}>● Stopped</option>
+                      <option value="suspended" ${s.status==='suspended'?'selected':''}>● Suspended</option>
+                    </select>
+                  </td>
+                  <td style="color:#22c55e; font-family:'DM Mono',monospace;">₹${(s.price||0).toLocaleString()}/mo</td>
+                  <td style="display:flex; gap:6px; flex-wrap:wrap;">
+                    <button class="btn-sm btn-amber" onclick="openEditModal('${s.id}')">Edit</button>
+                    <button class="btn-sm btn-danger" onclick="deleteServer('${s.id}', '${s.service_alias}')">Delete</button>
+                  </td>
+                </tr>`).join('') || `<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--muted);">No servers yet.</td></tr>`}
+            </tbody>
+          </table>
+        </div>`;
+    }
+
+    /* ── Users ──────────────────────────────────────────────────────────────── */
+    async function renderUsers() {
+      const main = document.getElementById('main-content');
+      main.innerHTML = `<div style="color:var(--muted);">Loading users...</div>`;
+      
+      const { data: servers } = await supabaseClient.from('servers').select('user_email, service_alias, service_type, status, price, created_at');
+      
+      // Group by user_email
+      const userMap = {};
+      (servers || []).forEach(s => {
+        if (!userMap[s.user_email]) userMap[s.user_email] = { servers: [], total: 0 };
+        userMap[s.user_email].servers.push(s);
+        userMap[s.user_email].total += s.price || 0;
+      });
+
+      main.innerHTML = `
+        <h1 class="page-title">Registered Clients</h1>
+        <p class="page-sub">All users who have active servers on the platform.</p>
+
+        <div class="admin-card">
+          <div class="admin-card-head">
+            <span class="admin-card-title">${Object.keys(userMap).length} Clients with Active Services</span>
+          </div>
+          <table>
+            <thead><tr>
+              <th>Email</th><th>Servers</th><th>Types</th><th>Monthly Spend</th><th>Actions</th>
+            </tr></thead>
+            <tbody>
+              ${Object.entries(userMap).map(([email, d]) => `
+                <tr>
+                  <td style="font-family:'DM Mono',monospace; color:#38bdf8;">${email}</td>
+                  <td style="font-weight:600; color:#a78bfa;">${d.servers.length}</td>
+                  <td style="font-size:0.8rem; color:var(--muted2);">${[...new Set(d.servers.map(s=>s.service_type||'vps'))].join(', ')}</td>
+                  <td style="color:#22c55e; font-family:'DM Mono',monospace;">₹${d.total.toLocaleString('en-IN')}/mo</td>
+                  <td>
+                    <button class="btn-sm btn-add" style="font-size:0.75rem;padding:5px 10px;" onclick="openAddModalForUser('${email}')">Add Server</button>
+                  </td>
+                </tr>`).join('') || `<tr><td colspan="5" style="text-align:center;padding:30px;color:var(--muted);">No clients with servers yet.</td></tr>`}
+            </tbody>
+          </table>
+        </div>`;
+    }
+
+    /* ── Modal ──────────────────────────────────────────────────────────────── */
+    function openAddModal() {
+      editingId = null;
+      document.getElementById('modal-title').textContent = 'Add Server for Client';
+      ['f-email','f-alias','f-ip','f-cpu','f-ram','f-disk','f-price'].forEach(id => {
+        document.getElementById(id).value = '';
+      });
+      document.getElementById('f-region').value = 'India (Mumbai)';
+      document.getElementById('f-os').value = 'Ubuntu 24.04 LTS';
+      document.getElementById('f-status').value = 'running';
+      document.getElementById('modal-msg').textContent = '';
+      document.getElementById('add-modal').classList.add('open');
+    }
+
+    function openAddModalForUser(email) {
+      openAddModal();
+      document.getElementById('f-email').value = email;
+    }
+
+    async function openEditModal(id) {
+      const { data: s } = await supabaseClient.from('servers').select('*').eq('id', id).single();
+      if (!s) return;
+      editingId = id;
+      document.getElementById('modal-title').textContent = 'Edit Server';
+      document.getElementById('f-email').value = s.user_email;
+      document.getElementById('f-alias').value = s.service_alias;
+      document.getElementById('f-type').value = s.service_type || 'vps';
+      document.getElementById('f-tier').value = s.service_tier || 'std';
+      document.getElementById('f-status').value = s.status;
+      document.getElementById('f-cpu').value = s.cpu_cores;
+      document.getElementById('f-ram').value = s.ram_gb;
+      document.getElementById('f-disk').value = s.disk_gb;
+      document.getElementById('f-ip').value = s.ip;
+      document.getElementById('f-region').value = s.region || 'India (Mumbai)';
+      document.getElementById('f-os').value = s.os || 'Ubuntu 24.04 LTS';
+      document.getElementById('f-price').value = s.price || '';
+      document.getElementById('modal-msg').textContent = '';
+      document.getElementById('add-modal').classList.add('open');
+    }
+
+    function closeModal() {
+      document.getElementById('add-modal').classList.remove('open');
+    }
+
+    async function saveServer() {
+      const msg = document.getElementById('modal-msg');
+      const email = document.getElementById('f-email').value.trim();
+      const alias = document.getElementById('f-alias').value.trim();
+      const ip = document.getElementById('f-ip').value.trim();
+      const cpu = parseInt(document.getElementById('f-cpu').value);
+      const ram = parseInt(document.getElementById('f-ram').value);
+      const disk = parseInt(document.getElementById('f-disk').value);
+      const price = parseInt(document.getElementById('f-price').value) || 0;
+
+      if (!email || !alias || !ip || !cpu || !ram || !disk) {
+        msg.style.color = '#ef4444';
+        msg.textContent = 'Please fill in all required fields.';
+        return;
+      }
+
+      msg.style.color = 'var(--muted)';
+      msg.textContent = 'Saving...';
+
+      // Look up the user's UUID from their email
+      const { data: profile } = await supabaseClient
+        .from('servers')
+        .select('user_id')
+        .eq('user_email', email)
+        .limit(1)
+        .maybeSingle();
+
+      // We need user_id — fetch it from auth
+      const response = await fetch(`/api/admin/user-id?email=${encodeURIComponent(email)}`);
+      const userData = await response.json();
+      const userId = userData.user_id || profile?.user_id;
+
+      if (!userId) {
+        msg.style.color = '#ef4444';
+        msg.textContent = `No account found for "${email}". The user must log in at least once first.`;
+        return;
+      }
+
+      const serverData = {
+        user_id: userId,
+        user_email: email,
+        service_alias: alias,
+        service_type: document.getElementById('f-type').value,
+        service_tier: document.getElementById('f-tier').value,
+        status: document.getElementById('f-status').value,
+        cpu_cores: cpu,
+        ram_gb: ram,
+        disk_gb: disk,
+        ip: ip,
+        region: document.getElementById('f-region').value,
+        os: document.getElementById('f-os').value,
+        price: price
+      };
+
+      let error;
+      if (editingId) {
+        ({ error } = await supabaseClient.from('servers').update(serverData).eq('id', editingId));
+      } else {
+        ({ error } = await supabaseClient.from('servers').insert([serverData]));
+      }
+
+      if (error) {
+        msg.style.color = '#ef4444';
+        msg.textContent = 'Error: ' + error.message;
+      } else {
+        msg.style.color = '#22c55e';
+        msg.textContent = editingId ? 'Server updated!' : 'Server added! Client will see it in their panel.';
+        setTimeout(() => { closeModal(); renderServers(); }, 1200);
+      }
+    }
+
+    async function updateStatus(id, newStatus) {
+      await supabaseClient.from('servers').update({ status: newStatus }).eq('id', id);
+    }
+
+    async function deleteServer(id, name) {
+      if (!confirm(`Permanently delete "${name}"? This will remove it from the client's panel.`)) return;
+      const { error } = await supabaseClient.from('servers').delete().eq('id', id);
+      if (error) alert('Delete failed: ' + error.message);
+      else { document.getElementById(`row-${id}`)?.remove(); }
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+    document.getElementById('add-modal').addEventListener('click', (e) => {
+      if (e.target === document.getElementById('add-modal')) closeModal();
+    });
+  </script>
+</body>
+</html>

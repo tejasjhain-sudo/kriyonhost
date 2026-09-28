@@ -1,5 +1,5 @@
 /**
- * Shulker API Client for EnderHost
+ * Shulker API Client for KryonHost
  * Connects securely to https://shulker.in/api/reseller-v1/ using the reseller token
  */
 
@@ -201,7 +201,7 @@ class ShulkerService {
    */
   async vmAction(serviceId, action) {
     const numId = Number(serviceId);
-    console.log(`[EnderHost VM Action] Target=${serviceId}, Action=${action}`);
+    console.log(`[KryonHost VM Action] Target=${serviceId}, Action=${action}`);
 
     // Call upstream
     const res = await this.request(action, 'POST', null, { service_id: numId });
@@ -283,7 +283,7 @@ class ShulkerService {
       lines: [
         `[    0.000000] Linux version 6.8.0-45-generic (buildd@lcy02-amd64-072) (x86_64)`,
         `[    0.000000] Command line: BOOT_IMAGE=/boot/vmlinuz-6.8.0-45-generic root=UUID=7f6a01... ro console=ttyS0`,
-        `[    0.184920] EnderHost Hypervisor: Hardware virtualization Intel/AMD SVM initialized.`,
+        `[    0.184920] KryonHost Hypervisor: Hardware virtualization Intel/AMD SVM initialized.`,
         `[    0.849201] systemd[1]: Starting systemd-journald.service...`,
         `[    1.294021] cloud-init[721]: Cloud-init v. 24.1.3 running 'init-local'`,
         `[    2.109240] systemd[1]: Reached target Network (Pre).`,
@@ -309,7 +309,7 @@ class ShulkerService {
     return {
       vnc_port: 5943,
       vnc_ws_port: 6043,
-      vnc_ip: "node1.enderhost.cloud:5943",
+      vnc_ip: "node1.kryonhost.cloud:5943",
       ip: sim ? sim.ip : "103.189.89.44",
       running: sim ? sim.status === 'running' : true,
       note: "Connect via any standard VNC client or use our in-browser HTML5 Web Console"
@@ -327,8 +327,8 @@ class ShulkerService {
     }
     return {
       rdp_port: 3389,
-      rdp_ip: "node1.enderhost.cloud",
-      rdp_address: "node1.enderhost.cloud:34201",
+      rdp_ip: "node1.kryonhost.cloud",
+      rdp_address: "node1.kryonhost.cloud:34201",
       ip: "103.189.89.44",
       running: true,
       os_protocol: "rdp"
@@ -416,7 +416,7 @@ class ShulkerService {
    * Create Instance
    */
   async createInstance(params) {
-    console.log('[EnderHost Deploy] Calling create_instance with params:', params);
+    console.log('[KryonHost Deploy] Calling create_instance with params:', params);
     const res = await this.request('create_instance', 'POST', params);
     if (res && res.success && res.data) {
       // Also register into our service list

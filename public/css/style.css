@@ -1,5 +1,5 @@
 /* ═════════════════════════════════════════════════════════════════════════
-   EnderHost Premium Design System
+   KryonHost Premium Design System
    Enterprise Cloud, Minecraft Servers, Anycast Tunnels & Web Hosting
    ═════════════════════════════════════════════════════════════════════════ */
 
@@ -2645,3 +2645,58 @@ input[type=range]::-webkit-slider-thumb:hover {
   transform: translateY(0);
   opacity: 1;
 }
+
+/* ── World Map (Network Section) ────────────────────────────────────────── */
+.network-section-wrap {
+  background: radial-gradient(ellipse at 50% -20%, rgba(124,106,255,0.06), transparent 70%);
+  border-radius: 30px;
+  border: 1px solid rgba(255,255,255,0.05);
+  padding: 4rem 2rem;
+  margin-top: 4rem;
+}
+.network-map-card {
+  background: #0a0914;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 40px 100px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.04);
+  position: relative;
+}
+.network-map-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  background: rgba(255,255,255,0.02);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.network-map-svg-wrap {
+  width: 100%;
+  aspect-ratio: 2 / 1;
+  background: #05050a;
+  position: relative;
+  overflow: hidden;
+}
+.world-map-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.pop-ring-outer { animation: popPulseOuter 4s ease-out infinite; }
+.pop-ring-mid { animation: popPulseMid 4s ease-out infinite; }
+@keyframes popPulseOuter { 0% { transform: scale(0.8); opacity:1; } 100% { transform: scale(2.5); opacity:0; } }
+@keyframes popPulseMid { 0% { transform: scale(0.8); opacity:1; } 100% { transform: scale(1.8); opacity:0; } }
+
+.network-pop-strip {
+  display: flex;
+  gap: 20px;
+  padding: 14px 24px;
+  background: rgba(255,255,255,0.02);
+  border-top: 1px solid rgba(255,255,255,0.06);
+  flex-wrap: wrap;
+  align-items: center;
+}
+.npop { display: flex; align-items: center; gap: 6px; font-family: 'DM Mono', monospace; font-size: 0.65rem; color: var(--cream-dim); }
+.npop-dot { width: 6px; height: 6px; border-radius: 50%; }
+.npop-code { font-weight: 700; color: #fff; }
+.npop-name { color: var(--muted); }

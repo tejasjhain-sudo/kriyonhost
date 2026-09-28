@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EnderHost — Enterprise Cloud VPS, Minecraft Servers, Anycast Tunnels & Web Hosting</title>
+  <title>KryonHost — Enterprise Cloud VPS, Minecraft Servers, Anycast Tunnels & Web Hosting</title>
   <meta name="description" content="Next-generation cloud infrastructure powered by AMD Ryzen 9 7950X, AMD EPYC, and Intel Xeon. Sub-3s automated deployments, 92 Tbps Anycast DDoS shield, and transparent pricing.">
   
   <!-- Fonts -->
@@ -25,16 +25,9 @@
   <header class="nav-header">
     <div class="wrap nav-inner">
       <a href="/" class="nav-brand">
-        <div class="brand-icon">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
-            <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
-            <line x1="6" y1="6" x2="6.01" y2="6"></line>
-            <line x1="6" y1="18" x2="6.01" y2="18"></line>
-          </svg>
-        </div>
-        <span class="brand-name">EnderHost</span>
-        <span class="brand-tag">CLOUD</span>
+        <div class="brand-icon"><img src="/images/logo.jpg" alt="KryonHost" style="width:26px;height:26px;object-fit:contain;border-radius:5px;"></div>
+        <span class="brand-name">KryonHost</span>
+        <span class="brand-tag">KRYON</span>
       </a>
 
       <ul class="nav-links">
@@ -122,7 +115,7 @@
                     <div class="mega-sub">NVMe, cPanel, Node &amp; Free SSL</div>
                   </div>
                 </a>
-                <a href="#control-panel-section" class="mega-item">
+                <a href="/login" class="mega-item">
                   <div class="mega-icon">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
                   </div>
@@ -136,13 +129,13 @@
           </div>
         </li>
 
-        <li><a href="#control-panel-section">Console</a></li>
+        <li><a href="/login">Console</a></li>
         <li><a href="#architecture-section">Infrastructure</a></li>
         <li><a href="#faq-section">FAQ</a></li>
       </ul>
 
       <div class="nav-actions">
-        <a href="#control-panel-section" class="btn btn-ghost btn-sm">
+        <a href="/login" class="btn btn-ghost btn-sm">
           Log in
         </a>
         <a href="#configurator-section" class="btn btn-primary btn-sm">
@@ -392,204 +385,82 @@
     </div>
   </div>
 
-  <!-- ═══════════════════════════════════════════════════════════════════════
-       INTERACTIVE CUSTOM CONFIGURATOR & PRICING
-       ═══════════════════════════════════════════════════════════════════════ -->
-  <section class="s" id="configurator-section">
-    <div class="wrap">
-      
-      <div style="text-align:center; max-width:600px; margin:0 auto 3rem;">
-        <span class="eyebrow"><span class="eyebrow-dot"></span> Bare-Metal Virtualization</span>
-        <h2 class="sh">Calculate &amp; Configure Your Server</h2>
-        <p class="sub">Select your workload, hardware tier, and exact resources. VPS and Minecraft servers share the same hardware with sub-3s delivery.</p>
-      </div>
-
-      <div class="config-card">
-        <!-- Builder Controls -->
-        <div class="config-builder">
+  
+      <!-- ═══════════════════════════════════════════════════════════════════
+           GLOBAL ANYCAST FABRIC (SVG MAP)
+           ═══════════════════════════════════════════════════════════════════ -->
+      <div class="network-section-wrap" style="margin-top:4rem; margin-bottom:4rem;">
+        <div style="text-align:center; max-width:600px; margin:0 auto 2rem;">
+          <span class="eyebrow"><span class="eyebrow-dot"></span> Global Anycast Fabric</span>
+          <h2 class="sh">The Network: Anycast Everywhere. Dedicated Where It Counts.</h2>
+          <p class="sub">Your hostname resolves to our global Anycast fabric — 330+ cities, 92 Tbps of absorption capacity. Behind it sits our autonomous edge network.</p>
+        </div>
+        
+        <div class="network-map-card" style="background:#0a0914; border:1px solid var(--rim); border-radius:16px; padding:20px; position:relative; overflow:hidden;">
+          <svg class="world-map-svg" viewBox="0 0 1000 500" style="width:100%; height:auto; opacity:0.8;">
+            <!-- Simple abstract world map paths -->
+            <path d="M200,150 Q250,100 300,120 T400,100 T500,150 T600,120 T700,180 T800,150" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2"/>
+            <path d="M150,250 Q250,280 350,220 T550,250 T750,200 T900,280" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2"/>
+            
+            <!-- Connection Arcs -->
+            <path d="M180,200 Q400,50 600,150" fill="none" stroke="rgba(124,106,255,0.4)" stroke-width="2" stroke-dasharray="5,5" class="map-arc"/>
+            <path d="M600,150 Q750,100 850,220" fill="none" stroke="rgba(124,106,255,0.4)" stroke-width="2" stroke-dasharray="5,5" class="map-arc"/>
+            <path d="M600,150 Q650,250 780,300" fill="none" stroke="rgba(124,106,255,0.4)" stroke-width="2" stroke-dasharray="5,5" class="map-arc"/>
+            
+            <!-- Nodes (LAX, NYC, FRA, SIN, TYO, MUM) -->
+            <!-- LAX -->
+            <g transform="translate(180,200)">
+              <circle cx="0" cy="0" r="6" fill="#7c6aff"/>
+              <circle cx="0" cy="0" r="12" fill="none" stroke="#7c6aff" stroke-width="1" opacity="0.5"><animate attributeName="r" values="6;20" dur="2s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.8;0" dur="2s" repeatCount="indefinite"/></circle>
+              <text x="12" y="4" fill="#fff" font-size="12" font-family="monospace">LAX</text>
+            </g>
+            <!-- NYC -->
+            <g transform="translate(280,180)">
+              <circle cx="0" cy="0" r="4" fill="#a78bfa"/>
+              <text x="10" y="4" fill="rgba(255,255,255,0.7)" font-size="10" font-family="monospace">NYC</text>
+            </g>
+            <!-- FRA -->
+            <g transform="translate(600,150)">
+              <circle cx="0" cy="0" r="8" fill="#38bdf8"/>
+              <circle cx="0" cy="0" r="16" fill="none" stroke="#38bdf8" stroke-width="1" opacity="0.5"><animate attributeName="r" values="8;25" dur="2s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.8;0" dur="2s" repeatCount="indefinite"/></circle>
+              <text x="15" y="5" fill="#fff" font-size="14" font-weight="bold" font-family="monospace">FRA</text>
+            </g>
+            <!-- MUM -->
+            <g transform="translate(720,250)">
+              <circle cx="0" cy="0" r="6" fill="#22c55e"/>
+              <circle cx="0" cy="0" r="12" fill="none" stroke="#22c55e" stroke-width="1" opacity="0.5"><animate attributeName="r" values="6;20" dur="2s" repeatCount="indefinite" begin="1s"/><animate attributeName="opacity" values="0.8;0" dur="2s" repeatCount="indefinite" begin="1s"/></circle>
+              <text x="12" y="4" fill="#fff" font-size="12" font-family="monospace">MUM</text>
+            </g>
+            <!-- SIN -->
+            <g transform="translate(780,300)">
+              <circle cx="0" cy="0" r="5" fill="#f59e0b"/>
+              <text x="10" y="4" fill="rgba(255,255,255,0.7)" font-size="10" font-family="monospace">SIN</text>
+            </g>
+            <!-- TYO -->
+            <g transform="translate(850,220)">
+              <circle cx="0" cy="0" r="5" fill="#ec4899"/>
+              <text x="10" y="4" fill="rgba(255,255,255,0.7)" font-size="10" font-family="monospace">TYO</text>
+            </g>
+          </svg>
           
-          <!-- Mode Switcher -->
-          <div class="mode-switch-wrap">
-            <button id="mode-vps" class="mode-btn active">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
-              Cloud VPS (Linux / Windows)
-            </button>
-            <button id="mode-mc" class="mode-btn">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
-              Minecraft Server (Same Price)
-            </button>
-          </div>
-
-          <!-- Tier Pickers -->
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
-            <label style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.12em; color:var(--muted); font-family:'DM Mono',monospace;">Select CPU Architecture Tier</label>
-            <span style="font-size:0.7rem; color:var(--muted2); font-family:'DM Mono',monospace;">Sub-3s Node Provisioning</span>
-          </div>
-
-          <div class="tier-select-grid">
-            <div class="tier-opt" data-tier="eco">
-              <div class="tier-opt-head">
-                <span class="tier-opt-title">ECO</span>
-                <span class="badge b-green">Budget</span>
-              </div>
-              <div class="tier-opt-cpu">Intel Xeon E5 · Multi-core</div>
-              <div class="tier-opt-rates">Microservices, proxies &amp; bots</div>
-              <div style="margin-top:8px; font-size:0.65rem; color:#34d399; display:flex; align-items:center; gap:4px;">
-                <span style="width:6px; height:6px; background:#34d399; border-radius:50%; display:inline-block;"></span> In Stock
-              </div>
+          <div style="display:flex; justify-content:space-around; padding-top:20px; border-top:1px solid var(--rim); margin-top:20px;">
+            <div style="text-align:center;">
+              <div style="font-size:1.5rem; font-weight:bold; color:var(--purple-bright); font-family:'Bricolage Grotesque',sans-serif;">92 Tbps</div>
+              <div style="font-size:0.75rem; color:var(--muted); text-transform:uppercase;">Network Capacity</div>
             </div>
-
-            <div class="tier-opt is-out-of-stock" data-tier="std">
-              <div class="tier-opt-head">
-                <span class="tier-opt-title">STD</span>
-                <span class="badge b-red" style="font-size:0.6rem; padding:2px 6px;">Out of Stock</span>
-              </div>
-              <div class="tier-opt-cpu">AMD EPYC 7003 · Balanced</div>
-              <div class="tier-opt-rates">Web clusters, production SMP</div>
-              <div style="margin-top:8px; font-size:0.65rem; color:#f87171; display:flex; align-items:center; gap:4px;">
-                <span style="width:6px; height:6px; background:#f87171; border-radius:50%; display:inline-block;"></span> Restocking Soon
-              </div>
+            <div style="text-align:center;">
+              <div style="font-size:1.5rem; font-weight:bold; color:#38bdf8; font-family:'Bricolage Grotesque',sans-serif;">330+</div>
+              <div style="font-size:0.75rem; color:var(--muted); text-transform:uppercase;">Global Edge Cities</div>
             </div>
-
-            <div class="tier-opt is-out-of-stock" data-tier="perf">
-              <div class="tier-opt-head">
-                <span class="tier-opt-title">PERF</span>
-                <span class="badge b-blue">High Clock</span>
-                <span class="badge" style="background:#ef444422;color:#f87171;margin-left:4px;">Out of Stock</span>
-              </div>
-              <div class="tier-opt-cpu">Intel Core i7 · 4.8GHz Turbo</div>
-              <div class="tier-opt-rates">High tick rate &amp; heavy queries</div>
-              <div style="margin-top:8px; font-size:0.65rem; color:#f87171; display:flex; align-items:center; gap:4px;">
-                <span style="width:6px; height:6px; background:#f87171; border-radius:50%; display:inline-block;"></span> Restocking Soon
-              </div>
+            <div style="text-align:center;">
+              <div style="font-size:1.5rem; font-weight:bold; color:#22c55e; font-family:'Bricolage Grotesque',sans-serif;">&lt;10ms</div>
+              <div style="font-size:0.75rem; color:var(--muted); text-transform:uppercase;">Routing Latency</div>
             </div>
-
-            <div class="tier-opt selected" data-tier="pwr">
-              <div class="tier-opt-head">
-                <span class="tier-opt-title">PWR</span>
-                <span class="badge b-gold">Extreme</span>
-              </div>
-              <div class="tier-opt-cpu">AMD Ryzen 9 · 5.7GHz Beast</div>
-              <div class="tier-opt-rates">Modded Minecraft (ATM9/Forge)</div>
-              <div style="margin-top:8px; font-size:0.65rem; color:#34d399; display:flex; align-items:center; gap:4px;">
-                <span style="width:6px; height:6px; background:#34d399; border-radius:50%; display:inline-block;"></span> In Stock · High Speed
-              </div>
-            </div>
-          </div>
-
-          <!-- Sliders -->
-          <div class="slider-group">
-            <div class="slider-head">
-              <span class="slider-label">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
-                Processor (vCPU Cores)
-              </span>
-              <span class="slider-val-badge" id="val-cpu">4 vCPU</span>
-            </div>
-            <input type="range" id="slider-cpu" min="1" max="32" value="4" step="1">
-          </div>
-
-          <div class="slider-group">
-            <div class="slider-head">
-              <span class="slider-label">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 19v-3"/><path d="M10 19v-3"/><path d="M14 19v-3"/><path d="M18 19v-3"/><path d="M6 8V5"/><path d="M10 8V5"/><path d="M14 8V5"/><path d="M18 8V5"/><rect x="2" y="8" width="20" height="8" rx="2"/></svg>
-                Memory (High-Speed RAM)
-              </span>
-              <span class="slider-val-badge" id="val-ram">8 GB RAM</span>
-            </div>
-            <input type="range" id="slider-ram" min="1" max="96" value="8" step="1">
-          </div>
-
-          <div class="slider-group">
-            <div class="slider-head">
-              <span class="slider-label">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
-                NVMe Gen4 Storage
-              </span>
-              <span class="slider-val-badge" id="val-disk">80 GB NVMe</span>
-            </div>
-            <input type="range" id="slider-disk" min="10" max="1000" value="80" step="10">
-          </div>
-
-          <!-- Selectors -->
-          <div class="selector-row">
-            <div class="field-group">
-              <label>Operating System / Software</label>
-              <select id="select-os" class="custom-select">
-                <option value="ubuntu-2404">Ubuntu 24.04 LTS (Noble Numbat)</option>
-                <option value="ubuntu-2204">Ubuntu 22.04 LTS (Jammy Jellyfish)</option>
-                <option value="debian-12">Debian 12 (Bookworm)</option>
-                <option value="alpine-320">Alpine Linux 3.20 (Minimal)</option>
-                <option value="windows-server-2022">Windows Server 2022 (ISO / RDP)</option>
-                <option value="windows-11">Windows 11 Enterprise (ISO / RDP)</option>
-              </select>
-            </div>
-
-            <div class="field-group">
-              <label>Datacenter Region</label>
-              <select id="select-region" class="custom-select">
-                <option value="India">India</option>
-              </select>
-            </div>
-          </div>
-
-        </div>
-
-        <!-- Summary & Price Breakdown -->
-        <div class="config-summary">
-          <div class="quote-top">
-            <div class="quote-badge-row">
-              <span class="badge b-gold" id="quote-tier-badge">PWR Compute · Ryzen 9</span>
-              <span class="badge b-green">Sub-3s Provisioning</span>
-              <span class="badge b-purple">500+ Tbps Shield</span>
-            </div>
-            <div class="quote-title" id="quote-service-type">Enterprise Cloud VPS</div>
-            <div style="font-size:0.75rem; color:var(--muted); margin-bottom:1.2rem;" id="quote-specs-text">
-              4 vCPU • 8GB RAM • 80GB NVMe Storage • Dedicated IPv4
-            </div>
-
-            <ul class="quote-specs-list">
-              <li class="quote-spec-row">
-                <span>Dedicated Public IPv4</span>
-                <span>Included Free</span>
-              </li>
-              <li class="quote-spec-row">
-                <span>Anti-DDoS Shield (Anycast)</span>
-                <span style="color:var(--green);">Active (500+ Tbps)</span>
-              </li>
-              <li class="quote-spec-row">
-                <span>Automated Backups &amp; Snapshots</span>
-                <span style="color:var(--green);">Available</span>
-              </li>
-              <li class="quote-spec-row">
-                <span>Root / Serial / VNC Access</span>
-                <span style="color:var(--green);">Full Unrestricted</span>
-              </li>
-            </ul>
-          </div>
-
-          <div class="quote-bottom">
-            <div class="price-display-box">
-              <span class="price-tag-sub">Total Monthly Price (30 Days)</span>
-              <div class="big-price-num">
-                <span id="quote-retail-price">₹1,189</span>
-                <span class="price-period">/ month</span>
-              </div>
-              <p class="price-note">All taxes included. Transparent billing with automated node activation.</p>
-            </div>
-
-            <button id="btn-deploy-server" class="btn btn-primary" style="width:100%; padding:14px;" onclick="deployConfiguredServer()">
-              Deploy Instance Now
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-            </button>
           </div>
         </div>
       </div>
 
-    </div>
-  </section>
-
-  <!-- ═══════════════════════════════════════════════════════════════════════
+<!-- ═══════════════════════════════════════════════════════════════════════
        FEATURED TURNKEY PLANS
        ═══════════════════════════════════════════════════════════════════════ -->
   <section class="s" id="plans-section">
@@ -604,6 +475,7 @@
       <div class="plans-grid">
         <div class="plan-card">
           <div>
+            <div style="height:120px; background:linear-gradient(135deg, #111, #1a1a24); border-radius:8px; margin-bottom:1rem; display:flex; align-items:center; justify-content:center; border:1px solid var(--rim);"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#7c6aff" stroke-width="1.5"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg></div>
             <div class="plan-name">Starter Cloud</div>
             <div class="plan-cat">Bots, Proxies &amp; Web APIs</div>
             <div class="plan-price-block">
@@ -617,12 +489,13 @@
               <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> 92 Tbps DDoS Shield</li>
             </ul>
           </div>
-          <button class="btn btn-ghost" style="width:100%;" onclick="selectPlan('eco', 2, 4, 40)">Configure Plan</button>
+          <button class="btn btn-ghost" style="width:100%;" onclick="window.location.href='/login'">Order via Discord</button>
         </div>
 
         <div class="plan-card popular">
           <div class="popular-ribbon">Most Popular</div>
           <div>
+            <div style="height:120px; background:linear-gradient(135deg, #111, #161c18); border-radius:8px; margin-bottom:1rem; display:flex; align-items:center; justify-content:center; border:1px solid rgba(34,197,94,0.3);"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="1.5"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg></div>
             <div class="plan-name">EPYC Balanced</div>
             <div class="plan-cat">Cloud VPS &amp; 20-Player SMP</div>
             <div class="plan-price-block">
@@ -636,11 +509,12 @@
               <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Automated Snapshots</li>
             </ul>
           </div>
-          <button class="btn btn-primary" style="width:100%;" onclick="selectPlan('std', 4, 8, 80)">Configure Plan</button>
+          <button class="btn btn-primary" style="width:100%;" onclick="window.location.href='/login'">Order via Discord</button>
         </div>
 
         <div class="plan-card">
           <div>
+            <div style="height:120px; background:linear-gradient(135deg, #111, #161a22); border-radius:8px; margin-bottom:1rem; display:flex; align-items:center; justify-content:center; border:1px solid rgba(6,182,212,0.3);"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" stroke-width="1.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
             <div class="plan-name">High Clock Beast</div>
             <div class="plan-cat">Game Networks &amp; Heavy Workloads</div>
             <div class="plan-price-block">
@@ -654,11 +528,12 @@
               <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Serial Console &amp; VNC</li>
             </ul>
           </div>
-          <button class="btn btn-ghost" style="width:100%;" onclick="selectPlan('perf', 6, 16, 150)">Configure Plan</button>
+          <button class="btn btn-ghost" style="width:100%;" onclick="window.location.href='/login'">Order via Discord</button>
         </div>
 
         <div class="plan-card">
           <div>
+            <div style="height:120px; background:linear-gradient(135deg, #111, #221814); border-radius:8px; margin-bottom:1rem; display:flex; align-items:center; justify-content:center; border:1px solid rgba(245,158,11,0.3);"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="1.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
             <div class="plan-name">Ryzen 9 Extreme</div>
             <div class="plan-cat">Modded Minecraft (Forge/ATM9)</div>
             <div class="plan-price-block">
@@ -672,7 +547,7 @@
               <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Snapshot &amp; Extra Disks</li>
             </ul>
           </div>
-          <button class="btn btn-ghost" style="width:100%;" onclick="selectPlan('pwr', 8, 32, 250)">Configure Plan</button>
+          <button class="btn btn-ghost" style="width:100%;" onclick="window.location.href='/login'">Order via Discord</button>
         </div>
       </div>
 
@@ -726,7 +601,7 @@
           The Stack: One Pipeline, Purpose-Built for Minecraft
         </h3>
         <p style="font-size:0.85rem; color:var(--muted2); line-height:1.6;">
-          Generic DDoS scrubbing doesn't understand the Minecraft protocol. Ours does — every layer of the EnderShield stack was written exclusively for it.
+          Generic DDoS scrubbing doesn't understand the Minecraft protocol. Ours does — every layer of the KryonShield stack was written exclusively for it.
         </p>
       </div>
 
@@ -773,1067 +648,93 @@
       </div>
 
       <!-- ═══════════════════════════════════════════════════════════════════
-           CAPABILITIES: Everything Between Your Players and Your Box
+           HOW ANYCAST TUNNELS WORK
            ═══════════════════════════════════════════════════════════════════ -->
-      <div class="stack-section-title" style="margin-top:4rem;">
-        <span class="eyebrow"><span class="eyebrow-dot"></span> Edge Capabilities</span>
-        <h3 style="font-family:'Bricolage Grotesque',sans-serif; font-size:2rem; font-weight:400; color:#fff; line-height:1.2; margin-bottom:8px;">
-          Everything Between Your Players and Your Box
+      <div class="stack-section-title" style="margin-top:4rem; text-align:center; max-width:700px; margin-left:auto; margin-right:auto;">
+        <span class="eyebrow"><span class="eyebrow-dot"></span> Secure Infrastructure</span>
+        <h3 style="font-family:'Bricolage Grotesque',sans-serif; font-size:2rem; font-weight:400; color:#fff; line-height:1.2; margin-bottom:12px;">
+          How KryonShield Tunnels Protect Your Server
         </h3>
-      </div>
-
-      <div class="capabilities-grid">
-        <div class="cap-card">
-          <div class="cap-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          </div>
-          <div class="cap-title">Real Client IPs on Every Plan</div>
-          <div class="cap-desc">PROXY protocol support included from day one. Your backend sees the real player IP — bans, punishments, and plugins keep working exactly as before.</div>
-        </div>
-
-        <div class="cap-card">
-          <div class="cap-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-          </div>
-          <div class="cap-title">Geo-Steered Load Balancing</div>
-          <div class="cap-desc">Round-robin, least-conn with weights, or geographic steering that routes players to the nearest healthy backend by PoP. Health checks pull dead backends automatically.</div>
-        </div>
-
-        <div class="cap-card">
-          <div class="cap-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
-          </div>
-          <div class="cap-title">Firewall &amp; Risk Lists</div>
-          <div class="cap-desc">Country and ASN lists, composite AND rules, reusable security groups. Ship presets or build your own — enforced at the edge, not on your box.</div>
-        </div>
-
-        <div class="cap-card">
-          <div class="cap-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-          </div>
-          <div class="cap-title">Live Player Control</div>
-          <div class="cap-desc">See every session across all PoPs in real time. Kick, ban by IP, username, or client fingerprint, and force-verify suspicious players at any level.</div>
-        </div>
-
-        <div class="cap-card">
-          <div class="cap-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-          </div>
-          <div class="cap-title">Analytics That Keep Receipts</div>
-          <div class="cap-desc">Full connection logs with fingerprints, attack forensic history, and up to 90-day retention with CSV export. Know exactly what hit you, and when.</div>
-        </div>
-
-        <div class="cap-card">
-          <div class="cap-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-          </div>
-          <div class="cap-title">Your Brand, End to End</div>
-          <div class="cap-desc">Custom offline and mitigation MOTDs with your server icon on paid plans. Full white-label branding across all customer touchpoints.</div>
-        </div>
-
-        <div class="cap-card">
-          <div class="cap-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-          </div>
-          <div class="cap-title">Stolen Accounts Stopped Cold</div>
-          <div class="cap-desc">Accounts flagged as stolen or credential-leaked are kicked at the edge before they join — with a message telling the real owner how to secure their account.</div>
-        </div>
-
-        <div class="cap-card">
-          <div class="cap-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
-          </div>
-          <div class="cap-title">Player Insights &amp; Retention</div>
-          <div class="cap-desc">See who actually comes back: unique players, returning vs one-time, average session length, client versions, hostnames, and country origins.</div>
-        </div>
-      </div>
-
-      <!-- ═══════════════════════════════════════════════════════════════════
-           EDGE TELEMETRY: Attack Forensics & Live Mitigation
-           ═══════════════════════════════════════════════════════════════════ -->
-      <div class="panel-showcase-box">
-        <div>
-          <span class="badge b-purple" style="margin-bottom:0.75rem;">EDGE TELEMETRY</span>
-          <h3 style="font-family:'Bricolage Grotesque',sans-serif; font-size:1.8rem; font-weight:500; color:#fff; line-height:1.2; margin-bottom:1rem;">
-            Watch attacks die in real time
-          </h3>
-          <p style="font-size:0.85rem; color:var(--cream-dim); line-height:1.7; margin-bottom:1.5rem;">
-            Every malicious packet is scrubbed at the Anycast edge. Zero latency added for genuine players, and zero origin impact on your server.
-          </p>
-
-          <div style="display:flex; flex-direction:column; gap:12px;">
-            <div style="display:flex; gap:10px; align-items:flex-start;">
-              <span class="live-pulse" style="margin-top:5px; flex-shrink:0;"></span>
-              <div>
-                <strong style="color:#fff; font-size:0.86rem;">Watch attacks die in real time:</strong>
-                <div style="font-size:0.78rem; color:var(--muted2); line-height:1.4;">Per-network attack view: packets dropped at edge, combined ping+login CPS, auto-UAM status — while origin server load stays at 0%.</div>
-              </div>
-            </div>
-
-            <div style="display:flex; gap:10px; align-items:flex-start;">
-              <span class="live-pulse" style="margin-top:5px; background:var(--cyan); flex-shrink:0;"></span>
-              <div>
-                <strong style="color:#fff; font-size:0.86rem;">Antibot you can actually tune:</strong>
-                <div style="font-size:0.78rem; color:var(--muted2); line-height:1.4;">Verification levels, AntiVPN enforcement modes, and stolen-account detection with whitelist &amp; custom kick message.</div>
-              </div>
-            </div>
-
-            <div style="display:flex; gap:10px; align-items:flex-start;">
-              <span class="live-pulse" style="margin-top:5px; background:#fbbf24; flex-shrink:0;"></span>
-              <div>
-                <strong style="color:#fff; font-size:0.86rem;">Every join, explained:</strong>
-                <div style="font-size:0.78rem; color:var(--muted2); line-height:1.4;">Live connection log with real IPs, ASN, PoP, client fingerprint, and verdict: clean, sent to limbo verification, or blocked.</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Interactive Mock Telemetry Terminal -->
-        <div class="mock-attack-terminal">
-          <div class="mock-terminal-head">
-            <span>[ EDGE L7 SCRUBBER // LIVE LOGS ]</span>
-            <span style="color:#34d399;">● MITIGATION ACTIVE</span>
-          </div>
-          
-          <div class="mock-row">
-            <span>Edge Ingress Rate:</span>
-            <span style="color:#f87171;">4,812,040 pps (SYN + Bad Handshake)</span>
-          </div>
-          <div class="mock-row">
-            <span>Dropped at Edge PoP:</span>
-            <span class="badge-drop">4,812,040 / sec (100.0%)</span>
-          </div>
-          <div class="mock-row">
-            <span>Origin Impact:</span>
-            <span class="badge-zero">0.0% (ZERO LOAD ON YOUR BOX)</span>
-          </div>
-
-          <div style="margin: 12px 0 8px; padding-top: 10px; border-top: 1px dashed rgba(255,255,255,0.08); font-size:0.7rem; color:var(--muted);">
-            RECENT CONNECTION VERDICTS:
-          </div>
-          
-          <div class="mock-row">
-            <span>103.48.xx.xx (Clean Client)</span>
-            <span class="badge-clean">[PASSED → PROXY PROTOCOL]</span>
-          </div>
-          <div class="mock-row">
-            <span>45.154.xx.xx (Datacenter VPN)</span>
-            <span class="badge-drop">[BLOCKED: AntiVPN Rule #4]</span>
-          </div>
-          <div class="mock-row">
-            <span>185.220.xx.xx (Tor / Proxy)</span>
-            <span class="badge-drop">[BLOCKED: Tor Exit Node]</span>
-          </div>
-          <div class="mock-row">
-            <span>194.26.xx.xx (Unknown Fingerprint)</span>
-            <span style="color:#fbbf24;">[DETOURED: CryoLimbo Captcha]</span>
-          </div>
-          <div class="mock-row">
-            <span>92.255.xx.xx (Leaked Mojang Cred)</span>
-            <span class="badge-drop">[KICKED: Stolen Account DB]</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- ═══════════════════════════════════════════════════════════════════
-           THE NETWORK: Anycast Everywhere. Dedicated Where It Counts.
-           ═══════════════════════════════════════════════════════════════════ -->
-      <div class="stack-section-title" style="margin-top:4.5rem;">
-        <span class="eyebrow"><span class="eyebrow-dot"></span> Global Anycast Fabric</span>
-        <h3 style="font-family:'Bricolage Grotesque',sans-serif; font-size:2rem; font-weight:400; color:#fff; line-height:1.2; margin-bottom:8px;">
-          The Network: Anycast Everywhere. Dedicated Where It Counts.
-        </h3>
-        <p style="font-size:0.85rem; color:var(--muted2); line-height:1.6;">
-          Your hostname resolves to our global Anycast fabric — 330+ cities, 500+ Tbps of absorption capacity. Behind it sits our autonomous edge network, AS216013, with 600+ Gbps of dedicated filtering capacity, where Cryo performs protocol-level Layer-7 mitigation on dedicated PoPs.
+        <p style="color:var(--muted2); font-size:0.95rem; line-height:1.6;">
+          Never expose your home IP or backend server address again. Our Anycast tunnels sit directly between your players and your machine, dropping DDoS attacks at the edge before they ever reach you.
         </p>
       </div>
 
-      <!-- 8 Dedicated Edge PoPs Grid -->
-      <div class="pops-grid">
-        <div class="pop-card">
-          <div><span class="pop-code">LAX</span><span class="pop-city">Los Angeles</span></div>
-          <div class="pop-status"><span class="live-pulse"></span> Active</div>
-        </div>
-        <div class="pop-card">
-          <div><span class="pop-code">MIA</span><span class="pop-city">Miami</span></div>
-          <div class="pop-status"><span class="live-pulse"></span> Active</div>
-        </div>
-        <div class="pop-card">
-          <div><span class="pop-code">NYC</span><span class="pop-city">New York</span></div>
-          <div class="pop-status"><span class="live-pulse"></span> Active</div>
-        </div>
-        <div class="pop-card">
-          <div><span class="pop-code">FRA</span><span class="pop-city">Frankfurt</span></div>
-          <div class="pop-status"><span class="live-pulse"></span> Active</div>
-        </div>
-        <div class="pop-card">
-          <div><span class="pop-code">WAW</span><span class="pop-city">Warsaw</span></div>
-          <div class="pop-status"><span class="live-pulse"></span> Active</div>
-        </div>
-        <div class="pop-card">
-          <div><span class="pop-code">TLV</span><span class="pop-city">Tel Aviv</span></div>
-          <div class="pop-status"><span class="live-pulse"></span> Active</div>
-        </div>
-        <div class="pop-card">
-          <div><span class="pop-code">SIN</span><span class="pop-city">Singapore</span></div>
-          <div class="pop-status"><span class="live-pulse"></span> Active</div>
-        </div>
-        <div class="pop-card">
-          <div><span class="pop-code">TYO</span><span class="pop-city">Tokyo</span></div>
-          <div class="pop-status"><span class="live-pulse"></span> Active</div>
-        </div>
-      </div>
-
-      <div style="text-align:center; font-size:0.8rem; color:var(--muted2); font-family:'DM Mono',monospace; margin-bottom:2rem;">
-        +330 Anycast Cities via Global Edge Fabric
-      </div>
-
-      <!-- Network Mitigation Stats -->
-      <div class="network-stats-grid">
-        <div class="net-stat-card">
-          <div class="net-stat-num" style="color:var(--cyan);">7.15 Tbps</div>
-          <div class="net-stat-label">Largest Volumetric Attack Mitigated</div>
-        </div>
-        <div class="net-stat-card">
-          <div class="net-stat-num" style="color:var(--violet2);">50M conns</div>
-          <div class="net-stat-label">Largest L7 Attack Mitigated</div>
-        </div>
-        <div class="net-stat-card">
-          <div class="net-stat-num" style="color:#34d399;">8</div>
-          <div class="net-stat-label">Dedicated Edge PoPs</div>
-        </div>
-        <div class="net-stat-card">
-          <div class="net-stat-num" style="color:#fbbf24;">600+ Gbps</div>
-          <div class="net-stat-label">Own-Network L7 Capacity</div>
-        </div>
-      </div>
-
-      <!-- ═══════════════════════════════════════════════════════════════════
-           SETUP: Five Minutes. One DNS Record.
-           ═══════════════════════════════════════════════════════════════════ -->
-      <div class="stack-section-title">
-        <span class="eyebrow"><span class="eyebrow-dot"></span> Instant Onboarding</span>
-        <h3 style="font-family:'Bricolage Grotesque',sans-serif; font-size:2rem; font-weight:400; color:#fff; line-height:1.2; margin-bottom:8px;">
-          Setup: Five Minutes. One DNS Record.
-        </h3>
-      </div>
-
-      <div class="setup-grid">
-        <div>
-          <div class="setup-step">
-            <div class="step-num">01</div>
-            <div>
-              <div class="step-title">Create a network</div>
-              <div class="step-desc">Sign up, name your network, and provide your backend's IP address. You receive an assigned Anycast endpoint hostname immediately.</div>
-            </div>
-          </div>
-
-          <div class="setup-step">
-            <div class="step-num">02</div>
-            <div>
-              <div class="step-title">Point your DNS</div>
-              <div class="step-desc">Add one CNAME (or SRV) record at your registrar. No server migration, no messy plugins, no host change — your server stays exactly where it is.</div>
-            </div>
-          </div>
-
-          <div class="setup-step">
-            <div class="step-num">03</div>
-            <div>
-              <div class="step-title">You're protected</div>
-              <div class="step-desc">Traffic now enters through the global edge. Attacks are absorbed and filtered before they reach you; clean players pass with real IPs intact.</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Terminal DNS Box -->
-        <div class="dns-terminal">
-          <div style="font-size:0.7rem; color:var(--muted); margin-bottom:10px; display:flex; justify-content:space-between;">
-            <span>DNS ZONE CONFIGURATION — YOURSERVER.NET</span>
-            <span style="color:#38bdf8;">DNS ZONE / REGISTRAR</span>
-          </div>
-          
-          <div class="dns-comment"># BEFORE — origin IP exposed to attackers</div>
-          <div class="dns-bad">play&nbsp;&nbsp;&nbsp;&nbsp;IN&nbsp;&nbsp;A&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;203.0.113.7</div>
-          <br>
-          <div class="dns-comment"># AFTER — origin hidden behind EnderShield edge</div>
-          <div class="dns-good">play&nbsp;&nbsp;&nbsp;&nbsp;IN&nbsp;&nbsp;CNAME&nbsp;&nbsp;a1b2c3.edge.ender.link.</div>
-          <br>
-          <div class="dns-comment"># Or keep a custom port using SRV record:</div>
-          <div style="color:var(--violet2); font-size:0.74rem;">_minecraft._tcp.play IN SRV 0 5 25565 a1b2c3.edge.ender.link.</div>
-        </div>
-      </div>
-
-      <!-- ═══════════════════════════════════════════════════════════════════
-           PRICING: Enterprise-Grade Protection, Priced for Minecraft
-           ═══════════════════════════════════════════════════════════════════ -->
-      <div class="stack-section-title" style="margin-top:4.5rem;">
-        <span class="eyebrow"><span class="eyebrow-dot"></span> Transparent Pricing</span>
-        <h3 style="font-family:'Bricolage Grotesque',sans-serif; font-size:2rem; font-weight:400; color:#fff; line-height:1.2; margin-bottom:8px;">
-          Enterprise-Grade Protection, Priced for Minecraft
-        </h3>
-        <p style="font-size:0.85rem; color:var(--muted2); line-height:1.6;">
-          The cleanest way to put real mitigation in front of a Minecraft server: every plan rides the same 500+ Tbps network and the full pipeline. Cancel anytime.
-        </p>
-      </div>
-
-      <div class="tunnels-grid">
-        <!-- STARTER -->
-        <div class="tunnel-card">
-          <div>
-            <div class="tunnel-tier-tag">STARTER</div>
-            <div class="tunnel-card-name">Starter Tunnel</div>
-            <div class="tunnel-player-badge">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-              Up to 15 players
-            </div>
-            
-            <div class="tunnel-price-wrap">
-              <div class="tunnel-price">₹499 <span>/ mo</span></div>
-            </div>
-
-            <ul class="tunnel-spec-list">
-              <li class="tunnel-spec-item">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                Up to 15 players
-              </li>
-              <li class="tunnel-spec-item">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                1 Minecraft network
-              </li>
-              <li class="tunnel-spec-item">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                1 backend server
-              </li>
-              <li class="tunnel-spec-item">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                L4/L7 DDoS protection
-              </li>
-              <li class="tunnel-spec-item">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                Origin IP protection
-              </li>
-              <li class="tunnel-spec-item">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                Protected hostname
-              </li>
-              <li class="tunnel-spec-item">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                Basic analytics
-              </li>
-            </ul>
-          </div>
-
-          <button class="btn btn-ghost btn-sm" style="width:100%; margin-top:auto;" onclick="orderTurnkey('Starter Tunnel (15 Players)', 499)">
-            Deploy Starter
-          </button>
-        </div>
-
-        <!-- PRO (POPULAR) -->
-        <div class="tunnel-card popular">
-          <div>
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-              <div class="tunnel-tier-tag" style="color:var(--purple-bright);">PRO</div>
-              <span class="badge b-purple" style="font-size:0.65rem;">POPULAR</span>
-            </div>
-            <div class="tunnel-card-name">Pro Tunnel</div>
-            <div class="tunnel-player-badge" style="background:rgba(124, 106, 255, 0.15); color:var(--purple-bright); border-color:rgba(124, 106, 255, 0.3);">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-              Up to 60 players
-            </div>
-            
-            <div class="tunnel-price-wrap">
-              <div class="tunnel-price">₹1,499 <span>/ mo</span></div>
-            </div>
-
-            <ul class="tunnel-spec-list">
-              <li class="tunnel-spec-item">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                Up to 60 players
-              </li>
-              <li class="tunnel-spec-item">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                2 backend servers
-              </li>
-              <li class="tunnel-spec-item">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                Load balancing engine
-              </li>
-              <li class="tunnel-spec-item">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                Advanced antibot protection
-              </li>
-              <li class="tunnel-spec-item">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                Alerts &amp; Discord webhooks
-              </li>
-              <li class="tunnel-spec-item">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                Live traffic &amp; player analytics
-              </li>
-              <li class="tunnel-spec-item">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                Custom offline MOTD message
-              </li>
-            </ul>
-          </div>
-
-          <button class="btn btn-primary btn-sm" style="width:100%; margin-top:auto;" onclick="orderTurnkey('Pro Tunnel (60 Players)', 1499)">
-            Deploy Pro Tunnel
-          </button>
-        </div>
-
-        <!-- ADVANCED -->
-        <div class="tunnel-card">
-          <div>
-            <div class="tunnel-tier-tag">ADVANCED</div>
-            <div class="tunnel-card-name">Advanced Tunnel</div>
-            <div class="tunnel-player-badge">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-              Up to 150 players
-            </div>
-            
-            <div class="tunnel-price-wrap">
-              <div class="tunnel-price">₹3,499 <span>/ mo</span></div>
-            </div>
-
-            <ul class="tunnel-spec-list">
-              <li class="tunnel-spec-item">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                Up to 150 players
-              </li>
-              <li class="tunnel-spec-item">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                4 backend servers
-              </li>
-              <li class="tunnel-spec-item">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                Advanced verification challenge
-              </li>
-              <li class="tunnel-spec-item">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                Granular firewall rules
-              </li>
-              <li class="tunnel-spec-item">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                Real-time connection logs
-              </li>
-              <li class="tunnel-spec-item">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                Full REST API access
-              </li>
-              <li class="tunnel-spec-item">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                Advanced security analytics
-              </li>
-            </ul>
-          </div>
-
-          <button class="btn btn-ghost btn-sm" style="width:100%; margin-top:auto;" onclick="orderTurnkey('Advanced Tunnel (150 Players)', 3499)">
-            Deploy Advanced
-          </button>
-        </div>
-
-        <!-- NETWORK -->
-        <div class="tunnel-card">
-          <div>
-            <div class="tunnel-tier-tag" style="color:#fbbf24;">NETWORK</div>
-            <div class="tunnel-card-name">Network Enterprise</div>
-            <div class="tunnel-player-badge" style="background:rgba(251, 191, 36, 0.1); color:#fbbf24; border-color:rgba(251, 191, 36, 0.25);">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-              Up to 500 players
-            </div>
-            
-            <div class="tunnel-price-wrap">
-              <div class="tunnel-price">₹4,999 <span>/ mo</span></div>
-            </div>
-
-            <ul class="tunnel-spec-list">
-              <li class="tunnel-spec-item">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                Up to 500 players
-              </li>
-              <li class="tunnel-spec-item">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                10 backend servers
-              </li>
-              <li class="tunnel-spec-item">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                Multiple protected networks
-              </li>
-              <li class="tunnel-spec-item">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                Multi-region Anycast Geo-routing
-              </li>
-              <li class="tunnel-spec-item">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                Fallback / limbo server support
-              </li>
-              <li class="tunnel-spec-item">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                Advanced automated mitigation
-              </li>
-              <li class="tunnel-spec-item">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                Unlimited team seats
-              </li>
-            </ul>
-          </div>
-
-          <button class="btn btn-ghost btn-sm" style="width:100%; margin-top:auto;" onclick="orderTurnkey('Network Enterprise Tunnel (500 Players)', 4999)">
-            Deploy Network
-          </button>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ═══════════════════════════════════════════════════════════════════════
-       NEW: NVMe CLOUD WEB HOSTING
-       ═══════════════════════════════════════════════════════════════════════ -->
-  <section class="s" id="web-section">
-    <div class="wrap">
-      
-      <div style="text-align:center; max-width:600px; margin:0 auto 1.5rem;">
-        <span class="eyebrow"><span class="eyebrow-dot"></span> High-Speed Web Hosting</span>
-        <h2 class="sh">NVMe Cloud Web Hosting</h2>
-        <p class="sub">Lightning-fast cPanel and DirectAdmin cloud web hosting with Free SSL, automated daily backups, and unmetered bandwidth.</p>
-      </div>
-
-      <div class="web-grid">
-        <!-- Starter Web -->
-        <div class="plan-card">
-          <div>
-            <div class="plan-name">Starter Web</div>
-            <div class="plan-cat">Personal Sites &amp; Blogs</div>
-            <div class="plan-price-block">
-              <div class="plan-price">₹249 <span style="font-size:0.8rem; color:var(--muted); font-weight:300;">/mo</span></div>
-            </div>
-            <ul class="plan-features">
-              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> 1 Hosted Website</li>
-              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> 15 GB Gen4 NVMe Storage</li>
-              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Free SSL Certificates</li>
-              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Unmetered Bandwidth</li>
-              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Free Business Email</li>
-            </ul>
-          </div>
-          <button class="btn btn-ghost" style="width:100%;" onclick="orderTurnkey('Starter Web Hosting', 249)">Select Plan</button>
-        </div>
-
-        <!-- Pro Web -->
-        <div class="plan-card popular">
-          <div class="popular-ribbon">Best Value</div>
-          <div>
-            <div class="plan-name">Business Pro Web</div>
-            <div class="plan-cat">E-Commerce &amp; Communities</div>
-            <div class="plan-price-block">
-              <div class="plan-price">₹499 <span style="font-size:0.8rem; color:var(--muted); font-weight:300;">/mo</span></div>
-            </div>
-            <ul class="plan-features">
-              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> 5 Hosted Websites</li>
-              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> 50 GB Gen4 NVMe Storage</li>
-              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Free Wildcard SSL</li>
-              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Node.js &amp; Python 3.12 Support</li>
-              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Automated Daily Backups</li>
-            </ul>
-          </div>
-          <button class="btn btn-primary" style="width:100%;" onclick="orderTurnkey('Business Pro Web', 499)">Select Plan</button>
-        </div>
-
-        <!-- Enterprise Web -->
-        <div class="plan-card">
-          <div>
-            <div class="plan-name">Enterprise Ultra Web</div>
-            <div class="plan-cat">High-Traffic Web Clusters</div>
-            <div class="plan-price-block">
-              <div class="plan-price">₹999 <span style="font-size:0.8rem; color:var(--muted); font-weight:300;">/mo</span></div>
-            </div>
-            <ul class="plan-features">
-              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Unlimited Hosted Websites</li>
-              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> 150 GB Gen4 NVMe Storage</li>
-              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Dedicated IP Address Option</li>
-              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> LiteSpeed / Redis Object Caching</li>
-              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> 24/7 Dedicated Support SLA</li>
-            </ul>
-          </div>
-          <button class="btn btn-ghost" style="width:100%;" onclick="orderTurnkey('Enterprise Ultra Web', 999)">Select Plan</button>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ═══════════════════════════════════════════════════════════════════════
-       DEVSPACES: CLOUD PROJECT CONTAINERS (DOCKER, BOTS, APIS)
-       ═══════════════════════════════════════════════════════════════════════ -->
-  <section class="s" id="devspace-section">
-    <div class="wrap">
-      
-      <div style="text-align:center; max-width:680px; margin:0 auto 1.5rem;">
-        <span class="eyebrow"><span class="eyebrow-dot"></span> Cloud Container Engine</span>
-        <h2 class="sh">Ship Anything Under 30 Seconds</h2>
-        <p class="sub">Run any Docker container in the cloud with zero configuration. Discord bots, Telegram bots, web apps, and REST APIs — if it runs in Docker, it runs here.</p>
+      <!-- Visual Diagram -->
+      <div style="background:#0a0914; border:1px solid var(--rim); border-radius:16px; padding:40px; margin-bottom:40px; position:relative; overflow:hidden;">
         
-        <div class="devspace-tags-row">
-          <span class="dev-tag">Discord Bots</span>
-          <span class="dev-tag">Telegram Bots</span>
-          <span class="dev-tag">Web Apps</span>
-          <span class="dev-tag">REST APIs</span>
-          <span class="dev-tag">Node.js 22</span>
-          <span class="dev-tag">Python 3.12</span>
-          <span class="dev-tag">Go 1.23</span>
-          <span class="dev-tag">Docker Compose</span>
-        </div>
-      </div>
-
-      <div class="devspace-grid">
-        <!-- Starter DevSpace -->
-        <div class="devspace-card">
-          <div>
-            <div style="font-family:'DM Mono',monospace; font-size:0.72rem; color:var(--muted); text-transform:uppercase; margin-bottom:4px;">HOBBY &amp; BOTS</div>
-            <h3 style="font-family:'Bricolage Grotesque',sans-serif; font-size:1.4rem; font-weight:600; color:#fff; margin-bottom:8px;">DevSpace Starter</h3>
-            <p style="font-size:0.78rem; color:var(--muted2); line-height:1.5;">Ideal for lightweight Discord bots, scheduled cron scripts, and test containers.</p>
-            
-            <div style="margin:1.4rem 0; padding-bottom:1.2rem; border-bottom:1px solid var(--rim);">
-              <div style="font-family:'Bricolage Grotesque',sans-serif; font-size:2.4rem; font-weight:500; color:#fff; line-height:1;">
-                ₹599 <span style="font-size:0.85rem; color:var(--muted); font-weight:400; font-family:'DM Sans',sans-serif;">/ mo</span>
-              </div>
-            </div>
-
-            <ul class="plan-features">
-              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 2 vCPU Compute Cores</li>
-              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 4 GB High-Speed RAM</li>
-              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 25 GB Gen4 NVMe Storage</li>
-              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 1 Always-On Docker Container</li>
-              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Auto-Deploy via GitHub Webhook</li>
-              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Free Subdomain (app.ender.space)</li>
-              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 92 Tbps Layer 3/4 DDoS Mitigation</li>
-            </ul>
-          </div>
-          <button class="btn btn-ghost" style="width:100%; margin-top:1.5rem;" onclick="orderTurnkey('DevSpace Starter (2 vCPU, 4GB)', 599)">
-            Deploy Starter Container
-          </button>
-        </div>
-
-        <!-- Pro DevSpace (Popular) -->
-        <div class="devspace-card popular">
-          <div>
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-              <span style="font-family:'DM Mono',monospace; font-size:0.72rem; color:var(--purple-bright); text-transform:uppercase;">DEVELOPER FAVORITE</span>
-              <span class="badge b-purple" style="font-size:0.65rem;">POPULAR</span>
-            </div>
-            <h3 style="font-family:'Bricolage Grotesque',sans-serif; font-size:1.4rem; font-weight:600; color:#fff; margin-bottom:8px; margin-top:4px;">DevSpace Pro</h3>
-            <p style="font-size:0.78rem; color:var(--muted2); line-height:1.5;">Production containers with dedicated port forwarding and custom domains.</p>
-            
-            <div style="margin:1.4rem 0; padding-bottom:1.2rem; border-bottom:1px solid var(--rim);">
-              <div style="font-family:'Bricolage Grotesque',sans-serif; font-size:2.4rem; font-weight:500; color:#fff; line-height:1;">
-                ₹899 <span style="font-size:0.85rem; color:var(--muted); font-weight:400; font-family:'DM Sans',sans-serif;">/ mo</span>
-              </div>
-            </div>
-
-            <ul class="plan-features">
-              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 4 vCPU Compute Cores</li>
-              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 8 GB High-Speed RAM</li>
-              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 60 GB Gen4 NVMe Storage</li>
-              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 3 Always-On Project Containers</li>
-              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Dedicated Static Port Allocation</li>
-              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Custom Domain with Free Auto-SSL</li>
-              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Docker Compose Multi-Service</li>
-              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 99.9% Production SLA</li>
-            </ul>
-          </div>
-          <button class="btn btn-primary" style="width:100%; margin-top:1.5rem;" onclick="orderTurnkey('DevSpace Pro (4 vCPU, 8GB)', 899)">
-            Deploy Pro Container
-          </button>
-        </div>
-
-        <!-- Enterprise DevSpace -->
-        <div class="devspace-card">
-          <div>
-            <div style="font-family:'DM Mono',monospace; font-size:0.72rem; color:var(--muted); text-transform:uppercase; margin-bottom:4px;">TEAM &amp; CLUSTER</div>
-            <h3 style="font-family:'Bricolage Grotesque',sans-serif; font-size:1.4rem; font-weight:600; color:#fff; margin-bottom:8px;">DevSpace Team</h3>
-            <p style="font-size:0.78rem; color:var(--muted2); line-height:1.5;">Heavy workloads, microservices, multiple team members, and dedicated IP.</p>
-            
-            <div style="margin:1.4rem 0; padding-bottom:1.2rem; border-bottom:1px solid var(--rim);">
-              <div style="font-family:'Bricolage Grotesque',sans-serif; font-size:2.4rem; font-weight:500; color:#fff; line-height:1;">
-                ₹1,499 <span style="font-size:0.85rem; color:var(--muted); font-weight:400; font-family:'DM Sans',sans-serif;">/ mo</span>
-              </div>
-            </div>
-
-            <ul class="plan-features">
-              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 8 vCPU Compute Cores</li>
-              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 16 GB High-Speed RAM</li>
-              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 150 GB Gen4 NVMe Storage</li>
-              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Unlimited Project Containers</li>
-              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Dedicated Static Public IPv4</li>
-              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Team RBAC &amp; Collaboration</li>
-              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Daily Automated Off-Site Backups</li>
-              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 24/7 Priority Support</li>
-            </ul>
-          </div>
-          <button class="btn btn-ghost" style="width:100%; margin-top:1.5rem;" onclick="orderTurnkey('DevSpace Team (8 vCPU, 16GB)', 1499)">
-            Deploy Team Cluster
-          </button>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ═══════════════════════════════════════════════════════════════════════
-       CUSTOMER VPS CONTROL CENTER (UPGRADED HIGH-END PANEL)
-       ═══════════════════════════════════════════════════════════════════════ -->
-  <section class="s" id="control-panel-section">
-    <div class="wrap">
-      
-      <div style="text-align:center; max-width:650px; margin:0 auto 3rem;">
-        <span class="eyebrow"><span class="eyebrow-dot"></span> Real-Time Cloud Management</span>
-        <h2 class="sh">Customer VPS Control Center</h2>
-        <p class="sub">Direct lifecycle controls, real-time CPU/RAM telemetry with live sweeping graphs, interactive web shell, and disaster recovery snapshots.</p>
-      </div>
-
-      <div class="panel-wrapper">
-        <!-- Topbar -->
-        <div class="panel-topbar">
-          <div class="panel-instance-info">
-            <div class="server-avatar">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
-            </div>
-            <div>
-              <div style="display:flex; align-items:center; gap:8px;">
-                <span class="server-title" id="panel-srv-name">EnderCraft Production SMP (1.21.1)</span>
-                <span class="badge b-green" id="panel-srv-status"><span class="live-pulse"></span> RUNNING</span>
-              </div>
-              <div class="server-meta" id="panel-srv-meta">103.189.89.44 • PWR Tier • 6 vCPU • 16GB RAM • 120GB NVMe</div>
-            </div>
-          </div>
-
-          <!-- Server Switcher & Power Controls -->
-          <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
-            <select id="server-picker" class="custom-select" style="width:auto; padding:6px 12px; font-size:0.75rem;">
-              <option>Loading your servers...</option>
-            </select>
-
-            <div class="server-actions-deck">
-              <button class="btn btn-success btn-sm" onclick="sendPowerAction('start')" title="Boot VM">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                Start
-              </button>
-              <button class="btn btn-ghost btn-sm" onclick="sendPowerAction('stop')" title="Graceful Shutdown">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>
-                Stop
-              </button>
-              <button class="btn btn-ghost btn-sm" onclick="sendPowerAction('reboot')" title="Soft Reboot">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
-                Reboot
-              </button>
-              <button class="btn btn-ghost btn-sm" onclick="sendPowerAction('suspend')" title="Freeze Memory (SIGSTOP)">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
-                Suspend
-              </button>
-              <button class="btn btn-danger btn-sm" onclick="sendPowerAction('force_stop')" title="Instant Force Kill">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                Kill
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Telemetry & Live Terminal Console -->
-        <div class="panel-body-grid">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px; position:relative; z-index:2;">
           
-          <!-- Telemetry Dials & Live Canvas Graph -->
-          <div class="panel-telemetry">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-              <span class="eyebrow" style="margin-bottom:0;"><span class="eyebrow-dot"></span> Live Telemetry (Every 4s)</span>
-              <span style="font-size:0.65rem; color:var(--muted); font-family:'DM Mono',monospace;">Hardware Virtualization Active</span>
+          <!-- Player -->
+          <div style="text-align:center; flex:1; min-width:150px;">
+            <div style="width:60px; height:60px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 12px;">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
             </div>
-
-            <div class="telemetry-grid">
-              <div class="gauge-card">
-                <div class="gauge-header">
-                  <span>Host CPU Load</span>
-                  <span>Target 6 Cores</span>
-                </div>
-                <div class="gauge-val" id="gauge-cpu-val">18.4%</div>
-                <div class="meter-track">
-                  <div id="gauge-cpu-meter" class="meter-fill" style="width: 18.4%;"></div>
-                </div>
-              </div>
-
-              <div class="gauge-card">
-                <div class="gauge-header">
-                  <span>Memory (RAM RSS)</span>
-                  <span>QEMU Process</span>
-                </div>
-                <div class="gauge-val" id="gauge-ram-val">7.1 GB / 16 GB</div>
-                <div class="meter-track">
-                  <div id="gauge-ram-meter" class="meter-fill green" style="width: 44%;"></div>
-                </div>
-              </div>
-
-              <div class="gauge-card">
-                <div class="gauge-header">
-                  <span>NVMe Gen4 Disk</span>
-                  <span>QCOW2 Compressed</span>
-                </div>
-                <div class="gauge-val" id="gauge-disk-val">24.8 GB / 120 GB</div>
-                <div class="meter-track">
-                  <div class="meter-fill cyan" style="width: 21%;"></div>
-                </div>
-              </div>
-
-              <div class="gauge-card">
-                <div class="gauge-header">
-                  <span>Network Interface</span>
-                  <span>TAP In / Out</span>
-                </div>
-                <div class="gauge-val" style="font-size:1.15rem;" id="gauge-net-val">↓ 14.8 Mbps ↑ 8.2 Mbps</div>
-                <div class="meter-track">
-                  <div class="meter-fill gold" style="width: 35%;"></div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Real-Time Sweeping Performance Chart Canvas -->
-            <div class="chart-container">
-              <div class="chart-legend">
-                <div class="legend-item"><span class="legend-dot" style="background:#7c6aff;"></span> CPU Load %</div>
-                <div class="legend-item"><span class="legend-dot" style="background:#10b981;"></span> Memory %</div>
-              </div>
-              <canvas id="telemetry-canvas" class="chart-canvas"></canvas>
-            </div>
-
-            <!-- Quick SSH helper box -->
-            <div style="background:var(--surface); border:1px solid var(--rim); border-radius:var(--r-sm); padding:0.9rem 1.2rem; margin-top:1.2rem; display:flex; justify-content:space-between; align-items:center;">
-              <div>
-                <div style="font-size:0.65rem; color:var(--muted); font-family:'DM Mono',monospace; text-transform:uppercase;">SSH Root Access</div>
-                <div style="font-family:'DM Mono',monospace; font-size:0.85rem; color:var(--cream); margin-top:2px;" id="panel-ssh-cmd">ssh root@103.189.89.44</div>
-              </div>
-              <button class="btn btn-ghost btn-sm" onclick="copyText('panel-ssh-cmd')">Copy SSH</button>
-            </div>
+            <div style="font-weight:600; font-size:0.95rem; margin-bottom:4px;">Players</div>
+            <div style="font-size:0.75rem; color:var(--muted); font-family:'DM Mono',monospace;">Connect via play.yourdomain.com</div>
           </div>
 
-          <!-- Interactive Web Shell & Serial Log Stream -->
-          <div class="panel-console-wrap">
-            <div class="console-header">
-              <span class="console-title">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
-                Interactive Cloud Shell &amp; Serial Monitor
-              </span>
-              <div style="display:flex; gap:6px;">
-                <button class="btn btn-ghost btn-sm" onclick="openVncModal()" style="padding:3px 8px; font-size:0.68rem; color:var(--violet2);">
-                  Launch VNC Screen
-                </button>
-                <button class="btn btn-ghost btn-sm" onclick="loadSerialLog()" style="padding:3px 8px; font-size:0.68rem;">Refresh</button>
-              </div>
-            </div>
-
-            <div class="console-screen" id="serial-console-screen">Connected to hypervisor serial bus. Type 'help' below for commands.</div>
-
-            <!-- Interactive Command Input -->
-            <div class="terminal-input-row">
-              <span class="term-prompt">root@ender-srv:~#</span>
-              <input type="text" id="term-cmd-input" class="term-input" placeholder="Type a command (try: neofetch, status, uptime, free -m, ip a)...">
-            </div>
-
-            <!-- Quick Run Chips -->
-            <div class="quick-chips-row">
-              <span style="font-size:0.65rem; color:var(--muted); align-self:center;">Quick Run:</span>
-              <button class="chip-btn" onclick="runQuickCommand('neofetch')">neofetch</button>
-              <button class="chip-btn" onclick="runQuickCommand('status')">status</button>
-              <button class="chip-btn" onclick="runQuickCommand('uptime')">uptime</button>
-              <button class="chip-btn" onclick="runQuickCommand('ip a')">ip a</button>
-              <button class="chip-btn" onclick="runQuickCommand('free -m')">free -m</button>
-              <button class="chip-btn" onclick="runQuickCommand('mc-status')">mc-status</button>
-              <button class="chip-btn" onclick="runQuickCommand('clear')">clear</button>
-            </div>
+          <!-- Arrow -->
+          <div style="color:var(--purple-bright); display:flex; align-items:center;">
+             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
           </div>
 
-        </div>
-
-        <!-- Panel Management Tabs Bar -->
-        <div class="panel-tabs-bar">
-          <button id="tab-btn-access" class="ptab-btn active" onclick="switchPanelTab('access')">Credentials &amp; SSH</button>
-          <button id="tab-btn-snapshots" class="ptab-btn" onclick="switchPanelTab('snapshots')">Snapshots &amp; Backups</button>
-          <button id="tab-btn-firewall" class="ptab-btn" onclick="switchPanelTab('firewall')">Firewall &amp; Ports</button>
-          <button id="tab-btn-vnc" class="ptab-btn" onclick="switchPanelTab('vnc')">Web VNC &amp; RDP</button>
-          <button id="tab-btn-reinstall" class="ptab-btn" onclick="switchPanelTab('reinstall')">Reinstall OS</button>
-        </div>
-
-        <!-- Tab 1: Access -->
-        <div id="tab-pane-access" class="panel-tab-content panel-tab-pane">
-          <div style="max-width:580px;">
-            <h4 style="font-size:0.95rem; font-weight:500; margin-bottom:0.5rem;">Root Credentials &amp; Cloud-Init</h4>
-            <p style="font-size:0.78rem; color:var(--muted2); margin-bottom:1.2rem;">Generated automatically by cloud-init. Change anytime to trigger an instant credential synchronization.</p>
-            <div style="display:flex; gap:10px; align-items:center;">
-              <input type="text" id="panel-root-pass" value="EnderKey_92x#" readonly style="background:var(--surface); border:1px solid var(--rim); border-radius:8px; padding:9px 12px; color:var(--cream); font-family:'DM Mono',monospace; font-size:0.85rem; flex:1;">
-              <button class="btn btn-ghost btn-sm" onclick="copyText('panel-root-pass')">Copy</button>
-              <button class="btn btn-primary btn-sm" onclick="updateRootPassword()">Change Password</button>
+          <!-- Kryon Edge -->
+          <div style="text-align:center; flex:1.5; min-width:200px; padding:20px; background:rgba(124,106,255,0.1); border:1px solid rgba(124,106,255,0.3); border-radius:12px;">
+            <div style="width:60px; height:60px; background:var(--purple-bright); border-radius:12px; display:flex; align-items:center; justify-content:center; margin:0 auto 12px; box-shadow:0 0 30px rgba(124,106,255,0.4);">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
             </div>
+            <div style="font-weight:600; font-size:1rem; margin-bottom:4px; color:#fff;">KryonHost Edge</div>
+            <div style="font-size:0.8rem; color:var(--muted2);">92 Tbps Anycast Filter</div>
+            <div style="margin-top:10px; font-size:0.7rem; color:#f87171;">Drops Bots, Floods & Exploits</div>
           </div>
-        </div>
 
-        <!-- Tab 2: Snapshots -->
-        <div id="tab-pane-snapshots" class="panel-tab-content panel-tab-pane" style="display:none;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
-            <div>
-              <h4 style="font-size:0.95rem; font-weight:500;">Point-in-Time QCOW2 Snapshots</h4>
-              <p style="font-size:0.75rem; color:var(--muted2);">Create offline disk copies before applying system upgrades or Minecraft modpack updates.</p>
-            </div>
-            <button class="btn btn-primary btn-sm" onclick="createSnapshot()">+ Create Snapshot</button>
+          <!-- Arrow (Tunnel) -->
+          <div style="color:#22c55e; display:flex; flex-direction:column; align-items:center; gap:5px;">
+             <div style="font-size:0.7rem; color:#22c55e; font-family:'DM Mono',monospace; font-weight:600;">SECURE TUNNEL</div>
+             <svg width="34" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="4"><line x1="2" y1="12" x2="22" y2="12"></line><polyline points="15 5 22 12 15 19"></polyline></svg>
           </div>
-          <div id="snapshots-list">Loading snapshots...</div>
-        </div>
 
-        <!-- Tab 3: Firewall & Ports -->
-        <div id="tab-pane-firewall" class="panel-tab-content panel-tab-pane" style="display:none;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
-            <div>
-              <h4 style="font-size:0.95rem; font-weight:500;">Hardware Firewall Rules</h4>
-              <p style="font-size:0.75rem; color:var(--muted2);">Layer 3/4 packet filters active on the upstream hypervisor switch.</p>
+          <!-- Backend -->
+          <div style="text-align:center; flex:1; min-width:150px;">
+            <div style="width:60px; height:60px; background:rgba(34,197,94,0.05); border:1px solid rgba(34,197,94,0.2); border-radius:8px; display:flex; align-items:center; justify-content:center; margin:0 auto 12px;">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></svg>
             </div>
-            <button class="btn btn-primary btn-sm" onclick="addFirewallRule()">+ Add Port Rule</button>
+            <div style="font-weight:600; font-size:0.95rem; margin-bottom:4px;">Your Server</div>
+            <div style="font-size:0.75rem; color:var(--muted); font-family:'DM Mono',monospace; padding:2px 6px; background:#000; border-radius:4px; display:inline-block;">IP HIDDEN</div>
           </div>
-          <table class="fw-table">
-            <thead>
-              <tr>
-                <th>Protocol</th>
-                <th>Port Range</th>
-                <th>Service Name</th>
-                <th>Action</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>TCP</td>
-                <td>22</td>
-                <td>SSH Remote Shell</td>
-                <td><span style="color:var(--green);">ALLOW</span></td>
-                <td>Active</td>
-              </tr>
-              <tr>
-                <td>TCP / UDP</td>
-                <td>25565</td>
-                <td>Minecraft Server Engine</td>
-                <td><span style="color:var(--green);">ALLOW</span></td>
-                <td>Active</td>
-              </tr>
-              <tr>
-                <td>TCP</td>
-                <td>80, 443</td>
-                <td>HTTP / HTTPS Web Traffic</td>
-                <td><span style="color:var(--green);">ALLOW</span></td>
-                <td>Active</td>
-              </tr>
-              <tr>
-                <td>TCP</td>
-                <td>5943</td>
-                <td>Encrypted VNC Terminal</td>
-                <td><span style="color:var(--green);">ALLOW</span></td>
-                <td>Active</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- Tab 4: Web VNC & RDP -->
-        <div id="tab-pane-vnc" class="panel-tab-content panel-tab-pane" style="display:none;">
-          <div style="max-width:620px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
-              <div>
-                <h4 style="font-size:0.95rem; font-weight:500;">Remote Display &amp; VNC Console</h4>
-                <p style="font-size:0.75rem; color:var(--muted2);">Access the physical screen even if SSH is disabled or firewall blocks incoming traffic.</p>
-              </div>
-              <button class="btn btn-primary btn-sm" onclick="openVncModal()">Launch Web Console</button>
-            </div>
-            <div style="background:var(--surface); border:1px solid var(--rim); border-radius:8px; padding:1.2rem; display:grid; grid-template-columns:1fr 1fr; gap:14px;">
-              <div>
-                <div style="font-size:0.68rem; color:var(--muted); font-family:'DM Mono',monospace;">VNC HOST &amp; PORT</div>
-                <div style="font-size:0.85rem; font-family:'DM Mono',monospace; color:var(--cream); margin-top:2px;">node1.enderhost.cloud:5943</div>
-              </div>
-              <div>
-                <div style="font-size:0.68rem; color:var(--muted); font-family:'DM Mono',monospace;">WEBSOCKET (HTML5 VNC)</div>
-                <div style="font-size:0.85rem; font-family:'DM Mono',monospace; color:var(--cream); margin-top:2px;">Port 6043 (TLS Encrypted)</div>
-              </div>
-              <div>
-                <div style="font-size:0.68rem; color:var(--muted); font-family:'DM Mono',monospace;">WINDOWS RDP FORWARDING</div>
-                <div style="font-size:0.85rem; font-family:'DM Mono',monospace; color:var(--cream); margin-top:2px;">node1.enderhost.cloud:34201</div>
-              </div>
-              <div>
-                <div style="font-size:0.68rem; color:var(--muted); font-family:'DM Mono',monospace;">DEDICATED IPV4</div>
-                <div style="font-size:0.85rem; font-family:'DM Mono',monospace; color:var(--green); margin-top:2px;">103.189.89.44</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Tab 5: Reinstall OS -->
-        <div id="tab-pane-reinstall" class="panel-tab-content panel-tab-pane" style="display:none;">
-          <div style="max-width:580px;">
-            <h4 style="font-size:0.95rem; font-weight:500; margin-bottom:0.5rem; color:#f87171;">Reinstall Operating System / Re-image</h4>
-            <p style="font-size:0.78rem; color:var(--muted2); margin-bottom:1.2rem;">Wipe the primary disk and reload a fresh cloud image. Existing snapshots will remain intact.</p>
-            <div style="display:flex; gap:10px; align-items:center;">
-              <select id="reinstall-os-select" class="custom-select" style="flex:1;">
-                <option value="ubuntu-2404">Ubuntu 24.04 LTS (Clean Minimal)</option>
-                <option value="ubuntu-2204">Ubuntu 22.04 LTS</option>
-                <option value="debian-12">Debian 12 (Bookworm)</option>
-                <option value="alpine-320">Alpine Linux 3.20</option>
-                <option value="purpur-121">Minecraft Purpur 1.21.1 Engine</option>
-              </select>
-              <button class="btn btn-danger btn-sm" onclick="confirmReinstallOS()">Re-image Instance</button>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ═══════════════════════════════════════════════════════════════════════
-       GENUINE CLOUD INFRASTRUCTURE (HOW IT WORKS)
-       ═══════════════════════════════════════════════════════════════════════ -->
-  <section class="s" id="architecture-section">
-    <div class="wrap">
-      
-      <div style="text-align:center; max-width:650px; margin:0 auto 1rem;">
-        <span class="eyebrow"><span class="eyebrow-dot"></span> Enterprise Reliability</span>
-        <h2 class="sh">Engineered for Maximum Uptime</h2>
-        <p class="sub">How our high-frequency virtualization and Anycast network deliver instant provisioning and zero packet loss.</p>
-      </div>
-
-      <div class="arch-grid">
-        <div class="arch-card">
-          <span class="arch-step-num">FEATURE 01</span>
-          <h3 class="arch-title">High-Frequency IPC</h3>
-          <p class="arch-desc">AMD Ryzen 9 7950X cores clocked up to 5.7GHz deliver industry-leading single-thread performance for modded game servers and heavy database queries.</p>
-        </div>
-
-        <div class="arch-card">
-          <span class="arch-step-num">FEATURE 02</span>
-          <h3 class="arch-title">NVMe Gen4 Storage</h3>
-          <p class="arch-desc">Enterprise solid-state drives operating in RAID-10 with 7,000 MB/s read throughput and 1M IOPS ensure instantaneous boot times and zero I/O wait.</p>
-        </div>
-
-        <div class="arch-card">
-          <span class="arch-step-num">FEATURE 03</span>
-          <h3 class="arch-title">Anycast DDoS Shield</h3>
-          <p class="arch-desc">Our 92 Tbps Anycast scrubbing centers in Mumbai and Delhi mitigate Layer 3, 4, and 7 attacks in under 1 second without dropping player connections.</p>
-        </div>
-
-        <div class="arch-card">
-          <span class="arch-step-num">FEATURE 04</span>
-          <h3 class="arch-title">Instant Automation</h3>
-          <p class="arch-desc">QCOW2 copy-on-write layering and automated cloud-init provision fresh Linux and Windows environments in under 3 seconds with full root credentials.</p>
+          
         </div>
       </div>
 
-    </div>
-  </section>
+      <!-- 3 Feature Cards -->
+      <div class="capabilities-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom:5rem;">
+        <div class="cap-card" style="border-color:rgba(124,106,255,0.2);">
+          <div class="cap-icon" style="color:var(--purple-bright);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+          </div>
+          <div class="cap-title">Complete IP Masking</div>
+          <div class="cap-desc">Your real IP address is completely stripped and hidden. Attackers can only see our Anycast IP, making it impossible to take down your home connection or cheap host.</div>
+        </div>
 
-  <!-- ═══════════════════════════════════════════════════════════════════════
+        <div class="cap-card" style="border-color:rgba(239,68,68,0.2);">
+          <div class="cap-icon" style="color:#ef4444;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+          </div>
+          <div class="cap-title">Minecraft L7 Filtering</div>
+          <div class="cap-desc">Our intelligent edge inspects Minecraft packets in real-time. We drop Null Ping crashes, bot floods, and protocol exploits before they even enter the tunnel.</div>
+        </div>
+
+        <div class="cap-card" style="border-color:rgba(34,197,94,0.2);">
+          <div class="cap-icon" style="color:#22c55e;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10"></polyline></svg>
+          </div>
+          <div class="cap-title">PROXY Protocol Support</div>
+          <div class="cap-desc">Even though the traffic is proxied, your backend server still receives the real IPs of your players. Bans, whitelists, and IP-limits work exactly as intended.</div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════════════════════════
        FAQ ACCORDION
        ═══════════════════════════════════════════════════════════════════════ -->
   <section class="s" id="faq-section">
@@ -1841,7 +742,7 @@
       <div>
         <span class="eyebrow"><span class="eyebrow-dot"></span> Got Questions?</span>
         <h2 class="sh" style="font-size:2.4rem;">Frequently Answered.</h2>
-        <p class="sub">Everything you need to know about EnderHost performance, billing, and control.</p>
+        <p class="sub">Everything you need to know about KryonHost performance, billing, and control.</p>
       </div>
 
       <div>
@@ -1906,10 +807,8 @@
       <div class="footer-grid">
         <div>
           <div style="display:flex; align-items:center; gap:10px; margin-bottom:1rem;">
-            <div class="brand-icon" style="width:28px; height:28px; font-size:0.9rem;">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/></svg>
-            </div>
-            <span style="font-family:'Bricolage Grotesque',sans-serif; font-size:1.15rem; font-weight:600; color:#fff;">EnderHost</span>
+            <div class="brand-icon" style="width:28px;height:28px;"><img src="/images/logo.jpg" alt="KryonHost" style="width:28px;height:28px;object-fit:contain;border-radius:5px;"></div>
+            <span style="font-family:'Bricolage Grotesque',sans-serif; font-size:1.15rem; font-weight:600; color:#fff;">KryonHost</span>
           </div>
           <p style="font-size:0.8rem; color:var(--muted2); line-height:1.7; max-width:280px;">
             Next-generation cloud infrastructure, Anycast port tunnels, and ultra-low-latency game servers.
@@ -1932,7 +831,7 @@
             <li><a href="/tunnels">Anycast Tunnels (500+ Tbps)</a></li>
             <li><a href="/devspace">DevSpace Containers</a></li>
             <li><a href="/web-hosting">NVMe Web Hosting</a></li>
-            <li><a href="/#control-panel-section">Client Control Center</a></li>
+            <li><a href="/login">Client Control Center</a></li>
           </ul>
         </div>
 
@@ -1948,7 +847,7 @@
       </div>
 
       <div class="footer-bottom">
-        <div>&copy; 2026 EnderHost Cloud Technologies. All rights reserved.</div>
+        <div>&copy; 2026 KryonHost Cloud Technologies. All rights reserved.</div>
         <div style="display:flex; gap:1.5rem;">
           <span style="color:var(--green);">● All Nodes Operational</span>
           <span>500+ Tbps Anycast Active</span>
@@ -1973,8 +872,8 @@
         <div class="vnc-screen-mock">
           <div style="text-align:center; color:#38bdf8; font-family:'DM Mono',monospace; font-size:0.8rem;">
             <div>[ QEMU VirtIO Video Interface Initialized ]</div>
-            <div style="margin: 8px 0; color:#fff; font-size:0.95rem;">EnderHost Node Console Screen</div>
-            <div style="color:var(--green); font-size:0.75rem;">Connected to node1.enderhost.cloud:6043 (TLS Encrypted)</div>
+            <div style="margin: 8px 0; color:#fff; font-size:0.95rem;">KryonHost Node Console Screen</div>
+            <div style="color:var(--green); font-size:0.75rem;">Connected to node1.kryonhost.cloud:6043 (TLS Encrypted)</div>
             <div style="margin-top:14px; color:var(--muted); font-size:0.7rem;">Press keys below to interact or click inside to focus</div>
           </div>
         </div>
@@ -2001,7 +900,7 @@
       <div class="modal-header">
         <div class="modal-title">
           <span class="badge b-purple">MASTER ADMIN</span>
-          EnderHost Wholesale &amp; Margin Operations
+          KryonHost Wholesale &amp; Margin Operations
         </div>
         <button class="modal-close-btn" onclick="closeSecretAdmin()">&times;</button>
       </div>
