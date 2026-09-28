@@ -47,9 +47,10 @@
           <div class="mega-menu" id="mega-menu-box">
             <div class="mega-menu-grid">
               <!-- COMPUTE -->
+              <!-- COMPUTE -->
               <div>
                 <div class="mega-col-title">COMPUTE</div>
-                <a href="#configurator-section" class="mega-item" onclick="switchModeAndScroll('vps')">
+                <a href="/vps" class="mega-item">
                   <div class="mega-icon">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
                   </div>
@@ -58,7 +59,7 @@
                     <div class="mega-sub">Enterprise-grade virtual machines</div>
                   </div>
                 </a>
-                <a href="#architecture-section" class="mega-item">
+                <a href="/dedicated" class="mega-item">
                   <div class="mega-icon">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
                   </div>
@@ -72,12 +73,15 @@
               <!-- GAME HOSTING -->
               <div>
                 <div class="mega-col-title">GAME HOSTING</div>
-                <a href="#configurator-section" class="mega-item" onclick="switchModeAndScroll('minecraft')">
+                <a href="/minecraft" class="mega-item">
                   <div class="mega-icon">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
                   </div>
                   <div class="mega-text">
-                    <div class="mega-title">Minecraft Hosting</div>
+                    <div class="mega-title" style="display:flex; align-items:center; gap:6px;">
+                      Minecraft Hosting
+                      <span class="badge b-gold" style="font-size:0.58rem; padding:1px 6px;">COMING SOON</span>
+                    </div>
                     <div class="mega-sub">Ryzen 9 · 5.7GHz · 500+ Tbps</div>
                   </div>
                 </a>
@@ -86,13 +90,22 @@
               <!-- NETWORK & SECURITY -->
               <div>
                 <div class="mega-col-title">NETWORK &amp; SECURITY</div>
-                <a href="#tunnels-section" class="mega-item">
+                <a href="/tunnels" class="mega-item">
                   <div class="mega-icon">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
                   </div>
                   <div class="mega-text">
                     <div class="mega-title">Anycast Tunnels <span class="badge b-purple" style="font-size:0.6rem; padding:1px 5px; margin-left:2px;">NEW</span></div>
-                    <div class="mega-sub">Cloudflare Spectrum · 500+ Tbps</div>
+                    <div class="mega-sub">Anycast Mesh · 500+ Tbps</div>
+                  </div>
+                </a>
+                <a href="/devspace" class="mega-item">
+                  <div class="mega-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                  </div>
+                  <div class="mega-text">
+                    <div class="mega-title">DevSpace <span class="badge b-blue" style="font-size:0.6rem; padding:1px 5px; margin-left:2px;">CONTAINERS</span></div>
+                    <div class="mega-sub">Docker, Python, Node &amp; Bots</div>
                   </div>
                 </a>
               </div>
@@ -100,7 +113,7 @@
               <!-- WEB & TOOLS -->
               <div>
                 <div class="mega-col-title">WEB &amp; TOOLS</div>
-                <a href="#web-section" class="mega-item">
+                <a href="/web-hosting" class="mega-item">
                   <div class="mega-icon">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
                   </div>
@@ -141,35 +154,49 @@
   </header>
 
   <!-- ═══════════════════════════════════════════════════════════════════════
-       HERO
+       HERO (Animated Shulker-Style Rotating Headline)
        ═══════════════════════════════════════════════════════════════════════ -->
   <section class="hero">
     <div class="hero-orb"></div>
     <div class="wrap hero-content">
       
-      <div class="hero-pill">
+      <!-- Top Pill -->
+      <div class="hero-pill" style="border-color:rgba(16,185,129,0.3); background:rgba(16,185,129,0.06); color:#34d399;">
         <span class="live-pulse"></span>
-        Enterprise Nodes Live in Mumbai &amp; Delhi • Sub-3s Provisioning
+        25% OFF ALL PLANS — LIMITED TIME
       </div>
 
+      <!-- Animated Headline -->
       <h1 class="hero-title">
-        High-Frequency Cloud &amp;<br>
-        <span class="typewriter-slot">Dedicated VPS</span><br>
-        <span class="grad">Engineered for Performance.</span>
+        <div class="hero-title-top">
+          Ship
+          <span id="hero-chip-badge" class="hero-chip-badge">
+            <span class="hero-chip-icon" id="hero-chip-icon">
+              <!-- Minecraft Grass Block SVG -->
+              <svg width="34" height="34" viewBox="0 0 40 40">
+                <polygon points="20,3 37,12 20,21 3,12" fill="#4ade80" />
+                <polygon points="3,12 20,21 20,37 3,28" fill="#854d0e" />
+                <polygon points="20,21 37,12 37,28 20,37" fill="#713f12" />
+                <path d="M3,12 L20,21 L37,12 L37,16 L20,25 L3,16 Z" fill="#22c55e" />
+              </svg>
+            </span>
+            <span class="hero-chip-text" id="hero-chip-text">Minecraft</span>
+          </span>
+        </div>
+        <span>in seconds.</span>
       </h1>
 
       <p class="hero-sub">
-        Deploy production-grade Cloud VPS, extreme-performance Minecraft servers, Anycast TCP/UDP Tunnels, and NVMe Web Hosting. Powered by AMD Ryzen 9 7950X, AMD EPYC, and Intel Xeon bare-metal clusters with 92 Tbps Anycast protection.
+        Latest-gen hardware, 92 Tbps DDoS protection, and an AI that manages everything — for every project you have in mind.
       </p>
 
       <div class="hero-actions">
-        <a href="#configurator-section" class="btn btn-white">
-          Configure Your Server
+        <a href="#configurator-section" class="btn btn-white" style="font-weight:600; padding:12px 24px;">
+          Start free
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </a>
-        <a href="#control-panel-section" class="btn btn-ghost">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/><path d="m14 9 3 3-3 3"/></svg>
-          Open Server Console
+        <a href="#configurator-section" class="btn btn-ghost" style="padding:12px 24px;">
+          View pricing
         </a>
       </div>
 
@@ -218,7 +245,7 @@
             <div class="stock-node-type">AMD EPYC 7003 · Balanced</div>
           </div>
           <div class="stock-status-wrap">
-            <span class="stock-pill stock-in" id="stock-badge-std"><span class="live-pulse"></span> In Stock</span>
+            <span class="stock-pill stock-out" id="stock-badge-std"><span class="live-pulse" style="background:#ef4444; box-shadow:0 0 8px #ef4444;"></span> Out of Stock</span>
           </div>
         </div>
 
@@ -228,7 +255,7 @@
             <div class="stock-node-type">Intel Core i7 · 4.8GHz Turbo</div>
           </div>
           <div class="stock-status-wrap">
-            <span class="stock-pill stock-in" id="stock-badge-perf"><span class="live-pulse"></span> In Stock</span>
+            <span class="stock-pill stock-out" id="stock-badge-perf">Out of Stock</span>
           </div>
         </div>
 
@@ -274,7 +301,11 @@
           </div>
 
           <!-- Tier Pickers -->
-          <label style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.12em; color:var(--muted); font-family:'DM Mono',monospace; margin-bottom:0.75rem; display:block;">Select CPU Architecture Tier</label>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+            <label style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.12em; color:var(--muted); font-family:'DM Mono',monospace;">Select CPU Architecture Tier</label>
+            <span style="font-size:0.7rem; color:var(--muted2); font-family:'DM Mono',monospace;">Sub-3s Node Provisioning</span>
+          </div>
+
           <div class="tier-select-grid">
             <div class="tier-opt" data-tier="eco">
               <div class="tier-opt-head">
@@ -283,33 +314,46 @@
               </div>
               <div class="tier-opt-cpu">Intel Xeon E5 · Multi-core</div>
               <div class="tier-opt-rates">Microservices, proxies &amp; bots</div>
+              <div style="margin-top:8px; font-size:0.65rem; color:#34d399; display:flex; align-items:center; gap:4px;">
+                <span style="width:6px; height:6px; background:#34d399; border-radius:50%; display:inline-block;"></span> In Stock
+              </div>
             </div>
 
-            <div class="tier-opt selected" data-tier="std">
+            <div class="tier-opt is-out-of-stock" data-tier="std">
               <div class="tier-opt-head">
                 <span class="tier-opt-title">STD</span>
-                <span class="badge b-purple">Popular</span>
+                <span class="badge b-red" style="font-size:0.6rem; padding:2px 6px;">Out of Stock</span>
               </div>
               <div class="tier-opt-cpu">AMD EPYC 7003 · Balanced</div>
               <div class="tier-opt-rates">Web clusters, production SMP</div>
+              <div style="margin-top:8px; font-size:0.65rem; color:#f87171; display:flex; align-items:center; gap:4px;">
+                <span style="width:6px; height:6px; background:#f87171; border-radius:50%; display:inline-block;"></span> Restocking Soon
+              </div>
             </div>
 
-            <div class="tier-opt" data-tier="perf">
+            <div class="tier-opt is-out-of-stock" data-tier="perf">
               <div class="tier-opt-head">
                 <span class="tier-opt-title">PERF</span>
                 <span class="badge b-blue">High Clock</span>
+                <span class="badge" style="background:#ef444422;color:#f87171;margin-left:4px;">Out of Stock</span>
               </div>
               <div class="tier-opt-cpu">Intel Core i7 · 4.8GHz Turbo</div>
               <div class="tier-opt-rates">High tick rate &amp; heavy queries</div>
+              <div style="margin-top:8px; font-size:0.65rem; color:#f87171; display:flex; align-items:center; gap:4px;">
+                <span style="width:6px; height:6px; background:#f87171; border-radius:50%; display:inline-block;"></span> Restocking Soon
+              </div>
             </div>
 
-            <div class="tier-opt" data-tier="pwr">
+            <div class="tier-opt selected" data-tier="pwr">
               <div class="tier-opt-head">
                 <span class="tier-opt-title">PWR</span>
                 <span class="badge b-gold">Extreme</span>
               </div>
               <div class="tier-opt-cpu">AMD Ryzen 9 · 5.7GHz Beast</div>
               <div class="tier-opt-rates">Modded Minecraft (ATM9/Forge)</div>
+              <div style="margin-top:8px; font-size:0.65rem; color:#34d399; display:flex; align-items:center; gap:4px;">
+                <span style="width:6px; height:6px; background:#34d399; border-radius:50%; display:inline-block;"></span> In Stock · High Speed
+              </div>
             </div>
           </div>
 
@@ -364,9 +408,7 @@
             <div class="field-group">
               <label>Datacenter Region</label>
               <select id="select-region" class="custom-select">
-                <option value="India">Mumbai, India (Lowest Latency · 12ms)</option>
-                <option value="India-Delhi">Delhi, India (National Hub · 18ms)</option>
-                <option value="Germany">Frankfurt, Germany (European Transit)</option>
+                <option value="India">India</option>
               </select>
             </div>
           </div>
@@ -377,9 +419,9 @@
         <div class="config-summary">
           <div class="quote-top">
             <div class="quote-badge-row">
-              <span class="badge b-purple" id="quote-tier-badge">STD Balanced · AMD EPYC</span>
+              <span class="badge b-blue" id="quote-tier-badge">PERF Compute · Intel Core i7</span>
               <span class="badge b-green">Sub-3s Provisioning</span>
-              <span class="badge b-blue">92 Tbps Shield</span>
+              <span class="badge b-purple">500+ Tbps Shield</span>
             </div>
             <div class="quote-title" id="quote-service-type">Enterprise Cloud VPS</div>
             <div style="font-size:0.75rem; color:var(--muted); margin-bottom:1.2rem;" id="quote-specs-text">
@@ -393,7 +435,7 @@
               </li>
               <li class="quote-spec-row">
                 <span>Anti-DDoS Shield (Anycast)</span>
-                <span style="color:var(--green);">Active (92 Tbps)</span>
+                <span style="color:var(--green);">Active (500+ Tbps)</span>
               </li>
               <li class="quote-spec-row">
                 <span>Automated Backups &amp; Snapshots</span>
@@ -410,7 +452,7 @@
             <div class="price-display-box">
               <span class="price-tag-sub">Total Monthly Price (30 Days)</span>
               <div class="big-price-num">
-                <span id="quote-retail-price">₹847</span>
+                <span id="quote-retail-price">₹1,189</span>
                 <span class="price-period">/ month</span>
               </div>
               <p class="price-note">All taxes included. Transparent billing with automated node activation.</p>
@@ -531,7 +573,7 @@
         
         <div class="tunnel-powered-pill">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          POWERED BY CLOUDFLARE SPECTRUM · AS216013 ANYCAST FABRIC · THE NETWORK BEHIND PAPYRUS.VIP
+          AUTONOMOUS ANYCAST FABRIC · AS216013 · 500+ TBPS GLOBAL SCRUBBING
         </div>
       </div>
 
@@ -599,13 +641,13 @@
           </div>
         </div>
 
-        <!-- PANEL -->
+        <!-- ANYCAST ROUTING -->
         <div class="stack-card">
-          <div class="stack-tag">PANEL</div>
-          <div class="stack-name">Panel</div>
-          <div class="stack-subname">Edge Control Plane</div>
+          <div class="stack-tag">ANYCAST EDGE</div>
+          <div class="stack-name">AnycastEdge</div>
+          <div class="stack-subname">Global Edge Fabric</div>
           <div class="stack-desc">
-            Realtime analytics, live player lists, firewall and risk lists, antibot templates, team RBAC, and a full REST API. Configuration changes propagate to every edge PoP globally in under a single second.
+            Autonomous multi-path routing across Anycast AS216013 edge nodes. Dynamic packet inspection, sub-second failover, and TCP/UDP traffic acceleration without requiring manual intervention.
           </div>
         </div>
       </div>
@@ -687,16 +729,16 @@
       </div>
 
       <!-- ═══════════════════════════════════════════════════════════════════
-           INSIDE THE PANEL: Attack Forensics & Live Telemetry
+           EDGE TELEMETRY: Attack Forensics & Live Mitigation
            ═══════════════════════════════════════════════════════════════════ -->
       <div class="panel-showcase-box">
         <div>
-          <span class="badge b-purple" style="margin-bottom:0.75rem;">INSIDE THE PANEL</span>
+          <span class="badge b-purple" style="margin-bottom:0.75rem;">EDGE TELEMETRY</span>
           <h3 style="font-family:'Bricolage Grotesque',sans-serif; font-size:1.8rem; font-weight:500; color:#fff; line-height:1.2; margin-bottom:1rem;">
-            The control plane, not a black box
+            Watch attacks die in real time
           </h3>
           <p style="font-size:0.85rem; color:var(--cream-dim); line-height:1.7; margin-bottom:1.5rem;">
-            Everything the pipeline does is visible and tunable, live. These are the screens you'll actually use to manage attacks and players.
+            Every malicious packet is scrubbed at the Anycast edge. Zero latency added for genuine players, and zero origin impact on your server.
           </p>
 
           <div style="display:flex; flex-direction:column; gap:12px;">
@@ -782,7 +824,7 @@
           The Network: Anycast Everywhere. Dedicated Where It Counts.
         </h3>
         <p style="font-size:0.85rem; color:var(--muted2); line-height:1.6;">
-          Your hostname resolves to Cloudflare Spectrum's anycast fabric — Cloudflare IPs at the front door, 330+ cities, 500+ Tbps of absorption capacity. Behind it sits our own network, AS216013, with 600+ Gbps of filtering capacity, where Cryo performs protocol-level Layer-7 mitigation on dedicated PoPs. The same network that powers papyrus.vip.
+          Your hostname resolves to our global Anycast fabric — 330+ cities, 500+ Tbps of absorption capacity. Behind it sits our autonomous edge network, AS216013, with 600+ Gbps of dedicated filtering capacity, where Cryo performs protocol-level Layer-7 mitigation on dedicated PoPs.
         </p>
       </div>
 
@@ -823,7 +865,7 @@
       </div>
 
       <div style="text-align:center; font-size:0.8rem; color:var(--muted2); font-family:'DM Mono',monospace; margin-bottom:2rem;">
-        +330 Anycast Cities via Cloudflare Spectrum Edge
+        +330 Anycast Cities via Global Edge Fabric
       </div>
 
       <!-- Network Mitigation Stats -->
@@ -862,7 +904,7 @@
             <div class="step-num">01</div>
             <div>
               <div class="step-title">Create a network</div>
-              <div class="step-desc">Sign up, name your network, and add your backend's IP address in the panel. You receive an assigned anycast endpoint hostname immediately.</div>
+              <div class="step-desc">Sign up, name your network, and provide your backend's IP address. You receive an assigned Anycast endpoint hostname immediately.</div>
             </div>
           </div>
 
@@ -887,7 +929,7 @@
         <div class="dns-terminal">
           <div style="font-size:0.7rem; color:var(--muted); margin-bottom:10px; display:flex; justify-content:space-between;">
             <span>DNS ZONE CONFIGURATION — YOURSERVER.NET</span>
-            <span style="color:#38bdf8;">BIND / CLOUDFLARE</span>
+            <span style="color:#38bdf8;">DNS ZONE / REGISTRAR</span>
           </div>
           
           <div class="dns-comment"># BEFORE — origin IP exposed to attackers</div>
@@ -1195,6 +1237,123 @@
             </ul>
           </div>
           <button class="btn btn-ghost" style="width:100%;" onclick="orderTurnkey('Enterprise Ultra Web', 999)">Select Plan</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       DEVSPACES: CLOUD PROJECT CONTAINERS (DOCKER, BOTS, APIS)
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <section class="s" id="devspace-section">
+    <div class="wrap">
+      
+      <div style="text-align:center; max-width:680px; margin:0 auto 1.5rem;">
+        <span class="eyebrow"><span class="eyebrow-dot"></span> Cloud Container Engine</span>
+        <h2 class="sh">Ship Anything Under 30 Seconds</h2>
+        <p class="sub">Run any Docker container in the cloud with zero configuration. Discord bots, Telegram bots, web apps, and REST APIs — if it runs in Docker, it runs here.</p>
+        
+        <div class="devspace-tags-row">
+          <span class="dev-tag">Discord Bots</span>
+          <span class="dev-tag">Telegram Bots</span>
+          <span class="dev-tag">Web Apps</span>
+          <span class="dev-tag">REST APIs</span>
+          <span class="dev-tag">Node.js 22</span>
+          <span class="dev-tag">Python 3.12</span>
+          <span class="dev-tag">Go 1.23</span>
+          <span class="dev-tag">Docker Compose</span>
+        </div>
+      </div>
+
+      <div class="devspace-grid">
+        <!-- Starter DevSpace -->
+        <div class="devspace-card">
+          <div>
+            <div style="font-family:'DM Mono',monospace; font-size:0.72rem; color:var(--muted); text-transform:uppercase; margin-bottom:4px;">HOBBY &amp; BOTS</div>
+            <h3 style="font-family:'Bricolage Grotesque',sans-serif; font-size:1.4rem; font-weight:600; color:#fff; margin-bottom:8px;">DevSpace Starter</h3>
+            <p style="font-size:0.78rem; color:var(--muted2); line-height:1.5;">Ideal for lightweight Discord bots, scheduled cron scripts, and test containers.</p>
+            
+            <div style="margin:1.4rem 0; padding-bottom:1.2rem; border-bottom:1px solid var(--rim);">
+              <div style="font-family:'Bricolage Grotesque',sans-serif; font-size:2.4rem; font-weight:500; color:#fff; line-height:1;">
+                ₹599 <span style="font-size:0.85rem; color:var(--muted); font-weight:400; font-family:'DM Sans',sans-serif;">/ mo</span>
+              </div>
+            </div>
+
+            <ul class="plan-features">
+              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 2 vCPU Compute Cores</li>
+              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 4 GB High-Speed RAM</li>
+              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 25 GB Gen4 NVMe Storage</li>
+              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 1 Always-On Docker Container</li>
+              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Auto-Deploy via GitHub Webhook</li>
+              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Free Subdomain (app.ender.space)</li>
+              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 92 Tbps Layer 3/4 DDoS Mitigation</li>
+            </ul>
+          </div>
+          <button class="btn btn-ghost" style="width:100%; margin-top:1.5rem;" onclick="orderTurnkey('DevSpace Starter (2 vCPU, 4GB)', 599)">
+            Deploy Starter Container
+          </button>
+        </div>
+
+        <!-- Pro DevSpace (Popular) -->
+        <div class="devspace-card popular">
+          <div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-family:'DM Mono',monospace; font-size:0.72rem; color:var(--purple-bright); text-transform:uppercase;">DEVELOPER FAVORITE</span>
+              <span class="badge b-purple" style="font-size:0.65rem;">POPULAR</span>
+            </div>
+            <h3 style="font-family:'Bricolage Grotesque',sans-serif; font-size:1.4rem; font-weight:600; color:#fff; margin-bottom:8px; margin-top:4px;">DevSpace Pro</h3>
+            <p style="font-size:0.78rem; color:var(--muted2); line-height:1.5;">Production containers with dedicated port forwarding and custom domains.</p>
+            
+            <div style="margin:1.4rem 0; padding-bottom:1.2rem; border-bottom:1px solid var(--rim);">
+              <div style="font-family:'Bricolage Grotesque',sans-serif; font-size:2.4rem; font-weight:500; color:#fff; line-height:1;">
+                ₹899 <span style="font-size:0.85rem; color:var(--muted); font-weight:400; font-family:'DM Sans',sans-serif;">/ mo</span>
+              </div>
+            </div>
+
+            <ul class="plan-features">
+              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 4 vCPU Compute Cores</li>
+              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 8 GB High-Speed RAM</li>
+              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 60 GB Gen4 NVMe Storage</li>
+              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 3 Always-On Project Containers</li>
+              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Dedicated Static Port Allocation</li>
+              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Custom Domain with Free Auto-SSL</li>
+              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Docker Compose Multi-Service</li>
+              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 99.9% Production SLA</li>
+            </ul>
+          </div>
+          <button class="btn btn-primary" style="width:100%; margin-top:1.5rem;" onclick="orderTurnkey('DevSpace Pro (4 vCPU, 8GB)', 899)">
+            Deploy Pro Container
+          </button>
+        </div>
+
+        <!-- Enterprise DevSpace -->
+        <div class="devspace-card">
+          <div>
+            <div style="font-family:'DM Mono',monospace; font-size:0.72rem; color:var(--muted); text-transform:uppercase; margin-bottom:4px;">TEAM &amp; CLUSTER</div>
+            <h3 style="font-family:'Bricolage Grotesque',sans-serif; font-size:1.4rem; font-weight:600; color:#fff; margin-bottom:8px;">DevSpace Team</h3>
+            <p style="font-size:0.78rem; color:var(--muted2); line-height:1.5;">Heavy workloads, microservices, multiple team members, and dedicated IP.</p>
+            
+            <div style="margin:1.4rem 0; padding-bottom:1.2rem; border-bottom:1px solid var(--rim);">
+              <div style="font-family:'Bricolage Grotesque',sans-serif; font-size:2.4rem; font-weight:500; color:#fff; line-height:1;">
+                ₹1,499 <span style="font-size:0.85rem; color:var(--muted); font-weight:400; font-family:'DM Sans',sans-serif;">/ mo</span>
+              </div>
+            </div>
+
+            <ul class="plan-features">
+              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 8 vCPU Compute Cores</li>
+              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 16 GB High-Speed RAM</li>
+              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 150 GB Gen4 NVMe Storage</li>
+              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Unlimited Project Containers</li>
+              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Dedicated Static Public IPv4</li>
+              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Team RBAC &amp; Collaboration</li>
+              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Daily Automated Off-Site Backups</li>
+              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 24/7 Priority Support</li>
+            </ul>
+          </div>
+          <button class="btn btn-ghost" style="width:100%; margin-top:1.5rem;" onclick="orderTurnkey('DevSpace Team (8 vCPU, 16GB)', 1499)">
+            Deploy Team Cluster
+          </button>
         </div>
       </div>
 
@@ -1640,30 +1799,30 @@
         <div>
           <div class="footer-title">Compute &amp; Gaming</div>
           <ul class="footer-links">
-            <li><a href="#configurator-section">Cloud VPS Hosting</a></li>
-            <li><a href="#configurator-section">Minecraft Server Hosting</a></li>
-            <li><a href="#plans-section">Ryzen 9 5.7GHz Nodes</a></li>
-            <li><a href="#plans-section">AMD EPYC Balanced</a></li>
+            <li><a href="/vps">Cloud VPS Hosting</a></li>
+            <li><a href="/minecraft">Minecraft (Coming Soon)</a></li>
+            <li><a href="/dedicated">Dedicated Bare-Metal</a></li>
+            <li><a href="/vps#vps-builder">Ryzen 9 5.7GHz Nodes</a></li>
           </ul>
         </div>
 
         <div>
-          <div class="footer-title">Network &amp; Web</div>
+          <div class="footer-title">Network &amp; Cloud</div>
           <ul class="footer-links">
-            <li><a href="#tunnels-section">Anycast TCP/UDP Tunnels</a></li>
-            <li><a href="#web-section">NVMe Web Hosting</a></li>
-            <li><a href="#control-panel-section">Server Control Center</a></li>
-            <li><a href="#architecture-section">92 Tbps DDoS Shield</a></li>
+            <li><a href="/tunnels">Anycast Tunnels (500+ Tbps)</a></li>
+            <li><a href="/devspace">DevSpace Containers</a></li>
+            <li><a href="/web-hosting">NVMe Web Hosting</a></li>
+            <li><a href="/#control-panel-section">Client Control Center</a></li>
           </ul>
         </div>
 
         <div>
           <div class="footer-title">Regions &amp; SLA</div>
           <ul class="footer-links">
-            <li><a href="#configurator-section">Mumbai, India DC</a></li>
-            <li><a href="#configurator-section">Delhi, India DC</a></li>
-            <li><a href="#configurator-section">Frankfurt, Germany DC</a></li>
-            <li><a href="#configurator-section">99.99% Hardware SLA</a></li>
+            <li><a href="/vps">Mumbai, India DC</a></li>
+            <li><a href="/vps">Delhi NCR, India DC</a></li>
+            <li><a href="/vps">Frankfurt, Germany DC</a></li>
+            <li><a href="/#faq-section">99.99% Hardware SLA</a></li>
           </ul>
         </div>
       </div>
@@ -1672,7 +1831,7 @@
         <div>&copy; 2026 EnderHost Cloud Technologies. All rights reserved.</div>
         <div style="display:flex; gap:1.5rem;">
           <span style="color:var(--green);">● All Nodes Operational</span>
-          <span>92 Tbps Anycast Active</span>
+          <span>500+ Tbps Anycast Active</span>
         </div>
       </div>
     </div>
@@ -1822,6 +1981,27 @@
               <td><strong>₹4,999.00</strong></td>
             </tr>
             <tr>
+              <td>DevSpace Starter</td>
+              <td><span style="color:#34d399; font-weight:600;">+₹300 Margin</span></td>
+              <td>DevSpace Hobby (2 vCPU, 4GB)</td>
+              <td>₹299.00</td>
+              <td><strong>₹599.00</strong></td>
+            </tr>
+            <tr>
+              <td>DevSpace Pro</td>
+              <td><span style="color:#34d399; font-weight:600;">+₹400 Margin</span></td>
+              <td>DevSpace Pro (4 vCPU, 8GB)</td>
+              <td>₹499.00</td>
+              <td><strong>₹899.00</strong></td>
+            </tr>
+            <tr>
+              <td>DevSpace Team</td>
+              <td><span style="color:#34d399; font-weight:600;">+₹500 Margin</span></td>
+              <td>DevSpace Team (8 vCPU, 16GB)</td>
+              <td>₹999.00</td>
+              <td><strong>₹1,499.00</strong></td>
+            </tr>
+            <tr>
               <td>Web Hosting Pro</td>
               <td><span style="color:#34d399; font-weight:600;">+₹300 Margin</span></td>
               <td>Business Pro Web (5 Sites)</td>
@@ -1834,6 +2014,32 @@
       <div class="modal-footer">
         <button class="btn btn-ghost btn-sm" onclick="closeSecretAdmin()">Close Master Console</button>
       </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       FLOATING PROMO COUPON BANNER (Matching Shulker Screenshot)
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <div class="shulker-promo-bar" id="bottom-promo-bar">
+    <div class="promo-bar-left">
+      <div class="promo-cube-icon">
+        <svg width="32" height="32" viewBox="0 0 40 40">
+          <polygon points="20,3 37,12 20,21 3,12" fill="#4ade80" />
+          <polygon points="3,12 20,21 20,37 3,28" fill="#854d0e" />
+          <polygon points="20,21 37,12 37,28 20,37" fill="#713f12" />
+          <path d="M3,12 L20,21 L37,12 L37,16 L20,25 L3,16 Z" fill="#22c55e" />
+        </svg>
+      </div>
+      <div>
+        <div class="promo-headline">
+          Use coupon <span class="promo-code-pill">MC25OFF</span> for 25% off!
+        </div>
+        <div class="promo-subtext">Top-tier Minecraft hosting. Zero lag, instant setup.</div>
+      </div>
+    </div>
+    <div class="promo-bar-right">
+      <a href="/minecraft" class="btn btn-white btn-sm" style="font-weight:600; color:#05050a; padding:6px 16px;">View Plans</a>
+      <button class="promo-close-btn" onclick="dismissPromoBanner()" aria-label="Close banner">&times;</button>
     </div>
   </div>
 

@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enterprise Cloud VPS Hosting — Powered by Ryzen 9 &amp; EPYC | EnderHost</title>
+  <meta name="description" content="Deploy high-frequency NVMe Cloud VPS in under 3 seconds. Powered by AMD Ryzen 9 7950X (5.7GHz), AMD EPYC, and Intel Xeon. Dedicated IPv4, sub-10ms India latency, and 500+ Tbps DDoS defense.">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,600;12..96,700&family=Inter:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%237c6aff%22/><circle cx=%2250%22 cy=%2250%22 r=%2222%22 fill=%22%2305050a%22/><circle cx=%2250%22 cy=%2250%22 r=%2210%22 fill=%22%2310b981%22/></svg>">
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       NAVBAR
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <header class="nav-header">
+    <div class="wrap nav-inner">
+      <a href="/" class="nav-brand">
+        <div class="brand-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+            <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+            <line x1="6" y1="6" x2="6.01" y2="6"></line>
+            <line x1="6" y1="18" x2="6.01" y2="18"></line>
+          </svg>
+        </div>
+        <span class="brand-name">EnderHost</span>
+        <span class="brand-tag">CLOUD</span>
+      </a>
+
+      <ul class="nav-links">
+        <li class="nav-dropdown" id="nav-products-dropdown">
+          <button class="nav-dropdown-btn" onclick="toggleProductsMenu(event)">
+            Products
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          
+          <div class="mega-menu" id="mega-menu-box">
+            <div class="mega-menu-grid">
+              <!-- COMPUTE -->
+              <div>
+                <div class="mega-col-title">COMPUTE</div>
+                <a href="/vps" class="mega-item active-link" style="background:rgba(124,106,255,0.08); border-radius:10px;">
+                  <div class="mega-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+                  </div>
+                  <div class="mega-text">
+                    <div class="mega-title">VPS Hosting <span class="badge b-purple" style="font-size:0.58rem; padding:1px 5px;">ACTIVE</span></div>
+                    <div class="mega-sub">Enterprise virtual machines</div>
+                  </div>
+                </a>
+                <a href="/dedicated" class="mega-item">
+                  <div class="mega-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+                  </div>
+                  <div class="mega-text">
+                    <div class="mega-title">Dedicated Server</div>
+                    <div class="mega-sub">Pure bare-metal performance</div>
+                  </div>
+                </a>
+              </div>
+
+              <!-- GAME HOSTING -->
+              <div>
+                <div class="mega-col-title">GAME HOSTING</div>
+                <a href="/minecraft" class="mega-item">
+                  <div class="mega-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                  </div>
+                  <div class="mega-text">
+                    <div class="mega-title" style="display:flex; align-items:center; gap:6px;">
+                      Minecraft Hosting
+                      <span class="badge b-gold" style="font-size:0.58rem; padding:1px 6px;">COMING SOON</span>
+                    </div>
+                    <div class="mega-sub">Ryzen 9 · 5.7GHz · 500+ Tbps</div>
+                  </div>
+                </a>
+              </div>
+
+              <!-- NETWORK & SECURITY -->
+              <div>
+                <div class="mega-col-title">NETWORK &amp; SECURITY</div>
+                <a href="/tunnels" class="mega-item">
+                  <div class="mega-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                  </div>
+                  <div class="mega-text">
+                    <div class="mega-title">Anycast Tunnels <span class="badge b-purple" style="font-size:0.6rem; padding:1px 5px;">NEW</span></div>
+                    <div class="mega-sub">Anycast Mesh · 500+ Tbps</div>
+                  </div>
+                </a>
+                <a href="/devspace" class="mega-item">
+                  <div class="mega-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                  </div>
+                  <div class="mega-text">
+                    <div class="mega-title">DevSpace <span class="badge b-blue" style="font-size:0.6rem; padding:1px 5px;">CONTAINERS</span></div>
+                    <div class="mega-sub">Docker, Python, Node &amp; Bots</div>
+                  </div>
+                </a>
+              </div>
+
+              <!-- WEB & TOOLS -->
+              <div>
+                <div class="mega-col-title">WEB &amp; TOOLS</div>
+                <a href="/web-hosting" class="mega-item">
+                  <div class="mega-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                  </div>
+                  <div class="mega-text">
+                    <div class="mega-title">Website Hosting</div>
+                    <div class="mega-sub">NVMe, cPanel, Node &amp; Free SSL</div>
+                  </div>
+                </a>
+                <a href="/#control-panel-section" class="mega-item">
+                  <div class="mega-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                  </div>
+                  <div class="mega-text">
+                    <div class="mega-title">Server Console</div>
+                    <div class="mega-sub">Interactive shell &amp; Web VNC</div>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </li>
+
+        <li><a href="/vps" style="color:var(--cream); font-weight:500;">Cloud VPS</a></li>
+        <li><a href="/tunnels">Tunnels</a></li>
+        <li><a href="/devspace">DevSpace</a></li>
+        <li><a href="/web-hosting">Web Hosting</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <a href="/#control-panel-section" class="btn btn-ghost btn-sm">Client Login</a>
+        <a href="#vps-builder" class="btn btn-primary btn-sm">Configure VPS</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       HERO SECTION
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <section class="hero" style="min-height:75vh; padding-top:10rem;">
+    <div class="hero-orb"></div>
+    <div class="wrap hero-content">
+      
+      <div class="hero-pill" style="border-color:rgba(124,106,255,0.4); background:rgba(124,106,255,0.08); color:var(--violet2);">
+        <span class="live-pulse" style="background:var(--violet2); box-shadow:0 0 10px var(--violet2);"></span>
+        AMD RYZEN 9 7950X · 5.7GHZ SINGLE-CORE IPC · DDR5 ECC
+      </div>
+
+      <h1 class="hero-title" style="margin-bottom:1.2rem;">
+        <div>High-Frequency</div>
+        <span class="grad">Enterprise Cloud VPS</span>
+      </h1>
+
+      <p class="hero-sub" style="max-width:720px; margin-bottom:2.2rem;">
+        Scale on bare-metal hypervisors engineered for high concurrency, game servers, production microservices, and databases. Instant automated provisioning in 2.8 seconds with dedicated IPv4, PCIe Gen4 NVMe, and full root access.
+      </p>
+
+      <div style="display:flex; justify-content:center; gap:14px; flex-wrap:wrap;">
+        <a href="#vps-builder" class="btn btn-primary" style="padding:13px 28px; font-size:0.95rem;">
+          Build Custom VM
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        </a>
+        <a href="#popular-vps-plans" class="btn btn-ghost" style="padding:13px 24px; font-size:0.95rem;">
+          View Popular Configurations
+        </a>
+      </div>
+
+      <!-- Live Specs Bar -->
+      <div class="hero-stats" style="margin-top:4rem;">
+        <div class="stat-pill">
+          <span class="stat-num">5.7 GHz</span>
+          <span class="stat-label">Zen 4 Boost</span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-num">&lt; 3.0s</span>
+          <span class="stat-label">Provision Speed</span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-num">7,000 MB/s</span>
+          <span class="stat-label">PCIe 4.0 NVMe</span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-num">500+ Tbps</span>
+          <span class="stat-label">DDoS Capacity</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       POPULAR PRE-CONFIGURED PLANS
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <section class="s" id="popular-vps-plans">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow"><span class="eyebrow-dot"></span> Ready To Launch</span>
+        <h2 class="sh">Popular Pre-Built VPS Plans</h2>
+        <p class="sub">Instant deployment packages calibrated for balanced workloads, Minecraft SMPs, and heavy databases.</p>
+      </div>
+
+      <div class="grid-4" style="gap:20px;">
+        <!-- Card 1 -->
+        <div class="pricing-card">
+          <div class="badge b-blue" style="align-self:flex-start; margin-bottom:12px;">ENTRY CLOUD</div>
+          <h3 style="font-size:1.3rem; font-weight:600; color:#fff;">Cloud Starter</h3>
+          <p style="font-size:0.8rem; color:var(--muted2); margin-top:4px;">Web apps, bots &amp; testing</p>
+          
+          <div class="pricing-price" style="margin:1.4rem 0;">
+            <span style="font-size:2rem; font-weight:700; color:#fff;">₹949</span>
+            <span style="font-size:0.82rem; color:var(--muted);">/month</span>
+          </div>
+
+          <ul class="pricing-features">
+            <li><strong>2 vCPU</strong> Cores (AMD EPYC)</li>
+            <li><strong>4 GB</strong> DDR4 ECC RAM</li>
+            <li><strong>50 GB</strong> Gen4 NVMe Storage</li>
+            <li>1 Dedicated IPv4 + /64 IPv6</li>
+            <li>1 Gbps Unmetered Uplink</li>
+            <li>Full Root &amp; Web VNC Console</li>
+          </ul>
+
+          <button onclick="prefillAndScroll('std', 2, 4, 50)" class="btn btn-ghost" style="width:100%; margin-top:1.5rem;">Configure &amp; Deploy</button>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="pricing-card" style="border-color:rgba(124,106,255,0.4); background:rgba(124,106,255,0.04);">
+          <div class="badge b-purple" style="align-self:flex-start; margin-bottom:12px;">BESTSELLER · SMP</div>
+          <h3 style="font-size:1.3rem; font-weight:600; color:#fff;">Gaming Node</h3>
+          <p style="font-size:0.8rem; color:var(--muted2); margin-top:4px;">Modded servers &amp; game daemons</p>
+          
+          <div class="pricing-price" style="margin:1.4rem 0;">
+            <span style="font-size:2rem; font-weight:700; color:#fff;">₹2,399</span>
+            <span style="font-size:0.82rem; color:var(--muted);">/month</span>
+          </div>
+
+          <ul class="pricing-features">
+            <li><strong>4 vCPU</strong> High-Freq Cores</li>
+            <li><strong>16 GB</strong> High-Speed RAM</li>
+            <li><strong>100 GB</strong> Gen4 NVMe Storage</li>
+            <li>1 Dedicated IPv4 + /64 IPv6</li>
+            <li>Sub-10ms India Peering</li>
+            <li>Automated Daily Snapshots</li>
+          </ul>
+
+          <button onclick="prefillAndScroll('perf', 4, 16, 100)" class="btn btn-primary" style="width:100%; margin-top:1.5rem;">Configure &amp; Deploy</button>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="pricing-card" style="border-color:rgba(245,158,11,0.4); background:rgba(245,158,11,0.03);">
+          <div class="badge b-gold" style="align-self:flex-start; margin-bottom:12px;">FLAGSHIP · RYZEN 9</div>
+          <h3 style="font-size:1.3rem; font-weight:600; color:#fff;">Power Beast</h3>
+          <p style="font-size:0.8rem; color:var(--muted2); margin-top:4px;">Heavy multi-threading &amp; networks</p>
+          
+          <div class="pricing-price" style="margin:1.4rem 0;">
+            <span style="font-size:2rem; font-weight:700; color:#fff;">₹5,948</span>
+            <span style="font-size:0.82rem; color:var(--muted);">/month</span>
+          </div>
+
+          <ul class="pricing-features">
+            <li><strong>8 vCPU</strong> AMD Ryzen 9 (5.7GHz)</li>
+            <li><strong>40 GB</strong> DDR5 5600MHz RAM</li>
+            <li><strong>200 GB</strong> Enterprise NVMe</li>
+            <li>1 Dedicated IPv4 + /64 IPv6</li>
+            <li>500+ Tbps L7 DDoS Filter</li>
+            <li>Priority Hypervisor Pinning</li>
+          </ul>
+
+          <button onclick="prefillAndScroll('pwr', 8, 40, 200)" class="btn btn-primary" style="width:100%; margin-top:1.5rem; background:#f59e0b; border-color:#f59e0b; color:#000;">Deploy Flagship</button>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="pricing-card">
+          <div class="badge b-green" style="align-self:flex-start; margin-bottom:12px;">ENTERPRISE</div>
+          <h3 style="font-size:1.3rem; font-weight:600; color:#fff;">Titan Cluster</h3>
+          <p style="font-size:0.8rem; color:var(--muted2); margin-top:4px;">Big data, AI inference &amp; builds</p>
+          
+          <div class="pricing-price" style="margin:1.4rem 0;">
+            <span style="font-size:2rem; font-weight:700; color:#fff;">₹10,499</span>
+            <span style="font-size:0.82rem; color:var(--muted);">/month</span>
+          </div>
+
+          <ul class="pricing-features">
+            <li><strong>16 vCPU</strong> Dedicated Cores</li>
+            <li><strong>64 GB</strong> Registered ECC RAM</li>
+            <li><strong>400 GB</strong> Gen4 NVMe RAID</li>
+            <li>1 Dedicated IPv4 + /64 IPv6</li>
+            <li>10 Gbps Redundant Uplink</li>
+            <li>Custom BGP Anycast Available</li>
+          </ul>
+
+          <button onclick="prefillAndScroll('pwr', 16, 64, 400)" class="btn btn-ghost" style="width:100%; margin-top:1.5rem;">Configure &amp; Deploy</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       INTERACTIVE HARDWARE CONFIGURATOR
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <section class="s" id="vps-builder" style="background:rgba(255,255,255,0.01);">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow"><span class="eyebrow-dot"></span> Live Configurator</span>
+        <h2 class="sh">Build Your Custom Virtual Machine</h2>
+        <p class="sub">Choose your architecture tier, dial in your CPU, RAM, and NVMe disk in real-time, and deploy immediately.</p>
+      </div>
+
+      <!-- Architecture Tiers -->
+      <div class="tier-selector-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:14px; margin-bottom:2.5rem;">
+        <div class="tier-opt" data-tier="eco" onclick="selectVpsTier('eco', this)">
+          <div class="tier-opt-top">
+            <span class="tier-name">ECO Budget</span>
+            <span class="badge b-blue" style="font-size:0.6rem;">₹19.2/core</span>
+          </div>
+          <div class="tier-desc">Intel Xeon E5 · DDR4 · Budget dev &amp; lightweight tools</div>
+        </div>
+
+        <div class="tier-opt selected" data-tier="std" onclick="selectVpsTier('std', this)">
+          <div class="tier-opt-top">
+            <span class="tier-name">STD Balanced</span>
+            <span class="badge b-purple" style="font-size:0.6rem;">POPULAR</span>
+          </div>
+          <div class="tier-desc">AMD EPYC 7003 · DDR4 ECC · Web APIs &amp; microservices</div>
+        </div>
+
+        <div class="tier-opt" data-tier="perf" onclick="selectVpsTier('perf', this)">
+          <div class="tier-opt-top">
+            <span class="tier-name">PERF Compute</span>
+            <span class="badge b-cyan" style="font-size:0.6rem;">4.8GHz</span>
+          </div>
+          <div class="tier-desc">Intel Core i5/i7 · High-frequency single-thread compute</div>
+        </div>
+
+        <div class="tier-opt" data-tier="pwr" onclick="selectVpsTier('pwr', this)">
+          <div class="tier-opt-top">
+            <span class="tier-name">PWR Extreme</span>
+            <span class="badge b-gold" style="font-size:0.6rem;">5.7GHz RYZEN</span>
+          </div>
+          <div class="tier-desc">AMD Ryzen 9 7950X · DDR5 ECC · Ultimate single-core speed</div>
+        </div>
+      </div>
+
+      <!-- Configurator Two-Column Layout -->
+      <div class="config-grid" style="display:grid; grid-template-columns: 1.6fr 1fr; gap:2.5rem; align-items:start;">
+        
+        <!-- Left: Sliders & Controls -->
+        <div class="glass-card" style="padding:2.2rem;">
+          
+          <!-- CPU Slider -->
+          <div class="slider-group" style="margin-bottom:2rem;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <label style="font-weight:500; font-size:0.9rem; color:#fff; display:flex; align-items:center; gap:8px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/></svg>
+                CPU Cores (vCPU)
+              </label>
+              <span id="vps-val-cpu" style="font-family:'DM Mono',monospace; font-size:1.1rem; font-weight:600; color:var(--violet2);">4 Cores</span>
+            </div>
+            <input type="range" id="vps-slider-cpu" min="1" max="32" value="4" step="1" oninput="syncVpsQuote()">
+            <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--muted); margin-top:4px;">
+              <span>1 Core</span>
+              <span>8 Cores</span>
+              <span>16 Cores</span>
+              <span>32 Cores</span>
+            </div>
+          </div>
+
+          <!-- RAM Slider -->
+          <div class="slider-group" style="margin-bottom:2rem;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <label style="font-weight:500; font-size:0.9rem; color:#fff; display:flex; align-items:center; gap:8px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/></svg>
+                Memory (RAM)
+              </label>
+              <span id="vps-val-ram" style="font-family:'DM Mono',monospace; font-size:1.1rem; font-weight:600; color:var(--violet2);">8 GB RAM</span>
+            </div>
+            <input type="range" id="vps-slider-ram" min="1" max="96" value="8" step="1" oninput="syncVpsQuote()">
+            <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--muted); margin-top:4px;">
+              <span>1 GB</span>
+              <span>16 GB</span>
+              <span>48 GB</span>
+              <span>96 GB</span>
+            </div>
+          </div>
+
+          <!-- NVMe Slider -->
+          <div class="slider-group" style="margin-bottom:2rem;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <label style="font-weight:500; font-size:0.9rem; color:#fff; display:flex; align-items:center; gap:8px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+                Pure NVMe Storage
+              </label>
+              <span id="vps-val-disk" style="font-family:'DM Mono',monospace; font-size:1.1rem; font-weight:600; color:var(--violet2);">80 GB NVMe</span>
+            </div>
+            <input type="range" id="vps-slider-disk" min="10" max="1000" value="80" step="10" oninput="syncVpsQuote()">
+            <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--muted); margin-top:4px;">
+              <span>10 GB</span>
+              <span>250 GB</span>
+              <span>500 GB</span>
+              <span>1000 GB</span>
+            </div>
+          </div>
+
+          <!-- Region & OS Grid -->
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:1.5rem; padding-top:1.5rem; border-top:1px solid var(--rim);">
+            <div>
+              <label style="display:block; font-size:0.78rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); margin-bottom:6px;">Deployment Region</label>
+              <select id="vps-region-select" style="width:100%; background:#070710; border:1px solid var(--rim); border-radius:8px; padding:10px 14px; color:#fff; font-size:0.85rem; outline:none;">
+                <option value="India">India</option>
+              </select>
+            </div>
+
+            <div>
+              <label style="display:block; font-size:0.78rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); margin-bottom:6px;">Operating System</label>
+              <select id="vps-os-select" style="width:100%; background:#070710; border:1px solid var(--rim); border-radius:8px; padding:10px 14px; color:#fff; font-size:0.85rem; outline:none;">
+                <option value="ubuntu-2404">Ubuntu 24.04 LTS (Noble Numbat)</option>
+                <option value="ubuntu-2204">Ubuntu 22.04 LTS (Jammy Jellyfish)</option>
+                <option value="debian-12">Debian 12 (Bookworm)</option>
+                <option value="alpine-320">Alpine Linux 3.20 (Ultra Lightweight)</option>
+                <option value="windows-server-2022">Windows Server 2022 (ISO/RDP)</option>
+                <option value="windows-11">Windows 11 Enterprise (ISO/RDP)</option>
+              </select>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right: Summary Card -->
+        <div class="glass-card" style="padding:2.2rem; border-color:rgba(124,106,255,0.3); position:sticky; top:100px;">
+          <div style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.12em; color:var(--muted); font-family:'DM Mono',monospace;">Calculated Billing</div>
+          
+          <div style="margin:1rem 0 1.5rem;">
+            <div style="display:flex; align-items:baseline; gap:6px;">
+              <span id="vps-price-display" style="font-size:2.8rem; font-weight:700; color:#fff; line-height:1;">₹1,274</span>
+              <span style="font-size:0.9rem; color:var(--muted);">/month</span>
+            </div>
+            <div style="font-size:0.75rem; color:#34d399; margin-top:6px; display:flex; align-items:center; gap:5px;">
+              <span>●</span> Dedicated IPv4 Included · Transparent Pricing
+            </div>
+          </div>
+
+          <div style="border-top:1px solid var(--rim); border-bottom:1px solid var(--rim); padding:1.2rem 0; margin-bottom:1.5rem;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:0.85rem;">
+              <span style="color:var(--muted2);">Hardware Tier</span>
+              <span id="summary-tier" style="color:#fff; font-weight:500;">STD Balanced</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:0.85rem;">
+              <span style="color:var(--muted2);">Processor</span>
+              <span id="summary-cpu" style="color:#fff; font-weight:500;">4 vCPU (EPYC)</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:0.85rem;">
+              <span style="color:var(--muted2);">Memory</span>
+              <span id="summary-ram" style="color:#fff; font-weight:500;">8 GB RAM</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:0.85rem;">
+              <span style="color:var(--muted2);">Storage</span>
+              <span id="summary-disk" style="color:#fff; font-weight:500;">80 GB NVMe</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:0.85rem;">
+              <span style="color:var(--muted2);">Dedicated IPv4</span>
+              <span style="color:#34d399; font-weight:500;">Included (1x IPv4)</span>
+            </div>
+          </div>
+
+          <button onclick="openVpsDeployModal()" class="btn btn-primary" style="width:100%; padding:14px; font-size:1rem;">
+            Deploy Now in 3s
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </button>
+
+          <div style="display:flex; justify-content:center; gap:16px; margin-top:1.2rem; font-size:0.75rem; color:var(--muted);">
+            <span>✓ No lock-in contract</span>
+            <span>✓ Automated reboot &amp; VNC</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       HARDWARE ARCHITECTURE & BENCHMARKS
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <section class="s">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow"><span class="eyebrow-dot"></span> Bare-Metal Performance</span>
+        <h2 class="sh">Engineered for Zero Throttle</h2>
+        <p class="sub">Compare our hypervisor hardware against traditional shared virtual hosting.</p>
+      </div>
+
+      <div class="grid-3" style="gap:24px;">
+        <div class="cap-card">
+          <div class="cap-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+          <div class="cap-title">5.7GHz Single-Core IPC</div>
+          <div class="cap-desc">Zen 4 AMD Ryzen 9 7950X CPUs deliver unmatched single-threaded clocks. Ideal for games and software that can't scale across 64 slow threads.</div>
+        </div>
+
+        <div class="cap-card">
+          <div class="cap-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg></div>
+          <div class="cap-title">PCIe Gen4 Enterprise NVMe</div>
+          <div class="cap-desc">Sustained 7,000 MB/s read and 6,500 MB/s write throughput. Say goodbye to I/O wait spikes, slow world loads, or sluggish database writes.</div>
+        </div>
+
+        <div class="cap-card">
+          <div class="cap-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+          <div class="cap-title">500+ Tbps DDoS Shield</div>
+          <div class="cap-desc">Every VPS is sheltered behind our 500+ Tbps Anycast BGP scrubbing &amp; L7 edge filters, neutralizing SYN floods, UDP amplification, and Layer 7 crashes.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       FOOTER
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <footer class="footer-wrap">
+    <div class="wrap">
+      <div class="footer-grid">
+        <div>
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:1rem;">
+            <div class="brand-icon" style="width:28px; height:28px; font-size:0.9rem;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/></svg>
+            </div>
+            <span style="font-family:'Bricolage Grotesque',sans-serif; font-size:1.15rem; font-weight:600; color:#fff;">EnderHost</span>
+          </div>
+          <p style="font-size:0.8rem; color:var(--muted2); line-height:1.7; max-width:280px;">
+            Enterprise cloud infrastructure, high-frequency VPS, Anycast tunnels, and container hosting.
+          </p>
+        </div>
+
+        <div>
+          <div class="footer-title">Compute &amp; Gaming</div>
+          <ul class="footer-links">
+            <li><a href="/vps">Cloud VPS Hosting</a></li>
+            <li><a href="/minecraft">Minecraft Hosting (Coming Soon)</a></li>
+            <li><a href="/dedicated">Dedicated Bare-Metal</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="footer-title">Network &amp; Cloud</div>
+          <ul class="footer-links">
+            <li><a href="/tunnels">Anycast Tunnels (500+ Tbps)</a></li>
+            <li><a href="/devspace">DevSpace Containers</a></li>
+            <li><a href="/web-hosting">NVMe Web Hosting</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="footer-title">Control &amp; Help</div>
+          <ul class="footer-links">
+            <li><a href="/#control-panel-section">Client Control Center</a></li>
+            <li><a href="/#faq-section">Frequently Answered</a></li>
+            <li><a href="mailto:support@enderhost.cloud">24/7 Priority Support</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>&copy; 2026 EnderHost Cloud Technologies. All rights reserved.</div>
+        <div style="display:flex; gap:1.5rem;">
+          <span style="color:var(--green);">● All Hypervisors Operational</span>
+          <span>500+ Tbps Anycast Active</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       DEPLOYMENT MODAL (Checkout Simulation)
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <div id="vps-deploy-modal" class="panel-modal-backdrop" style="display:none; position:fixed; inset:0; z-index:99999; background:rgba(0,0,0,0.8); backdrop-filter:blur(8px); align-items:center; justify-content:center;">
+    <div class="panel-modal" style="max-width:540px; background:#0c0b16; border:1px solid var(--rim2); border-radius:18px; padding:2rem; box-shadow:0 20px 50px rgba(0,0,0,0.8);">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+        <h3 style="font-size:1.2rem; font-weight:600; color:#fff; display:flex; align-items:center; gap:8px;">
+          <span class="badge b-purple">PROVISION</span> Deploy Cloud VM
+        </h3>
+        <button onclick="closeVpsDeployModal()" style="background:none; border:none; color:var(--muted); font-size:1.5rem; cursor:pointer;">&times;</button>
+      </div>
+
+      <div id="deploy-step-config">
+        <div style="background:rgba(255,255,255,0.03); border:1px solid var(--rim); border-radius:12px; padding:14px; margin-bottom:1.2rem;">
+          <div style="font-size:0.75rem; color:var(--muted); text-transform:uppercase;">Selected Specifications</div>
+          <div id="modal-spec-summary" style="font-size:0.9rem; font-weight:500; color:#fff; margin-top:4px;">STD · 4 vCPU · 8GB RAM · 80GB NVMe</div>
+          <div id="modal-cost-summary" style="font-size:1.2rem; font-weight:700; color:#34d399; margin-top:6px;">₹1,274 / month</div>
+        </div>
+
+        <div style="margin-bottom:1rem;">
+          <label style="display:block; font-size:0.8rem; color:var(--muted2); margin-bottom:6px;">Instance Hostname</label>
+          <input type="text" id="deploy-hostname" value="vm-ender-node-01" style="width:100%; background:#070710; border:1px solid var(--rim); border-radius:8px; padding:10px 14px; color:#fff; font-size:0.85rem; outline:none;">
+        </div>
+
+        <div style="margin-bottom:1.2rem;">
+          <label style="display:block; font-size:0.8rem; color:var(--muted2); margin-bottom:6px;">SSH Public Key (Optional)</label>
+          <input type="text" id="deploy-ssh" placeholder="ssh-ed25519 AAAAC3NzaC1lZDI1NTE5..." style="width:100%; background:#070710; border:1px solid var(--rim); border-radius:8px; padding:10px 14px; color:#fff; font-size:0.85rem; outline:none;">
+        </div>
+
+        <button onclick="executeVpsDeployment()" class="btn btn-primary" style="width:100%; padding:12px;">
+          Confirm &amp; Launch Hypervisor
+        </button>
+      </div>
+
+      <div id="deploy-step-progress" style="display:none; text-align:center; padding:2rem 0;">
+        <div class="live-pulse" style="width:20px; height:20px; background:var(--violet); margin:0 auto 1.5rem; box-shadow:0 0 20px var(--violet);"></div>
+        <h4 style="font-size:1.1rem; color:#fff; margin-bottom:6px;">Allocating Hypervisor Resources...</h4>
+        <p id="deploy-log-line" style="font-size:0.8rem; font-family:'DM Mono',monospace; color:var(--muted2);">Mounting QCOW2 NVMe volume...</p>
+      </div>
+
+      <div id="deploy-step-done" style="display:none; text-align:center; padding:1.5rem 0;">
+        <div style="width:52px; height:52px; background:rgba(16,185,129,0.15); border:1px solid rgba(16,185,129,0.4); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 1.2rem; color:#34d399; font-size:1.5rem;">
+          ✓
+        </div>
+        <h4 style="font-size:1.15rem; color:#fff; margin-bottom:6px;">Instance Successfully Provisioned!</h4>
+        <p style="font-size:0.82rem; color:var(--muted2); margin-bottom:1.2rem;">Your virtual machine is online and ready for SSH connection.</p>
+        
+        <div style="background:#070710; border:1px solid var(--rim); border-radius:10px; padding:12px; font-family:'DM Mono',monospace; font-size:0.82rem; color:#fff; margin-bottom:1.2rem; text-align:left;">
+          <div>IP: <span style="color:#34d399;">103.189.89.104</span></div>
+          <div>Port: 22 (SSH)</div>
+          <div>Root Password: <span style="color:var(--gold);">EnderSec_78#x</span></div>
+        </div>
+
+        <a href="/#control-panel-section" class="btn btn-primary" style="width:100%; padding:10px;">Open Server Control Center</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/js/app.js"></script>
+  <script>
+    let vpsCurrentTier = 'std';
+    const VPS_RATES = {
+      eco: { name: 'ECO Budget (Xeon)', cpu: 19.2, ram: 31.2, disk: 0.312 },
+      std: { name: 'STD Balanced (EPYC)', cpu: 31.2, ram: 44.4, disk: 0.444 },
+      perf: { name: 'PERF Compute (Intel 4.8GHz)', cpu: 50.4, ram: 63.6, disk: 0.636 },
+      pwr: { name: 'PWR Extreme (Ryzen 9 5.7GHz)', cpu: 69.6, ram: 88.8, disk: 0.948 }
+    };
+
+    function selectVpsTier(tier, el) {
+      document.querySelectorAll('.tier-opt').forEach(t => t.classList.remove('selected'));
+      el.classList.add('selected');
+      vpsCurrentTier = tier;
+      syncVpsQuote();
+    }
+
+    function syncVpsQuote() {
+      const cpu = Number(document.getElementById('vps-slider-cpu').value);
+      const ram = Number(document.getElementById('vps-slider-ram').value);
+      const disk = Number(document.getElementById('vps-slider-disk').value);
+
+      document.getElementById('vps-val-cpu').textContent = `${cpu} Cores`;
+      document.getElementById('vps-val-ram').textContent = `${ram} GB RAM`;
+      document.getElementById('vps-val-disk').textContent = `${disk} GB NVMe`;
+
+      const rate = VPS_RATES[vpsCurrentTier];
+      const baseHardware = (cpu * rate.cpu) + (ram * rate.ram) + (disk * rate.disk);
+      const wholesale = baseHardware + 150; // flat IP
+
+      let margin = 300;
+      if (wholesale >= 1000 && wholesale < 2500) margin = 600;
+      else if (wholesale >= 2500 && wholesale < 3500) margin = 1000;
+      else if (wholesale >= 3500 && wholesale <= 5000) margin = 1500;
+      else if (wholesale > 5000) margin = 1800;
+
+      const retail = Math.ceil(wholesale + margin);
+
+      document.getElementById('vps-price-display').textContent = `₹${retail.toLocaleString('en-IN')}`;
+      document.getElementById('summary-tier').textContent = rate.name;
+      document.getElementById('summary-cpu').textContent = `${cpu} vCPU`;
+      document.getElementById('summary-ram').textContent = `${ram} GB RAM`;
+      document.getElementById('summary-disk').textContent = `${disk} GB NVMe`;
+    }
+
+    function prefillAndScroll(tier, cpu, ram, disk) {
+      vpsCurrentTier = tier;
+      document.querySelectorAll('.tier-opt').forEach(t => {
+        if (t.dataset.tier === tier) t.classList.add('selected');
+        else t.classList.remove('selected');
+      });
+
+      document.getElementById('vps-slider-cpu').value = cpu;
+      document.getElementById('vps-slider-ram').value = ram;
+      document.getElementById('vps-slider-disk').value = disk;
+
+      syncVpsQuote();
+      document.getElementById('vps-builder').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function openVpsDeployModal() {
+      const cpu = document.getElementById('vps-slider-cpu').value;
+      const ram = document.getElementById('vps-slider-ram').value;
+      const disk = document.getElementById('vps-slider-disk').value;
+      const price = document.getElementById('vps-price-display').textContent;
+      const tierName = VPS_RATES[vpsCurrentTier].name;
+
+      document.getElementById('modal-spec-summary').textContent = `${tierName} · ${cpu} vCPU · ${ram}GB RAM · ${disk}GB NVMe`;
+      document.getElementById('modal-cost-summary').textContent = `${price} / month`;
+
+      document.getElementById('deploy-step-config').style.display = 'block';
+      document.getElementById('deploy-step-progress').style.display = 'none';
+      document.getElementById('deploy-step-done').style.display = 'none';
+      document.getElementById('vps-deploy-modal').style.display = 'flex';
+    }
+
+    function closeVpsDeployModal() {
+      document.getElementById('vps-deploy-modal').style.display = 'none';
+    }
+
+    function executeVpsDeployment() {
+      document.getElementById('deploy-step-config').style.display = 'none';
+      document.getElementById('deploy-step-progress').style.display = 'block';
+
+      const logs = [
+        'Allocating dedicated IPv4 address...',
+        'Formatting NVMe storage with ext4...',
+        'Injecting cloud-init and user SSH key...',
+        'Booting hypervisor virtual machine...',
+        'VM ready!'
+      ];
+
+      let step = 0;
+      const interval = setInterval(() => {
+        if (step < logs.length) {
+          document.getElementById('deploy-log-line').textContent = logs[step];
+          step++;
+        } else {
+          clearInterval(interval);
+          document.getElementById('deploy-step-progress').style.display = 'none';
+          document.getElementById('deploy-step-done').style.display = 'block';
+        }
+      }, 700);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      syncVpsQuote();
+    });
+  </script>
+</body>
+</html>

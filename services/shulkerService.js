@@ -144,8 +144,8 @@ class ShulkerService {
       data: {
         stock: {
           eco: { tier: "eco", node_type: "VPS-Eco", total_nodes: 2, total_capacity: 100, has_stock: true },
-          std: { tier: "std", node_type: "VPS-Std", total_nodes: 2, total_capacity: 50, has_stock: true },
-          perf: { tier: "perf", node_type: "VPS-Perf", total_nodes: 1, total_capacity: 40, has_stock: true },
+          std: { tier: "std", node_type: "VPS-Std", total_nodes: 0, total_capacity: 0, has_stock: false },
+          perf: { tier: "perf", node_type: "VPS-Perf", total_nodes: 0, total_capacity: 0, has_stock: false },
           pwr: { tier: "pwr", node_type: "VPS-Pwr", total_nodes: 1, total_capacity: 50, has_stock: true }
         }
       }
@@ -153,21 +153,19 @@ class ShulkerService {
   }
 
   /**
-   * List available regions
+   * List available regions (Kept exclusively to India as requested)
    */
   async listRegions(tier = null) {
     const params = tier ? { tier } : {};
     const res = await this.request('list_regions', 'GET', null, params);
-    if (res && res.success) {
+    if (res && res.success && res.data) {
       return res;
     }
     return {
       success: true,
       data: {
         regions: [
-          { location: "Mumbai, India", available_tiers: ["eco", "std", "perf", "pwr"], has_stock: true, ping_ms: 12 },
-          { location: "Delhi, India", available_tiers: ["eco", "std", "pwr"], has_stock: true, ping_ms: 19 },
-          { location: "Frankfurt, Germany", available_tiers: ["std", "perf"], has_stock: true, ping_ms: 110 }
+          { location: "India", available_tiers: ["eco", "perf", "pwr"], has_stock: true }
         ]
       }
     };

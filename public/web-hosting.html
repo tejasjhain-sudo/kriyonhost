@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>High-Speed NVMe Website Hosting — LiteSpeed &amp; cPanel | EnderHost</title>
+  <meta name="description" content="Ultra-fast cloud web hosting powered by pure NVMe SSDs, LiteSpeed Enterprise web server, free SSL, automated daily backups, and 1-click WordPress.">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,600;12..96,700&family=Inter:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%237c6aff%22/><circle cx=%2250%22 cy=%2250%22 r=%2222%22 fill=%22%2305050a%22/><circle cx=%2250%22 cy=%2250%22 r=%2210%22 fill=%22%2310b981%22/></svg>">
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       NAVBAR
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <header class="nav-header">
+    <div class="wrap nav-inner">
+      <a href="/" class="nav-brand">
+        <div class="brand-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+            <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+            <line x1="6" y1="6" x2="6.01" y2="6"></line>
+            <line x1="6" y1="18" x2="6.01" y2="18"></line>
+          </svg>
+        </div>
+        <span class="brand-name">EnderHost</span>
+        <span class="brand-tag">CLOUD</span>
+      </a>
+
+      <ul class="nav-links">
+        <li class="nav-dropdown" id="nav-products-dropdown">
+          <button class="nav-dropdown-btn" onclick="toggleProductsMenu(event)">
+            Products
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          
+          <div class="mega-menu" id="mega-menu-box">
+            <div class="mega-menu-grid">
+              <div>
+                <div class="mega-col-title">COMPUTE</div>
+                <a href="/vps" class="mega-item">
+                  <div class="mega-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/></svg></div>
+                  <div class="mega-text"><div class="mega-title">VPS Hosting</div><div class="mega-sub">Enterprise virtual machines</div></div>
+                </a>
+                <a href="/dedicated" class="mega-item">
+                  <div class="mega-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/></svg></div>
+                  <div class="mega-text"><div class="mega-title">Dedicated Server</div><div class="mega-sub">Pure bare-metal performance</div></div>
+                </a>
+              </div>
+
+              <div>
+                <div class="mega-col-title">GAME HOSTING</div>
+                <a href="/minecraft" class="mega-item">
+                  <div class="mega-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
+                  <div class="mega-text">
+                    <div class="mega-title" style="display:flex; align-items:center; gap:6px;">
+                      Minecraft Hosting
+                      <span class="badge b-gold" style="font-size:0.58rem; padding:1px 6px;">COMING SOON</span>
+                    </div>
+                    <div class="mega-sub">Ryzen 9 · 5.7GHz · 500+ Tbps</div>
+                  </div>
+                </a>
+              </div>
+
+              <div>
+                <div class="mega-col-title">NETWORK &amp; SECURITY</div>
+                <a href="/tunnels" class="mega-item">
+                  <div class="mega-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+                  <div class="mega-text"><div class="mega-title">Anycast Tunnels <span class="badge b-purple" style="font-size:0.6rem; padding:1px 5px;">NEW</span></div><div class="mega-sub">Anycast Mesh · 500+ Tbps</div></div>
+                </a>
+                <a href="/devspace" class="mega-item">
+                  <div class="mega-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
+                  <div class="mega-text"><div class="mega-title">DevSpace <span class="badge b-blue" style="font-size:0.6rem; padding:1px 5px;">CONTAINERS</span></div><div class="mega-sub">Docker, Python, Node &amp; Bots</div></div>
+                </a>
+              </div>
+
+              <div>
+                <div class="mega-col-title">WEB &amp; TOOLS</div>
+                <a href="/web-hosting" class="mega-item active-link" style="background:rgba(124,106,255,0.08); border-radius:10px;">
+                  <div class="mega-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/></svg></div>
+                  <div class="mega-text"><div class="mega-title">Website Hosting <span class="badge b-green" style="font-size:0.6rem; padding:1px 5px;">ACTIVE</span></div><div class="mega-sub">NVMe, cPanel, Node &amp; Free SSL</div></div>
+                </a>
+                <a href="/#control-panel-section" class="mega-item">
+                  <div class="mega-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg></div>
+                  <div class="mega-text"><div class="mega-title">Server Console</div><div class="mega-sub">Interactive shell &amp; Web VNC</div></div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </li>
+
+        <li><a href="/vps">Cloud VPS</a></li>
+        <li><a href="/tunnels">Tunnels</a></li>
+        <li><a href="/devspace">DevSpace</a></li>
+        <li><a href="/web-hosting" style="color:var(--cream); font-weight:500;">Web Hosting</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <a href="/#control-panel-section" class="btn btn-ghost btn-sm">Log in</a>
+        <a href="#web-plans" class="btn btn-primary btn-sm">Get Web Hosting</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       HERO
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <section class="hero" style="min-height:75vh; padding-top:10rem;">
+    <div class="hero-orb" style="background:radial-gradient(circle, rgba(16,185,129,0.2) 0%, rgba(124,106,255,0.12) 50%, transparent 70%);"></div>
+    <div class="wrap hero-content">
+      
+      <div class="hero-pill" style="border-color:rgba(16,185,129,0.4); background:rgba(16,185,129,0.08); color:#34d399;">
+        <span class="live-pulse" style="background:#34d399; box-shadow:0 0 10px #34d399;"></span>
+        LITESPEED ENTERPRISE · HTTP/3 &amp; QUIC · SUB-300MS TTFB
+      </div>
+
+      <h1 class="hero-title" style="margin-bottom:1.2rem;">
+        <div>Blazing Fast NVMe</div>
+        <span class="grad">Cloud Website Hosting</span>
+      </h1>
+
+      <p class="hero-sub" style="max-width:720px; margin-bottom:2.2rem;">
+        Host your web applications, e-commerce stores, and community portals on enterprise NVMe hardware. Includes free automated SSL certificates, unlimited bandwidth, daily off-site backups, and 1-click WordPress installer.
+      </p>
+
+      <div style="display:flex; justify-content:center; gap:14px; flex-wrap:wrap;">
+        <a href="#web-plans" class="btn btn-primary" style="padding:13px 28px; font-size:0.95rem;">
+          View Hosting Plans
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        </a>
+        <a href="#web-features" class="btn btn-ghost" style="padding:13px 24px; font-size:0.95rem;">
+          Hosting Highlights
+        </a>
+      </div>
+
+      <!-- Feature Badges -->
+      <div class="hero-stats" style="margin-top:4rem;">
+        <div class="stat-pill">
+          <span class="stat-num">99.9%</span>
+          <span class="stat-label">Uptime SLA</span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-num">HTTP/3</span>
+          <span class="stat-label">LiteSpeed Web</span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-num">Free SSL</span>
+          <span class="stat-label">Auto-Renewing</span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-num">1-Click</span>
+          <span class="stat-label">WordPress / Node</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       WEB HOSTING PLANS
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <section class="s" id="web-plans">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow"><span class="eyebrow-dot"></span> Honest Cloud Pricing</span>
+        <h2 class="sh">Choose Your Website Hosting Tier</h2>
+        <p class="sub">Free migrations from cPanel or DirectAdmin with zero website downtime.</p>
+      </div>
+
+      <div class="grid-3" style="gap:24px;">
+        
+        <!-- Starter Web -->
+        <div class="pricing-card">
+          <div class="badge b-blue" style="align-self:flex-start; margin-bottom:12px;">STARTER</div>
+          <h3 style="font-size:1.35rem; font-weight:600; color:#fff;">Starter Web</h3>
+          <p style="font-size:0.82rem; color:var(--muted2); margin-top:4px;">Single portfolio, blog or landing page</p>
+          
+          <div class="pricing-price" style="margin:1.4rem 0;">
+            <span style="font-size:2.3rem; font-weight:700; color:#fff;">₹249</span>
+            <span style="font-size:0.85rem; color:var(--muted);">/month</span>
+          </div>
+
+          <ul class="pricing-features">
+            <li><strong>1 Hosted</strong> Domain / Website</li>
+            <li><strong>10 GB</strong> Pure NVMe Storage</li>
+            <li><strong>Unmetered</strong> 1Gbps Bandwidth</li>
+            <li>Free Let's Encrypt SSL</li>
+            <li>cPanel / Web Control Panel</li>
+            <li>1-Click WordPress &amp; PHP 8.3</li>
+            <li>5 Business Email Accounts</li>
+          </ul>
+
+          <button onclick="orderWebHosting('Starter Web', '₹249')" class="btn btn-ghost" style="width:100%; margin-top:1.5rem;">Select Starter</button>
+        </div>
+
+        <!-- Pro Web -->
+        <div class="pricing-card" style="border-color:rgba(16,185,129,0.4); background:rgba(16,185,129,0.04);">
+          <div class="badge b-green" style="align-self:flex-start; margin-bottom:12px;">MOST POPULAR · BUSINESS</div>
+          <h3 style="font-size:1.35rem; font-weight:600; color:#fff;">Business Pro</h3>
+          <p style="font-size:0.82rem; color:var(--muted2); margin-top:4px;">Agencies, eCommerce &amp; multi-site portals</p>
+          
+          <div class="pricing-price" style="margin:1.4rem 0;">
+            <span style="font-size:2.3rem; font-weight:700; color:#fff;">₹499</span>
+            <span style="font-size:0.85rem; color:var(--muted);">/month</span>
+          </div>
+
+          <ul class="pricing-features">
+            <li><strong>5 Hosted</strong> Domains / Websites</li>
+            <li><strong>30 GB</strong> Pure NVMe Storage</li>
+            <li><strong>Unmetered</strong> 1Gbps Bandwidth</li>
+            <li>Free Wildcard SSL on all domains</li>
+            <li>Node.js, Python &amp; Ruby Selector</li>
+            <li>Daily Automated Cloud Backups</li>
+            <li>20 Business Email Accounts</li>
+            <li>Free Cloudflare CDN Integration</li>
+          </ul>
+
+          <button onclick="orderWebHosting('Business Pro', '₹499')" class="btn btn-primary" style="width:100%; margin-top:1.5rem; background:#10b981; border-color:#10b981;">Select Pro</button>
+        </div>
+
+        <!-- Enterprise Web -->
+        <div class="pricing-card" style="border-color:rgba(245,158,11,0.4); background:rgba(245,158,11,0.03);">
+          <div class="badge b-gold" style="align-self:flex-start; margin-bottom:12px;">ENTERPRISE</div>
+          <h3 style="font-size:1.35rem; font-weight:600; color:#fff;">Enterprise Web</h3>
+          <p style="font-size:0.82rem; color:var(--muted2); margin-top:4px;">High-traffic stores &amp; production SaaS</p>
+          
+          <div class="pricing-price" style="margin:1.4rem 0;">
+            <span style="font-size:2.3rem; font-weight:700; color:#fff;">₹999</span>
+            <span style="font-size:0.85rem; color:var(--muted);">/month</span>
+          </div>
+
+          <ul class="pricing-features">
+            <li><strong>Unlimited</strong> Hosted Domains</li>
+            <li><strong>100 GB</strong> Ultra NVMe Storage</li>
+            <li><strong>Dedicated</strong> CPU &amp; RAM Allocation</li>
+            <li>Free Wildcard SSL Included</li>
+            <li>Redis Object Caching Built-in</li>
+            <li>Staging Environments &amp; Git Deploys</li>
+            <li>Unlimited Business Email Accounts</li>
+            <li>Priority 24/7 Webmaster Support</li>
+          </ul>
+
+          <button onclick="orderWebHosting('Enterprise Web', '₹999')" class="btn btn-primary" style="width:100%; margin-top:1.5rem; background:#f59e0b; border-color:#f59e0b; color:#000;">Select Enterprise</button>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       FEATURE BREAKDOWN
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <section class="s" id="web-features" style="background:rgba(255,255,255,0.01);">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow"><span class="eyebrow-dot"></span> Performance Stack</span>
+        <h2 class="sh">Why EnderHost Websites Load in Milliseconds</h2>
+        <p class="sub">Advanced caching layers, hardware RAID-10 NVMe, and global edge routing.</p>
+      </div>
+
+      <div class="grid-3" style="gap:24px;">
+        <div class="cap-card">
+          <div class="cap-icon" style="color:#34d399;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+          <div class="cap-title">LiteSpeed Enterprise</div>
+          <div class="cap-desc">Up to 12x faster than Apache and 3x faster than Nginx. Built-in LSCache handles thousands of simultaneous visitors with virtually 0% CPU consumption.</div>
+        </div>
+
+        <div class="cap-card">
+          <div class="cap-icon" style="color:var(--cyan);"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+          <div class="cap-title">Daily Cloud Backups</div>
+          <div class="cap-desc">Automated snapshots taken every 24 hours and mirrored to an isolated secondary storage zone. Restore files, databases, or entire email in 1 click.</div>
+        </div>
+
+        <div class="cap-card">
+          <div class="cap-icon" style="color:var(--violet2);"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/></svg></div>
+          <div class="cap-title">Node.js &amp; Python Runtimes</div>
+          <div class="cap-desc">Not just PHP! Run Next.js, Express, Django, and Flask web apps natively directly through the control center with environment variables managed.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       FOOTER
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <footer class="footer-wrap">
+    <div class="wrap">
+      <div class="footer-grid">
+        <div>
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:1rem;">
+            <div class="brand-icon" style="width:28px; height:28px; font-size:0.9rem;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/></svg>
+            </div>
+            <span style="font-family:'Bricolage Grotesque',sans-serif; font-size:1.15rem; font-weight:600; color:#fff;">EnderHost</span>
+          </div>
+          <p style="font-size:0.8rem; color:var(--muted2); line-height:1.7; max-width:280px;">
+            Enterprise cloud infrastructure, high-frequency VPS, Anycast tunnels, and container hosting.
+          </p>
+        </div>
+
+        <div>
+          <div class="footer-title">Web &amp; Cloud</div>
+          <ul class="footer-links">
+            <li><a href="/web-hosting">NVMe Web Hosting</a></li>
+            <li><a href="/vps">Cloud VPS Nodes</a></li>
+            <li><a href="/devspace">DevSpace Containers</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="footer-title">Network &amp; Gaming</div>
+          <ul class="footer-links">
+            <li><a href="/tunnels">Anycast Tunnels (500+ Tbps)</a></li>
+            <li><a href="/minecraft">Minecraft Hosting (Coming Soon)</a></li>
+            <li><a href="/dedicated">Dedicated Servers</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="footer-title">Support &amp; Account</div>
+          <ul class="footer-links">
+            <li><a href="/#control-panel-section">Client Console</a></li>
+            <li><a href="/#faq-section">Frequently Answered</a></li>
+            <li><a href="mailto:support@enderhost.cloud">Technical Support</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>&copy; 2026 EnderHost Cloud Technologies. All rights reserved.</div>
+        <div style="display:flex; gap:1.5rem;">
+          <span style="color:var(--green);">● Web Hosting Servers 100% Online</span>
+          <span>LiteSpeed HTTP/3 Active</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       ORDER MODAL
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <div id="web-order-modal" class="panel-modal-backdrop" style="display:none; position:fixed; inset:0; z-index:99999; background:rgba(0,0,0,0.8); backdrop-filter:blur(8px); align-items:center; justify-content:center;">
+    <div class="panel-modal" style="max-width:520px; background:#0c0b16; border:1px solid var(--rim2); border-radius:18px; padding:2rem; box-shadow:0 20px 50px rgba(0,0,0,0.8);">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+        <h3 style="font-size:1.2rem; font-weight:600; color:#fff; display:flex; align-items:center; gap:8px;">
+          <span class="badge b-green">SETUP</span> Deploy Web Hosting
+        </h3>
+        <button onclick="closeWebModal()" style="background:none; border:none; color:var(--muted); font-size:1.5rem; cursor:pointer;">&times;</button>
+      </div>
+
+      <div id="web-order-form">
+        <div style="background:rgba(255,255,255,0.03); border:1px solid var(--rim); border-radius:12px; padding:14px; margin-bottom:1.2rem;">
+          <div style="font-size:0.75rem; color:var(--muted); text-transform:uppercase;">Selected Package</div>
+          <div id="modal-web-plan" style="font-size:1.1rem; font-weight:600; color:#fff; margin-top:4px;">Business Pro Web</div>
+          <div id="modal-web-price" style="font-size:1.2rem; font-weight:700; color:#34d399; margin-top:4px;">₹499 / month</div>
+        </div>
+
+        <div style="margin-bottom:1rem;">
+          <label style="display:block; font-size:0.8rem; color:var(--muted2); margin-bottom:6px;">Your Primary Domain Name</label>
+          <input type="text" id="web-domain-input" placeholder="e.g. mycompany.com" style="width:100%; background:#070710; border:1px solid var(--rim); border-radius:8px; padding:10px 14px; color:#fff; font-size:0.85rem; outline:none;">
+        </div>
+
+        <div style="margin-bottom:1.2rem;">
+          <label style="display:block; font-size:0.8rem; color:var(--muted2); margin-bottom:6px;">Server Datacenter</label>
+          <select style="width:100%; background:#070710; border:1px solid var(--rim); border-radius:8px; padding:10px 14px; color:#fff; font-size:0.85rem; outline:none;">
+            <option>Mumbai, India (Sub-15ms National Ping)</option>
+            <option>Singapore (Southeast Asia Peering)</option>
+            <option>Frankfurt, Germany (European Central)</option>
+          </select>
+        </div>
+
+        <button onclick="confirmWebDeployment()" class="btn btn-primary" style="width:100%; padding:12px; background:#10b981; border-color:#10b981;">
+          Create Hosting Account
+        </button>
+      </div>
+
+      <div id="web-order-done" style="display:none; text-align:center; padding:1.5rem 0;">
+        <div style="width:52px; height:52px; background:rgba(16,185,129,0.15); border:1px solid rgba(16,185,129,0.4); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 1.2rem; color:#34d399; font-size:1.5rem;">
+          ✓
+        </div>
+        <h4 style="font-size:1.15rem; color:#fff; margin-bottom:6px;">Hosting Account Ready!</h4>
+        <p style="font-size:0.82rem; color:var(--muted2); margin-bottom:1.2rem;">Your cPanel credentials have been generated and nameservers assigned:</p>
+        
+        <div style="background:#070710; border:1px solid var(--rim); border-radius:10px; padding:12px; font-family:'DM Mono',monospace; font-size:0.82rem; color:#fff; margin-bottom:1.2rem; text-align:left;">
+          <div>NS 1: <span style="color:#38bdf8;">ns1.enderhost.cloud</span></div>
+          <div>NS 2: <span style="color:#38bdf8;">ns2.enderhost.cloud</span></div>
+          <div>cPanel URL: <span style="color:#34d399;">https://cpanel.enderhost.cloud:2083</span></div>
+        </div>
+
+        <button onclick="closeWebModal()" class="btn btn-ghost" style="width:100%; padding:10px;">Close Window</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+  <script>
+    function orderWebHosting(planName, price) {
+      document.getElementById('modal-web-plan').textContent = planName;
+      document.getElementById('modal-web-price').textContent = `${price} / month`;
+      document.getElementById('web-order-form').style.display = 'block';
+      document.getElementById('web-order-done').style.display = 'none';
+      document.getElementById('web-order-modal').style.display = 'flex';
+    }
+
+    function closeWebModal() {
+      document.getElementById('web-order-modal').style.display = 'none';
+    }
+
+    function confirmWebDeployment() {
+      document.getElementById('web-order-form').style.display = 'none';
+      document.getElementById('web-order-done').style.display = 'block';
+    }
+  </script>
+</body>
+</html>

@@ -22,6 +22,14 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// ─── Dedicated Product Pages ────────────────────────────────────────────────
+app.get('/vps', (req, res) => res.sendFile(path.join(__dirname, 'public', 'vps.html')));
+app.get('/minecraft', (req, res) => res.sendFile(path.join(__dirname, 'public', 'minecraft.html')));
+app.get('/tunnels', (req, res) => res.sendFile(path.join(__dirname, 'public', 'tunnels.html')));
+app.get('/devspace', (req, res) => res.sendFile(path.join(__dirname, 'public', 'devspace.html')));
+app.get('/web-hosting', (req, res) => res.sendFile(path.join(__dirname, 'public', 'web-hosting.html')));
+app.get('/dedicated', (req, res) => res.sendFile(path.join(__dirname, 'public', 'dedicated.html')));
+
 // ─── Health check ──────────────────────────────────────────────────────────
 app.get('/api/health', (req, res) => {
   res.json({

@@ -317,6 +317,78 @@ const WEB_HOSTING_PLANS = [
   }
 ];
 
+/**
+ * DevSpace - Cloud Project Containers (Docker, Node.js, Python, Bots & Web Apps)
+ * Reseller Margin: ₹300 to ₹500
+ */
+const DEVSPACE_PLANS = [
+  {
+    id: 'devspace-starter',
+    name: 'DevSpace Starter',
+    price: 599,
+    wholesaleCost: 299,
+    margin: 300,
+    tag: 'HOBBY & BOTS',
+    specs: { cpu: 2, ram: 4, disk: 25 },
+    popular: false,
+    badgeClass: 'b-green',
+    features: [
+      '2 vCPU Compute Cores',
+      '4 GB High-Speed RAM',
+      '25 GB Gen4 NVMe Storage',
+      '1 Always-On Docker Container',
+      'Auto-Deploy from GitHub / GitLab',
+      'Free Subdomain (app.ender.space)',
+      '92 Tbps DDoS Protection',
+      'Node.js, Python, Go, PHP & Ruby'
+    ]
+  },
+  {
+    id: 'devspace-pro',
+    name: 'DevSpace Pro',
+    price: 899,
+    wholesaleCost: 499,
+    margin: 400,
+    tag: 'DEVELOPER FAVORITE',
+    specs: { cpu: 4, ram: 8, disk: 60 },
+    popular: true,
+    badgeClass: 'b-purple',
+    features: [
+      '4 vCPU Compute Cores',
+      '8 GB High-Speed RAM',
+      '60 GB Gen4 NVMe Storage',
+      '3 Always-On Project Containers',
+      'Dedicated Static Port Allocation',
+      'Custom Domain with Auto-SSL',
+      'Colide AI Coding Assistant',
+      'Docker Compose Multi-Container',
+      '99.9% Production Uptime SLA'
+    ]
+  },
+  {
+    id: 'devspace-enterprise',
+    name: 'DevSpace Team',
+    price: 1499,
+    wholesaleCost: 999,
+    margin: 500,
+    tag: 'TEAM & CLUSTER',
+    specs: { cpu: 8, ram: 16, disk: 150 },
+    popular: false,
+    badgeClass: 'b-gold',
+    features: [
+      '8 vCPU Compute Cores',
+      '16 GB High-Speed RAM',
+      '150 GB Gen4 NVMe Storage',
+      'Unlimited Project Containers',
+      'Dedicated Static Public IPv4',
+      'Team RBAC & Multi-User Seats',
+      'CI/CD Webhooks & Build Triggers',
+      'Daily Automated Off-Site Backups',
+      '24/7 Priority Developer Support'
+    ]
+  }
+];
+
 module.exports = {
   TIERS,
   FLAT_IP_CHARGE,
@@ -325,5 +397,6 @@ module.exports = {
   getFullQuote,
   POPULAR_PLANS,
   TUNNEL_PLANS,
-  WEB_HOSTING_PLANS
+  WEB_HOSTING_PLANS,
+  DEVSPACE_PLANS
 };

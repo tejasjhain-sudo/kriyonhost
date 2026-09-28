@@ -5,7 +5,7 @@
 
 // State
 let currentMode = 'vps'; // 'vps' or 'minecraft'
-let currentTier = 'std';
+let currentTier = 'pwr';
 let cpuCores = 4;
 let ramGb = 8;
 let diskGb = 80;
@@ -50,6 +50,7 @@ function calcMargin(wholesale) {
 // ─── Initialization ────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   initNavbar();
+  initHeroChipAnimation();
   initModeSwitcher();
   initTierSelector();
   initSliders();
@@ -62,6 +63,68 @@ document.addEventListener('DOMContentLoaded', () => {
   initTerminal();
   initSecretAdmin();
 });
+
+// ─── Hero Animated Chip (Rotating Shulker Style) ───────────────────────────
+const HERO_ITEMS = [
+  {
+    text: 'Minecraft',
+    icon: `<svg width="34" height="34" viewBox="0 0 40 40">
+      <polygon points="20,3 37,12 20,21 3,12" fill="#4ade80" />
+      <polygon points="3,12 20,21 20,37 3,28" fill="#854d0e" />
+      <polygon points="20,21 37,12 37,28 20,37" fill="#713f12" />
+      <path d="M3,12 L20,21 L37,12 L37,16 L20,25 L3,16 Z" fill="#22c55e" />
+    </svg>`
+  },
+  {
+    text: 'VPS',
+    icon: `<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#c084fc" stroke-width="2">
+      <ellipse cx="12" cy="5" rx="9" ry="3"/>
+      <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/>
+      <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
+    </svg>`
+  },
+  {
+    text: 'DevSpace',
+    icon: `<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2">
+      <polyline points="16 18 22 12 16 6"/>
+      <polyline points="8 6 2 12 8 18"/>
+    </svg>`
+  },
+  {
+    text: 'Tunnels',
+    icon: `<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+    </svg>`
+  }
+];
+
+function initHeroChipAnimation() {
+  const badge = document.getElementById('hero-chip-badge');
+  const iconEl = document.getElementById('hero-chip-icon');
+  const textEl = document.getElementById('hero-chip-text');
+  if (!badge || !iconEl || !textEl) return;
+
+  let currentIdx = 0;
+  setInterval(() => {
+    badge.classList.add('flip-out');
+    setTimeout(() => {
+      currentIdx = (currentIdx + 1) % HERO_ITEMS.length;
+      const item = HERO_ITEMS[currentIdx];
+      iconEl.innerHTML = item.icon;
+      textEl.textContent = item.text;
+      badge.classList.remove('flip-out');
+      badge.classList.add('flip-in');
+      setTimeout(() => {
+        badge.classList.remove('flip-in');
+      }, 50);
+    }, 350);
+  }, 2800);
+}
+
+function dismissPromoBanner() {
+  const banner = document.getElementById('bottom-promo-bar');
+  if (banner) banner.classList.add('hidden');
+}
 
 // ─── Navbar Scroll & Mega Menu ──────────────────────────────────────────────
 function initNavbar() {
