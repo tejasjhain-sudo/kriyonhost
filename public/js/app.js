@@ -20,22 +20,27 @@ const MAX_CHART_POINTS = 30;
 let cpuHistory = Array(MAX_CHART_POINTS).fill(12);
 let ramHistory = Array(MAX_CHART_POINTS).fill(35);
 
-// Client-side pricing mirror
+// Client-side pricing mirror (synchronized with hypervisor hardware rates)
 const TIER_RATES = {
-  eco: { name: 'ECO Budget', cpuBadge: 'Intel Xeon · Budget', cpu: 16, ram: 26, disk: 0.26 },
-  std: { name: 'STD Balanced', cpuBadge: 'AMD EPYC · Balanced', cpu: 26, ram: 37, disk: 0.37 },
-  perf: { name: 'PERF Compute', cpuBadge: 'Intel Core i7 (4.8GHz)', cpu: 42, ram: 53, disk: 0.53 },
-  pwr: { name: 'PWR Extreme', cpuBadge: 'AMD Ryzen 9 (5.7GHz)', cpu: 58, ram: 74, disk: 0.79 }
+  eco: { name: 'ECO Budget', cpuBadge: 'Intel Xeon · Budget', cpu: 19.2, ram: 31.2, disk: 0.312 },
+  std: { name: 'STD Balanced', cpuBadge: 'AMD EPYC · Balanced', cpu: 31.2, ram: 44.4, disk: 0.444 },
+  perf: { name: 'PERF Compute', cpuBadge: 'Intel Core i5/i7 (4.8GHz)', cpu: 50.4, ram: 63.6, disk: 0.636 },
+  pwr: { name: 'PWR Extreme', cpuBadge: 'AMD Ryzen 9 (5.7GHz)', cpu: 69.6, ram: 88.8, disk: 0.948 }
 };
 
 const FLAT_IP = 150;
 
+/**
+ * Margin Strategy:
+ * - At least ₹500 in cheap servers (< 1000)
+ * - ₹1,000 to ₹2,000+ margin in expensive servers (e.g. ₹1,850 on 8-core 40GB Ryzen 9)
+ */
 function calcMargin(wholesale) {
-  if (wholesale < 1000) return 260;
-  if (wholesale < 2000) return 420;
-  if (wholesale < 3000) return 580;
-  if (wholesale <= 4000) return 1100;
-  return Math.round(wholesale * 0.30);
+  if (wholesale < 1000) return 500;
+  if (wholesale < 2500) return 850;
+  if (wholesale < 3500) return 1350;
+  if (wholesale <= 5000) return 1850;
+  return Math.max(2200, Math.round(wholesale * 0.35));
 }
 
 // ─── Initialization ────────────────────────────────────────────────────────
