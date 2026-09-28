@@ -43,8 +43,8 @@ function calcMargin(wholesale) {
   if (wholesale < 1000) return 300;
   if (wholesale < 2500) return 600;
   if (wholesale < 3500) return 1000;
-  if (wholesale <= 5000) return 1450;
-  return Math.max(1800, Math.round(wholesale * 0.28));
+  if (wholesale <= 5000) return 1500;
+  return 1800;
 }
 
 // ─── Initialization ────────────────────────────────────────────────────────

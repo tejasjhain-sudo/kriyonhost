@@ -105,9 +105,9 @@ function calculateMargin(wholesaleCost) {
   } else if (wholesaleCost < 3500) {
     return 1000;
   } else if (wholesaleCost <= 5000) {
-    return 1450;
+    return 1500;
   } else {
-    return Math.max(1800, Math.round(wholesaleCost * 0.28));
+    return 1800;
   }
 }
 
