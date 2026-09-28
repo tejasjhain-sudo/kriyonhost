@@ -90,28 +90,24 @@ function calculateWholesaleCost(tierKey, cpuCores, ramGb, diskGb) {
 
 /**
  * Margin Strategy:
- * User requested:
- * - At least ₹500 in cheap servers
- * - ₹1,000 to ₹2,000+ margin in expensive servers
- *
- * Curve:
- * - < ₹1,000 wholesale: ₹500 margin
- * - ₹1,000 to ₹2,500 wholesale: ₹850 margin
- * - ₹2,500 to ₹3,500 wholesale: ₹1,350 margin
- * - ₹3,500 to ₹5,000 wholesale (e.g. 8-core 40GB Ryzen 9 @ ₹4.4k): ₹1,850 margin
- * - > ₹5,000 wholesale: ₹2,400+ or 35% margin
+ * Adjusted down by ₹200 to ₹400 for aggressive market competitiveness:
+ * - < ₹1,000 wholesale: ₹300 margin (down by ₹200)
+ * - ₹1,000 to ₹2,500 wholesale: ₹600 margin (down by ₹250)
+ * - ₹2,500 to ₹3,500 wholesale: ₹1,000 margin (down by ₹350)
+ * - ₹3,500 to ₹5,000 wholesale (e.g. 8-core 40GB Ryzen 9): ₹1,450 margin (down by ₹400)
+ * - > ₹5,000 wholesale: ₹1,800+ or 28% margin
  */
 function calculateMargin(wholesaleCost) {
   if (wholesaleCost < 1000) {
-    return 500;
+    return 300;
   } else if (wholesaleCost < 2500) {
-    return 850;
+    return 600;
   } else if (wholesaleCost < 3500) {
-    return 1350;
+    return 1000;
   } else if (wholesaleCost <= 5000) {
-    return 1850;
+    return 1450;
   } else {
-    return Math.max(2200, Math.round(wholesaleCost * 0.35));
+    return Math.max(1800, Math.round(wholesaleCost * 0.28));
   }
 }
 
@@ -187,28 +183,97 @@ const POPULAR_PLANS = [
 ];
 
 /**
- * Anycast Tunnels / Tunnel Routing Server (₹1,200 INR with ₹720 margin)
+ * Anycast Tunnels / DDoS Protected Network Tunnel Routing
+ * Provider: Specialized Anti-DDoS Anycast Mesh
  */
 const TUNNEL_PLANS = [
   {
-    id: 'tunnel-pro',
-    name: 'Ender Anycast Tunnel Pro',
-    category: 'TCP / UDP Tunnel Routing',
-    price: 1200,
-    wholesaleCost: 480,
-    margin: 720,
+    id: 'tunnel-starter',
+    name: 'Starter Tunnel',
+    tag: 'STARTER',
+    price: 499,
+    wholesaleCost: 249,
+    margin: 250,
+    players: 'Up to 15 players',
+    networks: '1 Minecraft network',
+    backends: '1 backend',
+    popular: false,
+    badgeClass: 'b-green',
     features: [
-      'Dedicated Static Public IPv4 Endpoint',
-      'Ultra-Low-Latency Anycast Routing (<10ms India)',
-      'TCP & UDP Traffic Acceleration',
-      'Unlimited Bandwidth (No Fair Usage Cap)',
-      '92 Tbps L3/L4 DDoS Mitigation Shield',
-      'Expose Local Minecraft, Discord Bots & Web Apps',
-      'Custom Subdomain (yourname.ender.link) or Custom Domain',
-      'WireGuard / WebSocket Wire Protocol'
-    ],
+      'Up to 15 players',
+      '1 Minecraft network',
+      '1 backend',
+      'L4/L7 DDoS protection',
+      'Origin IP protection',
+      'Protected hostname',
+      'Basic analytics'
+    ]
+  },
+  {
+    id: 'tunnel-pro',
+    name: 'Pro Tunnel',
+    tag: 'PRO',
+    price: 1499,
+    wholesaleCost: 999,
+    margin: 500,
+    players: 'Up to 60 players',
+    networks: '1 Minecraft network',
+    backends: '2 backends',
     popular: true,
-    tag: 'Best for Gamers & Developers'
+    badgeClass: 'b-purple',
+    features: [
+      'Up to 60 players',
+      '2 backends',
+      'Load balancing',
+      'Advanced antibot protection',
+      'Alerts / webhooks',
+      'Traffic & player analytics',
+      'Custom offline message'
+    ]
+  },
+  {
+    id: 'tunnel-advanced',
+    name: 'Advanced Tunnel',
+    tag: 'ADVANCED',
+    price: 3499,
+    wholesaleCost: 2499,
+    margin: 1000,
+    players: 'Up to 150 players',
+    networks: 'Multiple networks',
+    backends: '4 backends',
+    popular: false,
+    badgeClass: 'b-blue',
+    features: [
+      'Up to 150 players',
+      '4 backends',
+      'Advanced verification',
+      'Firewall rules engine',
+      'Real-time connection logs',
+      'Full API access',
+      'Advanced analytics suite'
+    ]
+  },
+  {
+    id: 'tunnel-network',
+    name: 'Network Enterprise Tunnel',
+    tag: 'NETWORK',
+    price: 4999,
+    wholesaleCost: 3499,
+    margin: 1500,
+    players: 'Up to 500 players',
+    networks: 'Multiple protected networks',
+    backends: '10 backends',
+    popular: false,
+    badgeClass: 'b-gold',
+    features: [
+      'Up to 500 players',
+      '10 backends',
+      'Multiple protected networks',
+      'Geo-routing & Anycast edge',
+      'Fallback / limbo server support',
+      'Advanced threat mitigation',
+      'Unlimited team seats'
+    ]
   }
 ];
 

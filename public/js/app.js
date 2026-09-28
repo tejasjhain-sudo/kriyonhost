@@ -32,15 +32,19 @@ const FLAT_IP = 150;
 
 /**
  * Margin Strategy:
- * - At least ₹500 in cheap servers (< 1000)
- * - ₹1,000 to ₹2,000+ margin in expensive servers (e.g. ₹1,850 on 8-core 40GB Ryzen 9)
+ * Adjusted down by ₹200 to ₹400 across the board:
+ * - < ₹1,000 wholesale: ₹300 margin
+ * - ₹1,000 to ₹2,500 wholesale: ₹600 margin
+ * - ₹2,500 to ₹3,500 wholesale: ₹1,000 margin
+ * - ₹3,500 to ₹5,000 wholesale (e.g. 8-core 40GB Ryzen 9): ₹1,450 margin
+ * - > ₹5,000 wholesale: ₹1,800+ or 28% margin
  */
 function calcMargin(wholesale) {
-  if (wholesale < 1000) return 500;
-  if (wholesale < 2500) return 850;
-  if (wholesale < 3500) return 1350;
-  if (wholesale <= 5000) return 1850;
-  return Math.max(2200, Math.round(wholesale * 0.35));
+  if (wholesale < 1000) return 300;
+  if (wholesale < 2500) return 600;
+  if (wholesale < 3500) return 1000;
+  if (wholesale <= 5000) return 1450;
+  return Math.max(1800, Math.round(wholesale * 0.28));
 }
 
 // ─── Initialization ────────────────────────────────────────────────────────
