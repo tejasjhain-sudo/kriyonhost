@@ -717,7 +717,326 @@ body::after {
   color: var(--muted);
 }
 
+/* ── Hero Split Layout ─────────────────────────────────────────────────── */
+.hero-split {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding-top: 6rem;
+  padding-bottom: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+.hero-dotgrid {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 32px 32px;
+  pointer-events: none;
+  z-index: 0;
+  mask-image: radial-gradient(ellipse 90% 80% at 50% 50%, black 30%, transparent 100%);
+}
+.hero-split-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+  width: 100%;
+}
+@media (max-width: 900px) {
+  .hero-split-inner { grid-template-columns: 1fr; }
+  .hero-visual { display: none; }
+}
+.hero-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.hero-copy .hero-title { align-items: flex-start; justify-content: flex-start; }
+.hero-copy .hero-title-top { justify-content: flex-start; }
+.hero-copy .hero-sub { margin: 0 0 2.5rem; }
+.hero-copy .hero-actions { justify-content: flex-start; }
+.hero-copy .stats-strip { margin: 0; max-width: 100%; }
+
+/* ── Floating Server Card ─────────────────────────────────────────────── */
+.hero-visual {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hero-visual-glow {
+  position: absolute;
+  width: 420px;
+  height: 420px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(124,106,255,0.22) 0%, rgba(6,182,212,0.1) 50%, transparent 75%);
+  filter: blur(40px);
+  pointer-events: none;
+  animation: glowPulse 5s ease-in-out infinite;
+}
+@keyframes glowPulse {
+  0%,100% { transform: scale(1); opacity:0.8; }
+  50% { transform: scale(1.12); opacity:1; }
+}
+.hero-server-card {
+  position: relative;
+  z-index: 3;
+  width: 360px;
+  background: rgba(10,10,22,0.88);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 20px;
+  padding: 18px;
+  backdrop-filter: blur(30px);
+  box-shadow:
+    0 32px 80px rgba(0,0,0,0.6),
+    0 0 0 1px rgba(124,106,255,0.15),
+    inset 0 1px 0 rgba(255,255,255,0.06);
+  animation: cardFloat 6s ease-in-out infinite;
+}
+@keyframes cardFloat {
+  0%,100% { transform: translateY(0px) rotate(-0.5deg); }
+  50% { transform: translateY(-12px) rotate(0.5deg); }
+}
+.hsc-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+.hsc-dots {
+  display: flex;
+  gap: 5px;
+  flex-shrink: 0;
+}
+.hsc-dots span {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+}
+.hsc-dots span:nth-child(1) { background: #ef4444; }
+.hsc-dots span:nth-child(2) { background: #f59e0b; }
+.hsc-dots span:nth-child(3) { background: #22c55e; }
+.hsc-title {
+  flex: 1;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.68rem;
+  color: var(--muted2);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.hsc-live {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  color: #34d399;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.hsc-metrics { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
+.hsc-metric { display: grid; grid-template-columns: 36px 1fr 64px; align-items: center; gap: 10px; }
+.hsc-metric-label { font-family: 'DM Mono',monospace; font-size: 0.6rem; color: var(--muted); text-transform: uppercase; }
+.hsc-metric-bar { height: 5px; background: rgba(255,255,255,0.07); border-radius: 99px; overflow: hidden; }
+.hsc-bar-fill { height: 100%; border-radius: 99px; transition: width 1.5s ease; }
+.hsc-bar-cpu { background: linear-gradient(90deg, #7c6aff, #a78bfa); width: 23%; }
+.hsc-bar-ram { background: linear-gradient(90deg, #06b6d4, #22d3ee); }
+.hsc-bar-net { background: linear-gradient(90deg, #34d399, #6ee7b7); }
+.hsc-metric-val { font-family: 'DM Mono',monospace; font-size: 0.65rem; color: var(--cream-dim); text-align: right; }
+.hsc-terminal {
+  background: rgba(0,0,0,0.4);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.hsc-log {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem;
+  color: var(--muted2);
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.hsc-log-ts { color: rgba(255,255,255,0.25); flex-shrink: 0; }
+.hsc-log-ok { color: #34d399; }
+.hsc-log-info { color: #60a5fa; }
+.hsc-log-blink { animation: blinkCursor 1.2s step-end infinite; }
+@keyframes blinkCursor { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+.hsc-footer-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.hsc-info-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem;
+  color: var(--muted2);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 100px;
+  padding: 4px 10px;
+}
+
+/* Floating badges around the card */
+.hero-badge-float {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.68rem;
+  font-weight: 500;
+  color: #34d399;
+  background: rgba(10,10,22,0.9);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 100px;
+  padding: 6px 12px;
+  backdrop-filter: blur(16px);
+  white-space: nowrap;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+}
+.hero-badge-f1 { top: 5%; right: -10px; animation: badgeFloat1 7s ease-in-out infinite; }
+.hero-badge-f2 { bottom: 20%; left: -20px; color: #a78bfa; animation: badgeFloat2 8s ease-in-out infinite; }
+.hero-badge-f3 { bottom: 5%; right: 8%; animation: badgeFloat3 6.5s ease-in-out infinite; }
+@keyframes badgeFloat1 { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+@keyframes badgeFloat2 { 0%,100% { transform: translateY(0) translateX(0); } 50% { transform: translateY(-6px) translateX(4px); } }
+@keyframes badgeFloat3 { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+/* ── Bento Grid (Product Cards) ────────────────────────────────────────── */
+.bento-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 14px;
+}
+@media (max-width: 900px) {
+  .bento-grid { grid-template-columns: 1fr 1fr; }
+  .bento-wide { grid-column: span 2; }
+}
+@media (max-width: 580px) {
+  .bento-grid { grid-template-columns: 1fr; }
+  .bento-wide { grid-column: span 1; }
+}
+.bento-card {
+  position: relative;
+  background: rgba(14,14,28,0.8);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 18px;
+  padding: 24px;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  align-items: stretch;
+  transition: all 0.3s cubic-bezier(0.16,1,0.3,1);
+  cursor: pointer;
+}
+.bento-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255,255,255,0.14);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+.bento-wide { grid-column: span 1; }
+.bento-card-glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.bento-card:hover .bento-card-glow { opacity: 1; }
+.bento-card-content {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.bento-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 100px;
+  border: 1px solid;
+  width: fit-content;
+  margin-bottom: 6px;
+}
+.bento-title {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 500;
+  color: #fff;
+  letter-spacing: -0.02em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  line-height: 1.2;
+}
+.bento-new-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.55rem;
+  padding: 2px 6px;
+  border-radius: 5px;
+  letter-spacing: 0.05em;
+  vertical-align: middle;
+}
+.bento-desc {
+  font-size: 0.78rem;
+  color: var(--muted2);
+  line-height: 1.6;
+  flex: 1;
+}
+.bento-cta {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--cream-dim);
+  margin-top: 12px;
+  transition: color 0.2s, gap 0.2s;
+}
+.bento-card:hover .bento-cta { color: #fff; gap: 8px; }
+.bento-card-visual {
+  position: absolute;
+  bottom: -8px;
+  right: -8px;
+  z-index: 1;
+  pointer-events: none;
+}
+/* Tall Minecraft card */
+.bento-minecraft {
+  grid-row: span 2;
+  min-height: 280px;
+}
+@media (max-width: 900px) {
+  .bento-minecraft { grid-row: span 1; }
+}
+
 /* Stock Bar */
+
 .stock-bar {
   background: var(--ink2);
   border-top: 1px solid var(--rim);

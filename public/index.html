@@ -154,72 +154,272 @@
   </header>
 
   <!-- ═══════════════════════════════════════════════════════════════════════
-       HERO (Animated Shulker-Style Rotating Headline)
+       HERO (Split-Layout with Floating Visual Dashboard)
        ═══════════════════════════════════════════════════════════════════════ -->
-  <section class="hero">
+  <section class="hero hero-split">
     <div class="hero-orb"></div>
-    <div class="wrap hero-content">
-      
-      <!-- Top Pill -->
-      <div class="hero-pill" style="border-color:rgba(16,185,129,0.3); background:rgba(16,185,129,0.06); color:#34d399;">
-        <span class="live-pulse"></span>
-        25% OFF ALL PLANS — LIMITED TIME
-      </div>
+    <!-- Dot-grid background -->
+    <div class="hero-dotgrid" aria-hidden="true"></div>
 
-      <!-- Animated Headline -->
-      <h1 class="hero-title">
-        <div class="hero-title-top">
-          Ship
-          <span id="hero-chip-badge" class="hero-chip-badge">
-            <span class="hero-chip-icon" id="hero-chip-icon">
-              <!-- Minecraft Grass Block SVG -->
-              <svg width="34" height="34" viewBox="0 0 40 40">
-                <polygon points="20,3 37,12 20,21 3,12" fill="#4ade80" />
-                <polygon points="3,12 20,21 20,37 3,28" fill="#854d0e" />
-                <polygon points="20,21 37,12 37,28 20,37" fill="#713f12" />
-                <path d="M3,12 L20,21 L37,12 L37,16 L20,25 L3,16 Z" fill="#22c55e" />
-              </svg>
+    <div class="wrap hero-split-inner">
+
+      <!-- LEFT: Copy -->
+      <div class="hero-copy">
+        <div class="hero-pill" style="border-color:rgba(16,185,129,0.3); background:rgba(16,185,129,0.06); color:#34d399;">
+          <span class="live-pulse"></span>
+          25% OFF ALL PLANS — LIMITED TIME
+        </div>
+
+        <h1 class="hero-title">
+          <div class="hero-title-top">
+            Ship
+            <span id="hero-chip-badge" class="hero-chip-badge">
+              <span class="hero-chip-icon" id="hero-chip-icon">
+                <svg width="34" height="34" viewBox="0 0 40 40">
+                  <polygon points="20,3 37,12 20,21 3,12" fill="#4ade80" />
+                  <polygon points="3,12 20,21 20,37 3,28" fill="#854d0e" />
+                  <polygon points="20,21 37,12 37,28 20,37" fill="#713f12" />
+                  <path d="M3,12 L20,21 L37,12 L37,16 L20,25 L3,16 Z" fill="#22c55e" />
+                </svg>
+              </span>
+              <span class="hero-chip-text" id="hero-chip-text">Minecraft</span>
             </span>
-            <span class="hero-chip-text" id="hero-chip-text">Minecraft</span>
-          </span>
+          </div>
+          <span>in seconds.</span>
+        </h1>
+
+        <p class="hero-sub">
+          Latest-gen hardware, 500+ Tbps Anycast DDoS shield, and sub-3s node provisioning — for every project you have in mind.
+        </p>
+
+        <div class="hero-actions">
+          <a href="#configurator-section" class="btn btn-white" style="font-weight:600; padding:12px 24px;">
+            Deploy Now
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+          <a href="#configurator-section" class="btn btn-ghost" style="padding:12px 24px;">
+            View pricing
+          </a>
         </div>
-        <span>in seconds.</span>
-      </h1>
 
-      <p class="hero-sub">
-        Latest-gen hardware, 92 Tbps DDoS protection, and an AI that manages everything — for every project you have in mind.
-      </p>
-
-      <div class="hero-actions">
-        <a href="#configurator-section" class="btn btn-white" style="font-weight:600; padding:12px 24px;">
-          Start free
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </a>
-        <a href="#configurator-section" class="btn btn-ghost" style="padding:12px 24px;">
-          View pricing
-        </a>
+        <!-- Stats Ribbon -->
+        <div class="stats-strip">
+          <div class="stat-box">
+            <div class="stat-num">2.6s</div>
+            <div class="stat-lbl">Deploy Time</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-num">500+ Tbps</div>
+            <div class="stat-lbl">DDoS Shield</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-num">5.7 GHz</div>
+            <div class="stat-lbl">Max Single-Core</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-num">99.9%</div>
+            <div class="stat-lbl">Uptime SLA</div>
+          </div>
+        </div>
       </div>
 
-      <!-- Stats Ribbon -->
-      <div class="stats-strip">
-        <div class="stat-box">
-          <div class="stat-num">2.6s</div>
-          <div class="stat-lbl">Deploy Time</div>
+      <!-- RIGHT: Floating Server Dashboard Visual -->
+      <div class="hero-visual" aria-hidden="true">
+        <!-- Glow blob behind card -->
+        <div class="hero-visual-glow"></div>
+
+        <!-- Main dark server card -->
+        <div class="hero-server-card">
+          <div class="hsc-header">
+            <div class="hsc-dots"><span></span><span></span><span></span></div>
+            <div class="hsc-title">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/></svg>
+              node-india-01 · PWR · Ryzen 9
+            </div>
+            <span class="hsc-live"><span class="live-pulse" style="width:5px;height:5px;"></span> LIVE</span>
+          </div>
+
+          <!-- Metric Row -->
+          <div class="hsc-metrics">
+            <div class="hsc-metric">
+              <div class="hsc-metric-label">CPU</div>
+              <div class="hsc-metric-bar">
+                <div class="hsc-bar-fill hsc-bar-cpu" id="vis-cpu-bar"></div>
+              </div>
+              <div class="hsc-metric-val" id="vis-cpu-val">23%</div>
+            </div>
+            <div class="hsc-metric">
+              <div class="hsc-metric-label">RAM</div>
+              <div class="hsc-metric-bar">
+                <div class="hsc-bar-fill hsc-bar-ram" id="vis-ram-bar" style="width:61%;"></div>
+              </div>
+              <div class="hsc-metric-val">6.1 / 10 GB</div>
+            </div>
+            <div class="hsc-metric">
+              <div class="hsc-metric-label">NET IN</div>
+              <div class="hsc-metric-bar">
+                <div class="hsc-bar-fill hsc-bar-net" id="vis-net-bar" style="width:38%;"></div>
+              </div>
+              <div class="hsc-metric-val" id="vis-net-val">142 Mbps</div>
+            </div>
+          </div>
+
+          <!-- Terminal log lines -->
+          <div class="hsc-terminal">
+            <div class="hsc-log"><span class="hsc-log-ts">23:49:01</span><span class="hsc-log-ok">✓</span> Node provisioned — 2.3s</div>
+            <div class="hsc-log"><span class="hsc-log-ts">23:49:02</span><span class="hsc-log-ok">✓</span> IPv4 assigned: 103.x.x.x</div>
+            <div class="hsc-log"><span class="hsc-log-ts">23:49:03</span><span class="hsc-log-info">ℹ</span> DDoS shield: <span style="color:#34d399;">ACTIVE</span></div>
+            <div class="hsc-log hsc-log-blink"><span class="hsc-log-ts">23:49:05</span><span style="color:#a78bfa;">›</span> Server online ▊</div>
+          </div>
+
+          <!-- IP / Region row -->
+          <div class="hsc-footer-row">
+            <div class="hsc-info-pill">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+              India · Mumbai
+            </div>
+            <div class="hsc-info-pill" style="color:#a78bfa;">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              500+ Tbps Shield ON
+            </div>
+          </div>
         </div>
-        <div class="stat-box">
-          <div class="stat-num">92 Tbps</div>
-          <div class="stat-lbl">Anycast Anti-DDoS</div>
+
+        <!-- Floating mini badges -->
+        <div class="hero-badge-float hero-badge-f1">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+          Sub-3s provisioned
         </div>
-        <div class="stat-box">
-          <div class="stat-num">5.7 GHz</div>
-          <div class="stat-lbl">Max Single-Core</div>
+        <div class="hero-badge-float hero-badge-f2">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          DDoS Mitigated
         </div>
-        <div class="stat-box">
-          <div class="stat-num">100%</div>
-          <div class="stat-lbl">Dedicated IPv4</div>
+        <div class="hero-badge-float hero-badge-f3" style="color:#fbbf24;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+          Minecraft Ready
         </div>
       </div>
 
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       PRODUCT BENTO GRID
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <section class="s" style="padding-top:0; padding-bottom:4rem; border-top:none;">
+    <div class="wrap">
+      <div class="bento-grid">
+
+        <!-- Minecraft Hosting Card (wide, green accent) -->
+        <a href="/minecraft" class="bento-card bento-wide bento-minecraft">
+          <div class="bento-card-glow" style="background:radial-gradient(ellipse at 30% 50%, rgba(74,222,128,0.18) 0%, transparent 65%);"></div>
+          <div class="bento-card-content">
+            <div class="bento-badge" style="background:rgba(74,222,128,0.12);color:#4ade80;border-color:rgba(74,222,128,0.25);">
+              <svg width="11" height="11" viewBox="0 0 40 40"><polygon points="20,3 37,12 20,21 3,12" fill="#4ade80"/><polygon points="3,12 20,21 20,37 3,28" fill="#854d0e"/><polygon points="20,21 37,12 37,28 20,37" fill="#713f12"/></svg>
+              GAME HOSTING
+            </div>
+            <h3 class="bento-title">Minecraft Server <span class="bento-new-badge" style="background:#4ade8022;color:#4ade80;">LIVE</span></h3>
+            <p class="bento-desc">AMD Ryzen 9 7950X · 5.7GHz · Cryo L7 Anti-DDoS · From ₹899/mo</p>
+            <div class="bento-cta">
+              Deploy now <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </div>
+          </div>
+          <div class="bento-card-visual">
+            <svg width="90" height="90" viewBox="0 0 40 40" opacity="0.35">
+              <polygon points="20,3 37,12 20,21 3,12" fill="#4ade80"/>
+              <polygon points="3,12 20,21 20,37 3,28" fill="#854d0e"/>
+              <polygon points="20,21 37,12 37,28 20,37" fill="#713f12"/>
+              <path d="M3,12 L20,21 L37,12 L37,16 L20,25 L3,16 Z" fill="#22c55e"/>
+            </svg>
+          </div>
+        </a>
+
+        <!-- Cloud VPS Card -->
+        <a href="/vps" class="bento-card bento-vps">
+          <div class="bento-card-glow" style="background:radial-gradient(ellipse at 30% 50%, rgba(124,106,255,0.2) 0%, transparent 65%);"></div>
+          <div class="bento-card-content">
+            <div class="bento-badge" style="background:rgba(124,106,255,0.12);color:#a78bfa;border-color:rgba(124,106,255,0.25);">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/></svg>
+              CLOUD VPS
+            </div>
+            <h3 class="bento-title">Cloud VPS</h3>
+            <p class="bento-desc">NVMe · KVM · Linux / Windows · From ₹949/mo</p>
+            <div class="bento-cta">Configure <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+          </div>
+          <div class="bento-card-visual" style="opacity:0.25;">
+            <svg width="70" height="70" viewBox="0 0 24 24" fill="none" stroke="#7c6aff" stroke-width="1.2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6" stroke-width="3"/><line x1="6" y1="18" x2="6.01" y2="18" stroke-width="3"/></svg>
+          </div>
+        </a>
+
+        <!-- Anycast Tunnels Card -->
+        <a href="/tunnels" class="bento-card bento-tunnels">
+          <div class="bento-card-glow" style="background:radial-gradient(ellipse at 30% 50%, rgba(6,182,212,0.18) 0%, transparent 65%);"></div>
+          <div class="bento-card-content">
+            <div class="bento-badge" style="background:rgba(6,182,212,0.12);color:#22d3ee;border-color:rgba(6,182,212,0.25);">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              ANYCAST TUNNELS
+            </div>
+            <h3 class="bento-title">DDoS Tunnels <span class="bento-new-badge" style="background:#06b6d422;color:#22d3ee;">NEW</span></h3>
+            <p class="bento-desc">500+ Tbps · 330+ PoPs · From ₹499/mo</p>
+            <div class="bento-cta">Protect now <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+          </div>
+          <div class="bento-card-visual" style="opacity:0.22;">
+            <svg width="70" height="70" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" stroke-width="1.2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          </div>
+        </a>
+
+        <!-- DevSpace Card -->
+        <a href="/devspace" class="bento-card bento-devspace">
+          <div class="bento-card-glow" style="background:radial-gradient(ellipse at 30% 50%, rgba(251,146,60,0.15) 0%, transparent 65%);"></div>
+          <div class="bento-card-content">
+            <div class="bento-badge" style="background:rgba(251,146,60,0.12);color:#fb923c;border-color:rgba(251,146,60,0.25);">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+              DEVSPACE
+            </div>
+            <h3 class="bento-title">Container Dev</h3>
+            <p class="bento-desc">Docker · Node · Python · From ₹599/mo</p>
+            <div class="bento-cta">Launch <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+          </div>
+          <div class="bento-card-visual" style="opacity:0.22;">
+            <svg width="70" height="70" viewBox="0 0 24 24" fill="none" stroke="#fb923c" stroke-width="1.2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          </div>
+        </a>
+
+        <!-- Web Hosting Card -->
+        <a href="/web-hosting" class="bento-card bento-web">
+          <div class="bento-card-glow" style="background:radial-gradient(ellipse at 30% 50%, rgba(52,211,153,0.15) 0%, transparent 65%);"></div>
+          <div class="bento-card-content">
+            <div class="bento-badge" style="background:rgba(52,211,153,0.12);color:#34d399;border-color:rgba(52,211,153,0.25);">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+              WEB HOSTING
+            </div>
+            <h3 class="bento-title">Website Hosting</h3>
+            <p class="bento-desc">LiteSpeed · NVMe · Free SSL · From ₹249/mo</p>
+            <div class="bento-cta">Get started <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+          </div>
+          <div class="bento-card-visual" style="opacity:0.22;">
+            <svg width="70" height="70" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="1.2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          </div>
+        </a>
+
+        <!-- Dedicated Bare Metal Card -->
+        <a href="/dedicated" class="bento-card bento-dedicated">
+          <div class="bento-card-glow" style="background:radial-gradient(ellipse at 30% 50%, rgba(245,158,11,0.15) 0%, transparent 65%);"></div>
+          <div class="bento-card-content">
+            <div class="bento-badge" style="background:rgba(245,158,11,0.12);color:#fbbf24;border-color:rgba(245,158,11,0.25);">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/></svg>
+              BARE METAL
+            </div>
+            <h3 class="bento-title">Dedicated Server</h3>
+            <p class="bento-desc">Full node ownership · IPMI · From ₹12,999/mo</p>
+            <div class="bento-cta">Inquire <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+          </div>
+          <div class="bento-card-visual" style="opacity:0.22;">
+            <svg width="70" height="70" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="1.2"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+          </div>
+        </a>
+
+      </div>
     </div>
   </section>
 
@@ -419,7 +619,7 @@
         <div class="config-summary">
           <div class="quote-top">
             <div class="quote-badge-row">
-              <span class="badge b-blue" id="quote-tier-badge">PERF Compute · Intel Core i7</span>
+              <span class="badge b-gold" id="quote-tier-badge">PWR Compute · Ryzen 9</span>
               <span class="badge b-green">Sub-3s Provisioning</span>
               <span class="badge b-purple">500+ Tbps Shield</span>
             </div>
@@ -2045,5 +2245,24 @@
 
   <!-- Scripts -->
   <script src="/js/app.js"></script>
+  <script>
+    // Hero server card — animated CPU bar
+    (function() {
+      const cpuBar = document.getElementById('vis-cpu-bar');
+      const cpuVal = document.getElementById('vis-cpu-val');
+      const netBar = document.getElementById('vis-net-bar');
+      const netVal = document.getElementById('vis-net-val');
+      if (!cpuBar) return;
+      function rnd(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+      setInterval(function() {
+        const cpu = rnd(8, 42);
+        cpuBar.style.width = cpu + '%';
+        cpuVal.textContent = cpu + '%';
+        const net = rnd(60, 280);
+        netBar.style.width = Math.min(net / 3, 95) + '%';
+        netVal.textContent = net + ' Mbps';
+      }, 2200);
+    })();
+  </script>
 </body>
 </html>
