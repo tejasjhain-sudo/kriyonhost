@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EnderHost — Enterprise Cloud VPS & Ultra-Fast Minecraft Hosting</title>
+  <meta name="description" content="Next-generation cloud infrastructure powered by AMD Ryzen 9, AMD EPYC, and Intel Xeon. Sub-3s automated deployments, 92 Tbps DDoS shield, and transparent pricing.">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,600;12..96,700&family=Inter:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="/css/style.css">
+  
+  <!-- Favicon / Brand Icon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%237c6aff%22/><circle cx=%2250%22 cy=%2250%22 r=%2222%22 fill=%22%2305050a%22/><circle cx=%2250%22 cy=%2250%22 r=%2210%22 fill=%22%2310b981%22/></svg>">
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       NAVBAR
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <header class="nav-header">
+    <div class="wrap nav-inner">
+      <a href="/" class="nav-brand">
+        <div class="brand-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+            <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+            <line x1="6" y1="6" x2="6.01" y2="6"></line>
+            <line x1="6" y1="18" x2="6.01" y2="18"></line>
+          </svg>
+        </div>
+        <span class="brand-name">EnderHost</span>
+        <span class="brand-tag">CLOUD</span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="#configurator-section">Configurator</a></li>
+        <li><a href="#plans-section">Featured Plans</a></li>
+        <li><a href="#control-panel-section">VPS Control Panel</a></li>
+        <li><a href="#architecture-section">How It Works</a></li>
+        <li><a href="#faq-section">FAQ</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button id="btn-admin-toggle" class="btn btn-ghost btn-sm" title="Toggle Owner Reseller Insights">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          Reseller Mode
+        </button>
+        <a href="#configurator-section" class="btn btn-primary btn-sm">
+          Deploy Server
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       HERO
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <section class="hero">
+    <div class="hero-orb"></div>
+    <div class="wrap hero-content">
+      
+      <div class="hero-pill">
+        <span class="live-pulse"></span>
+        Enterprise Nodes Live in Mumbai & Delhi • 2.6s Provisioning
+      </div>
+
+      <h1 class="hero-title">
+        Enterprise Cloud Infrastructure.<br>
+        <span class="typewriter-slot">High-Frequency VPS</span><br>
+        <span class="grad">Built for Speed.</span>
+      </h1>
+
+      <p class="hero-sub">
+        Deploy production-grade Cloud VPS and extreme-performance Minecraft servers powered by AMD Ryzen 9 7950X, AMD EPYC, and Intel Xeon hardware. Automated in under 3 seconds with dedicated IPv4.
+      </p>
+
+      <div class="hero-actions">
+        <a href="#configurator-section" class="btn btn-white">
+          Configure Your Server
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#control-panel-section" class="btn btn-ghost">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/><path d="m14 9 3 3-3 3"/></svg>
+          Try Control Panel Demo
+        </a>
+      </div>
+
+      <!-- Stats Ribbon -->
+      <div class="stats-strip">
+        <div class="stat-box">
+          <div class="stat-num">2.6s</div>
+          <div class="stat-lbl">Deploy Speed</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num">92 Tbps</div>
+          <div class="stat-lbl">Anycast Anti-DDoS</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num">5.7 GHz</div>
+          <div class="stat-lbl">Max Single-Core</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num">100%</div>
+          <div class="stat-lbl">Dedicated IPv4</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       LIVE HARDWARE CAPACITY & STOCK TICKER
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <div class="stock-bar">
+    <div class="wrap">
+      <div class="stock-grid">
+        <div class="stock-card">
+          <div class="stock-info">
+            <div class="stock-tier-name">ECO Tier</div>
+            <div class="stock-node-type">Intel Xeon E5 · Budget</div>
+          </div>
+          <div class="stock-status-wrap">
+            <span class="stock-pill stock-in" id="stock-badge-eco"><span class="live-pulse"></span> In Stock</span>
+          </div>
+        </div>
+
+        <div class="stock-card">
+          <div class="stock-info">
+            <div class="stock-tier-name">STD Tier</div>
+            <div class="stock-node-type">AMD EPYC 7003 · Balanced</div>
+          </div>
+          <div class="stock-status-wrap">
+            <span class="stock-pill stock-in" id="stock-badge-std"><span class="live-pulse"></span> In Stock</span>
+          </div>
+        </div>
+
+        <div class="stock-card">
+          <div class="stock-info">
+            <div class="stock-tier-name">PERF Tier</div>
+            <div class="stock-node-type">Intel Core i7 · 4.8GHz</div>
+          </div>
+          <div class="stock-status-wrap">
+            <span class="stock-pill stock-in" id="stock-badge-perf"><span class="live-pulse"></span> In Stock</span>
+          </div>
+        </div>
+
+        <div class="stock-card">
+          <div class="stock-info">
+            <div class="stock-tier-name">PWR Tier</div>
+            <div class="stock-node-type">AMD Ryzen 9 · 5.7GHz Max</div>
+          </div>
+          <div class="stock-status-wrap">
+            <span class="stock-pill stock-in" id="stock-badge-pwr"><span class="live-pulse"></span> In Stock</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       INTERACTIVE CUSTOM CONFIGURATOR & PRICING
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <section class="s" id="configurator-section">
+    <div class="wrap">
+      
+      <div style="text-align:center; max-width:600px; margin:0 auto 3rem;">
+        <span class="eyebrow"><span class="eyebrow-dot"></span> Custom Infrastructure</span>
+        <h2 class="sh">Calculate & Configure Your Server</h2>
+        <p class="sub">Select your workload, hardware tier, and exact resources. Transparent pricing with automated sub-3s delivery.</p>
+      </div>
+
+      <div class="config-card">
+        <!-- Builder Controls -->
+        <div class="config-builder">
+          
+          <!-- Mode Switcher -->
+          <div class="mode-switch-wrap">
+            <button id="mode-vps" class="mode-btn active">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+              Cloud VPS (Linux / Windows)
+            </button>
+            <button id="mode-mc" class="mode-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+              Minecraft Server (Same Price)
+            </button>
+          </div>
+
+          <!-- Tier Pickers -->
+          <label style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.12em; color:var(--muted); font-family:'DM Mono',monospace; margin-bottom:0.75rem; display:block;">Select CPU Architecture Tier</label>
+          <div class="tier-select-grid">
+            <div class="tier-opt" data-tier="eco">
+              <div class="tier-opt-head">
+                <span class="tier-opt-title">ECO</span>
+                <span class="badge b-green">Budget</span>
+              </div>
+              <div class="tier-opt-cpu">Intel Xeon E5 · Multi-core</div>
+              <div class="tier-opt-rates">₹16/core • ₹26/GB • ₹0.26/GB</div>
+            </div>
+
+            <div class="tier-opt selected" data-tier="std">
+              <div class="tier-opt-head">
+                <span class="tier-opt-title">STD</span>
+                <span class="badge b-purple">Popular</span>
+              </div>
+              <div class="tier-opt-cpu">AMD EPYC 7003 · Balanced</div>
+              <div class="tier-opt-rates">₹26/core • ₹37/GB • ₹0.37/GB</div>
+            </div>
+
+            <div class="tier-opt" data-tier="perf">
+              <div class="tier-opt-head">
+                <span class="tier-opt-title">PERF</span>
+                <span class="badge b-blue">High Clock</span>
+              </div>
+              <div class="tier-opt-cpu">Intel Core i7 · 4.8GHz Turbo</div>
+              <div class="tier-opt-rates">₹42/core • ₹53/GB • ₹0.53/GB</div>
+            </div>
+
+            <div class="tier-opt" data-tier="pwr">
+              <div class="tier-opt-head">
+                <span class="tier-opt-title">PWR</span>
+                <span class="badge b-gold">Extreme</span>
+              </div>
+              <div class="tier-opt-cpu">AMD Ryzen 9 · 5.7GHz Beast</div>
+              <div class="tier-opt-rates">₹58/core • ₹74/GB • ₹0.79/GB</div>
+            </div>
+          </div>
+
+          <!-- Sliders -->
+          <div class="slider-group">
+            <div class="slider-head">
+              <span class="slider-label">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+                Processor (vCPU Cores)
+              </span>
+              <span class="slider-val-badge" id="val-cpu">4 vCPU</span>
+            </div>
+            <input type="range" id="slider-cpu" min="1" max="16" value="4" step="1">
+          </div>
+
+          <div class="slider-group">
+            <div class="slider-head">
+              <span class="slider-label">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 19v-3"/><path d="M10 19v-3"/><path d="M14 19v-3"/><path d="M18 19v-3"/><path d="M6 8V5"/><path d="M10 8V5"/><path d="M14 8V5"/><path d="M18 8V5"/><rect x="2" y="8" width="20" height="8" rx="2"/></svg>
+                Memory (DDR4 / DDR5 RAM)
+              </span>
+              <span class="slider-val-badge" id="val-ram">8 GB RAM</span>
+            </div>
+            <input type="range" id="slider-ram" min="1" max="64" value="8" step="1">
+          </div>
+
+          <div class="slider-group">
+            <div class="slider-head">
+              <span class="slider-label">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+                NVMe Gen4 Storage
+              </span>
+              <span class="slider-val-badge" id="val-disk">80 GB NVMe</span>
+            </div>
+            <input type="range" id="slider-disk" min="10" max="500" value="80" step="10">
+          </div>
+
+          <!-- OS & Location Selection -->
+          <div class="selector-row">
+            <div class="field-group">
+              <label>Operating System / Software</label>
+              <select id="select-os" class="custom-select">
+                <option value="ubuntu-2404">Ubuntu 24.04 LTS (Noble Numbat)</option>
+                <option value="ubuntu-2204">Ubuntu 22.04 LTS (Jammy Jellyfish)</option>
+                <option value="debian-12">Debian 12 (Bookworm)</option>
+                <option value="alpine-320">Alpine Linux 3.20 (Minimal)</option>
+                <option value="windows-server-2022">Windows Server 2022 (ISO / RDP)</option>
+                <option value="windows-11">Windows 11 Enterprise (ISO / RDP)</option>
+              </select>
+            </div>
+
+            <div class="field-group">
+              <label>Datacenter Region</label>
+              <select id="select-region" class="custom-select">
+                <option value="India">Mumbai, India (Lowest Latency · 12ms)</option>
+                <option value="India-Delhi">Delhi, India (National Hub · 18ms)</option>
+                <option value="Germany">Frankfurt, Germany (European Transit)</option>
+              </select>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Summary & Price Breakdown -->
+        <div class="config-summary">
+          <div class="quote-top">
+            <div class="quote-badge-row">
+              <span class="badge b-purple" id="quote-tier-badge">STD Balanced · AMD EPYC</span>
+              <span class="badge b-green">Sub-3s Deploy</span>
+              <span class="badge b-blue">92 Tbps Shield</span>
+            </div>
+            <div class="quote-title" id="quote-service-type">Enterprise Cloud VPS</div>
+            <div style="font-size:0.75rem; color:var(--muted); margin-bottom:1.2rem;" id="quote-specs-text">
+              4 vCPU • 8GB RAM • 80GB NVMe Storage • Dedicated IPv4
+            </div>
+
+            <ul class="quote-specs-list">
+              <li class="quote-spec-row">
+                <span>Dedicated IPv4 Address</span>
+                <span>₹150.00 / mo</span>
+              </li>
+              <li class="quote-spec-row">
+                <span>Anti-DDoS Shield (Anycast)</span>
+                <span style="color:var(--green);">Included Free</span>
+              </li>
+              <li class="quote-spec-row">
+                <span>Automated Backups & Snapshots</span>
+                <span style="color:var(--green);">Enabled</span>
+              </li>
+              <li class="quote-spec-row">
+                <span>Root / Console / VNC Access</span>
+                <span style="color:var(--green);">Full Unrestricted</span>
+              </li>
+            </ul>
+
+            <!-- Wholesale & Margin Info (Visible when Owner Mode enabled) -->
+            <div id="wholesale-breakdown-box" class="margin-insight-box" style="display:none;">
+              <div class="margin-insight-row">
+                <span>Shulker Wholesale Cost:</span>
+                <strong id="quote-wholesale-price">₹579.60</strong>
+              </div>
+              <div class="margin-insight-row highlight">
+                <span>EnderHost Margin:</span>
+                <strong id="quote-margin-price">+₹260 (31%)</strong>
+              </div>
+              <div style="font-size:0.65rem; color:var(--muted); margin-top:4px;">
+                * Margin tier automatically applied based on owner rule: &lt;1k (+260), 1k-2k (+420), 2k-3k (+580), 3k-4k (+1100), 4k+ (30%).
+              </div>
+            </div>
+          </div>
+
+          <div class="quote-bottom">
+            <div class="price-display-box">
+              <span class="price-tag-sub">Total Price (30 Days)</span>
+              <div class="big-price-num">
+                <span id="quote-retail-price">₹847</span>
+                <span class="price-period">/ month</span>
+              </div>
+              <p class="price-note">All taxes included. Transparent billing with instant node activation.</p>
+            </div>
+
+            <button id="btn-deploy-server" class="btn btn-primary" style="width:100%; padding:14px;" onclick="deployConfiguredServer()">
+              Deploy Instance Now
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       FEATURED POPULAR PLANS
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <section class="s" id="plans-section">
+    <div class="wrap">
+      
+      <div style="text-align:center; max-width:600px; margin:0 auto 1rem;">
+        <span class="eyebrow"><span class="eyebrow-dot"></span> Pre-Tuned Configurations</span>
+        <h2 class="sh">Popular Turnkey Servers</h2>
+        <p class="sub">Engineered for immediate deployment with pre-allocated high-speed NVMe and dedicated IPv4.</p>
+      </div>
+
+      <div class="plans-grid">
+        <!-- Starter Eco -->
+        <div class="plan-card">
+          <div>
+            <div class="plan-name">Starter Cloud</div>
+            <div class="plan-cat">Bots, Proxies & Web APIs</div>
+            <div class="plan-price-block">
+              <div class="plan-price">₹450 <span style="font-size:0.8rem; color:var(--muted); font-weight:300;">/mo</span></div>
+            </div>
+            <ul class="plan-features">
+              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> 2 vCPU Intel Xeon</li>
+              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> 4 GB DDR4 ECC RAM</li>
+              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> 40 GB NVMe Storage</li>
+              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> 1 Dedicated IPv4</li>
+              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> 92 Tbps DDoS Shield</li>
+            </ul>
+          </div>
+          <button class="btn btn-ghost" style="width:100%;" onclick="selectPlan('eco', 2, 4, 40)">Configure Plan</button>
+        </div>
+
+        <!-- EPYC Balanced -->
+        <div class="plan-card popular">
+          <div class="popular-ribbon">Most Popular</div>
+          <div>
+            <div class="plan-name">EPYC Balanced</div>
+            <div class="plan-cat">Cloud VPS & 20-Player SMP</div>
+            <div class="plan-price-block">
+              <div class="plan-price">₹847 <span style="font-size:0.8rem; color:var(--muted); font-weight:300;">/mo</span></div>
+            </div>
+            <ul class="plan-features">
+              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> 4 vCPU AMD EPYC 7003</li>
+              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> 8 GB Enterprise RAM</li>
+              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> 80 GB Enterprise NVMe</li>
+              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> 1 Dedicated IPv4</li>
+              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Automated Snapshots</li>
+            </ul>
+          </div>
+          <button class="btn btn-primary" style="width:100%;" onclick="selectPlan('std', 4, 8, 80)">Configure Plan</button>
+        </div>
+
+        <!-- High Clock Beast -->
+        <div class="plan-card">
+          <div>
+            <div class="plan-name">High Clock Beast</div>
+            <div class="plan-cat">Game Networks & Heavy Workloads</div>
+            <div class="plan-price-block">
+              <div class="plan-price">₹1,749 <span style="font-size:0.8rem; color:var(--muted); font-weight:300;">/mo</span></div>
+            </div>
+            <ul class="plan-features">
+              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> 6 vCPU Intel i7 (4.8GHz)</li>
+              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> 16 GB High-Freq RAM</li>
+              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> 150 GB Gen4 NVMe</li>
+              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> 1 Dedicated IPv4</li>
+              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Serial Console & VNC</li>
+            </ul>
+          </div>
+          <button class="btn btn-ghost" style="width:100%;" onclick="selectPlan('perf', 6, 16, 150)">Configure Plan</button>
+        </div>
+
+        <!-- Ryzen 9 Extreme -->
+        <div class="plan-card">
+          <div>
+            <div class="plan-name">Ryzen 9 Extreme</div>
+            <div class="plan-cat">Modded Minecraft (Forge/ATM9)</div>
+            <div class="plan-price-block">
+              <div class="plan-price">₹3,969 <span style="font-size:0.8rem; color:var(--muted); font-weight:300;">/mo</span></div>
+            </div>
+            <ul class="plan-features">
+              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> 8 vCPU AMD Ryzen 9 (5.7GHz)</li>
+              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> 32 GB Ultra-Fast RAM</li>
+              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> 250 GB Gen4 NVMe</li>
+              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> 1 Dedicated IPv4</li>
+              <li class="plan-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Snapshot & Extra Disks</li>
+            </ul>
+          </div>
+          <button class="btn btn-ghost" style="width:100%;" onclick="selectPlan('pwr', 8, 32, 250)">Configure Plan</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       CUSTOMER VPS CONTROL PANEL (LIVE INTERACTIVE PANEL)
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <section class="s" id="control-panel-section">
+    <div class="wrap">
+      
+      <div style="text-align:center; max-width:650px; margin:0 auto 3rem;">
+        <span class="eyebrow"><span class="eyebrow-dot"></span> Full Control From Your Browser</span>
+        <h2 class="sh">Customer VPS Control Center</h2>
+        <p class="sub">How your clients manage their servers. Direct power controls, real-time CPU/RAM telemetry, live serial console, and snapshot backups.</p>
+      </div>
+
+      <div class="panel-wrapper">
+        <!-- Topbar -->
+        <div class="panel-topbar">
+          <div class="panel-instance-info">
+            <div class="server-avatar">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+            </div>
+            <div>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span class="server-title" id="panel-srv-name">EnderCraft Production SMP (1.21.1)</span>
+                <span class="badge b-green" id="panel-srv-status"><span class="live-pulse"></span> RUNNING</span>
+              </div>
+              <div class="server-meta" id="panel-srv-meta">103.189.89.44 • PWR Tier • 6 vCPU • 16GB RAM • 120GB NVMe</div>
+            </div>
+          </div>
+
+          <!-- Server Switcher Dropdown & Power Actions -->
+          <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+            <select id="server-picker" class="custom-select" style="width:auto; padding:6px 12px; font-size:0.75rem;">
+              <option>Loading your servers...</option>
+            </select>
+
+            <div class="server-actions-deck">
+              <button class="btn btn-success btn-sm" onclick="sendPowerAction('start')" title="Boot VM">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                Start
+              </button>
+              <button class="btn btn-ghost btn-sm" onclick="sendPowerAction('stop')" title="Graceful Shutdown">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>
+                Stop
+              </button>
+              <button class="btn btn-ghost btn-sm" onclick="sendPowerAction('reboot')" title="Soft Reboot">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                Reboot
+              </button>
+              <button class="btn btn-ghost btn-sm" onclick="sendPowerAction('suspend')" title="Freeze Memory (SIGSTOP)">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                Suspend
+              </button>
+              <button class="btn btn-danger btn-sm" onclick="sendPowerAction('force_stop')" title="Instant Force Kill">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                Kill
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Telemetry & Live Console -->
+        <div class="panel-body-grid">
+          
+          <!-- Telemetry Dials -->
+          <div class="panel-telemetry">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span class="eyebrow" style="margin-bottom:0;"><span class="eyebrow-dot"></span> Live Telemetry (action=stats)</span>
+              <span style="font-size:0.65rem; color:var(--muted); font-family:'DM Mono',monospace;">Polling every 4s</span>
+            </div>
+
+            <div class="telemetry-grid">
+              <div class="gauge-card">
+                <div class="gauge-header">
+                  <span>Host CPU Load</span>
+                  <span>Target 6 Cores</span>
+                </div>
+                <div class="gauge-val" id="gauge-cpu-val">18.4%</div>
+                <div class="meter-track">
+                  <div id="gauge-cpu-meter" class="meter-fill" style="width: 18.4%;"></div>
+                </div>
+              </div>
+
+              <div class="gauge-card">
+                <div class="gauge-header">
+                  <span>Memory (RAM RSS)</span>
+                  <span>QEMU Process</span>
+                </div>
+                <div class="gauge-val" id="gauge-ram-val">7.1 GB / 16 GB</div>
+                <div class="meter-track">
+                  <div id="gauge-ram-meter" class="meter-fill green" style="width: 44%;"></div>
+                </div>
+              </div>
+
+              <div class="gauge-card">
+                <div class="gauge-header">
+                  <span>NVMe Gen4 Disk</span>
+                  <span>QCOW2 Compressed</span>
+                </div>
+                <div class="gauge-val" id="gauge-disk-val">24.8 GB / 120 GB</div>
+                <div class="meter-track">
+                  <div class="meter-fill cyan" style="width: 21%;"></div>
+                </div>
+              </div>
+
+              <div class="gauge-card">
+                <div class="gauge-header">
+                  <span>Network Interface</span>
+                  <span>TAP In / Out</span>
+                </div>
+                <div class="gauge-val" style="font-size:1.15rem;" id="gauge-net-val">↓ 14.8 Mbps ↑ 8.2 Mbps</div>
+                <div class="meter-track">
+                  <div class="meter-fill gold" style="width: 35%;"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick SSH helper box -->
+            <div style="background:var(--surface); border:1px solid var(--rim); border-radius:var(--r-sm); padding:1rem; margin-top:1.2rem; display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <div style="font-size:0.65rem; color:var(--muted); font-family:'DM Mono',monospace; text-transform:uppercase;">SSH Root Access</div>
+                <div style="font-family:'DM Mono',monospace; font-size:0.85rem; color:var(--cream); margin-top:2px;" id="panel-ssh-cmd">ssh root@103.189.89.44</div>
+              </div>
+              <button class="btn btn-ghost btn-sm" onclick="copyText('panel-ssh-cmd')">Copy SSH</button>
+            </div>
+          </div>
+
+          <!-- Live QEMU Console -->
+          <div class="panel-console-wrap">
+            <div class="console-header">
+              <span class="console-title">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+                Serial Log Stream (action=serial_log)
+              </span>
+              <div style="display:flex; gap:6px;">
+                <button class="btn btn-ghost btn-sm" onclick="loadSerialLog()" style="padding:3px 8px; font-size:0.68rem;">Refresh</button>
+              </div>
+            </div>
+            <div class="console-screen" id="serial-console-screen">Connecting to node serial port...</div>
+          </div>
+
+        </div>
+
+        <!-- Panel Management Tabs -->
+        <div class="panel-tabs-bar">
+          <button id="tab-btn-access" class="ptab-btn active" onclick="switchPanelTab('access')">Access &amp; Credentials</button>
+          <button id="tab-btn-snapshots" class="ptab-btn" onclick="switchPanelTab('snapshots')">Snapshots (Backups)</button>
+          <button id="tab-btn-vnc" class="ptab-btn" onclick="switchPanelTab('vnc')">Web VNC &amp; RDP</button>
+          <button id="tab-btn-ip" class="ptab-btn" onclick="switchPanelTab('ip')">IP &amp; Networking</button>
+        </div>
+
+        <!-- Tab 1: Access -->
+        <div id="tab-pane-access" class="panel-tab-content panel-tab-pane">
+          <div style="max-width:560px;">
+            <h4 style="font-size:0.95rem; font-weight:500; margin-bottom:0.5rem;">Root Credentials</h4>
+            <p style="font-size:0.78rem; color:var(--muted2); margin-bottom:1.2rem;">Generated automatically by cloud-init. Change anytime to trigger an instant cloud-init credential update.</p>
+            <div style="display:flex; gap:10px; align-items:center;">
+              <input type="text" id="panel-root-pass" value="EnderPass_892!x" readonly style="background:var(--surface); border:1px solid var(--rim); border-radius:8px; padding:9px 12px; color:var(--cream); font-family:'DM Mono',monospace; font-size:0.85rem; flex:1;">
+              <button class="btn btn-ghost btn-sm" onclick="copyText('panel-root-pass')">Copy</button>
+              <button class="btn btn-primary btn-sm" onclick="updateRootPassword()">Change Password</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 2: Snapshots -->
+        <div id="tab-pane-snapshots" class="panel-tab-content panel-tab-pane" style="display:none;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+            <div>
+              <h4 style="font-size:0.95rem; font-weight:500;">Point-in-Time QCOW2 Snapshots</h4>
+              <p style="font-size:0.75rem; color:var(--muted2);">Create offline disk copies before applying system upgrades or Minecraft modpack updates.</p>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="createSnapshot()">+ Create Snapshot</button>
+          </div>
+          <div id="snapshots-list">Loading snapshots...</div>
+        </div>
+
+        <!-- Tab 3: VNC & RDP -->
+        <div id="tab-pane-vnc" class="panel-tab-content panel-tab-pane" style="display:none;">
+          <div style="max-width:620px;">
+            <h4 style="font-size:0.95rem; font-weight:500; margin-bottom:0.5rem;">Remote Display &amp; VNC Console</h4>
+            <p style="font-size:0.78rem; color:var(--muted2); margin-bottom:1.5rem;">Access the physical screen even if SSH is disabled or firewall blocks incoming traffic.</p>
+            <div style="background:var(--surface); border:1px solid var(--rim); border-radius:8px; padding:1.2rem; display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+              <div>
+                <div style="font-size:0.68rem; color:var(--muted); font-family:'DM Mono',monospace;">VNC HOST &amp; PORT</div>
+                <div style="font-size:0.85rem; font-family:'DM Mono',monospace; color:var(--cream); margin-top:2px;">in.shulker.in:5943</div>
+              </div>
+              <div>
+                <div style="font-size:0.68rem; color:var(--muted); font-family:'DM Mono',monospace;">WEBSOCKET (HTML5 VNC)</div>
+                <div style="font-size:0.85rem; font-family:'DM Mono',monospace; color:var(--cream); margin-top:2px;">Port 6043 (Secure)</div>
+              </div>
+              <div>
+                <div style="font-size:0.68rem; color:var(--muted); font-family:'DM Mono',monospace;">WINDOWS RDP FORWARDING</div>
+                <div style="font-size:0.85rem; font-family:'DM Mono',monospace; color:var(--cream); margin-top:2px;">in.shulker.in:34201</div>
+              </div>
+              <div>
+                <div style="font-size:0.68rem; color:var(--muted); font-family:'DM Mono',monospace;">DISPLAY ENCRYPTION</div>
+                <div style="font-size:0.85rem; font-family:'DM Mono',monospace; color:var(--green); margin-top:2px;">TLS / SSL Encrypted</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 4: IP Management -->
+        <div id="tab-pane-ip" class="panel-tab-content panel-tab-pane" style="display:none;">
+          <div style="max-width:600px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+              <div>
+                <h4 style="font-size:0.95rem; font-weight:500;">Dedicated IPv4 Allocation</h4>
+                <p style="font-size:0.75rem; color:var(--muted2);">Clean, DDoS-protected IP addresses with reverse DNS support.</p>
+              </div>
+              <button class="btn btn-primary btn-sm" onclick="attachPublicIp()">Attach / Verify Public IP</button>
+            </div>
+            <div style="background:var(--surface); border:1px solid var(--rim); border-radius:8px; padding:1rem 1.4rem;">
+              <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--rim);">
+                <span style="font-size:0.8rem; color:var(--muted2);">Primary IPv4 Address</span>
+                <span style="font-family:'DM Mono',monospace; color:var(--cream);">103.189.89.44</span>
+              </div>
+              <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--rim);">
+                <span style="font-size:0.8rem; color:var(--muted2);">Gateway &amp; Subnet</span>
+                <span style="font-family:'DM Mono',monospace; color:var(--cream);">103.189.89.1 /24</span>
+              </div>
+              <div style="display:flex; justify-content:space-between; padding:8px 0;">
+                <span style="font-size:0.8rem; color:var(--muted2);">DDoS Protection Status</span>
+                <span style="color:var(--green); font-weight:500; font-size:0.8rem;">92 Tbps Anycast Active</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       HOW CUSTOMERS CONTROL THEIR VPS (ARCHITECTURE EXPLAINED)
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <section class="s" id="architecture-section">
+    <div class="wrap">
+      
+      <div style="text-align:center; max-width:650px; margin:0 auto 1rem;">
+        <span class="eyebrow"><span class="eyebrow-dot"></span> Under The Hood</span>
+        <h2 class="sh">How EnderHost Controls Your VPS</h2>
+        <p class="sub">Direct API proxying to bare-metal KVM hypervisors with zero token leaks and sub-second response times.</p>
+      </div>
+
+      <div class="arch-grid">
+        <div class="arch-card">
+          <span class="arch-step-num">STEP 01</span>
+          <h3 class="arch-title">Customer Action</h3>
+          <p class="arch-desc">Your customer clicks "Start", "Reboot", or "Create Snapshot" on the EnderHost website control panel from their dashboard.</p>
+        </div>
+
+        <div class="arch-card">
+          <span class="arch-step-num">STEP 02</span>
+          <h3 class="arch-title">Secure Server Proxy</h3>
+          <p class="arch-desc">The EnderHost Node.js backend validates customer identity and session. The secret Shulker reseller token is injected server-side and never exposed to the client browser.</p>
+        </div>
+
+        <div class="arch-card">
+          <span class="arch-step-num">STEP 03</span>
+          <h3 class="arch-title">Hypervisor Execution</h3>
+          <p class="arch-desc">The request hits <code>api/reseller-v1/</code> and forwards directly to the host node running QEMU/KVM in Mumbai or Delhi, managing the VM process via Unix sockets.</p>
+        </div>
+
+        <div class="arch-card">
+          <span class="arch-step-num">STEP 04</span>
+          <h3 class="arch-title">Instant Real-Time Stream</h3>
+          <p class="arch-desc">Host telemetry (% CPU, RAM RSS, QCOW2 disk usage) and kernel serial console output stream right back to the client's browser in real-time.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       OWNER / RESELLER INSIGHTS DASHBOARD (TOGGLEABLE)
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <section class="s" id="admin-overview-section" style="display:none; background: #080814; border-top:1px solid var(--violet);">
+    <div class="wrap">
+      <div class="admin-card">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+          <div>
+            <span class="badge b-purple">OWNER RESELLER DASHBOARD</span>
+            <h3 style="font-size:1.6rem; font-weight:500; color:#fff; margin-top:4px;">EnderHost Reseller Operations</h3>
+            <p style="font-size:0.8rem; color:var(--muted2);">Real-time revenue, wholesale deductions from Purple Wallet, and your configured margins.</p>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:0.7rem; color:var(--muted); font-family:'DM Mono',monospace;">ACTIVE RESELLER TOKEN</div>
+            <div style="font-family:'DM Mono',monospace; color:var(--green); font-size:0.9rem;" id="admin-token">Zgmj...muJ87 (Connected)</div>
+          </div>
+        </div>
+
+        <div class="admin-stats-grid">
+          <div class="admin-stat-cell">
+            <div style="font-size:0.68rem; color:var(--muted); font-family:'DM Mono',monospace; text-transform:uppercase;">Active Client VPSes</div>
+            <div style="font-size:1.7rem; font-weight:500; color:#fff; margin-top:4px;" id="admin-instances">2</div>
+          </div>
+
+          <div class="admin-stat-cell">
+            <div style="font-size:0.68rem; color:var(--muted); font-family:'DM Mono',monospace; text-transform:uppercase;">Wholesale Cost (Shulker)</div>
+            <div style="font-size:1.7rem; font-weight:500; color:var(--cream-dim); margin-top:4px;" id="admin-wholesale">₹1,420</div>
+          </div>
+
+          <div class="admin-stat-cell">
+            <div style="font-size:0.68rem; color:var(--muted); font-family:'DM Mono',monospace; text-transform:uppercase;">Total Client Billing</div>
+            <div style="font-size:1.7rem; font-weight:500; color:#fff; margin-top:4px;" id="admin-retail">₹2,420</div>
+          </div>
+
+          <div class="admin-stat-cell" style="border-color:rgba(16,185,129,0.3); background:rgba(16,185,129,0.05);">
+            <div style="font-size:0.68rem; color:#34d399; font-family:'DM Mono',monospace; text-transform:uppercase;">Net Profit Margin</div>
+            <div style="font-size:1.7rem; font-weight:600; color:#34d399; margin-top:4px;" id="admin-profit">₹1,000 (41%)</div>
+          </div>
+        </div>
+
+        <h4 style="font-size:0.9rem; font-weight:500; color:var(--cream); margin-top:1.5rem;">Your Configured Profit Margin Curve:</h4>
+        <table class="margin-table">
+          <thead>
+            <tr>
+              <th>Base Wholesale Range</th>
+              <th>Your EnderHost Profit Margin</th>
+              <th>Example Specs</th>
+              <th>Wholesale Cost</th>
+              <th>EnderHost Retail Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Less than ₹1,000</td>
+              <td><span style="color:#34d399; font-weight:600;">+₹260 Margin</span></td>
+              <td>STD 4 vCPU + 8GB RAM + 100GB Disk</td>
+              <td>₹587.00</td>
+              <td><strong>₹847.00</strong></td>
+            </tr>
+            <tr>
+              <td>₹1,000 to ₹2,000</td>
+              <td><span style="color:#34d399; font-weight:600;">+₹420 Margin</span></td>
+              <td>PERF 6 vCPU + 16GB RAM + 120GB Disk</td>
+              <td>₹1,329.00</td>
+              <td><strong>₹1,749.00</strong></td>
+            </tr>
+            <tr>
+              <td>₹2,000 to ₹3,000</td>
+              <td><span style="color:#34d399; font-weight:600;">+₹580 Margin</span></td>
+              <td>PWR 6 vCPU + 24GB RAM + 200GB Disk</td>
+              <td>₹2,432.00</td>
+              <td><strong>₹3,012.00</strong></td>
+            </tr>
+            <tr>
+              <td>₹3,000 to ₹4,000</td>
+              <td><span style="color:#34d399; font-weight:600;">+₹1,100 Margin</span></td>
+              <td>PWR 8 vCPU + 32GB RAM + 250GB Disk</td>
+              <td>₹2,869.00</td>
+              <td><strong>₹3,969.00</strong></td>
+            </tr>
+            <tr>
+              <td>Above ₹4,000</td>
+              <td><span style="color:#34d399; font-weight:600;">30% Margin</span></td>
+              <td>PWR 16 vCPU + 64GB RAM + 500GB Disk</td>
+              <td>₹5,909.00</td>
+              <td><strong>₹7,682.00 (+₹1,773)</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       FAQ ACCORDION
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <section class="s" id="faq-section">
+    <div class="wrap faq-wrap">
+      <div>
+        <span class="eyebrow"><span class="eyebrow-dot"></span> Got Questions?</span>
+        <h2 class="sh" style="font-size:2.4rem;">Frequently Answered.</h2>
+        <p class="sub">Everything you need to know about EnderHost performance, billing, and control.</p>
+      </div>
+
+      <div>
+        <div class="faq-item open">
+          <button class="faq-btn">
+            Are VPS and Minecraft Server hosting charged at the same price?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-body">
+            <p>Yes! We believe in transparent infrastructure. Both Cloud VPS and Minecraft servers run on the exact same high-speed bare-metal nodes (EPYC, Xeon, and Ryzen 9). With Minecraft hosting, we pre-install your choice of Paper, Purpur, Fabric, or Forge with optimized JVM flags and port forwarding at no extra charge.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-btn">
+            How fast do instances deploy after ordering?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-body">
+            <p>Between 2 to 3 seconds. Our backend communicates directly with hypervisor nodes via automated API calls. Your dedicated IPv4 is attached, QCOW2 disk is provisioned, and cloud-init configures SSH credentials before you can switch tabs.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-btn">
+            How do customers control their server from this website?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-body">
+            <p>Customers can start, stop, soft reboot, force kill, suspend, and resume their VM directly from the Control Center. They can also view live CPU and RAM consumption graphs, read the live QEMU serial log, take offline snapshots, and connect to VNC or Windows RDP.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-btn">
+            Do I get dedicated IPv4 and full root access?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-body">
+            <p>Yes. Every single instance comes with a clean, dedicated IPv4 address and full root access. You can configure firewalls, install Docker containers, run game daemons, or host web clusters without any artificial limitations.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-btn">
+            Can I upgrade CPU cores, RAM, or storage later?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-body">
+            <p>Yes. Resources can be scaled dynamically. CPU and RAM upgrades require a quick VM restart, and storage can be expanded seamlessly using cloud-init and partition expansion.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       FOOTER
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <footer class="footer-wrap">
+    <div class="wrap">
+      <div class="footer-grid">
+        <div>
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:1rem;">
+            <div class="brand-icon" style="width:28px; height:28px; font-size:0.9rem;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/></svg>
+            </div>
+            <span style="font-family:'Bricolage Grotesque',sans-serif; font-size:1.15rem; font-weight:600; color:#fff;">EnderHost</span>
+          </div>
+          <p style="font-size:0.8rem; color:var(--muted2); line-height:1.7; max-width:280px;">
+            Enterprise cloud virtualization and game server hosting with wholesale-backed reliability and honest margins.
+          </p>
+        </div>
+
+        <div>
+          <div class="footer-title">Products</div>
+          <ul class="footer-links">
+            <li><a href="#configurator-section">Cloud VPS Hosting</a></li>
+            <li><a href="#configurator-section">Minecraft Server Hosting</a></li>
+            <li><a href="#plans-section">Ryzen 9 Extreme Nodes</a></li>
+            <li><a href="#plans-section">AMD EPYC Balanced</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="footer-title">Platform</div>
+          <ul class="footer-links">
+            <li><a href="#control-panel-section">Customer Control Panel</a></li>
+            <li><a href="#architecture-section">Architecture &amp; API</a></li>
+            <li><a href="#configurator-section">Stock &amp; Availability</a></li>
+            <li><a href="#faq-section">DDoS Protection Shield</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="footer-title">Locations &amp; Trust</div>
+          <ul class="footer-links">
+            <li><a href="#configurator-section">Mumbai, India DC</a></li>
+            <li><a href="#configurator-section">Delhi, India DC</a></li>
+            <li><a href="#configurator-section">Frankfurt, Germany DC</a></li>
+            <li><a href="#configurator-section">99.99% Hardware SLA</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>&copy; 2026 EnderHost Technologies. All rights reserved. Powered by Shulker Wholesale Infrastructure.</div>
+        <div style="display:flex; gap:1.5rem;">
+          <span style="color:var(--green);">● All Systems Operational</span>
+          <span>92 Tbps Anycast Shield</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="/js/app.js"></script>
+</body>
+</html>
