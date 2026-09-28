@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initSecretAdmin();
 });
 
-// ─── Navbar Scroll ──────────────────────────────────────────────────────────
+// ─── Navbar Scroll & Mega Menu ──────────────────────────────────────────────
 function initNavbar() {
   const header = document.querySelector('.nav-header');
   window.addEventListener('scroll', () => {
@@ -73,6 +73,43 @@ function initNavbar() {
       header.classList.remove('scrolled');
     }
   });
+
+  // Close mega menu on outside click
+  document.addEventListener('click', (e) => {
+    const dropdown = document.getElementById('nav-products-dropdown');
+    if (dropdown && !dropdown.contains(e.target)) {
+      dropdown.classList.remove('active');
+    }
+  });
+}
+
+function toggleProductsMenu(e) {
+  if (e) e.stopPropagation();
+  const dropdown = document.getElementById('nav-products-dropdown');
+  if (dropdown) {
+    dropdown.classList.toggle('active');
+  }
+}
+
+function switchModeAndScroll(mode) {
+  const dropdown = document.getElementById('nav-products-dropdown');
+  if (dropdown) dropdown.classList.remove('active');
+
+  const vpsBtn = document.getElementById('mode-vps');
+  const mcBtn = document.getElementById('mode-mc');
+
+  if (mode === 'minecraft') {
+    currentMode = 'minecraft';
+    if (mcBtn) mcBtn.classList.add('active');
+    if (vpsBtn) vpsBtn.classList.remove('active');
+    populateOsOptions('minecraft');
+  } else {
+    currentMode = 'vps';
+    if (vpsBtn) vpsBtn.classList.add('active');
+    if (mcBtn) mcBtn.classList.remove('active');
+    populateOsOptions('vps');
+  }
+  updateQuote();
 }
 
 // ─── Mode Switcher (VPS vs Minecraft) ───────────────────────────────────────

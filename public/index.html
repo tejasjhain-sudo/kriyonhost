@@ -38,21 +38,102 @@
       </a>
 
       <ul class="nav-links">
-        <li><a href="#configurator-section">Cloud VPS &amp; MC</a></li>
-        <li><a href="#tunnels-section">Anycast Tunnels</a></li>
-        <li><a href="#web-section">Web Hosting</a></li>
-        <li><a href="#control-panel-section">Server Console</a></li>
+        <li class="nav-dropdown" id="nav-products-dropdown">
+          <button class="nav-dropdown-btn" onclick="toggleProductsMenu(event)">
+            Products
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          
+          <div class="mega-menu" id="mega-menu-box">
+            <div class="mega-menu-grid">
+              <!-- COMPUTE -->
+              <div>
+                <div class="mega-col-title">COMPUTE</div>
+                <a href="#configurator-section" class="mega-item" onclick="switchModeAndScroll('vps')">
+                  <div class="mega-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+                  </div>
+                  <div class="mega-text">
+                    <div class="mega-title">VPS Hosting</div>
+                    <div class="mega-sub">Enterprise-grade virtual machines</div>
+                  </div>
+                </a>
+                <a href="#architecture-section" class="mega-item">
+                  <div class="mega-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+                  </div>
+                  <div class="mega-text">
+                    <div class="mega-title">Dedicated Server</div>
+                    <div class="mega-sub">Pure bare-metal performance</div>
+                  </div>
+                </a>
+              </div>
+
+              <!-- GAME HOSTING -->
+              <div>
+                <div class="mega-col-title">GAME HOSTING</div>
+                <a href="#configurator-section" class="mega-item" onclick="switchModeAndScroll('minecraft')">
+                  <div class="mega-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                  </div>
+                  <div class="mega-text">
+                    <div class="mega-title">Minecraft Hosting</div>
+                    <div class="mega-sub">Ryzen 9 · 5.7GHz · 500+ Tbps</div>
+                  </div>
+                </a>
+              </div>
+
+              <!-- NETWORK & SECURITY -->
+              <div>
+                <div class="mega-col-title">NETWORK &amp; SECURITY</div>
+                <a href="#tunnels-section" class="mega-item">
+                  <div class="mega-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                  </div>
+                  <div class="mega-text">
+                    <div class="mega-title">Anycast Tunnels <span class="badge b-purple" style="font-size:0.6rem; padding:1px 5px; margin-left:2px;">NEW</span></div>
+                    <div class="mega-sub">Cloudflare Spectrum · 500+ Tbps</div>
+                  </div>
+                </a>
+              </div>
+
+              <!-- WEB & TOOLS -->
+              <div>
+                <div class="mega-col-title">WEB &amp; TOOLS</div>
+                <a href="#web-section" class="mega-item">
+                  <div class="mega-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                  </div>
+                  <div class="mega-text">
+                    <div class="mega-title">Website Hosting</div>
+                    <div class="mega-sub">NVMe, cPanel, Node &amp; Free SSL</div>
+                  </div>
+                </a>
+                <a href="#control-panel-section" class="mega-item">
+                  <div class="mega-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                  </div>
+                  <div class="mega-text">
+                    <div class="mega-title">Server Console</div>
+                    <div class="mega-sub">Interactive shell &amp; Web VNC</div>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </li>
+
+        <li><a href="#control-panel-section">Console</a></li>
         <li><a href="#architecture-section">Infrastructure</a></li>
         <li><a href="#faq-section">FAQ</a></li>
       </ul>
 
       <div class="nav-actions">
         <a href="#control-panel-section" class="btn btn-ghost btn-sm">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/><path d="m14 9 3 3-3 3"/></svg>
-          Client Console
+          Log in
         </a>
         <a href="#configurator-section" class="btn btn-primary btn-sm">
-          Deploy Server
+          Get started
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </a>
       </div>
@@ -437,15 +518,400 @@
   </section>
 
   <!-- ═══════════════════════════════════════════════════════════════════════
-       ANYCAST TCP/UDP TUNNELS (4 TIERS)
+       ANYCAST TCP/UDP TUNNELS & DDoS PROTECTION SHOWCASE (500+ Tbps)
        ═══════════════════════════════════════════════════════════════════════ -->
   <section class="s" id="tunnels-section">
     <div class="wrap">
       
-      <div style="text-align:center; max-width:700px; margin:0 auto 2rem;">
+      <!-- Section Header -->
+      <div style="text-align:center; max-width:760px; margin:0 auto 1.5rem;">
         <span class="eyebrow"><span class="eyebrow-dot"></span> Next-Gen Network Tunneling</span>
         <h2 class="sh">Anycast Port Tunnels &amp; DDoS Protection</h2>
-        <p class="sub">Shield your Minecraft network and local game servers. Zero port forwarding, origin IP masking, and ultra-low-latency Anycast routing.</p>
+        <p class="sub">Shield your Minecraft network and local game servers. Zero port forwarding, origin IP masking, and ultra-low-latency Anycast edge routing.</p>
+        
+        <div class="tunnel-powered-pill">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          POWERED BY CLOUDFLARE SPECTRUM · AS216013 ANYCAST FABRIC · THE NETWORK BEHIND PAPYRUS.VIP
+        </div>
+      </div>
+
+      <!-- High-Impact Hero Stats -->
+      <div class="tunnel-hero-stats">
+        <div class="tunnel-hero-stat-card">
+          <div class="tunnel-stat-number" style="color:var(--cyan);">500+ Tbps</div>
+          <div class="tunnel-stat-label">Network Capacity</div>
+        </div>
+        <div class="tunnel-hero-stat-card">
+          <div class="tunnel-stat-number" style="color:var(--violet2);">330+</div>
+          <div class="tunnel-stat-label">Anycast Cities</div>
+        </div>
+        <div class="tunnel-hero-stat-card">
+          <div class="tunnel-stat-number" style="color:#34d399;">200M+</div>
+          <div class="tunnel-stat-label">Bots Filtered / Second</div>
+        </div>
+        <div class="tunnel-hero-stat-card">
+          <div class="tunnel-stat-number" style="color:#fbbf24;">99.9%</div>
+          <div class="tunnel-stat-label">Uptime SLA</div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════════════════════
+           THE STACK: One Pipeline, Purpose-Built for Minecraft
+           ═══════════════════════════════════════════════════════════════════ -->
+      <div class="stack-section-title">
+        <span class="eyebrow"><span class="eyebrow-dot"></span> Dedicated Architecture</span>
+        <h3 style="font-family:'Bricolage Grotesque',sans-serif; font-size:2rem; font-weight:400; color:#fff; line-height:1.2; margin-bottom:8px;">
+          The Stack: One Pipeline, Purpose-Built for Minecraft
+        </h3>
+        <p style="font-size:0.85rem; color:var(--muted2); line-height:1.6;">
+          Generic DDoS scrubbing doesn't understand the Minecraft protocol. Ours does — every layer of the EnderShield stack was written exclusively for it.
+        </p>
+      </div>
+
+      <div class="stack-grid">
+        <!-- CRYO -->
+        <div class="stack-card">
+          <div class="stack-tag">CRYO</div>
+          <div class="stack-name">Cryo</div>
+          <div class="stack-subname">Layer-7 Mitigation Engine</div>
+          <div class="stack-desc">
+            A hostname-aware proxy purpose-built for the Minecraft protocol. Per-network policies, adaptive rate-limits with auto-UAM, MOTD edge caching, and protocol-level filtering — attacks are parsed and dropped before they ever cross the wire to you.
+          </div>
+        </div>
+
+        <!-- CRYOLIMBO -->
+        <div class="stack-card">
+          <div class="stack-tag">CRYOLIMBO</div>
+          <div class="stack-name">CryoLimbo</div>
+          <div class="stack-subname">Verification Gauntlet</div>
+          <div class="stack-desc">
+            Suspicious joins are detoured into a lightweight limbo world and verified — from a simple captcha up to full behavioral checks — before touching your backend. Doubles as an overflow lobby when your server is at capacity.
+          </div>
+        </div>
+
+        <!-- ANTIVPN -->
+        <div class="stack-card">
+          <div class="stack-tag">ANTIVPN</div>
+          <div class="stack-name">AntiVPN</div>
+          <div class="stack-subname">Proxy &amp; VPN Detection</div>
+          <div class="stack-desc">
+            Flag, challenge, or block connections from VPNs, proxies, and datacenter ranges in real time. Query volume is bundled into every plan and enforcement is non-blocking — zero added latency for clean players.
+          </div>
+        </div>
+
+        <!-- PANEL -->
+        <div class="stack-card">
+          <div class="stack-tag">PANEL</div>
+          <div class="stack-name">Panel</div>
+          <div class="stack-subname">Edge Control Plane</div>
+          <div class="stack-desc">
+            Realtime analytics, live player lists, firewall and risk lists, antibot templates, team RBAC, and a full REST API. Configuration changes propagate to every edge PoP globally in under a single second.
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════════════════════
+           CAPABILITIES: Everything Between Your Players and Your Box
+           ═══════════════════════════════════════════════════════════════════ -->
+      <div class="stack-section-title" style="margin-top:4rem;">
+        <span class="eyebrow"><span class="eyebrow-dot"></span> Edge Capabilities</span>
+        <h3 style="font-family:'Bricolage Grotesque',sans-serif; font-size:2rem; font-weight:400; color:#fff; line-height:1.2; margin-bottom:8px;">
+          Everything Between Your Players and Your Box
+        </h3>
+      </div>
+
+      <div class="capabilities-grid">
+        <div class="cap-card">
+          <div class="cap-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div class="cap-title">Real Client IPs on Every Plan</div>
+          <div class="cap-desc">PROXY protocol support included from day one. Your backend sees the real player IP — bans, punishments, and plugins keep working exactly as before.</div>
+        </div>
+
+        <div class="cap-card">
+          <div class="cap-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          </div>
+          <div class="cap-title">Geo-Steered Load Balancing</div>
+          <div class="cap-desc">Round-robin, least-conn with weights, or geographic steering that routes players to the nearest healthy backend by PoP. Health checks pull dead backends automatically.</div>
+        </div>
+
+        <div class="cap-card">
+          <div class="cap-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+          </div>
+          <div class="cap-title">Firewall &amp; Risk Lists</div>
+          <div class="cap-desc">Country and ASN lists, composite AND rules, reusable security groups. Ship presets or build your own — enforced at the edge, not on your box.</div>
+        </div>
+
+        <div class="cap-card">
+          <div class="cap-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          </div>
+          <div class="cap-title">Live Player Control</div>
+          <div class="cap-desc">See every session across all PoPs in real time. Kick, ban by IP, username, or client fingerprint, and force-verify suspicious players at any level.</div>
+        </div>
+
+        <div class="cap-card">
+          <div class="cap-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          </div>
+          <div class="cap-title">Analytics That Keep Receipts</div>
+          <div class="cap-desc">Full connection logs with fingerprints, attack forensic history, and up to 90-day retention with CSV export. Know exactly what hit you, and when.</div>
+        </div>
+
+        <div class="cap-card">
+          <div class="cap-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          </div>
+          <div class="cap-title">Your Brand, End to End</div>
+          <div class="cap-desc">Custom offline and mitigation MOTDs with your server icon on paid plans. Full white-label branding across all customer touchpoints.</div>
+        </div>
+
+        <div class="cap-card">
+          <div class="cap-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </div>
+          <div class="cap-title">Stolen Accounts Stopped Cold</div>
+          <div class="cap-desc">Accounts flagged as stolen or credential-leaked are kicked at the edge before they join — with a message telling the real owner how to secure their account.</div>
+        </div>
+
+        <div class="cap-card">
+          <div class="cap-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
+          </div>
+          <div class="cap-title">Player Insights &amp; Retention</div>
+          <div class="cap-desc">See who actually comes back: unique players, returning vs one-time, average session length, client versions, hostnames, and country origins.</div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════════════════════
+           INSIDE THE PANEL: Attack Forensics & Live Telemetry
+           ═══════════════════════════════════════════════════════════════════ -->
+      <div class="panel-showcase-box">
+        <div>
+          <span class="badge b-purple" style="margin-bottom:0.75rem;">INSIDE THE PANEL</span>
+          <h3 style="font-family:'Bricolage Grotesque',sans-serif; font-size:1.8rem; font-weight:500; color:#fff; line-height:1.2; margin-bottom:1rem;">
+            The control plane, not a black box
+          </h3>
+          <p style="font-size:0.85rem; color:var(--cream-dim); line-height:1.7; margin-bottom:1.5rem;">
+            Everything the pipeline does is visible and tunable, live. These are the screens you'll actually use to manage attacks and players.
+          </p>
+
+          <div style="display:flex; flex-direction:column; gap:12px;">
+            <div style="display:flex; gap:10px; align-items:flex-start;">
+              <span class="live-pulse" style="margin-top:5px; flex-shrink:0;"></span>
+              <div>
+                <strong style="color:#fff; font-size:0.86rem;">Watch attacks die in real time:</strong>
+                <div style="font-size:0.78rem; color:var(--muted2); line-height:1.4;">Per-network attack view: packets dropped at edge, combined ping+login CPS, auto-UAM status — while origin server load stays at 0%.</div>
+              </div>
+            </div>
+
+            <div style="display:flex; gap:10px; align-items:flex-start;">
+              <span class="live-pulse" style="margin-top:5px; background:var(--cyan); flex-shrink:0;"></span>
+              <div>
+                <strong style="color:#fff; font-size:0.86rem;">Antibot you can actually tune:</strong>
+                <div style="font-size:0.78rem; color:var(--muted2); line-height:1.4;">Verification levels, AntiVPN enforcement modes, and stolen-account detection with whitelist &amp; custom kick message.</div>
+              </div>
+            </div>
+
+            <div style="display:flex; gap:10px; align-items:flex-start;">
+              <span class="live-pulse" style="margin-top:5px; background:#fbbf24; flex-shrink:0;"></span>
+              <div>
+                <strong style="color:#fff; font-size:0.86rem;">Every join, explained:</strong>
+                <div style="font-size:0.78rem; color:var(--muted2); line-height:1.4;">Live connection log with real IPs, ASN, PoP, client fingerprint, and verdict: clean, sent to limbo verification, or blocked.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive Mock Telemetry Terminal -->
+        <div class="mock-attack-terminal">
+          <div class="mock-terminal-head">
+            <span>[ EDGE L7 SCRUBBER // LIVE LOGS ]</span>
+            <span style="color:#34d399;">● MITIGATION ACTIVE</span>
+          </div>
+          
+          <div class="mock-row">
+            <span>Edge Ingress Rate:</span>
+            <span style="color:#f87171;">4,812,040 pps (SYN + Bad Handshake)</span>
+          </div>
+          <div class="mock-row">
+            <span>Dropped at Edge PoP:</span>
+            <span class="badge-drop">4,812,040 / sec (100.0%)</span>
+          </div>
+          <div class="mock-row">
+            <span>Origin Impact:</span>
+            <span class="badge-zero">0.0% (ZERO LOAD ON YOUR BOX)</span>
+          </div>
+
+          <div style="margin: 12px 0 8px; padding-top: 10px; border-top: 1px dashed rgba(255,255,255,0.08); font-size:0.7rem; color:var(--muted);">
+            RECENT CONNECTION VERDICTS:
+          </div>
+          
+          <div class="mock-row">
+            <span>103.48.xx.xx (Clean Client)</span>
+            <span class="badge-clean">[PASSED → PROXY PROTOCOL]</span>
+          </div>
+          <div class="mock-row">
+            <span>45.154.xx.xx (Datacenter VPN)</span>
+            <span class="badge-drop">[BLOCKED: AntiVPN Rule #4]</span>
+          </div>
+          <div class="mock-row">
+            <span>185.220.xx.xx (Tor / Proxy)</span>
+            <span class="badge-drop">[BLOCKED: Tor Exit Node]</span>
+          </div>
+          <div class="mock-row">
+            <span>194.26.xx.xx (Unknown Fingerprint)</span>
+            <span style="color:#fbbf24;">[DETOURED: CryoLimbo Captcha]</span>
+          </div>
+          <div class="mock-row">
+            <span>92.255.xx.xx (Leaked Mojang Cred)</span>
+            <span class="badge-drop">[KICKED: Stolen Account DB]</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════════════════════
+           THE NETWORK: Anycast Everywhere. Dedicated Where It Counts.
+           ═══════════════════════════════════════════════════════════════════ -->
+      <div class="stack-section-title" style="margin-top:4.5rem;">
+        <span class="eyebrow"><span class="eyebrow-dot"></span> Global Anycast Fabric</span>
+        <h3 style="font-family:'Bricolage Grotesque',sans-serif; font-size:2rem; font-weight:400; color:#fff; line-height:1.2; margin-bottom:8px;">
+          The Network: Anycast Everywhere. Dedicated Where It Counts.
+        </h3>
+        <p style="font-size:0.85rem; color:var(--muted2); line-height:1.6;">
+          Your hostname resolves to Cloudflare Spectrum's anycast fabric — Cloudflare IPs at the front door, 330+ cities, 500+ Tbps of absorption capacity. Behind it sits our own network, AS216013, with 600+ Gbps of filtering capacity, where Cryo performs protocol-level Layer-7 mitigation on dedicated PoPs. The same network that powers papyrus.vip.
+        </p>
+      </div>
+
+      <!-- 8 Dedicated Edge PoPs Grid -->
+      <div class="pops-grid">
+        <div class="pop-card">
+          <div><span class="pop-code">LAX</span><span class="pop-city">Los Angeles</span></div>
+          <div class="pop-status"><span class="live-pulse"></span> Active</div>
+        </div>
+        <div class="pop-card">
+          <div><span class="pop-code">MIA</span><span class="pop-city">Miami</span></div>
+          <div class="pop-status"><span class="live-pulse"></span> Active</div>
+        </div>
+        <div class="pop-card">
+          <div><span class="pop-code">NYC</span><span class="pop-city">New York</span></div>
+          <div class="pop-status"><span class="live-pulse"></span> Active</div>
+        </div>
+        <div class="pop-card">
+          <div><span class="pop-code">FRA</span><span class="pop-city">Frankfurt</span></div>
+          <div class="pop-status"><span class="live-pulse"></span> Active</div>
+        </div>
+        <div class="pop-card">
+          <div><span class="pop-code">WAW</span><span class="pop-city">Warsaw</span></div>
+          <div class="pop-status"><span class="live-pulse"></span> Active</div>
+        </div>
+        <div class="pop-card">
+          <div><span class="pop-code">TLV</span><span class="pop-city">Tel Aviv</span></div>
+          <div class="pop-status"><span class="live-pulse"></span> Active</div>
+        </div>
+        <div class="pop-card">
+          <div><span class="pop-code">SIN</span><span class="pop-city">Singapore</span></div>
+          <div class="pop-status"><span class="live-pulse"></span> Active</div>
+        </div>
+        <div class="pop-card">
+          <div><span class="pop-code">TYO</span><span class="pop-city">Tokyo</span></div>
+          <div class="pop-status"><span class="live-pulse"></span> Active</div>
+        </div>
+      </div>
+
+      <div style="text-align:center; font-size:0.8rem; color:var(--muted2); font-family:'DM Mono',monospace; margin-bottom:2rem;">
+        +330 Anycast Cities via Cloudflare Spectrum Edge
+      </div>
+
+      <!-- Network Mitigation Stats -->
+      <div class="network-stats-grid">
+        <div class="net-stat-card">
+          <div class="net-stat-num" style="color:var(--cyan);">7.15 Tbps</div>
+          <div class="net-stat-label">Largest Volumetric Attack Mitigated</div>
+        </div>
+        <div class="net-stat-card">
+          <div class="net-stat-num" style="color:var(--violet2);">50M conns</div>
+          <div class="net-stat-label">Largest L7 Attack Mitigated</div>
+        </div>
+        <div class="net-stat-card">
+          <div class="net-stat-num" style="color:#34d399;">8</div>
+          <div class="net-stat-label">Dedicated Edge PoPs</div>
+        </div>
+        <div class="net-stat-card">
+          <div class="net-stat-num" style="color:#fbbf24;">600+ Gbps</div>
+          <div class="net-stat-label">Own-Network L7 Capacity</div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════════════════════
+           SETUP: Five Minutes. One DNS Record.
+           ═══════════════════════════════════════════════════════════════════ -->
+      <div class="stack-section-title">
+        <span class="eyebrow"><span class="eyebrow-dot"></span> Instant Onboarding</span>
+        <h3 style="font-family:'Bricolage Grotesque',sans-serif; font-size:2rem; font-weight:400; color:#fff; line-height:1.2; margin-bottom:8px;">
+          Setup: Five Minutes. One DNS Record.
+        </h3>
+      </div>
+
+      <div class="setup-grid">
+        <div>
+          <div class="setup-step">
+            <div class="step-num">01</div>
+            <div>
+              <div class="step-title">Create a network</div>
+              <div class="step-desc">Sign up, name your network, and add your backend's IP address in the panel. You receive an assigned anycast endpoint hostname immediately.</div>
+            </div>
+          </div>
+
+          <div class="setup-step">
+            <div class="step-num">02</div>
+            <div>
+              <div class="step-title">Point your DNS</div>
+              <div class="step-desc">Add one CNAME (or SRV) record at your registrar. No server migration, no messy plugins, no host change — your server stays exactly where it is.</div>
+            </div>
+          </div>
+
+          <div class="setup-step">
+            <div class="step-num">03</div>
+            <div>
+              <div class="step-title">You're protected</div>
+              <div class="step-desc">Traffic now enters through the global edge. Attacks are absorbed and filtered before they reach you; clean players pass with real IPs intact.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Terminal DNS Box -->
+        <div class="dns-terminal">
+          <div style="font-size:0.7rem; color:var(--muted); margin-bottom:10px; display:flex; justify-content:space-between;">
+            <span>DNS ZONE CONFIGURATION — YOURSERVER.NET</span>
+            <span style="color:#38bdf8;">BIND / CLOUDFLARE</span>
+          </div>
+          
+          <div class="dns-comment"># BEFORE — origin IP exposed to attackers</div>
+          <div class="dns-bad">play&nbsp;&nbsp;&nbsp;&nbsp;IN&nbsp;&nbsp;A&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;203.0.113.7</div>
+          <br>
+          <div class="dns-comment"># AFTER — origin hidden behind EnderShield edge</div>
+          <div class="dns-good">play&nbsp;&nbsp;&nbsp;&nbsp;IN&nbsp;&nbsp;CNAME&nbsp;&nbsp;a1b2c3.edge.ender.link.</div>
+          <br>
+          <div class="dns-comment"># Or keep a custom port using SRV record:</div>
+          <div style="color:var(--violet2); font-size:0.74rem;">_minecraft._tcp.play IN SRV 0 5 25565 a1b2c3.edge.ender.link.</div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════════════════════
+           PRICING: Enterprise-Grade Protection, Priced for Minecraft
+           ═══════════════════════════════════════════════════════════════════ -->
+      <div class="stack-section-title" style="margin-top:4.5rem;">
+        <span class="eyebrow"><span class="eyebrow-dot"></span> Transparent Pricing</span>
+        <h3 style="font-family:'Bricolage Grotesque',sans-serif; font-size:2rem; font-weight:400; color:#fff; line-height:1.2; margin-bottom:8px;">
+          Enterprise-Grade Protection, Priced for Minecraft
+        </h3>
+        <p style="font-size:0.85rem; color:var(--muted2); line-height:1.6;">
+          The cleanest way to put real mitigation in front of a Minecraft server: every plan rides the same 500+ Tbps network and the full pipeline. Cancel anytime.
+        </p>
       </div>
 
       <div class="tunnels-grid">
