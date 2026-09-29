@@ -15,6 +15,7 @@ const {
   DEVSPACE_PLANS
 } = require('./config/pricing');
 const shulker = require('./services/shulkerService');
+const minecraft = require('./services/minecraftService');
 
 // Supabase admin client (service_role — server-side only, never exposed to browser)
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdxeGFjd3lidW1jcm9hcmdud2txIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc5MDYxNzUzOSwiZXhwIjoyMTA2MTkzNTM5fQ.5xea24fdKrZBXYUDlGjw6TB4SzXbmkDP_rtrP0NIwB4';
@@ -233,6 +234,82 @@ app.post('/api/servers/deploy', async (req, res) => {
     });
 
     res.json(deployResult);
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// ─── Dedicated Minecraft Server Management (Shulker API v2) ────────────────
+app.get('/api/minecraft/:id/status', async (req, res) => {
+  try {
+    const { node, server_name } = req.query;
+    const stats = await minecraft.getStatus(server_name || req.params.id, node || 'de0');
+    res.json(stats);
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.post('/api/minecraft/:id/power', async (req, res) => {
+  try {
+    const { action, node, server_name } = req.body;
+    const allowed = ['start', 'stop', 'restart'];
+    if (!allowed.includes(action)) {
+      return res.status(400).json({ success: false, error: `Invalid action. Allowed: ${allowed.join(', ')}` });
+    }
+    const result = await minecraft.powerAction(server_name || req.params.id, node || 'de0', action);
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.post('/api/minecraft/:id/command', async (req, res) => {
+  try {
+    const { command, node, server_name } = req.body;
+    if (!command) return res.status(400).json({ success: false, error: 'Command is required' });
+    const result = await minecraft.sendCommand(server_name || req.params.id, node || 'de0', command);
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.get('/api/minecraft/:id/logs', async (req, res) => {
+  try {
+    const { node, server_name, lines } = req.query;
+    const logs = await minecraft.getLogs(server_name || req.params.id, node || 'de0', Number(lines) || 100);
+    res.json({ success: true, logs });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.get('/api/minecraft/:id/files/list', async (req, res) => {
+  try {
+    const { node, server_name, path: dirPath } = req.query;
+    const files = await minecraft.listFiles(server_name || req.params.id, node || 'de0', dirPath || '/');
+    res.json({ success: true, files });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.get('/api/minecraft/:id/files/read', async (req, res) => {
+  try {
+    const { node, server_name, path: filePath } = req.query;
+    const content = await minecraft.readFile(server_name || req.params.id, node || 'de0', filePath || 'server.properties');
+    res.json({ success: true, content });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.post('/api/minecraft/:id/files/write', async (req, res) => {
+  try {
+    const { node, server_name, path: filePath, content } = req.body;
+    const result = await minecraft.writeFile(server_name || req.params.id, node || 'de0', filePath || 'server.properties', content || '');
+    res.json(result);
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
