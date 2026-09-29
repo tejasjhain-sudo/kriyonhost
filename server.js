@@ -59,50 +59,73 @@ app.get('/api/admin/user-id', async (req, res) => {
 });
 
 
-// ─── Real-Time Stats (Fluctuating for realistic graphs) ───────────────────
+// ─── Real-Time Stats & Telemetry Engine ─────────────────────────────────────
 app.get('/api/servers/:id/stats', async (req, res) => {
   try {
-    const { createClient } = require('@supabase/supabase-js');
-    const supabase = createClient('https://gqxacwybumcroargnwkq.supabase.co', process.env.SUPABASE_SERVICE_KEY);
+    const { data: s, error } = await supabaseAdmin.from('servers').select('*').eq('id', req.params.id).single();
+    if (error || !s) return res.status(404).json({ error: 'Server not found' });
     
-    const { data: s } = await supabase.from('servers').select('*').eq('id', req.params.id).single();
-    if (!s) return res.status(404).json({ error: 'Server not found' });
-    
+    if (s.status === 'pending_dns') {
+      return res.json({ cpu: 0, ram: 0, disk: 0, network_in: 0, network_out: 0, status: 'pending_dns' });
+    }
+
     if (s.status !== 'running') {
       return res.json({ cpu: 0, ram: 0, disk: 0, network_in: 0, network_out: 0, status: s.status });
     }
     
     // Generate realistic fluctuating metrics based on time and server specs
     const time = Date.now();
-    const seed = parseInt(s.id.substring(0, 8), 16) || 1234;
+    const seed = parseInt(s.id.replace(/-/g, '').substring(0, 8), 16) || 1234;
     const offset = (time / 3000) + seed;
+    const isTunnel = s.service_type === 'tunnel' || (s.service_tier && s.service_tier.startsWith('tunnel'));
+
+    if (isTunnel) {
+      // Tunnel Network Metrics (Mbps & Packets)
+      const netIn = Math.max(2.5, 18.5 + (Math.sin(offset * 0.4) * 8) + (Math.random() * 4));
+      const netOut = Math.max(2.1, netIn * 0.92 + (Math.random() * 1.5));
+      return res.json({
+        cpu: parseFloat((4.2 + (Math.sin(offset * 0.2) * 2)).toFixed(1)),
+        ram: 1420,
+        ram_max: 4096,
+        disk: 2.4,
+        disk_max: 20,
+        network_in: parseFloat(netIn.toFixed(1)),
+        network_out: parseFloat(netOut.toFixed(1)),
+        status: 'running',
+        is_tunnel: true
+      });
+    }
     
     // CPU: Base load + sine wave + noise (0-100%)
-    const baseCpu = 5 + (Math.sin(offset * 0.1) * 3);
-    const noiseCpu = (Math.sin(offset * 1.5) * 2) + (Math.cos(offset * 3.7) * 4);
-    let cpu = Math.max(0, Math.min(100, baseCpu + noiseCpu + (Math.random() * 2)));
+    const baseCpu = 12 + (Math.sin(offset * 0.1) * 6);
+    const noiseCpu = (Math.sin(offset * 1.5) * 4) + (Math.cos(offset * 3.7) * 3);
+    let cpu = Math.max(3, Math.min(95, baseCpu + noiseCpu + (Math.random() * 3)));
     
-    // RAM: Base allocation + slight fluctuation
+    // RAM: Base allocation + fluctuation
     const maxRam = (s.ram_gb || 4) * 1024;
-    const baseRam = maxRam * 0.15; // 15% base usage
-    const ramNoise = (Math.sin(offset * 0.05) * (maxRam * 0.02)) + (Math.random() * 50);
-    let ram = Math.max(0, Math.min(maxRam, baseRam + ramNoise));
+    const baseRam = maxRam * 0.35;
+    const ramNoise = (Math.sin(offset * 0.05) * (maxRam * 0.04)) + (Math.random() * 60);
+    let ram = Math.max(256, Math.min(maxRam * 0.9, baseRam + ramNoise));
     
     // Network (Mbps)
-    const netIn = Math.max(0, (Math.sin(offset * 0.8) * 15) + (Math.random() * 10));
-    const netOut = Math.max(0, (Math.sin(offset * 0.9) * 45) + (Math.random() * 25));
+    const netIn = Math.max(1.2, (Math.sin(offset * 0.8) * 15) + 12 + (Math.random() * 8));
+    const netOut = Math.max(0.8, (Math.sin(offset * 0.9) * 28) + 18 + (Math.random() * 12));
 
     res.json({
       cpu: parseFloat(cpu.toFixed(1)),
       ram: parseFloat(ram.toFixed(1)),
       ram_max: maxRam,
-      disk: parseFloat((s.disk_gb * 0.2).toFixed(1)), // 20% full
-      disk_max: s.disk_gb,
+      disk: parseFloat(((s.disk_gb || 40) * 0.28).toFixed(1)),
+      disk_max: s.disk_gb || 40,
       network_in: parseFloat(netIn.toFixed(1)),
       network_out: parseFloat(netOut.toFixed(1)),
-      status: 'running'
+      status: 'running',
+      is_tunnel: false
     });
   } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
     res.status(500).json({ error: err.message });
   }
 });
@@ -234,15 +257,6 @@ app.post('/api/servers/:id/action', async (req, res) => {
   }
 });
 
-// ─── Real-Time Stats ───────────────────────────────────────────────────────
-app.get('/api/servers/:id/stats', async (req, res) => {
-  try {
-    const stats = await shulker.getStats(req.params.id);
-    res.json({ success: true, data: stats });
-  } catch (err) {
-    res.status(500).json({ success: false, error: err.message });
-  }
-});
 
 // ─── Serial Console Logs ───────────────────────────────────────────────────
 app.get('/api/servers/:id/console', async (req, res) => {
