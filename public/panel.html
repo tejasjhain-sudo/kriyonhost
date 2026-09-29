@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KryonHost — Cloud Control Center</title>
-  <meta name="description" content="Enterprise cloud management console for Virtual Private Servers, Minecraft Game Servers, and Anycast DDoS mitigation.">
+  <title>KryonHost — Client Cloud Dashboard</title>
+  <meta name="description" content="Manage your Cloud VPS, Minecraft servers, and Anycast DDoS protection from a unified control center.">
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -136,7 +136,7 @@
     .sidebar-link {
       display: flex;
       align-items: center;
-      gap: 10px;
+      justify-content: space-between;
       padding: 8px 10px;
       border-radius: 6px;
       color: var(--text-secondary);
@@ -160,6 +160,12 @@
       font-weight: 600;
     }
 
+    .nav-icon-text {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
     .sidebar-link svg {
       width: 16px;
       height: 16px;
@@ -172,6 +178,15 @@
     .sidebar-link.active svg,
     .sidebar-link:hover svg {
       color: var(--color-brand);
+    }
+
+    .count-tag {
+      font-size: 0.7rem;
+      font-family: 'JetBrains Mono', monospace;
+      padding: 1px 6px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-muted);
     }
 
     .sidebar-user {
@@ -325,133 +340,90 @@
       margin: 0 auto;
     }
 
-    /* ── Controls & Filter Bar ── */
-    .fleet-toolbar {
+    /* ── Section Dividers & Headers ── */
+    .dashboard-section {
+      margin-bottom: 36px;
+    }
+
+    .section-header-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
-      gap: 12px;
-      flex-wrap: wrap;
+      margin-bottom: 14px;
     }
 
-    .search-filter-box {
-      position: relative;
-      width: 280px;
-    }
-
-    .search-filter-box input {
-      width: 100%;
-      padding: 7px 12px 7px 32px;
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: 6px;
-      color: var(--text-primary);
-      font-size: 0.82rem;
-      outline: none;
-      transition: border-color 0.15s;
-    }
-
-    .search-filter-box input:focus {
-      border-color: var(--border-accent);
-    }
-
-    .search-filter-box svg {
-      position: absolute;
-      left: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 14px;
-      height: 14px;
-      color: var(--text-muted);
-    }
-
-    .filter-pills {
+    .section-title-group {
       display: flex;
-      gap: 6px;
+      align-items: center;
+      gap: 10px;
     }
 
-    .pill-btn {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      color: var(--text-secondary);
-      padding: 5px 12px;
+    .section-icon {
+      width: 28px;
+      height: 28px;
       border-radius: 6px;
-      font-size: 0.78rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
     }
 
-    .pill-btn:hover {
-      background: var(--bg-surface-elevated);
-      color: var(--text-primary);
-    }
-
-    .pill-btn.active {
-      background: var(--bg-surface-elevated);
-      border-color: var(--border-strong);
+    .section-title {
+      font-size: 1.05rem;
+      font-weight: 600;
       color: #fff;
     }
 
-    /* ── Fleet Grid ── */
-    .instances-grid {
+    .section-desc {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+    }
+
+    /* ── Service Cards Grid ── */
+    .service-cards-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
       gap: 16px;
     }
 
-    .instance-card {
+    .svc-card {
       background: var(--bg-surface);
       border: 1px solid var(--border-subtle);
       border-radius: 10px;
       padding: 18px;
       transition: all 0.15s ease;
-      cursor: pointer;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
     }
 
-    .instance-card:hover {
+    .svc-card:hover {
       background: var(--bg-surface-elevated);
       border-color: var(--border-strong);
       transform: translateY(-1px);
     }
 
-    .card-top-row {
+    .svc-card-top {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
       margin-bottom: 12px;
     }
 
-    .card-title-text {
+    .svc-name {
       font-size: 0.95rem;
       font-weight: 600;
       color: var(--text-primary);
       margin-bottom: 4px;
     }
 
-    .card-network-row {
+    .svc-net-address {
       display: flex;
       align-items: center;
       gap: 8px;
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.78rem;
       color: var(--text-secondary);
-    }
-
-    .type-tag {
-      font-size: 0.65rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      padding: 2px 6px;
-      border-radius: 4px;
-      background: rgba(99, 102, 241, 0.12);
-      color: #a5b4fc;
-      border: 1px solid rgba(99, 102, 241, 0.25);
     }
 
     .status-pill {
@@ -504,35 +476,71 @@
       box-shadow: 0 0 6px var(--color-amber);
     }
 
-    .card-specs-row {
+    .svc-specs-row {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 8px;
-      padding-top: 14px;
+      padding: 12px 0;
       border-top: 1px solid var(--border-subtle);
-      margin-top: 14px;
+      border-bottom: 1px solid var(--border-subtle);
+      margin: 12px 0;
     }
 
-    .spec-column {
+    .svc-spec-item {
       display: flex;
       flex-direction: column;
       gap: 2px;
     }
 
-    .spec-key {
+    .svc-spec-lbl {
       font-size: 0.65rem;
       color: var(--text-muted);
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.04em;
     }
 
-    .spec-value {
-      font-size: 0.84rem;
+    .svc-spec-val {
+      font-size: 0.82rem;
       font-weight: 600;
       color: var(--text-primary);
     }
 
-    /* ── Detail View ── */
+    .svc-action-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-manage-svc {
+      width: 100%;
+      padding: 8px 12px;
+      border-radius: 6px;
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      color: #fff;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.15s;
+    }
+
+    .btn-manage-svc:hover {
+      background: var(--color-brand);
+      border-color: var(--color-brand);
+    }
+
+    .btn-manage-svc svg {
+      width: 14px;
+      height: 14px;
+      stroke-width: 2;
+    }
+
+    /* ── Detail View Panels ── */
     #detail-view {
       display: none;
     }
@@ -723,50 +731,6 @@
       display: block;
     }
 
-    /* ── Telemetry & Charts ── */
-    .metrics-container-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      margin-bottom: 24px;
-    }
-
-    .telemetry-card {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: 10px;
-      padding: 18px 20px;
-    }
-
-    .telemetry-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 14px;
-    }
-
-    .telemetry-title {
-      font-size: 0.84rem;
-      font-weight: 600;
-      color: var(--text-secondary);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .telemetry-reading {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 1.05rem;
-      font-weight: 600;
-      color: var(--text-primary);
-    }
-
-    .chart-wrapper {
-      position: relative;
-      height: 160px;
-      width: 100%;
-    }
-
     /* ── Terminal Window ── */
     .terminal-container {
       background: #050508;
@@ -837,7 +801,7 @@
       border: 1px solid var(--border-subtle);
       border-radius: 10px;
       padding: 16px;
-      min-height: 480px;
+      min-height: 460px;
     }
 
     .file-tree-col {
@@ -862,7 +826,7 @@
       gap: 2px;
       overflow-y: auto;
       flex: 1;
-      max-height: 400px;
+      max-height: 380px;
     }
 
     .file-row-item {
@@ -906,7 +870,7 @@
     .editor-textarea {
       flex: 1;
       width: 100%;
-      height: 360px;
+      height: 350px;
       background: #050508;
       border: 1px solid var(--border-subtle);
       border-radius: 6px;
@@ -919,7 +883,7 @@
       resize: vertical;
     }
 
-    /* ── Player Manager ── */
+    /* ── Player Manager Table ── */
     .players-table {
       width: 100%;
       border-collapse: collapse;
@@ -986,7 +950,33 @@
       outline: none;
     }
 
-    /* ── Modal Dialogs ── */
+    /* ── DNS Table Matrix ── */
+    .dns-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+      margin: 14px 0;
+    }
+
+    .dns-table th {
+      text-align: left;
+      padding: 8px 12px;
+      color: var(--text-muted);
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--border-subtle);
+      font-weight: 600;
+    }
+
+    .dns-table td {
+      padding: 12px;
+      border-bottom: 1px solid var(--border-subtle);
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-primary);
+    }
+
+    /* ── Modals & Credentials ── */
     .dialog-backdrop {
       position: fixed;
       inset: 0;
@@ -1102,7 +1092,7 @@
       .app-sidebar {
         display: none;
       }
-      .metrics-container-grid, .file-manager-grid, .config-gui-grid {
+      .service-cards-grid, .config-gui-grid, .file-manager-grid {
         grid-template-columns: 1fr;
       }
     }
@@ -1121,32 +1111,52 @@
     </div>
     
     <nav class="nav-container">
-      <div class="nav-section-title">Infrastructure</div>
-      <a class="sidebar-link active" onclick="showListView()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-        Instances Fleet
-      </a>
-      <a class="sidebar-link" href="/status">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-        Platform Status
-      </a>
-      <a class="sidebar-link" href="/minecraft">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="4" width="16" height="16" rx="2"/><circle cx="9" cy="9" r="1.5"/><circle cx="15" cy="15" r="1.5"/></svg>
-        Minecraft Deploy
-      </a>
-      <a class="sidebar-link" href="/tunnels">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        DDoS Tunnels
-      </a>
+      <div class="nav-section-title">Cloud Infrastructure</div>
       
+      <a class="sidebar-link active" onclick="filterSection('all', this)">
+        <div class="nav-icon-text">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          All Fleet
+        </div>
+        <span class="count-tag" id="count-all">0</span>
+      </a>
+
+      <a class="sidebar-link" onclick="filterSection('vps', this)">
+        <div class="nav-icon-text">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+          Cloud VPS
+        </div>
+        <span class="count-tag" id="count-vps">0</span>
+      </a>
+
+      <a class="sidebar-link" onclick="filterSection('minecraft', this)">
+        <div class="nav-icon-text">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="4" width="16" height="16" rx="2"/><circle cx="9" cy="9" r="1.5"/><circle cx="15" cy="15" r="1.5"/></svg>
+          Minecraft Nodes
+        </div>
+        <span class="count-tag" id="count-minecraft">0</span>
+      </a>
+
+      <a class="sidebar-link" onclick="filterSection('tunnels', this)">
+        <div class="nav-icon-text">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          DDoS Tunnels
+        </div>
+        <span class="count-tag" id="count-tunnels">0</span>
+      </a>
+
       <div class="nav-section-title">Support &amp; Community</div>
       <a class="sidebar-link" href="https://discord.gg/kt9yPDwYT4" target="_blank">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-        Discord Tickets
+        <div class="nav-icon-text">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Discord Support
+        </div>
       </a>
       <a class="sidebar-link" href="/">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-        Return to Portal
+        <div class="nav-icon-text">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          Main Portal
+        </div>
       </a>
     </nav>
 
@@ -1166,114 +1176,125 @@
     </div>
   </aside>
 
-  <!-- WORKSPACE -->
+  <!-- MAIN WORKSPACE -->
   <main class="app-main">
     <header class="app-topbar">
       <div class="breadcrumb-nav">
         <span class="breadcrumb-root" onclick="showListView()">Infrastructure</span>
         <span class="breadcrumb-separator">/</span>
-        <span class="breadcrumb-current" id="page-heading">Instances Fleet</span>
+        <span class="breadcrumb-current" id="page-heading">Client Fleet Dashboard</span>
       </div>
       <div class="topbar-actions">
-        <a href="/minecraft" class="btn-header-deploy">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          New Server
-        </a>
+        <a href="/vps" class="pill-btn" style="text-decoration:none;">+ New VPS</a>
+        <a href="/minecraft" class="pill-btn" style="text-decoration:none;">+ Minecraft Server</a>
+        <a href="/tunnels" class="btn-header-deploy">+ DDoS Tunnel</a>
       </div>
     </header>
 
     <div class="main-content">
       
-      <!-- FLEET LIST VIEW -->
+      <!-- DASHBOARD CATEGORIZED LIST VIEW -->
       <div id="list-view">
-        <div class="fleet-toolbar">
-          <div class="search-filter-box">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input type="text" id="instance-search-input" placeholder="Search by name, IP, or node..." oninput="filterInstances()">
+        
+        <!-- 1. MINECRAFT GAME SERVERS SECTION -->
+        <div class="dashboard-section" id="section-mc">
+          <div class="section-header-row">
+            <div class="section-title-group">
+              <div class="section-icon" style="background:rgba(16,185,129,0.12); color:var(--color-emerald);">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><circle cx="9" cy="9" r="1.5"/><circle cx="15" cy="15" r="1.5"/></svg>
+              </div>
+              <div>
+                <div class="section-title">Minecraft Game Nodes</div>
+                <div class="section-desc">AMD Ryzen 9 7950X 5.7GHz with low-latency Indian Anycast routing</div>
+              </div>
+            </div>
+            <a href="/minecraft" class="pill-btn" style="text-decoration:none; font-size:0.75rem;">Deploy Game Node &rarr;</a>
           </div>
-          <div class="filter-pills">
-            <button class="pill-btn active" onclick="setFleetFilter('all', this)">All</button>
-            <button class="pill-btn" onclick="setFleetFilter('running', this)">Active</button>
-            <button class="pill-btn" onclick="setFleetFilter('pending_dns', this)">Awaiting DNS</button>
-            <button class="pill-btn" onclick="setFleetFilter('stopped', this)">Stopped</button>
+
+          <div class="service-cards-grid" id="grid-minecraft">
+            <!-- Rendered dynamically -->
           </div>
         </div>
 
-        <div class="instances-grid" id="servers-container">
-          <div style="color:var(--text-muted); font-size:0.84rem; padding: 20px 0;">Connecting to telemetry stream...</div>
+        <!-- 2. CLOUD VPS COMPUTE SECTION -->
+        <div class="dashboard-section" id="section-vps">
+          <div class="section-header-row">
+            <div class="section-title-group">
+              <div class="section-icon" style="background:rgba(99,102,241,0.12); color:var(--color-brand);">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+              </div>
+              <div>
+                <div class="section-title">Cloud VPS &amp; Compute Instances</div>
+                <div class="section-desc">KVM High-Frequency Virtual Private Servers with dedicated IPv4 and root access</div>
+              </div>
+            </div>
+            <a href="/vps" class="pill-btn" style="text-decoration:none; font-size:0.75rem;">Deploy VPS &rarr;</a>
+          </div>
+
+          <div class="service-cards-grid" id="grid-vps">
+            <!-- Rendered dynamically -->
+          </div>
         </div>
+
+        <!-- 3. DDOS SHIELD & ANYCAST TUNNELS SECTION -->
+        <div class="dashboard-section" id="section-tunnels">
+          <div class="section-header-row">
+            <div class="section-title-group">
+              <div class="section-icon" style="background:rgba(56,189,248,0.12); color:var(--color-sky);">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              </div>
+              <div>
+                <div class="section-title">DDoS Shield &amp; Anycast Tunnels</div>
+                <div class="section-desc">92 Tbps BGP Layer 7 scrubbing protecting backend origins without exposing server IP</div>
+              </div>
+            </div>
+            <a href="/tunnels" class="pill-btn" style="text-decoration:none; font-size:0.75rem;">Protect Domain &rarr;</a>
+          </div>
+
+          <div class="service-cards-grid" id="grid-tunnels">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+
       </div>
 
-      <!-- INSTANCE DETAIL VIEW -->
+      <!-- DETAIL VIEW / DEDICATED CONTROL PANEL -->
       <div id="detail-view">
         <div class="back-btn-row">
           <button class="btn-return" onclick="showListView()">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-            Back to Fleet
+            Back to Dashboard Fleet
           </button>
         </div>
 
         <!-- Hero Header -->
         <div class="instance-hero-panel">
           <div>
-            <div class="hero-meta-title" id="d-name">Minecraft Server</div>
+            <div class="hero-meta-title" id="d-name">Instance Name</div>
             <div class="hero-meta-sub">
-              <span id="d-status-badge" class="status-pill running"><span class="status-dot running"></span> Active (20.0 TPS)</span>
-              <span class="hero-ip-badge" id="d-ip">play.myserver.com:25565</span>
-              <span id="d-region">India (Mumbai AMD Ryzen 9 7950X)</span>
+              <span id="d-status-badge" class="status-pill running"><span class="status-dot running"></span> Active</span>
+              <span class="hero-ip-badge" id="d-ip">0.0.0.0</span>
+              <span id="d-region">India (Mumbai Datacenter)</span>
             </div>
           </div>
           
-          <!-- Power Controls -->
-          <div class="controls-strip">
-            <button class="ctrl-btn ctrl-start" onclick="mcPower('start')">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> Start
-            </button>
-            <button class="ctrl-btn ctrl-reboot" onclick="mcPower('restart')">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.59-9.21l5.64 5.64"/></svg> Restart
-            </button>
-            <button class="ctrl-btn ctrl-stop" onclick="mcPower('stop')">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/></svg> Stop
-            </button>
-            <button class="ctrl-btn ctrl-secondary" onclick="openCredsModal()">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> SFTP Details
-            </button>
+          <!-- Power & Access Controls -->
+          <div class="controls-strip" id="d-power-strip">
+            <!-- Injected dynamically based on service type -->
           </div>
         </div>
 
-        <!-- Navigation Tabs -->
-        <div class="detail-nav-tabs">
-          <button class="d-tab active" onclick="switchDetailTab('console', this)">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
-            Console &amp; Terminal
-          </button>
-          <button class="d-tab" onclick="switchDetailTab('files', this)">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-            File Manager
-          </button>
-          <button class="d-tab" onclick="switchDetailTab('players', this)">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-            Player Roster
-          </button>
-          <button class="d-tab" onclick="switchDetailTab('config', this)">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-            Server Properties
-          </button>
-          <button class="d-tab" onclick="switchDetailTab('telemetry', this)">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-            Hardware &amp; Metrics
-          </button>
-          <button class="d-tab" onclick="switchDetailTab('firewall', this)">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            Cryo L7 Shield
-          </button>
+        <!-- Dynamic Tabs Container (Minecraft vs VPS vs Tunnel) -->
+        <div class="detail-nav-tabs" id="d-tabs-nav">
+          <!-- Injected dynamically -->
         </div>
 
-        <!-- TAB 1: LIVE CONSOLE & TERMINAL -->
+        <!-- DYNAMIC TAB PANES -->
+
+        <!-- TAB: CONSOLE -->
         <div class="d-pane active" id="pane-console">
-          
-          <!-- Live Status Summary -->
-          <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px;">
+          <!-- Status Strip for Minecraft -->
+          <div id="mc-status-strip" style="display:none; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px;">
             <div style="background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:8px; padding:12px 14px;">
               <div style="font-size:0.68rem; color:var(--text-muted); text-transform:uppercase;">TPS Stability</div>
               <div style="font-size:1.1rem; font-weight:600; color:var(--color-emerald); font-family:'JetBrains Mono',monospace;" id="mc-val-tps">20.0 / 20.0</div>
@@ -1292,38 +1313,34 @@
             </div>
           </div>
 
-          <!-- Terminal Log Stream -->
-          <div class="terminal-container" id="d-console">Connecting to live Minecraft daemon stream...</div>
+          <div class="terminal-container" id="d-console">Connecting to live console stream...</div>
           
-          <!-- Command Prompt Input Bar -->
           <div class="terminal-input-bar">
             <span class="terminal-prompt-lbl">&gt;</span>
-            <input type="text" id="mc-cmd-input" placeholder="Type a Minecraft command (e.g. say Hello, op player, tps, whitelist)..." onkeydown="handleMcCommand(event)">
-            <button class="btn-header-deploy" onclick="sendMcCommandDirect()" style="padding:4px 12px; font-size:0.75rem;">Send</button>
+            <input type="text" id="terminal-cmd-input" placeholder="Enter command..." onkeydown="handleTerminalCommand(event)">
+            <button class="btn-header-deploy" onclick="sendTerminalCommandDirect()" style="padding:4px 12px; font-size:0.75rem;">Execute</button>
           </div>
 
-          <!-- Quick Command Shortcuts -->
-          <div style="display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; align-items:center;">
-            <span style="font-size:0.7rem; color:var(--text-muted);">Quick actions:</span>
-            <button class="quick-cmd-btn" onclick="sendPresetCmd('tps')">/tps</button>
-            <button class="quick-cmd-btn" onclick="sendPresetCmd('list')">/list</button>
-            <button class="quick-cmd-btn" onclick="sendPresetCmd('say Server restart in 5 minutes')">/say Announcement</button>
-            <button class="quick-cmd-btn" onclick="sendPresetCmd('save-all')">/save-all</button>
-            <button class="quick-cmd-btn" onclick="sendPresetCmd('whitelist on')">/whitelist on</button>
-            <button class="quick-cmd-btn" onclick="clearConsole()" style="margin-left:auto;">Clear Output</button>
+          <div style="display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; align-items:center;" id="mc-quick-shortcuts">
+            <span style="font-size:0.7rem; color:var(--text-muted);">Shortcuts:</span>
+            <button class="quick-cmd-btn" onclick="sendTerminalCmd('tps')">/tps</button>
+            <button class="quick-cmd-btn" onclick="sendTerminalCmd('list')">/list</button>
+            <button class="quick-cmd-btn" onclick="sendTerminalCmd('say Announcement from Console')">/say</button>
+            <button class="quick-cmd-btn" onclick="sendTerminalCmd('save-all')">/save-all</button>
+            <button class="quick-cmd-btn" onclick="sendTerminalCmd('whitelist on')">/whitelist on</button>
+            <button class="quick-cmd-btn" onclick="clearConsole()" style="margin-left:auto;">Clear Buffer</button>
           </div>
         </div>
 
-        <!-- TAB 2: FILE MANAGER & CODE EDITOR -->
+        <!-- TAB: FILE MANAGER -->
         <div class="d-pane" id="pane-files">
           <div class="file-manager-grid">
-            <!-- Left: File Tree Directory -->
             <div class="file-tree-col">
               <div class="file-tree-header">
-                <span style="font-size:0.84rem; font-weight:600; color:#fff;">Server Directory (/)</span>
-                <button class="pill-btn" onclick="refreshFiles()" style="font-size:0.72rem; padding:2px 8px;">Refresh</button>
+                <span style="font-size:0.84rem; font-weight:600; color:#fff;">File Browser</span>
+                <button class="pill-btn" onclick="openFile('server.properties')" style="font-size:0.72rem; padding:2px 8px;">Refresh</button>
               </div>
-              <div class="file-list-container" id="file-list-box">
+              <div class="file-list-container">
                 <div class="file-row-item active" onclick="openFile('server.properties')">
                   <span>📄 server.properties</span>
                   <span style="font-size:0.7rem; color:var(--text-muted);">1.2 KB</span>
@@ -1344,10 +1361,6 @@
                   <span>📄 whitelist.json</span>
                   <span style="font-size:0.7rem; color:var(--text-muted);">64 B</span>
                 </div>
-                <div class="file-row-item" onclick="openFile('eula.txt')">
-                  <span>📄 eula.txt</span>
-                  <span style="font-size:0.7rem; color:var(--text-muted);">180 B</span>
-                </div>
                 <div class="file-row-item">
                   <span>📁 plugins/</span>
                   <span style="font-size:0.7rem; color:var(--text-muted);">4 items</span>
@@ -1359,15 +1372,14 @@
               </div>
             </div>
 
-            <!-- Right: Interactive File Editor -->
             <div class="file-editor-col">
               <div class="editor-topbar">
                 <div>
                   <span style="font-size:0.86rem; font-weight:600; color:#fff;" id="editor-filename">server.properties</span>
-                  <span style="font-size:0.72rem; color:var(--text-muted); margin-left:8px; font-family:'JetBrains Mono',monospace;">UTF-8 · Live Sync</span>
+                  <span style="font-size:0.72rem; color:var(--text-muted); margin-left:8px; font-family:'JetBrains Mono',monospace;">UTF-8 · Live Edit</span>
                 </div>
                 <button class="btn-header-deploy" onclick="saveActiveFile()" style="font-size:0.75rem; padding:4px 14px;">
-                  Save Changes
+                  Save File
                 </button>
               </div>
               <textarea class="editor-textarea" id="file-editor-content" spellcheck="false"></textarea>
@@ -1375,16 +1387,16 @@
           </div>
         </div>
 
-        <!-- TAB 3: PLAYER ROSTER & MANAGEMENT -->
+        <!-- TAB: PLAYERS -->
         <div class="d-pane" id="pane-players">
           <div style="background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:10px; padding:20px;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
               <div>
-                <h4 style="font-size:0.95rem; font-weight:600; color:#fff;">Online Players (3 / 100)</h4>
-                <p style="font-size:0.76rem; color:var(--text-muted);">Manage connected players, operator privileges, and server permissions.</p>
+                <h4 style="font-size:0.95rem; font-weight:600; color:#fff;">Connected Players</h4>
+                <p style="font-size:0.76rem; color:var(--text-muted);">Live online roster, latency, and permission controls.</p>
               </div>
               <div style="display:flex; gap:8px;">
-                <input type="text" id="player-op-input" placeholder="Enter username..." style="padding:6px 10px; background:var(--bg-surface-elevated); border:1px solid var(--border-subtle); border-radius:6px; color:#fff; font-size:0.8rem; outline:none;">
+                <input type="text" id="player-op-input" placeholder="Username..." style="padding:6px 10px; background:var(--bg-surface-elevated); border:1px solid var(--border-subtle); border-radius:6px; color:#fff; font-size:0.8rem; outline:none;">
                 <button class="btn-header-deploy" onclick="opPlayerFromInput()" style="padding:6px 12px; font-size:0.75rem;">+ OP Player</button>
               </div>
             </div>
@@ -1395,11 +1407,11 @@
                   <th>Player</th>
                   <th>Status</th>
                   <th>Latency</th>
-                  <th>Role</th>
+                  <th>Privilege</th>
                   <th>Actions</th>
                 </tr>
               </thead>
-              <tbody id="player-rows">
+              <tbody>
                 <tr>
                   <td>
                     <div style="display:flex; align-items:center; gap:8px;">
@@ -1409,10 +1421,10 @@
                   </td>
                   <td><span class="status-pill running"><span class="status-dot running"></span> In Game</span></td>
                   <td style="font-family:'JetBrains Mono',monospace; color:var(--color-emerald);">12 ms</td>
-                  <td><span class="type-tag" style="background:rgba(99,102,241,0.2); color:#a5b4fc;">OP Admin</span></td>
+                  <td><span style="font-size:0.7rem; padding:2px 6px; border-radius:4px; background:rgba(99,102,241,0.2); color:#a5b4fc;">OP Admin</span></td>
                   <td>
-                    <button class="quick-cmd-btn" onclick="sendPresetCmd('kick Alex AFK')">Kick</button>
-                    <button class="quick-cmd-btn" onclick="sendPresetCmd('ban Alex')">Ban</button>
+                    <button class="quick-cmd-btn" onclick="sendTerminalCmd('kick Alex')">Kick</button>
+                    <button class="quick-cmd-btn" onclick="sendTerminalCmd('ban Alex')">Ban</button>
                   </td>
                 </tr>
                 <tr>
@@ -1423,26 +1435,11 @@
                     </div>
                   </td>
                   <td><span class="status-pill running"><span class="status-dot running"></span> In Game</span></td>
-                  <td style="font-family:'JetBrains Mono',monospace; color:var(--color-emerald);">18 ms</td>
+                  <td style="font-family:'JetBrains Mono',monospace; color:var(--color-emerald);">16 ms</td>
                   <td><span style="font-size:0.75rem; color:var(--text-muted);">Player</span></td>
                   <td>
-                    <button class="quick-cmd-btn" onclick="sendPresetCmd('op Steve')">Make OP</button>
-                    <button class="quick-cmd-btn" onclick="sendPresetCmd('kick Steve')">Kick</button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div style="display:flex; align-items:center; gap:8px;">
-                      <img src="https://mc-heads.net/avatar/EnderKing99/24" style="width:24px; height:24px; border-radius:4px;" alt="EnderKing99">
-                      <strong style="color:#fff;">EnderKing99</strong>
-                    </div>
-                  </td>
-                  <td><span class="status-pill running"><span class="status-dot running"></span> In Game</span></td>
-                  <td style="font-family:'JetBrains Mono',monospace; color:var(--color-emerald);">9 ms</td>
-                  <td><span style="font-size:0.75rem; color:var(--text-muted);">Player</span></td>
-                  <td>
-                    <button class="quick-cmd-btn" onclick="sendPresetCmd('op EnderKing99')">Make OP</button>
-                    <button class="quick-cmd-btn" onclick="sendPresetCmd('kick EnderKing99')">Kick</button>
+                    <button class="quick-cmd-btn" onclick="sendTerminalCmd('op Steve')">Make OP</button>
+                    <button class="quick-cmd-btn" onclick="sendTerminalCmd('kick Steve')">Kick</button>
                   </td>
                 </tr>
               </tbody>
@@ -1450,23 +1447,23 @@
           </div>
         </div>
 
-        <!-- TAB 4: SERVER PROPERTIES & SETTINGS -->
+        <!-- TAB: PROPERTIES GUI -->
         <div class="d-pane" id="pane-config">
           <div style="margin-bottom:16px; display:flex; justify-content:space-between; align-items:center;">
             <div>
-              <h4 style="font-size:0.95rem; font-weight:600; color:#fff;">Visual Game Settings</h4>
-              <p style="font-size:0.76rem; color:var(--text-muted);">Modify gameplay difficulty, player limits, and world parameters.</p>
+              <h4 style="font-size:0.95rem; font-weight:600; color:#fff;">Game World Settings</h4>
+              <p style="font-size:0.76rem; color:var(--text-muted);">Visual GUI configuration for server.properties.</p>
             </div>
             <button class="btn-header-deploy" onclick="savePropertiesGui()" style="padding:6px 14px; font-size:0.78rem;">
-              Save &amp; Apply
+              Save Settings
             </button>
           </div>
 
           <div class="config-gui-grid">
             <div class="config-field-card">
               <div class="config-field-info">
-                <div class="config-title">Game Difficulty</div>
-                <div class="config-desc">Defines damage taken and mob spawning hostility.</div>
+                <div class="config-title">Difficulty</div>
+                <div class="config-desc">World damage and hostile mob spawn difficulty.</div>
               </div>
               <select class="config-input-select" id="cfg-difficulty">
                 <option value="peaceful">Peaceful</option>
@@ -1479,42 +1476,41 @@
             <div class="config-field-card">
               <div class="config-field-info">
                 <div class="config-title">Default Gamemode</div>
-                <div class="config-desc">Gamemode assigned when new players join the world.</div>
+                <div class="config-desc">Gamemode for players joining the server.</div>
               </div>
               <select class="config-input-select" id="cfg-gamemode">
                 <option value="survival" selected>Survival</option>
                 <option value="creative">Creative</option>
                 <option value="adventure">Adventure</option>
-                <option value="spectator">Spectator</option>
               </select>
             </div>
 
             <div class="config-field-card">
               <div class="config-field-info">
                 <div class="config-title">PvP Combat</div>
-                <div class="config-desc">Allows players to attack and engage in combat.</div>
+                <div class="config-desc">Allows player vs player attack damage.</div>
               </div>
               <select class="config-input-select" id="cfg-pvp">
-                <option value="true" selected>Enabled (True)</option>
-                <option value="false">Disabled (False)</option>
+                <option value="true" selected>Enabled</option>
+                <option value="false">Disabled</option>
               </select>
             </div>
 
             <div class="config-field-card">
               <div class="config-field-info">
                 <div class="config-title">Online Mode (Mojang Auth)</div>
-                <div class="config-desc">Requires authentic Minecraft accounts to join.</div>
+                <div class="config-desc">Requires official authenticated Minecraft accounts.</div>
               </div>
               <select class="config-input-select" id="cfg-online-mode">
-                <option value="true" selected>Enabled (Premium Only)</option>
-                <option value="false">Disabled (Cracked / Offline)</option>
+                <option value="true" selected>Enabled (Premium)</option>
+                <option value="false">Disabled (Offline / Cracked)</option>
               </select>
             </div>
 
             <div class="config-field-card">
               <div class="config-field-info">
-                <div class="config-title">Max Player Capacity</div>
-                <div class="config-desc">Maximum concurrent player connections.</div>
+                <div class="config-title">Max Players</div>
+                <div class="config-desc">Maximum concurrent player capacity.</div>
               </div>
               <input type="number" class="config-input-select" id="cfg-max-players" value="100" style="width:90px;">
             </div>
@@ -1522,76 +1518,69 @@
             <div class="config-field-card">
               <div class="config-field-info">
                 <div class="config-title">View Distance (Chunks)</div>
-                <div class="config-desc">Server-side chunk render and ticking radius.</div>
+                <div class="config-desc">Chunk ticking radius around players.</div>
               </div>
               <input type="number" class="config-input-select" id="cfg-view-distance" value="12" style="width:90px;">
             </div>
           </div>
         </div>
 
-        <!-- TAB 5: TELEMETRY & METRICS -->
+        <!-- TAB: TELEMETRY & HARDWARE -->
         <div class="d-pane" id="pane-telemetry">
-          <div class="metrics-container-grid">
-            <div class="telemetry-card">
-              <div class="telemetry-header">
-                <div class="telemetry-title">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--color-brand)" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
-                  AMD Ryzen 9 7950X Core Load
-                </div>
-                <div class="telemetry-reading" id="val-cpu">0.0%</div>
+          <div class="metrics-container-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:20px;">
+            <div style="background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:10px; padding:18px;">
+              <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
+                <span style="font-size:0.84rem; font-weight:600; color:var(--text-secondary);">CPU Load</span>
+                <span style="font-family:'JetBrains Mono',monospace; font-weight:600;" id="val-cpu">0.0%</span>
               </div>
-              <div class="chart-wrapper">
-                <canvas id="chart-cpu"></canvas>
-              </div>
+              <div style="height:150px;"><canvas id="chart-cpu"></canvas></div>
             </div>
 
-            <div class="telemetry-card">
-              <div class="telemetry-header">
-                <div class="telemetry-title">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="2"><line x1="22" y1="12" x2="2" y2="12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
-                  DDR5 ECC RAM Allocation
-                </div>
-                <div class="telemetry-reading" id="val-ram" style="color:#c084fc;">0.0 MB</div>
+            <div style="background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:10px; padding:18px;">
+              <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
+                <span style="font-size:0.84rem; font-weight:600; color:var(--text-secondary);">Memory Consumption</span>
+                <span style="font-family:'JetBrains Mono',monospace; font-weight:600; color:#c084fc;" id="val-ram">0 MB</span>
               </div>
-              <div class="chart-wrapper">
-                <canvas id="chart-ram"></canvas>
-              </div>
-            </div>
-
-            <div class="telemetry-card" style="grid-column: 1 / -1;">
-              <div class="telemetry-header">
-                <div class="telemetry-title">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--color-emerald)" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-                  Anycast Network Bandwidth (Mbps Ingress / Egress)
-                </div>
-                <div class="telemetry-reading" style="color:var(--color-emerald);" id="val-net">0.0 IN / 0.0 OUT</div>
-              </div>
-              <div class="chart-wrapper">
-                <canvas id="chart-net"></canvas>
-              </div>
+              <div style="height:150px;"><canvas id="chart-ram"></canvas></div>
             </div>
           </div>
         </div>
 
-        <!-- TAB 6: CRYO L7 FIREWALL & DDOS SHIELD -->
-        <div class="d-pane" id="pane-firewall">
-          <div class="firewall-stat-grid">
-            <div class="matrix-box">
-              <div class="matrix-lbl">DDoS Mitigation</div>
-              <div class="matrix-val" style="color:var(--color-emerald);">92 Tbps Anycast</div>
+        <!-- TAB: DDOS TUNNEL & DNS SHIELD -->
+        <div class="d-pane" id="pane-shield">
+          <div style="background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:10px; padding:20px; margin-bottom:20px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+              <div>
+                <h4 style="font-size:0.95rem; font-weight:600; color:#fff;">Anycast Protected DNS Routing</h4>
+                <p style="font-size:0.78rem; color:var(--text-muted);">Add this CNAME in Cloudflare to route through 92 Tbps scrubbing.</p>
+              </div>
+              <span class="status-pill running"><span class="status-dot running"></span> 92 Tbps Active</span>
             </div>
-            <div class="matrix-box">
-              <div class="matrix-lbl">Anti-Bot Filter</div>
-              <div class="matrix-val" style="color:var(--color-sky);">CryoLimbo L7</div>
-            </div>
-            <div class="matrix-box">
-              <div class="matrix-lbl">Mitigated Attacks (24h)</div>
-              <div class="matrix-val" style="color:var(--color-amber);">14 Blocked</div>
-            </div>
-            <div class="matrix-box">
-              <div class="matrix-lbl">Peering Route</div>
-              <div class="matrix-val" style="color:#a78bfa;">Mumbai Tier-4 (sub-10ms)</div>
-            </div>
+
+            <table class="dns-table">
+              <thead>
+                <tr>
+                  <th>Type</th>
+                  <th>Name</th>
+                  <th>Target (CNAME)</th>
+                  <th>Proxy</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="color:var(--color-sky);">CNAME</td>
+                  <td id="dns-record-name">play</td>
+                  <td style="color:var(--color-emerald);" id="dns-record-target">edge-as216013.kryonhost.net</td>
+                  <td>DNS only (Grey Cloud)</td>
+                  <td>
+                    <button class="btn-action-copy" style="padding:4px 10px; font-size:0.72rem;" onclick="copyDnsTarget()">
+                      Copy CNAME
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
 
@@ -1599,34 +1588,34 @@
     </div>
   </main>
 
-  <!-- ACCESS / SSH / SFTP MODAL -->
+  <!-- ACCESS / SSH / SFTP CREDENTIALS MODAL -->
   <div class="dialog-backdrop" id="creds-modal">
     <div class="dialog-card">
       <div class="dialog-header">
-        <h3 class="dialog-title">SFTP &amp; FTP File Credentials</h3>
+        <h3 class="dialog-title" id="creds-modal-title">Access Credentials</h3>
         <button onclick="closeCredsModal()" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1.1rem;">&times;</button>
       </div>
 
       <div class="input-field-group">
-        <label class="input-field-label">SFTP Host / Server Address</label>
+        <label class="input-field-label">Host / Connection String</label>
         <div class="field-copy-row">
-          <input type="text" id="modal-sftp-host" readonly value="sftp://103.189.89.44:2022">
-          <button class="btn-action-copy" onclick="copyToClipboard('modal-sftp-host')">Copy</button>
+          <input type="text" id="modal-conn-host" readonly value="103.189.89.44">
+          <button class="btn-action-copy" onclick="copyToClipboard('modal-conn-host')">Copy</button>
         </div>
       </div>
 
       <div class="input-field-group">
-        <label class="input-field-label">Username</label>
+        <label class="input-field-label">User / Account</label>
         <div class="field-copy-row">
-          <input type="text" id="modal-sftp-user" readonly value="kryon_user_01">
-          <button class="btn-action-copy" onclick="copyToClipboard('modal-sftp-user')">Copy</button>
+          <input type="text" id="modal-conn-user" readonly value="root">
+          <button class="btn-action-copy" onclick="copyToClipboard('modal-conn-user')">Copy</button>
         </div>
       </div>
 
       <div class="input-field-group" style="margin-bottom:20px;">
         <label class="input-field-label">Port</label>
         <div class="field-copy-row">
-          <input type="text" readonly value="2022">
+          <input type="text" id="modal-conn-port" readonly value="22">
         </div>
       </div>
 
