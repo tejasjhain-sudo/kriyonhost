@@ -126,9 +126,6 @@ app.get('/api/servers/:id/stats', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-    res.status(500).json({ error: err.message });
-  }
-});
 
 // ─── Health check ──────────────────────────────────────────────────────────
 app.get('/api/health', (req, res) => {
