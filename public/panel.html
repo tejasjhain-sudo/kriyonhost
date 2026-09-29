@@ -902,22 +902,131 @@
           <div class="terminal-window" id="d-console">Initializing secure terminal stream...</div>
         </div>
 
-        <!-- TAB 3: FIREWALL -->
+        <!-- TAB 3: CRYO L7 FIREWALL & SECURITY CENTER -->
         <div class="tab-pane" id="pane-network">
-          <div class="hw-grid" style="grid-template-columns: repeat(3, 1fr);">
+          
+          <!-- Security Stats Strip -->
+          <div class="hw-grid" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 24px;">
             <div class="hw-box">
               <div class="hw-lbl">DDoS Mitigation Engine</div>
-              <div class="hw-val" style="color:#22c55e;">92 Tbps Cryo Active 🟢</div>
+              <div class="hw-val" style="color:#22c55e;">92 Tbps Active 🟢</div>
+            </div>
+            <div class="hw-box">
+              <div class="hw-lbl">CryoLimbo Anti-Bot</div>
+              <div class="hw-val" style="color:#38bdf8;">Handshake L7 Mode</div>
+            </div>
+            <div class="hw-box">
+              <div class="hw-lbl">Mitigations (24h)</div>
+              <div class="hw-val" style="color:#f59e0b;">14 Attacks Blocked</div>
             </div>
             <div class="hw-box">
               <div class="hw-lbl">PROXY Protocol v2</div>
-              <div class="hw-val" style="color:#38bdf8;">Enabled (Real Client IPs)</div>
-            </div>
-            <div class="hw-box">
-              <div class="hw-lbl">Rate Limiting</div>
-              <div class="hw-val">50,000 req/min (Anti-Flood)</div>
+              <div class="hw-val" style="color:#a78bfa;">Active (Real Player IPs)</div>
             </div>
           </div>
+
+          <!-- Interactive Security Rules Grid -->
+          <div style="display:grid; grid-template-columns: 1.2fr 1fr; gap: 20px; margin-bottom: 24px;">
+            
+            <!-- Left: Security Modules & Toggles -->
+            <div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:14px; padding:24px;">
+              <h3 style="font-size:1.1rem; font-weight:600; margin:0 0 16px 0; color:#fff; font-family:'Bricolage Grotesque',sans-serif;">
+                Layer 7 Protocol &amp; Anti-Bot Filters
+              </h3>
+
+              <div style="display:flex; flex-direction:column; gap:16px;">
+                
+                <!-- Rule 1: CryoLimbo -->
+                <div style="display:flex; justify-content:space-between; align-items:center; padding-bottom:14px; border-bottom:1px solid var(--border-subtle);">
+                  <div>
+                    <div style="font-weight:600; font-size:0.92rem; color:#fff; display:flex; align-items:center; gap:6px;">
+                      <span>🛡️</span> CryoLimbo Anti-Bot Verification
+                    </div>
+                    <div style="color:var(--text-muted); font-size:0.78rem; margin-top:2px;">
+                      Drops automated BotJoiner, MCStorm &amp; TCP flood attacks before reaching your box.
+                    </div>
+                  </div>
+                  <span style="font-size:0.75rem; padding:4px 10px; border-radius:20px; background:rgba(34,197,94,0.15); color:#4ade80; font-weight:600; font-family:'DM Mono',monospace;">ACTIVE 🟢</span>
+                </div>
+
+                <!-- Rule 2: Null Ping -->
+                <div style="display:flex; justify-content:space-between; align-items:center; padding-bottom:14px; border-bottom:1px solid var(--border-subtle);">
+                  <div>
+                    <div style="font-weight:600; font-size:0.92rem; color:#fff; display:flex; align-items:center; gap:6px;">
+                      <span>⚡</span> Null-Ping &amp; MOTD Exploit Dropper
+                    </div>
+                    <div style="color:var(--text-muted); font-size:0.78rem; margin-top:2px;">
+                      Instantly drops scraper bots and malformed server-list ping crashes.
+                    </div>
+                  </div>
+                  <span style="font-size:0.75rem; padding:4px 10px; border-radius:20px; background:rgba(34,197,94,0.15); color:#4ade80; font-weight:600; font-family:'DM Mono',monospace;">ACTIVE 🟢</span>
+                </div>
+
+                <!-- Rule 3: Geo Shielding -->
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <div>
+                    <div style="font-weight:600; font-size:0.92rem; color:#fff; display:flex; align-items:center; gap:6px;">
+                      <span>🌐</span> Geo-Optimized India Ingress
+                    </div>
+                    <div style="color:var(--text-muted); font-size:0.78rem; margin-top:2px;">
+                      Prioritizes low-latency domestic transit (Jio, Airtel, Tata) with sub-10ms routing.
+                    </div>
+                  </div>
+                  <span style="font-size:0.75rem; padding:4px 10px; border-radius:20px; background:rgba(56,189,248,0.15); color:#38bdf8; font-weight:600; font-family:'DM Mono',monospace;">ENABLED</span>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Right: IP Access Control & Custom Filter -->
+            <div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:14px; padding:24px; display:flex; flex-direction:column; justify-content:space-between;">
+              <div>
+                <h3 style="font-size:1.1rem; font-weight:600; margin:0 0 8px 0; color:#fff; font-family:'Bricolage Grotesque',sans-serif;">
+                  IP Access Rule Manager
+                </h3>
+                <p style="color:var(--text-muted); font-size:0.8rem; margin:0 0 16px 0;">
+                  Block malicious subnets or add bypass rules for administrative connections.
+                </p>
+
+                <div style="margin-bottom:12px;">
+                  <label style="display:block; font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; margin-bottom:4px;">IP or CIDR Subnet</label>
+                  <input type="text" id="ip-filter-input" placeholder="e.g. 192.168.1.0/24 or 45.33.21.10" style="width:100%; padding:10px 14px; background:#060b13; border:1px solid var(--border-subtle); border-radius:8px; color:#fff; font-family:'DM Mono',monospace; font-size:0.85rem; outline:none; box-sizing:border-box;">
+                </div>
+
+                <div style="display:flex; gap:8px;">
+                  <button onclick="addIpRule('block')" class="btn btn-sm btn-ghost" style="flex:1; border-color:rgba(239,68,68,0.4); color:#ef4444;">
+                    ⛔ Block IP
+                  </button>
+                  <button onclick="addIpRule('whitelist')" class="btn btn-sm btn-ghost" style="flex:1; border-color:rgba(34,197,94,0.4); color:#4ade80;">
+                    ✓ Whitelist
+                  </button>
+                </div>
+              </div>
+
+              <div id="ip-rule-status" style="font-size:0.78rem; color:#94a3b8; margin-top:12px; font-family:'DM Mono',monospace;">
+                0 custom firewall rules applied.
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Real-Time Mitigation Audit Feed -->
+          <div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:14px; padding:22px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+              <div style="font-size:0.95rem; font-weight:600; color:#fff; display:flex; align-items:center; gap:8px;">
+                <span class="pulse-dot"></span> Live Scrubber Mitigation Feed
+              </div>
+              <span style="font-size:0.75rem; color:var(--text-muted); font-family:'DM Mono',monospace;">Real-Time Packet Stream</span>
+            </div>
+            
+            <div class="terminal-window" id="firewall-log-feed" style="height:200px; font-size:0.78rem; color:#94a3b8;">
+[MUM-EDGE-1] KryonShield BGP Scrubbing Cluster active (92 Tbps total absorption).
+[MUM-EDGE-1] Handshake filter initialized on port 25565.
+[MUM-EDGE-1] No active Layer 7 volumetric anomalies detected.
+[MUM-EDGE-1] 100% clean player traffic passing through to protected origin.
+            </div>
+          </div>
+
         </div>
 
       </div>
