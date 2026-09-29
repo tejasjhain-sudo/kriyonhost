@@ -39,6 +39,7 @@ app.get('/dedicated', (req, res) => res.sendFile(path.join(__dirname, 'public', 
 app.get('/panel', (req, res) => res.sendFile(path.join(__dirname, 'public', 'panel.html')));
 app.get('/login', (req, res) => res.sendFile(path.join(__dirname, 'public', 'login.html')));
 app.get('/admin', (req, res) => res.sendFile(path.join(__dirname, 'public', 'admin.html')));
+app.get('/status', (req, res) => res.sendFile(path.join(__dirname, 'public', 'status.html')));
 
 // ─── Admin: Lookup user UUID by email (service role) ─────────────────────────
 app.get('/api/admin/user-id', async (req, res) => {

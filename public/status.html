@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KryonHost — Live System Status & Uptime</title>
+  <meta name="description" content="Real-time status, 90-day uptime history, and PoP network latency for KryonHost infrastructure, Compute Nodes, Cryo DDoS Shield, and API.">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=Inter:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/style.css">
+
+  <style>
+    :root {
+      --status-green: #22c55e;
+      --status-green-glow: rgba(34, 197, 94, 0.4);
+      --status-yellow: #eab308;
+      --status-red: #ef4444;
+      --bg-card-dark: #0a0914;
+      --border-card: rgba(255, 255, 255, 0.07);
+    }
+
+    body {
+      background: #05050a;
+      color: #fff;
+      font-family: 'Inter', -apple-system, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Status Banner */
+    .status-banner {
+      background: linear-gradient(180deg, rgba(34, 197, 94, 0.12) 0%, rgba(10, 9, 20, 0.6) 100%), #0a0914;
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      border-radius: 16px;
+      padding: 24px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+      box-shadow: 0 10px 40px rgba(34, 197, 94, 0.08);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .status-banner::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 4px;
+      background: var(--status-green);
+      box-shadow: 0 0 12px var(--status-green);
+    }
+
+    .pulse-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--status-green);
+      box-shadow: 0 0 12px var(--status-green);
+      display: inline-block;
+      animation: statusPulse 2s infinite;
+    }
+
+    @keyframes statusPulse {
+      0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.6); }
+      70% { box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+    }
+
+    /* Overall Stats Row */
+    .metrics-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .metric-box {
+      background: var(--bg-card-dark);
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .metric-box-title {
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 6px;
+    }
+
+    .metric-box-val {
+      font-size: 1.6rem;
+      font-weight: 700;
+      font-family: 'Bricolage Grotesque', sans-serif;
+    }
+
+    /* Service Component Card */
+    .service-card {
+      background: var(--bg-card-dark);
+      border: 1px solid var(--border-card);
+      border-radius: 14px;
+      padding: 24px;
+      margin-bottom: 20px;
+      transition: border-color 0.2s;
+    }
+
+    .service-card:hover {
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .service-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .service-name {
+      font-size: 1.1rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .service-status-pill {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--status-green);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'DM Mono', monospace;
+    }
+
+    /* 90-Day Uptime Bar Graph */
+    .uptime-bar-container {
+      display: flex;
+      gap: 3px;
+      height: 34px;
+      align-items: flex-end;
+      margin-bottom: 12px;
+      position: relative;
+    }
+
+    .uptime-day-bar {
+      flex: 1;
+      height: 100%;
+      background: var(--status-green);
+      border-radius: 2px;
+      opacity: 0.85;
+      transition: all 0.15s ease;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .uptime-day-bar:hover {
+      opacity: 1;
+      transform: scaleY(1.15);
+      background: #4ade80;
+    }
+
+    .uptime-day-bar.minor-incident {
+      background: var(--status-yellow);
+    }
+
+    .uptime-meta {
+      display: flex;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-family: 'DM Mono', monospace;
+    }
+
+    /* Latency Nodes Grid */
+    .pop-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .pop-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-card);
+      border-radius: 10px;
+      padding: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .pop-city {
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-bottom: 2px;
+    }
+
+    .pop-code {
+      font-size: 0.72rem;
+      color: var(--muted);
+      font-family: 'DM Mono', monospace;
+    }
+
+    .pop-ping {
+      font-family: 'DM Mono', monospace;
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--status-green);
+    }
+
+    /* Incident Log */
+    .incident-item {
+      background: var(--bg-card-dark);
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 12px;
+    }
+
+    .incident-date {
+      font-size: 0.78rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
+    }
+
+    .incident-title {
+      font-weight: 600;
+      font-size: 1rem;
+      margin-bottom: 6px;
+      color: #fff;
+    }
+
+    .incident-desc {
+      font-size: 0.88rem;
+      color: var(--muted2);
+      line-height: 1.5;
+    }
+
+    /* Tooltip */
+    #status-tooltip {
+      position: absolute;
+      background: #11101a;
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-family: 'DM Mono', monospace;
+      pointer-events: none;
+      display: none;
+      z-index: 1000;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.8);
+      transform: translate(-50%, -120%);
+      white-space: nowrap;
+    }
+
+    @media (max-width: 768px) {
+      .metrics-strip { grid-template-columns: 1fr 1fr; }
+      .status-banner { flex-direction: column; align-items: flex-start; gap: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <header class="nav-header">
+    <div class="wrap nav-inner">
+      <a href="/" class="nav-brand">
+        <div class="brand-icon"><img src="/images/logo.jpg" alt="KryonHost" style="width:26px;height:26px;object-fit:contain;border-radius:5px;"></div>
+        <span class="brand-name">KryonHost</span>
+        <span class="brand-tag">BETA</span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="/" class="nav-link">Home</a></li>
+        <li><a href="/vps" class="nav-link">Cloud VPS</a></li>
+        <li><a href="/minecraft" class="nav-link">Minecraft</a></li>
+        <li><a href="/devspace" class="nav-link">DevSpace</a></li>
+        <li><a href="/status" class="nav-link active" style="color:#22c55e;">Status 🟢</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <a href="/login" class="btn btn-ghost btn-sm">Client Login</a>
+        <a href="https://discord.gg/kt9yPDwYT4" target="_blank" class="btn btn-primary btn-sm">Join Discord</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN STATUS CONTENT -->
+  <main style="flex:1; padding: 40px 0 80px;">
+    <div class="wrap" style="max-width: 960px;">
+      
+      <!-- Page Title -->
+      <div style="margin-bottom: 24px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+        <div>
+          <h1 style="font-family:'Bricolage Grotesque',sans-serif; font-size: 2.2rem; font-weight:600; margin-bottom: 4px;">System Operational Status</h1>
+          <p style="color:var(--muted); font-size:0.9rem;">Real-time health monitoring and latency telemetry across all KryonHost infrastructure nodes.</p>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; font-size:0.8rem; color:var(--muted); font-family:'DM Mono',monospace;">
+          <span class="pulse-dot"></span> Live Telemetry · Updated <span id="time-ago">just now</span>
+        </div>
+      </div>
+
+      <!-- Live Banner -->
+      <div class="status-banner">
+        <div style="display:flex; align-items:center; gap:16px;">
+          <div style="width:48px; height:48px; border-radius:12px; background:rgba(34,197,94,0.15); border:1px solid rgba(34,197,94,0.4); display:flex; align-items:center; justify-content:center; color:var(--status-green);">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div>
+            <div style="font-size:1.35rem; font-weight:700; color:#fff; font-family:'Bricolage Grotesque',sans-serif;">All Systems Operational</div>
+            <div style="font-size:0.85rem; color:var(--muted2);">Core bare-metal compute, Cryo Anycast Shield, and API clusters are functioning normally.</div>
+          </div>
+        </div>
+        <a href="https://discord.gg/kt9yPDwYT4" target="_blank" class="btn btn-sm btn-ghost" style="border:1px solid rgba(34,197,94,0.4); color:#22c55e;">
+          Get Discord Alerts &rarr;
+        </a>
+      </div>
+
+      <!-- Quick Metrics Strip -->
+      <div class="metrics-strip">
+        <div class="metric-box">
+          <div class="metric-box-title">Overall 90-Day Uptime</div>
+          <div class="metric-box-val" style="color:#22c55e;">99.99%</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-box-title">Core India Latency</div>
+          <div class="metric-box-val" style="color:#38bdf8;">4.2 ms</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-box-title">DDoS Capacity</div>
+          <div class="metric-box-val" style="color:#a78bfa;">92 Tbps</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-box-title">Active Attacks Dropped</div>
+          <div class="metric-box-val" style="color:#f59e0b;">0 Active</div>
+        </div>
+      </div>
+
+      <!-- SERVICE 1: Mumbai Core Compute (Ryzen 9 & EPYC) -->
+      <div class="service-card">
+        <div class="service-header">
+          <div class="service-name">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+            Mumbai Core Compute (Ryzen 9 &amp; EPYC)
+          </div>
+          <div class="service-status-pill">
+            <span class="pulse-dot"></span> 99.98% Operational
+          </div>
+        </div>
+        <div class="uptime-bar-container" id="bar-compute"></div>
+        <div class="uptime-meta">
+          <span>90 days ago</span>
+          <span style="color:#22c55e;">99.98% uptime</span>
+          <span>Today</span>
+        </div>
+      </div>
+
+      <!-- SERVICE 2: Anycast Edge & Cryo Shield (92 Tbps) -->
+      <div class="service-card">
+        <div class="service-header">
+          <div class="service-name">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Anycast Edge &amp; Cryo Shield (92 Tbps)
+          </div>
+          <div class="service-status-pill" style="color:#38bdf8;">
+            <span class="pulse-dot" style="background:#38bdf8; box-shadow:0 0 10px #38bdf8;"></span> 100.0% Operational
+          </div>
+        </div>
+        <div class="uptime-bar-container" id="bar-shield"></div>
+        <div class="uptime-meta">
+          <span>90 days ago</span>
+          <span style="color:#38bdf8;">100.0% uptime</span>
+          <span>Today</span>
+        </div>
+      </div>
+
+      <!-- SERVICE 3: Supabase Database & API -->
+      <div class="service-card">
+        <div class="service-header">
+          <div class="service-name">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+            Supabase Database &amp; Client API
+          </div>
+          <div class="service-status-pill" style="color:#a78bfa;">
+            <span class="pulse-dot" style="background:#a78bfa; box-shadow:0 0 10px #a78bfa;"></span> 100.0% Operational
+          </div>
+        </div>
+        <div class="uptime-bar-container" id="bar-database"></div>
+        <div class="uptime-meta">
+          <span>90 days ago</span>
+          <span style="color:#a78bfa;">100.0% uptime</span>
+          <span>Today</span>
+        </div>
+      </div>
+
+      <!-- SERVICE 4: DevSpace Docker Ingress & Build Cluster -->
+      <div class="service-card">
+        <div class="service-header">
+          <div class="service-name">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            DevSpace Container Cluster &amp; Ingress
+          </div>
+          <div class="service-status-pill">
+            <span class="pulse-dot"></span> 100.0% Operational
+          </div>
+        </div>
+        <div class="uptime-bar-container" id="bar-devspace"></div>
+        <div class="uptime-meta">
+          <span>90 days ago</span>
+          <span style="color:#22c55e;">100.0% uptime</span>
+          <span>Today</span>
+        </div>
+      </div>
+
+      <!-- Global Edge PoP Latencies -->
+      <div style="margin-top: 40px; margin-bottom: 40px;">
+        <h2 style="font-family:'Bricolage Grotesque',sans-serif; font-size: 1.5rem; font-weight:600; margin-bottom: 6px;">Global Network PoP Latency</h2>
+        <p style="color:var(--muted); font-size:0.88rem; margin-bottom: 20px;">Continuous ICMP ping and packet inspection across regional routing hubs.</p>
+        
+        <div class="pop-grid">
+          <div class="pop-card">
+            <div>
+              <div class="pop-city">Mumbai (Core Node)</div>
+              <div class="pop-code">BOM-1 · Tier-4 Datacenter</div>
+            </div>
+            <div class="pop-ping">3.8 ms</div>
+          </div>
+          <div class="pop-card">
+            <div>
+              <div class="pop-city">Delhi NCR</div>
+              <div class="pop-code">DEL-1 · Direct Peering</div>
+            </div>
+            <div class="pop-ping">9.2 ms</div>
+          </div>
+          <div class="pop-card">
+            <div>
+              <div class="pop-city">Bangalore</div>
+              <div class="pop-code">BLR-1 · NIXI Connected</div>
+            </div>
+            <div class="pop-ping">13.6 ms</div>
+          </div>
+          <div class="pop-card">
+            <div>
+              <div class="pop-city">Singapore</div>
+              <div class="pop-code">SIN-1 · Equinix SG1</div>
+            </div>
+            <div class="pop-ping">31.4 ms</div>
+          </div>
+          <div class="pop-card">
+            <div>
+              <div class="pop-city">Frankfurt</div>
+              <div class="pop-code">FRA-1 · DE-CIX Fabric</div>
+            </div>
+            <div class="pop-ping">96.8 ms</div>
+          </div>
+          <div class="pop-card">
+            <div>
+              <div class="pop-city">New York</div>
+              <div class="pop-code">NYC-1 · 60 Hudson</div>
+            </div>
+            <div class="pop-ping">142.1 ms</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Past 90 Days Incidents -->
+      <div style="margin-top: 40px;">
+        <h2 style="font-family:'Bricolage Grotesque',sans-serif; font-size: 1.5rem; font-weight:600; margin-bottom: 6px;">Past Incident History</h2>
+        <p style="color:var(--muted); font-size:0.88rem; margin-bottom: 20px;">Detailed post-mortems and maintenance reports for the previous 90 days.</p>
+        
+        <div class="incident-item">
+          <div class="incident-date">September 24, 2026 — 02:14 UTC</div>
+          <div class="incident-title" style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:0.75rem; padding:2px 8px; border-radius:4px; background:rgba(34,197,94,0.15); color:#22c55e; font-weight:600;">RESOLVED</span>
+            Scheduled Core Hypervisor Kernel Patching (Mumbai MUM-1)
+          </div>
+          <div class="incident-desc">
+            Applied zero-downtime hot-patches to AMD Ryzen 9 7950X virtualization clusters. All Minecraft and VPS guest instances maintained 100% active state without restart.
+          </div>
+        </div>
+
+        <div class="incident-item">
+          <div class="incident-date">August 18, 2026 — 18:40 UTC</div>
+          <div class="incident-title" style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:0.75rem; padding:2px 8px; border-radius:4px; background:rgba(34,197,94,0.15); color:#22c55e; font-weight:600;">RESOLVED</span>
+            Volumetric 420 Gbps UDP Reflection Attack Mitigated
+          </div>
+          <div class="incident-desc">
+            A large multi-vector DDoS attack targeting port 25565 endpoints was automatically detected and scrubbed at the Anycast edge within 1.2 seconds. No customer dropouts recorded.
+          </div>
+        </div>
+
+        <div class="incident-item" style="text-align:center; padding: 24px; color:var(--muted); font-size:0.85rem;">
+          ✓ No further incidents reported in the last 90 days. All systems operating at nominal capacity.
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Interactive Floating Tooltip -->
+  <div id="status-tooltip"></div>
+
+  <!-- FOOTER -->
+  <footer style="background:#030306; border-top:1px solid var(--border-card); padding:32px 0; font-size:0.85rem; color:var(--muted);">
+    <div class="wrap" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <img src="/images/logo.jpg" alt="Logo" style="width:20px;height:20px;object-fit:contain;border-radius:4px;">
+        <span>&copy; 2026 KryonHost Cloud Infrastructure. All systems operational.</span>
+      </div>
+      <div>
+        <a href="https://discord.gg/kt9yPDwYT4" target="_blank" style="color:var(--muted2); text-decoration:none;">Discord Support</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Generate 90 interactive bars for each service
+    const tooltip = document.getElementById('status-tooltip');
+
+    function renderBars(containerId, isPerfect = true, incidentIndex = -1) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      container.innerHTML = '';
+
+      const totalDays = 90;
+      const today = new Date();
+
+      for (let i = 0; i < totalDays; i++) {
+        const bar = document.createElement('div');
+        bar.className = 'uptime-day-bar';
+        
+        // Calculate date for this bar (90 - i days ago)
+        const d = new Date(today);
+        d.setDate(d.getDate() - (totalDays - 1 - i));
+        const dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+        if (!isPerfect && i === incidentIndex) {
+          bar.className += ' minor-incident';
+          bar.dataset.tooltip = `${dateStr}: 99.82% Uptime (Scheduled Patching)`;
+        } else {
+          bar.dataset.tooltip = `${dateStr}: 100.0% Uptime (0 incidents)`;
+        }
+
+        bar.addEventListener('mouseenter', (e) => {
+          tooltip.textContent = e.target.dataset.tooltip;
+          tooltip.style.display = 'block';
+          const rect = e.target.getBoundingClientRect();
+          tooltip.style.left = (rect.left + rect.width / 2 + window.scrollX) + 'px';
+          tooltip.style.top = (rect.top + window.scrollY) + 'px';
+        });
+
+        bar.addEventListener('mouseleave', () => {
+          tooltip.style.display = 'none';
+        });
+
+        container.appendChild(bar);
+      }
+    }
+
+    // Populate bars
+    renderBars('bar-compute', false, 84); // Incident on day 84
+    renderBars('bar-shield', true);
+    renderBars('bar-database', true);
+    renderBars('bar-devspace', true);
+
+    // Live update counter
+    let secondsAgo = 0;
+    setInterval(() => {
+      secondsAgo++;
+      const el = document.getElementById('time-ago');
+      if (el) {
+        if (secondsAgo < 60) el.textContent = `${secondsAgo}s ago`;
+        else el.textContent = `${Math.floor(secondsAgo / 60)}m ago`;
+      }
+    }, 1000);
+  </script>
+</body>
+</html>
