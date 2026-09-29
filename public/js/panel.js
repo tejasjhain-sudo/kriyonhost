@@ -195,7 +195,7 @@ function renderDetail(s) {
 
   document.getElementById('d-name').textContent = s.service_alias;
   document.getElementById('d-ip').textContent = s.ip;
-  document.getElementById('d-region').textContent = s.region || 'India (Mumbai Anycast Gateway)';
+  document.getElementById('d-region').textContent = isTunnel ? 'India (Anycast Layer 7 Edge)' : (s.region || 'India (Mumbai Tier-4)');
   
   const badge = document.getElementById('d-status-badge');
   if (isPendingDns) {
@@ -203,10 +203,40 @@ function renderDetail(s) {
     badge.innerHTML = '<span class="dot pending_dns"></span> ⏳ AWAITING PROTECTED DNS ASSIGNMENT';
   } else if (isRunning) {
     badge.className = 'status-badge running';
-    badge.innerHTML = '<span class="dot running"></span> 🟢 DDOS SHIELD ACTIVE';
+    badge.innerHTML = isTunnel ? '<span class="dot running"></span> 🟢 DDOS SHIELD ACTIVE' : '<span class="dot running"></span> 🟢 ONLINE';
   } else {
     badge.className = 'status-badge stopped';
     badge.innerHTML = `<span class="dot stopped"></span> ${s.status.toUpperCase()}`;
+  }
+
+  // Adjust Power Strip for Tunnels vs VPS
+  const powerStrip = document.querySelector('.power-strip');
+  if (powerStrip) {
+    if (isTunnel) {
+      powerStrip.innerHTML = `
+        <span style="display:inline-flex; align-items:center; gap:8px; padding:8px 14px; border-radius:8px; background:rgba(34,197,94,0.1); border:1px solid rgba(34,197,94,0.3); color:#4ade80; font-size:0.85rem; font-weight:600;">
+          <span class="dot running"></span> 92 Tbps Anycast Scrubbing Active
+        </span>
+        <a href="https://discord.gg/kt9yPDwYT4" target="_blank" class="btn-power btn-p-secondary" style="text-decoration:none;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Discord Support
+        </a>
+      `;
+    } else {
+      powerStrip.innerHTML = `
+        <button class="btn-power btn-p-start" onclick="powerAction('start')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg> Start
+        </button>
+        <button class="btn-power btn-p-reboot" onclick="powerAction('reboot')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.59-9.21l5.64 5.64"/></svg> Reboot
+        </button>
+        <button class="btn-power btn-p-stop" onclick="powerAction('stop')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/></svg> Force Stop
+        </button>
+        <button class="btn-power btn-p-secondary" onclick="openCredsModal()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Access Info
+        </button>
+      `;
+    }
   }
 
   // Render Real-Time DNS Setup Banner for Tunnels / DDoS Protection
@@ -223,15 +253,20 @@ function renderDetail(s) {
               <h3 style="font-size:1.15rem; font-weight:700; color:#facc15; margin:0; font-family:'Bricolage Grotesque',sans-serif;">🛡️ Shield Request Dispatched (Awaiting DNS Assignment)</h3>
             </div>
             <p style="color:#cbd5e1; font-size:0.9rem; line-height:1.5; margin:0 0 12px 0;">
-              Your connection hostname <strong>${s.service_alias}</strong> with cloaked backend origin <code style="color:#38bdf8; font-family:'DM Mono',monospace; background:rgba(56,189,248,0.1); padding:2px 6px; border-radius:4px;">${s.ip}</code> has been registered.
+              Your Minecraft server domain <strong>${s.service_alias}</strong> with cloaked backend origin <code style="color:#38bdf8; font-family:'DM Mono',monospace; background:rgba(56,189,248,0.1); padding:2px 6px; border-radius:4px;">${s.ip}</code> has been registered.
             </p>
-            <div style="font-size:0.82rem; color:#fef08a; background:rgba(234,179,8,0.12); padding:10px 14px; border-radius:8px; display:flex; align-items:center; gap:8px;">
-              <span>⏳</span>
-              <span><strong>Live Realtime Sync:</strong> Our automated Discord system / Network team is assigning your dedicated Anycast CNAME. This panel will update automatically in real-time within 1-5 minutes.</span>
+            <div style="font-size:0.82rem; color:#fef08a; background:rgba(234,179,8,0.12); padding:12px 16px; border-radius:8px; display:flex; align-items:center; gap:10px;">
+              <span style="font-size:1.1rem;">⏳</span>
+              <span><strong>Live Realtime Sync:</strong> Our Discord bot has notified the network administrator. Once your protected Anycast CNAME is assigned, this panel will update live with your Cloudflare record!</span>
             </div>
           </div>`;
       } else {
         const assignedCname = s.cname || 'edge-as216013.kryonhost.net';
+        
+        // Extract sub domain (e.g. play from play.nigamc.fun)
+        const parts = (s.service_alias || '').split('.');
+        const recordName = parts.length > 2 ? parts[0] : '@';
+
         dnsBanner.innerHTML = `
           <div style="background: rgba(34, 197, 94, 0.08); border: 1px solid rgba(34, 197, 94, 0.35); border-radius: 14px; padding: 22px 24px; color: #fff;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:10px;">
@@ -241,15 +276,27 @@ function renderDetail(s) {
               </div>
               <span style="font-size:0.75rem; padding:3px 8px; border-radius:6px; background:rgba(34,197,94,0.15); color:#4ade80; font-weight:600; font-family:'DM Mono',monospace;">92 TBPS DEFENSE READY</span>
             </div>
+            
             <p style="color:#cbd5e1; font-size:0.88rem; margin:0 0 14px 0;">
               Add the following CNAME record in your Cloudflare / DNS provider pointing <strong>${s.service_alias}</strong> to activate full Layer 7 scrubbing:
             </p>
+            
             <div style="display:flex; gap:8px; align-items:center; margin-bottom:12px;">
               <input type="text" id="cname-val-input" readonly value="${assignedCname}" style="flex:1; padding:10px 14px; background:#060b13; border:1px solid rgba(34,197,94,0.3); border-radius:8px; color:#4ade80; font-family:'DM Mono',monospace; font-size:0.9rem; outline:none;">
               <button class="btn-copy" style="background:#15803d; border-color:#16a34a; padding:10px 18px;" onclick="copyToClipboard('cname-val-input')">Copy CNAME</button>
             </div>
-            <div style="font-size:0.78rem; color:#94a3b8; font-family:'DM Mono',monospace; background:rgba(0,0,0,0.3); padding:8px 12px; border-radius:6px;">
-              Type: CNAME · Name: ${s.service_alias.split('.')[0] || '@'} · Target: ${assignedCname} · Proxy status: DNS only (Grey Cloud)
+
+            <div style="font-size:0.8rem; color:#94a3b8; font-family:'DM Mono',monospace; background:rgba(0,0,0,0.4); padding:10px 14px; border-radius:8px; margin-bottom:16px; border:1px solid rgba(255,255,255,0.06);">
+              <span style="color:#38bdf8;">Type:</span> CNAME &nbsp;|&nbsp; 
+              <span style="color:#fbbf24;">Name:</span> ${recordName} &nbsp;|&nbsp; 
+              <span style="color:#4ade80;">Target:</span> ${assignedCname} &nbsp;|&nbsp; 
+              <span style="color:#e2e8f0;">Proxy:</span> DNS only (Grey Cloud ☁️)
+            </div>
+
+            <div id="dns-done-box">
+              <button id="btn-dns-confirmed" onclick="confirmDnsSetup()" class="btn btn-sm btn-primary" style="background:#22c55e; border-color:#22c55e; color:#000; font-weight:600; padding:8px 18px;">
+                ✓ I Have Added the DNS Record (Done)
+              </button>
             </div>
           </div>`;
       }
@@ -268,6 +315,18 @@ function renderDetail(s) {
   document.getElementById('modal-sftp-host').value = `sftp://${s.ip}:22`;
 }
 
+function confirmDnsSetup() {
+  const box = document.getElementById('dns-done-box');
+  if (box && currentServer) {
+    box.innerHTML = `
+      <div style="display:flex; align-items:center; gap:8px; font-size:0.85rem; color:#4ade80; background:rgba(34,197,94,0.15); padding:8px 14px; border-radius:6px; border:1px solid rgba(34,197,94,0.3);">
+        <span>✅</span>
+        <span><strong>DNS Verified!</strong> Your players can now connect to <strong>${currentServer.service_alias}</strong> with 92 Tbps DDoS shielding active.</span>
+      </div>
+    `;
+  }
+}
+
 function populateConsole(s) {
   const con = document.getElementById('d-console');
   if (!con) return;
@@ -279,7 +338,7 @@ function populateConsole(s) {
       `[${time}] Attached Hostname: ${s.service_alias}\n` +
       `[${time}] Cloaked Backend Origin: ${s.ip}\n` +
       `[${time}] Routing Status: ${s.status === 'pending_dns' ? 'PENDING DNS ASSIGNMENT' : 'ACTIVE / 92 TBPS SHIELDED'}\n` +
-      `[${time}] Layer 7 Protocol Filter: Minecraft / HTTP Handshake Active\n` +
+      `[${time}] Layer 7 Protocol Filter: Minecraft / TCP Protocol Handshake Active\n` +
       `kryon@shield-edge:~$ `;
   } else {
     con.textContent = `[${time}] KryonHost Virtualization Hypervisor v4.2.1 initialized.\n` +
