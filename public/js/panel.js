@@ -309,73 +309,77 @@ function initMultiLineChart(datasetRange) {
         {
           label: 'CPU Usage',
           data: [12, 14, 15, 18, 14, 16, 22, 18, 18],
-          borderColor: '#6366f1',
+          borderColor: '#ffffff',
           backgroundColor: 'transparent',
-          borderWidth: 2,
+          borderWidth: 1.8,
           tension: 0.35,
-          pointRadius: 2,
-          pointBackgroundColor: '#6366f1'
+          pointRadius: 0,
+          pointHoverRadius: 4,
+          pointBackgroundColor: '#ffffff'
         },
         {
           label: 'RAM Allocation',
           data: [32, 32, 33, 34, 34, 34, 35, 34, 34],
-          borderColor: '#a855f7',
+          borderColor: '#a1a1aa',
           backgroundColor: 'transparent',
-          borderWidth: 2,
+          borderWidth: 1.8,
           tension: 0.35,
-          pointRadius: 2,
-          pointBackgroundColor: '#a855f7'
+          pointRadius: 0,
+          pointHoverRadius: 4,
+          pointBackgroundColor: '#a1a1aa'
         },
         {
           label: 'Disk I/O %',
           data: [42, 42, 42, 42, 42, 42, 42, 42, 42],
-          borderColor: '#38bdf8',
+          borderColor: '#60a5fa',
           backgroundColor: 'transparent',
-          borderWidth: 2,
+          borderWidth: 1.8,
           tension: 0.35,
-          pointRadius: 2,
-          pointBackgroundColor: '#38bdf8'
+          pointRadius: 0,
+          pointHoverRadius: 4,
+          pointBackgroundColor: '#60a5fa'
         },
         {
           label: 'Network Mb/s',
           data: [4, 6, 8, 12, 18, 24, 64, 20, 14],
-          borderColor: '#10b981',
+          borderColor: '#34d399',
           backgroundColor: 'transparent',
-          borderWidth: 2,
+          borderWidth: 1.8,
           tension: 0.35,
-          pointRadius: 2,
-          pointBackgroundColor: '#10b981'
+          pointRadius: 0,
+          pointHoverRadius: 4,
+          pointBackgroundColor: '#34d399'
         }
       ]
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      animation: { duration: 300 },
+      animation: { duration: 250 },
       plugins: {
         legend: { display: false },
         tooltip: {
           mode: 'index',
           intersect: false,
-          backgroundColor: '#12141f',
-          titleColor: '#f8fafc',
-          bodyColor: '#94a3b8',
-          borderColor: 'rgba(255,255,255,0.1)',
+          backgroundColor: '#18181c',
+          titleColor: '#fafafa',
+          bodyColor: '#a1a1aa',
+          borderColor: '#27272a',
           borderWidth: 1,
           padding: 8
         }
       },
       scales: {
         x: {
-          grid: { color: 'rgba(255, 255, 255, 0.04)', drawBorder: false },
-          ticks: { color: 'rgba(255, 255, 255, 0.4)', font: { size: 10, family: 'JetBrains Mono' } }
+          grid: { color: 'rgba(255, 255, 255, 0.03)', drawBorder: false },
+          ticks: { color: '#71717a', font: { size: 10, family: 'JetBrains Mono' } }
         },
         y: {
           beginAtZero: true,
           max: 100,
-          grid: { color: 'rgba(255, 255, 255, 0.04)', drawBorder: false },
+          grid: { color: 'rgba(255, 255, 255, 0.03)', drawBorder: false },
           ticks: {
-            color: 'rgba(255, 255, 255, 0.4)',
+            color: '#71717a',
             font: { size: 10, family: 'JetBrains Mono' },
             callback: (val) => `${val}%`
           }
