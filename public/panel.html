@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KryonHost — Client Cloud Console</title>
-  <meta name="description" content="Manage high-performance Cloud VPS, Minecraft servers, network metrics, and bare-metal telemetry.">
+  <title>KryonHost — Cloud Control Center</title>
+  <meta name="description" content="Enterprise cloud management console for Virtual Private Servers, Anycast DDoS mitigation, and high-performance compute nodes.">
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=Inter:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="/css/style.css">
   
@@ -20,335 +20,490 @@
 
   <style>
     :root {
-      --bg-dark: #05050a;
-      --bg-panel: #0a0914;
-      --bg-card: #0f0e1c;
-      --bg-card-hover: #151426;
-      --border-subtle: rgba(255, 255, 255, 0.08);
-      --border-focus: rgba(124, 106, 255, 0.4);
-      --text-main: #f4f4f6;
-      --text-muted: #9494a8;
-      --accent-purple: #7c6aff;
-      --accent-blue: #38bdf8;
-      --accent-green: #22c55e;
-      --accent-red: #ef4444;
-      --accent-amber: #f59e0b;
+      --bg-base: #09090b;
+      --bg-sidebar: #0d0d11;
+      --bg-surface: #121217;
+      --bg-surface-elevated: #18181f;
+      --bg-surface-hover: #1f1f28;
+      --border-subtle: rgba(255, 255, 255, 0.07);
+      --border-strong: rgba(255, 255, 255, 0.14);
+      --border-accent: rgba(99, 102, 241, 0.4);
+      --text-primary: #f4f4f5;
+      --text-secondary: #a1a1aa;
+      --text-muted: #71717a;
+      --color-brand: #6366f1;
+      --color-brand-glow: rgba(99, 102, 241, 0.2);
+      --color-emerald: #10b981;
+      --color-emerald-bg: rgba(16, 185, 129, 0.1);
+      --color-emerald-border: rgba(16, 185, 129, 0.25);
+      --color-amber: #f59e0b;
+      --color-amber-bg: rgba(245, 158, 11, 0.1);
+      --color-amber-border: rgba(245, 158, 11, 0.25);
+      --color-rose: #f43f5e;
+      --color-rose-bg: rgba(244, 63, 94, 0.1);
+      --color-rose-border: rgba(244, 63, 94, 0.25);
+      --color-sky: #38bdf8;
+      --color-sky-bg: rgba(56, 189, 248, 0.1);
+      --color-sky-border: rgba(56, 189, 248, 0.25);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
     body {
-      background: var(--bg-dark);
-      color: var(--text-main);
-      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg-base);
+      color: var(--text-primary);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       display: flex;
       height: 100vh;
       overflow: hidden;
-      margin: 0;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* Sidebar */
-    .sidebar {
-      width: 260px;
-      background: var(--bg-panel);
+    /* ── Sidebar ── */
+    .app-sidebar {
+      width: 250px;
+      background: var(--bg-sidebar);
       border-right: 1px solid var(--border-subtle);
       display: flex;
       flex-direction: column;
       flex-shrink: 0;
-      z-index: 50;
+      z-index: 40;
     }
 
-    .sidebar-header {
-      padding: 22px 24px;
+    .sidebar-brand {
+      padding: 18px 20px;
       border-bottom: 1px solid var(--border-subtle);
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
 
-    .brand-group {
+    .brand-link {
       display: flex;
       align-items: center;
       gap: 10px;
       text-decoration: none;
+      color: var(--text-primary);
     }
 
-    .brand-logo {
-      width: 28px;
-      height: 28px;
+    .brand-logo-img {
+      width: 26px;
+      height: 26px;
       border-radius: 6px;
-      object-fit: contain;
+      object-fit: cover;
     }
 
-    .brand-name {
-      font-family: 'Bricolage Grotesque', sans-serif;
-      font-size: 1.15rem;
+    .brand-title {
+      font-size: 0.95rem;
       font-weight: 600;
-      color: #fff;
+      letter-spacing: -0.01em;
     }
 
-    .nav-group {
-      padding: 16px 12px;
+    .env-badge {
+      font-size: 0.65rem;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: var(--bg-surface-elevated);
+      color: var(--text-muted);
+      border: 1px solid var(--border-subtle);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .nav-container {
+      padding: 16px 10px;
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 2px;
       flex: 1;
       overflow-y: auto;
     }
 
-    .nav-label {
-      font-size: 0.72rem;
+    .nav-section-title {
+      font-size: 0.68rem;
       font-weight: 600;
       color: var(--text-muted);
       text-transform: uppercase;
       letter-spacing: 0.08em;
-      padding: 0 12px;
-      margin-bottom: 6px;
-      margin-top: 14px;
+      padding: 12px 10px 6px;
     }
 
-    .nav-item {
-      padding: 10px 14px;
-      border-radius: 9px;
-      color: var(--text-muted);
-      text-decoration: none;
+    .sidebar-link {
       display: flex;
       align-items: center;
-      gap: 12px;
-      font-size: 0.88rem;
+      gap: 10px;
+      padding: 8px 10px;
+      border-radius: 6px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.84rem;
       font-weight: 500;
       transition: all 0.15s ease;
       cursor: pointer;
       border: 1px solid transparent;
     }
 
-    .nav-item:hover {
-      background: rgba(255, 255, 255, 0.03);
-      color: #fff;
+    .sidebar-link:hover {
+      background: var(--bg-surface-hover);
+      color: var(--text-primary);
     }
 
-    .nav-item.active {
-      background: rgba(124, 106, 255, 0.14);
+    .sidebar-link.active {
+      background: var(--bg-surface-elevated);
       color: #fff;
-      border-color: rgba(124, 106, 255, 0.3);
+      border-color: var(--border-subtle);
       font-weight: 600;
     }
 
-    .nav-item svg {
-      width: 17px;
-      height: 17px;
+    .sidebar-link svg {
+      width: 16px;
+      height: 16px;
       stroke-width: 2;
-      opacity: 0.85;
+      color: var(--text-muted);
       flex-shrink: 0;
+      transition: color 0.15s;
     }
 
-    .sidebar-footer {
-      padding: 16px;
+    .sidebar-link.active svg,
+    .sidebar-link:hover svg {
+      color: var(--color-brand);
+    }
+
+    .sidebar-user {
+      padding: 14px;
       border-top: 1px solid var(--border-subtle);
+      background: var(--bg-sidebar);
     }
 
-    .user-profile {
+    .user-card {
       display: flex;
       align-items: center;
-      gap: 12px;
-      padding: 10px 12px;
-      border-radius: 10px;
-      background: rgba(255, 255, 255, 0.02);
+      gap: 10px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      background: var(--bg-surface);
       border: 1px solid var(--border-subtle);
     }
 
-    .avatar {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--accent-purple), #c084fc);
+    .user-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      background: var(--color-brand);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 700;
-      font-size: 0.85rem;
+      font-weight: 600;
+      font-size: 0.78rem;
       color: #fff;
       flex-shrink: 0;
     }
 
-    .user-info {
+    .user-meta {
       flex: 1;
       min-width: 0;
     }
 
-    .user-email {
-      font-size: 0.8rem;
+    .user-email-text {
+      font-size: 0.78rem;
       font-weight: 500;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      color: #fff;
-      font-family: 'DM Mono', monospace;
+      color: var(--text-primary);
+      font-family: 'JetBrains Mono', monospace;
     }
 
-    .user-role {
+    .user-tier-text {
       font-size: 0.68rem;
-      color: var(--accent-green);
+      color: var(--text-muted);
       display: flex;
       align-items: center;
       gap: 4px;
     }
 
-    .btn-logout {
+    .btn-icon-logout {
       background: none;
       border: none;
       color: var(--text-muted);
       cursor: pointer;
-      padding: 6px;
-      border-radius: 6px;
+      padding: 4px;
+      border-radius: 4px;
       display: flex;
       align-items: center;
-      transition: 0.2s;
+      transition: color 0.15s;
     }
 
-    .btn-logout:hover {
-      background: rgba(239, 68, 68, 0.12);
-      color: var(--accent-red);
+    .btn-icon-logout:hover {
+      color: var(--color-rose);
     }
 
-    /* Main Area */
-    .main-area {
+    /* ── Main Workspace ── */
+    .app-main {
       flex: 1;
       display: flex;
       flex-direction: column;
       overflow-y: auto;
-      background: var(--bg-dark);
-      position: relative;
+      background: var(--bg-base);
     }
 
-    .top-header {
-      padding: 18px 36px;
+    .app-topbar {
+      height: 56px;
       border-bottom: 1px solid var(--border-subtle);
+      padding: 0 28px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       position: sticky;
       top: 0;
-      background: rgba(5, 5, 10, 0.88);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      z-index: 20;
+      background: rgba(9, 9, 11, 0.85);
+      backdrop-filter: blur(12px);
+      z-index: 30;
     }
 
-    .content-wrap {
-      padding: 32px 36px 60px;
-      max-width: 1440px;
-      margin: 0 auto;
-      width: 100%;
-      box-sizing: border-box;
-    }
-
-    /* Server Grid Cards */
-    .server-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-      gap: 20px;
-    }
-
-    .scard {
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: 14px;
-      padding: 22px;
-      transition: all 0.2s ease;
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .scard:hover {
-      background: var(--bg-card-hover);
-      border-color: var(--border-focus);
-      transform: translateY(-2px);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    }
-
-    .scard-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 16px;
-    }
-
-    .scard-title {
-      font-size: 1.1rem;
-      font-weight: 600;
-      margin-bottom: 4px;
-      color: #fff;
-    }
-
-    .scard-ip {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.82rem;
-      color: var(--accent-blue);
+    .breadcrumb-nav {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
+      font-size: 0.84rem;
     }
 
-    .status-badge {
+    .breadcrumb-root {
+      color: var(--text-muted);
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .breadcrumb-root:hover {
+      color: var(--text-primary);
+    }
+
+    .breadcrumb-separator {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+    }
+
+    .breadcrumb-current {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-header-deploy {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-size: 0.72rem;
+      background: var(--color-brand);
+      color: #fff;
+      font-size: 0.82rem;
+      font-weight: 500;
+      padding: 6px 14px;
+      border-radius: 6px;
+      text-decoration: none;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: opacity 0.15s;
+    }
+
+    .btn-header-deploy:hover {
+      opacity: 0.9;
+    }
+
+    .main-content {
+      padding: 24px 28px 60px;
+      max-width: 1400px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    /* ── Controls & Filter Bar ── */
+    .fleet-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .search-filter-box {
+      position: relative;
+      width: 280px;
+    }
+
+    .search-filter-box input {
+      width: 100%;
+      padding: 7px 12px 7px 32px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      color: var(--text-primary);
+      font-size: 0.82rem;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .search-filter-box input:focus {
+      border-color: var(--border-accent);
+    }
+
+    .search-filter-box svg {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 14px;
+      height: 14px;
+      color: var(--text-muted);
+    }
+
+    .filter-pills {
+      display: flex;
+      gap: 6px;
+    }
+
+    .pill-btn {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .pill-btn:hover {
+      background: var(--bg-surface-elevated);
+      color: var(--text-primary);
+    }
+
+    .pill-btn.active {
+      background: var(--bg-surface-elevated);
+      border-color: var(--border-strong);
+      color: #fff;
+    }
+
+    /* ── Fleet Grid ── */
+    .instances-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 16px;
+    }
+
+    .instance-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 18px;
+      transition: all 0.15s ease;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .instance-card:hover {
+      background: var(--bg-surface-elevated);
+      border-color: var(--border-strong);
+      transform: translateY(-1px);
+    }
+
+    .card-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+
+    .card-title-text {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .card-network-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+    }
+
+    .type-tag {
+      font-size: 0.65rem;
       font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
-      font-family: 'DM Mono', monospace;
+      letter-spacing: 0.04em;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(99, 102, 241, 0.12);
+      color: #a5b4fc;
+      border: 1px solid rgba(99, 102, 241, 0.25);
     }
 
-    .status-badge.running {
-      background: rgba(34, 197, 94, 0.12);
-      border: 1px solid rgba(34, 197, 94, 0.3);
-      color: var(--accent-green);
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 8px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      font-family: 'JetBrains Mono', monospace;
     }
 
-    .status-badge.stopped {
-      background: rgba(239, 68, 68, 0.12);
-      border: 1px solid rgba(239, 68, 68, 0.3);
-      color: var(--accent-red);
+    .status-pill.running {
+      background: var(--color-emerald-bg);
+      border: 1px solid var(--color-emerald-border);
+      color: var(--color-emerald);
     }
 
-    .status-badge.pending_dns {
-      background: rgba(234, 179, 8, 0.14);
-      border: 1px solid rgba(234, 179, 8, 0.4);
-      color: #facc15;
+    .status-pill.stopped {
+      background: var(--color-rose-bg);
+      border: 1px solid var(--color-rose-border);
+      color: var(--color-rose);
     }
 
-    .dot {
+    .status-pill.pending_dns {
+      background: var(--color-amber-bg);
+      border: 1px solid var(--color-amber-border);
+      color: var(--color-amber);
+    }
+
+    .status-dot {
       width: 6px;
       height: 6px;
       border-radius: 50%;
     }
 
-    .dot.running {
-      background: var(--accent-green);
-      box-shadow: 0 0 8px var(--accent-green);
-      animation: pulse 2s infinite;
+    .status-dot.running {
+      background: var(--color-emerald);
+      box-shadow: 0 0 6px var(--color-emerald);
     }
 
-    .dot.stopped {
-      background: var(--accent-red);
+    .status-dot.stopped {
+      background: var(--color-rose);
     }
 
-    .dot.pending_dns {
-      background: #facc15;
-      box-shadow: 0 0 8px #facc15;
-      animation: pulsePending 1.5s infinite;
+    .status-dot.pending_dns {
+      background: var(--color-amber);
+      box-shadow: 0 0 6px var(--color-amber);
     }
 
-    @keyframes pulsePending {
-      0% { box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.6); }
-      70% { box-shadow: 0 0 0 8px rgba(250, 204, 21, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(250, 204, 21, 0); }
-    }
-
-    .scard-specs {
+    .card-specs-row {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 8px;
@@ -357,259 +512,385 @@
       margin-top: 14px;
     }
 
-    .spec-item {
+    .spec-column {
       display: flex;
       flex-direction: column;
       gap: 2px;
     }
 
-    .spec-lbl {
-      font-size: 0.68rem;
+    .spec-key {
+      font-size: 0.65rem;
       color: var(--text-muted);
       text-transform: uppercase;
       letter-spacing: 0.05em;
     }
 
-    .spec-val {
+    .spec-value {
+      font-size: 0.84rem;
       font-weight: 600;
-      font-size: 0.9rem;
-      color: #fff;
+      color: var(--text-primary);
     }
 
-    /* Detail View */
+    /* ── Detail View ── */
     #detail-view {
       display: none;
     }
 
-    .dash-header {
+    .back-btn-row {
+      margin-bottom: 16px;
+    }
+
+    .btn-return {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0;
+      transition: color 0.15s;
+    }
+
+    .btn-return:hover {
+      color: var(--text-primary);
+    }
+
+    .instance-hero-panel {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 22px 24px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 28px;
+      margin-bottom: 24px;
       flex-wrap: wrap;
-      gap: 20px;
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: 16px;
-      padding: 24px 28px;
-    }
-
-    .dash-title-group h1 {
-      font-size: 1.8rem;
-      font-family: 'Bricolage Grotesque', sans-serif;
-      margin: 0 0 6px 0;
-      color: #fff;
-    }
-
-    .dash-meta {
-      display: flex;
       gap: 16px;
-      color: var(--text-muted);
-      font-size: 0.88rem;
-      align-items: center;
-      flex-wrap: wrap;
     }
 
-    /* Action Buttons Strip */
-    .power-strip {
+    .hero-meta-title {
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 6px;
+      letter-spacing: -0.01em;
+    }
+
+    .hero-meta-sub {
       display: flex;
-      gap: 10px;
+      align-items: center;
+      gap: 14px;
+      font-size: 0.82rem;
+      color: var(--text-secondary);
       flex-wrap: wrap;
     }
 
-    .btn-power {
+    .hero-ip-badge {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--color-sky);
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      padding: 9px 18px;
-      border-radius: 8px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      cursor: pointer;
-      border: 1px solid transparent;
-      transition: all 0.2s ease;
+      gap: 6px;
+      background: var(--color-sky-bg);
+      padding: 2px 8px;
+      border-radius: 4px;
+      border: 1px solid var(--color-sky-border);
     }
 
-    .btn-p-start {
-      background: rgba(34, 197, 94, 0.14);
-      color: var(--accent-green);
-      border-color: rgba(34, 197, 94, 0.3);
-    }
-    .btn-p-start:hover {
-      background: rgba(34, 197, 94, 0.25);
-    }
-
-    .btn-p-stop {
-      background: rgba(239, 68, 68, 0.14);
-      color: var(--accent-red);
-      border-color: rgba(239, 68, 68, 0.3);
-    }
-    .btn-p-stop:hover {
-      background: rgba(239, 68, 68, 0.25);
-    }
-
-    .btn-p-reboot {
-      background: rgba(245, 158, 11, 0.14);
-      color: var(--accent-amber);
-      border-color: rgba(245, 158, 11, 0.3);
-    }
-    .btn-p-reboot:hover {
-      background: rgba(245, 158, 11, 0.25);
-    }
-
-    .btn-p-secondary {
-      background: rgba(255, 255, 255, 0.05);
-      color: #fff;
-      border-color: var(--border-subtle);
-    }
-    .btn-p-secondary:hover {
-      background: rgba(255, 255, 255, 0.1);
-    }
-
-    /* Tabs */
-    .tabs-nav {
+    .controls-strip {
       display: flex;
-      gap: 24px;
-      border-bottom: 1px solid var(--border-subtle);
-      margin-bottom: 28px;
-      overflow-x: auto;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
     }
 
-    .tab-btn {
-      padding: 0 0 14px 0;
-      color: var(--text-muted);
-      font-size: 0.92rem;
+    .ctrl-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      border-radius: 6px;
+      font-size: 0.8rem;
       font-weight: 500;
       cursor: pointer;
-      position: relative;
+      border: 1px solid transparent;
+      transition: all 0.15s ease;
+    }
+
+    .ctrl-btn svg {
+      width: 14px;
+      height: 14px;
+      stroke-width: 2;
+    }
+
+    .ctrl-start {
+      background: var(--color-emerald-bg);
+      color: var(--color-emerald);
+      border-color: var(--color-emerald-border);
+    }
+    .ctrl-start:hover {
+      background: rgba(16, 185, 129, 0.2);
+    }
+
+    .ctrl-reboot {
+      background: var(--color-amber-bg);
+      color: var(--color-amber);
+      border-color: var(--color-amber-border);
+    }
+    .ctrl-reboot:hover {
+      background: rgba(245, 158, 11, 0.2);
+    }
+
+    .ctrl-stop {
+      background: var(--color-rose-bg);
+      color: var(--color-rose);
+      border-color: var(--color-rose-border);
+    }
+    .ctrl-stop:hover {
+      background: rgba(244, 63, 94, 0.2);
+    }
+
+    .ctrl-secondary {
+      background: var(--bg-surface-elevated);
+      color: var(--text-primary);
+      border-color: var(--border-subtle);
+    }
+    .ctrl-secondary:hover {
+      background: var(--bg-surface-hover);
+      border-color: var(--border-strong);
+    }
+
+    /* ── DNS Routing Banner (Cloudflare / Edge Shield) ── */
+    .dns-config-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 20px 22px;
+      margin-bottom: 24px;
+    }
+
+    .dns-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .dns-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+      margin: 14px 0;
+    }
+
+    .dns-table th {
+      text-align: left;
+      padding: 8px 12px;
+      color: var(--text-muted);
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--border-subtle);
+      font-weight: 600;
+    }
+
+    .dns-table td {
+      padding: 12px;
+      border-bottom: 1px solid var(--border-subtle);
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-primary);
+    }
+
+    /* ── Tabbed Detail Navigation ── */
+    .detail-nav-tabs {
+      display: flex;
+      gap: 20px;
+      border-bottom: 1px solid var(--border-subtle);
+      margin-bottom: 24px;
+    }
+
+    .d-tab {
       background: none;
       border: none;
+      color: var(--text-muted);
+      font-size: 0.86rem;
+      font-weight: 500;
+      padding: 0 0 12px 0;
+      cursor: pointer;
+      position: relative;
       display: flex;
       align-items: center;
       gap: 8px;
-      white-space: nowrap;
-      transition: color 0.2s;
+      transition: color 0.15s;
     }
 
-    .tab-btn:hover {
-      color: #fff;
+    .d-tab svg {
+      width: 15px;
+      height: 15px;
+      stroke-width: 2;
     }
 
-    .tab-btn.active {
+    .d-tab:hover {
+      color: var(--text-primary);
+    }
+
+    .d-tab.active {
       color: #fff;
       font-weight: 600;
     }
 
-    .tab-btn.active::after {
+    .d-tab.active::after {
       content: '';
       position: absolute;
       bottom: -1px;
       left: 0;
       width: 100%;
       height: 2px;
-      background: var(--accent-purple);
+      background: var(--color-brand);
       border-radius: 2px 2px 0 0;
     }
 
-    /* Tab Contents */
-    .tab-pane {
+    .d-pane {
       display: none;
     }
-    .tab-pane.active {
+
+    .d-pane.active {
       display: block;
     }
 
-    /* Graphs Grid */
-    .metrics-grid {
+    /* ── Telemetry & Charts ── */
+    .metrics-container-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 20px;
-      margin-bottom: 24px;
-    }
-
-    .metric-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: 14px;
-      padding: 22px;
-    }
-
-    .metric-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
-    }
-
-    .metric-title {
-      font-size: 0.92rem;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: #fff;
-    }
-
-    .metric-val {
-      font-family: 'DM Mono', monospace;
-      font-size: 1.15rem;
-      font-weight: 600;
-      color: var(--accent-blue);
-    }
-
-    .chart-container {
-      position: relative;
-      height: 170px;
-      width: 100%;
-    }
-
-    /* Hardware Specifications Grid */
-    .hw-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
       gap: 16px;
       margin-bottom: 24px;
     }
 
-    .hw-box {
-      background: var(--bg-card);
+    .telemetry-card {
+      background: var(--bg-surface);
       border: 1px solid var(--border-subtle);
-      border-radius: 12px;
-      padding: 18px;
+      border-radius: 10px;
+      padding: 18px 20px;
     }
 
-    .hw-lbl {
-      font-size: 0.72rem;
+    .telemetry-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .telemetry-title {
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .telemetry-reading {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .chart-wrapper {
+      position: relative;
+      height: 160px;
+      width: 100%;
+    }
+
+    /* ── Hardware Specifications Table ── */
+    .specs-matrix {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .matrix-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 14px 16px;
+    }
+
+    .matrix-lbl {
+      font-size: 0.68rem;
       color: var(--text-muted);
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
 
-    .hw-val {
-      font-size: 1.05rem;
+    .matrix-val {
+      font-size: 0.95rem;
       font-weight: 600;
-      color: #fff;
+      color: var(--text-primary);
     }
 
-    /* Terminal Window */
-    .terminal-window {
-      background: #06050e;
+    /* ── Terminal Window ── */
+    .terminal-container {
+      background: #050508;
       border: 1px solid var(--border-subtle);
-      border-radius: 12px;
-      padding: 18px;
-      font-family: 'DM Mono', monospace;
-      font-size: 0.8rem;
-      color: #38bdf8;
+      border-radius: 8px;
+      padding: 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: #93c5fd;
       height: 320px;
       overflow-y: auto;
       line-height: 1.6;
       white-space: pre-wrap;
-      box-shadow: inset 0 2px 10px rgba(0,0,0,0.6);
     }
 
-    /* Credentials Modal */
-    .modal-overlay {
+    /* ── Firewall & Security ── */
+    .firewall-stat-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .security-toggle-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 20px;
+    }
+
+    .security-rule-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .security-rule-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .rule-meta-title {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 2px;
+    }
+
+    .rule-meta-desc {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+    }
+
+    /* ── Modal Dialog ── */
+    .dialog-backdrop {
       position: fixed;
       inset: 0;
       background: rgba(0, 0, 0, 0.75);
@@ -617,416 +898,401 @@
       display: none;
       align-items: center;
       justify-content: center;
-      z-index: 1000;
+      z-index: 100;
     }
 
-    .modal-overlay.open {
+    .dialog-backdrop.open {
       display: flex;
     }
 
-    .modal-box {
-      background: #0a0914;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 18px;
-      padding: 32px;
+    .dialog-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-strong);
+      border-radius: 12px;
+      padding: 24px;
       width: 100%;
-      max-width: 500px;
-      box-shadow: 0 25px 60px rgba(0,0,0,0.8);
+      max-width: 480px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
     }
 
-    .copy-input-row {
+    .dialog-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .dialog-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .input-field-group {
+      margin-bottom: 14px;
+    }
+
+    .input-field-label {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 4px;
+      display: block;
+    }
+
+    .field-copy-row {
       display: flex;
       gap: 8px;
-      margin-top: 6px;
     }
 
-    .copy-input-row input {
+    .field-copy-row input {
       flex: 1;
-      padding: 10px 14px;
-      background: #11101d;
+      padding: 8px 12px;
+      background: var(--bg-surface-elevated);
       border: 1px solid var(--border-subtle);
-      border-radius: 8px;
-      color: #38bdf8;
-      font-family: 'DM Mono', monospace;
-      font-size: 0.85rem;
+      border-radius: 6px;
+      color: var(--color-sky);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
       outline: none;
     }
 
-    .btn-copy {
-      padding: 10px 16px;
-      border-radius: 8px;
-      background: rgba(124, 106, 255, 0.15);
-      border: 1px solid rgba(124, 106, 255, 0.3);
-      color: #fff;
-      font-size: 0.8rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-
-    .btn-copy:hover {
-      background: var(--purple-bright);
-    }
-
-    /* Back Button */
-    .btn-back {
-      background: none;
-      border: none;
-      color: var(--text-muted);
-      font-size: 0.9rem;
+    .btn-action-copy {
+      padding: 8px 14px;
+      border-radius: 6px;
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-primary);
+      font-size: 0.78rem;
       font-weight: 500;
       cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 20px;
-      padding: 0;
-      transition: all 0.2s ease;
+      transition: all 0.15s;
     }
 
-    .btn-back:hover {
-      color: #fff;
-      transform: translateX(-4px);
+    .btn-action-copy:hover {
+      background: var(--bg-surface-hover);
+      border-color: var(--border-strong);
     }
 
-    @keyframes pulse {
-      0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
-      70% { box-shadow: 0 0 0 6px rgba(34, 197, 94, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+    @media (max-width: 900px) {
+      .app-sidebar {
+        display: none;
+      }
+      .metrics-container-grid, .specs-matrix, .firewall-stat-grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 <body>
 
   <!-- SIDEBAR -->
-  <aside class="sidebar">
-    <div class="sidebar-header">
-      <a href="/" class="brand-group">
-        <img src="/images/logo.jpg" alt="Logo" class="brand-logo">
-        <span class="brand-name">KryonPanel</span>
+  <aside class="app-sidebar">
+    <div class="sidebar-brand">
+      <a href="/" class="brand-link">
+        <img src="/images/logo.jpg" alt="Logo" class="brand-logo-img">
+        <span class="brand-title">KryonHost</span>
       </a>
-      <span class="brand-tag">BETA</span>
+      <span class="env-badge">Console</span>
     </div>
     
-    <div class="nav-group">
-      <div class="nav-label">Fleet Management</div>
-      <a class="nav-item active" onclick="showListView()">
+    <nav class="nav-container">
+      <div class="nav-section-title">Infrastructure</div>
+      <a class="sidebar-link active" onclick="showListView()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-        Active Instances
+        Instances Fleet
       </a>
-      <a class="nav-item" href="/status">
+      <a class="sidebar-link" href="/status">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-        Live System Status
+        Platform Status
       </a>
-      <a class="nav-item" href="/tunnels">
+      <a class="sidebar-link" href="/tunnels">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        Anycast Tunnels
+        DDoS Tunnels
       </a>
       
-      <div class="nav-label">Support &amp; Community</div>
-      <a class="nav-item" href="https://discord.gg/kt9yPDwYT4" target="_blank">
+      <div class="nav-section-title">Support &amp; Account</div>
+      <a class="sidebar-link" href="https://discord.gg/kt9yPDwYT4" target="_blank">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-        Discord Tickets &amp; Help
+        Support Tickets
       </a>
-      <a class="nav-item" href="/">
+      <a class="sidebar-link" href="/">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-        Return to Website
+        Main Portal
       </a>
-    </div>
+    </nav>
 
-    <div class="sidebar-footer">
-      <div class="user-profile">
-        <div class="avatar" id="u-initial">U</div>
-        <div class="user-info">
-          <div class="user-email" id="u-email">Loading...</div>
-          <div class="user-role">
-            <span style="width:5px; height:5px; border-radius:50%; background:var(--accent-green);"></span> Verified Client
+    <div class="sidebar-user">
+      <div class="user-card">
+        <div class="user-avatar" id="u-initial">U</div>
+        <div class="user-meta">
+          <div class="user-email-text" id="u-email">Loading...</div>
+          <div class="user-tier-text">
+            <span style="width:5px; height:5px; border-radius:50%; background:var(--color-emerald);"></span> Verified Account
           </div>
         </div>
-        <button class="btn-logout" onclick="handleLogout()" title="Sign Out">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        <button class="btn-icon-logout" onclick="handleLogout()" title="Sign Out">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
         </button>
       </div>
     </div>
   </aside>
 
-  <!-- MAIN VIEW -->
-  <main class="main-area">
-    <header class="top-header" id="top-header">
-      <div style="display:flex; align-items:center; gap:16px;">
-        <h1 class="page-title" style="font-family:'Bricolage Grotesque',sans-serif; font-size:1.4rem; font-weight:600; margin:0;" id="page-heading">Compute Instances</h1>
+  <!-- WORKSPACE -->
+  <main class="app-main">
+    <header class="app-topbar">
+      <div class="breadcrumb-nav">
+        <span class="breadcrumb-root" onclick="showListView()">Infrastructure</span>
+        <span class="breadcrumb-separator">/</span>
+        <span class="breadcrumb-current" id="page-heading">Instances Fleet</span>
       </div>
-      <div style="display:flex; align-items:center; gap:12px;">
-        <a href="/#configurator-section" class="btn btn-sm btn-primary" style="padding:8px 18px; font-size:0.85rem; display:inline-flex; align-items:center; gap:6px;">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          Deploy New Server
+      <div class="topbar-actions">
+        <a href="/#configurator-section" class="btn-header-deploy">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Deploy Instance
         </a>
       </div>
     </header>
 
-    <div class="content-wrap">
+    <div class="main-content">
       
-      <!-- LIST VIEW -->
+      <!-- FLEET LIST VIEW -->
       <div id="list-view">
-        <div class="server-grid" id="servers-container">
-          <div style="color:var(--text-muted); font-size:0.9rem;">Connecting to KryonHost telemetry...</div>
+        <div class="fleet-toolbar">
+          <div class="search-filter-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="instance-search-input" placeholder="Search by name, IP, or ID..." oninput="filterInstances()">
+          </div>
+          <div class="filter-pills">
+            <button class="pill-btn active" onclick="setFleetFilter('all', this)">All</button>
+            <button class="pill-btn" onclick="setFleetFilter('running', this)">Active</button>
+            <button class="pill-btn" onclick="setFleetFilter('pending_dns', this)">Awaiting DNS</button>
+            <button class="pill-btn" onclick="setFleetFilter('stopped', this)">Stopped</button>
+          </div>
+        </div>
+
+        <div class="instances-grid" id="servers-container">
+          <div style="color:var(--text-muted); font-size:0.84rem; padding: 20px 0;">Connecting to telemetry stream...</div>
         </div>
       </div>
 
-      <!-- DETAIL VIEW -->
+      <!-- INSTANCE DETAIL VIEW -->
       <div id="detail-view">
-        <button class="btn-back" onclick="showListView()">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-          Back to Server Fleet
-        </button>
+        <div class="back-btn-row">
+          <button class="btn-return" onclick="showListView()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            Back to Fleet
+          </button>
+        </div>
 
-        <!-- Server Hero Header -->
-        <div class="dash-header">
-          <div class="dash-title-group">
-            <h1 id="d-name">Server Name</h1>
-            <div class="dash-meta">
-              <span id="d-status-badge" class="status-badge running"><span class="dot running"></span> ONLINE</span>
-              <span style="font-family:'DM Mono',monospace; color:#38bdf8; display:inline-flex; align-items:center; gap:6px;" id="d-ip">0.0.0.0</span>
-              <span id="d-region">India (Mumbai Tier-4)</span>
+        <!-- Hero Header -->
+        <div class="instance-hero-panel">
+          <div>
+            <div class="hero-meta-title" id="d-name">Instance Name</div>
+            <div class="hero-meta-sub">
+              <span id="d-status-badge" class="status-pill running"><span class="status-dot running"></span> Active</span>
+              <span class="hero-ip-badge" id="d-ip">0.0.0.0</span>
+              <span id="d-region">India (Mumbai DC)</span>
             </div>
           </div>
           
           <!-- Power & Access Controls -->
-          <div class="power-strip">
-            <button class="btn-power btn-p-start" onclick="powerAction('start')">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg> Start
+          <div class="controls-strip">
+            <button class="ctrl-btn ctrl-start" onclick="powerAction('start')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> Start
             </button>
-            <button class="btn-power btn-p-reboot" onclick="powerAction('reboot')">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.59-9.21l5.64 5.64"/></svg> Reboot
+            <button class="ctrl-btn ctrl-reboot" onclick="powerAction('reboot')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.59-9.21l5.64 5.64"/></svg> Restart
             </button>
-            <button class="btn-power btn-p-stop" onclick="powerAction('stop')">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/></svg> Force Stop
+            <button class="ctrl-btn ctrl-stop" onclick="powerAction('stop')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/></svg> Power Off
             </button>
-            <button class="btn-power btn-p-secondary" onclick="openCredsModal()">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Access Info
+            <button class="ctrl-btn ctrl-secondary" onclick="openCredsModal()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Access Details
             </button>
           </div>
         </div>
 
-        <!-- Real-Time DDoS / Tunnel DNS Setup Banner -->
-        <div id="tunnel-dns-banner" style="display:none; margin-bottom:28px;"></div>
+        <!-- DNS Provisioning Banner (Dynamic for Tunnels / DDoS) -->
+        <div id="tunnel-dns-banner" style="display:none;"></div>
 
-        <!-- Tabs Navigation -->
-        <div class="tabs-nav">
-          <button class="tab-btn active" onclick="switchDetailTab('telemetry', this)">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-            Live Telemetry &amp; Metrics
+        <!-- Navigation Tabs -->
+        <div class="detail-nav-tabs">
+          <button class="d-tab active" onclick="switchDetailTab('telemetry', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            Telemetry &amp; Metrics
           </button>
-          <button class="tab-btn" onclick="switchDetailTab('console', this)">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
-            Live Web Console
+          <button class="d-tab" onclick="switchDetailTab('console', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+            Web Console
           </button>
-          <button class="tab-btn" onclick="switchDetailTab('network', this)">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+          <button class="d-tab" onclick="switchDetailTab('network', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
             Cryo L7 Firewall
           </button>
         </div>
 
         <!-- TAB 1: TELEMETRY -->
-        <div class="tab-pane active" id="pane-telemetry">
-          <!-- Charts Grid -->
-          <div class="metrics-grid">
-            <div class="metric-card">
-              <div class="metric-head">
-                <div class="metric-title">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent-purple)" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
-                  CPU Usage History
+        <div class="d-pane active" id="pane-telemetry">
+          <div class="metrics-container-grid">
+            <div class="telemetry-card">
+              <div class="telemetry-header">
+                <div class="telemetry-title">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--color-brand)" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+                  CPU Core Utilization
                 </div>
-                <div class="metric-val" id="val-cpu">0.0%</div>
+                <div class="telemetry-reading" id="val-cpu">0.0%</div>
               </div>
-              <div class="chart-container">
+              <div class="chart-wrapper">
                 <canvas id="chart-cpu"></canvas>
               </div>
             </div>
 
-            <div class="metric-card">
-              <div class="metric-head">
-                <div class="metric-title">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#c084fc" stroke-width="2"><line x1="22" y1="12" x2="2" y2="12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
-                  Allocated RAM Consumption
+            <div class="telemetry-card">
+              <div class="telemetry-header">
+                <div class="telemetry-title">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="2"><line x1="22" y1="12" x2="2" y2="12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
+                  Memory Consumption
                 </div>
-                <div class="metric-val" id="val-ram" style="color:#c084fc;">0.0 MB</div>
+                <div class="telemetry-reading" id="val-ram" style="color:#c084fc;">0.0 MB</div>
               </div>
-              <div class="chart-container">
+              <div class="chart-wrapper">
                 <canvas id="chart-ram"></canvas>
               </div>
             </div>
 
-            <div class="metric-card" style="grid-column: 1 / -1;">
-              <div class="metric-head">
-                <div class="metric-title">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent-green)" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-                  Real-Time Network Ingress / Egress (Mbps)
+            <div class="telemetry-card" style="grid-column: 1 / -1;">
+              <div class="telemetry-header">
+                <div class="telemetry-title">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--color-emerald)" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                  Network Bandwidth (Mbps Ingress / Egress)
                 </div>
-                <div class="metric-val" style="color:var(--accent-green);" id="val-net">0.0 IN / 0.0 OUT</div>
+                <div class="telemetry-reading" style="color:var(--color-emerald);" id="val-net">0.0 IN / 0.0 OUT</div>
               </div>
-              <div class="chart-container">
+              <div class="chart-wrapper">
                 <canvas id="chart-net"></canvas>
               </div>
             </div>
           </div>
 
-          <!-- Hardware Specs -->
-          <h3 style="margin-top:28px; margin-bottom:14px; font-size:1.1rem; font-weight:600; color:#fff;">Hardware Allocation</h3>
-          <div class="hw-grid">
-            <div class="hw-box">
-              <div class="hw-lbl">Virtual CPU</div>
-              <div class="hw-val" id="hw-cpu">4 vCores</div>
+          <h4 style="margin:24px 0 12px; font-size:0.9rem; font-weight:600; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.04em;">System Hardware Specs</h4>
+          <div class="specs-matrix">
+            <div class="matrix-box">
+              <div class="matrix-lbl">Virtual CPU</div>
+              <div class="matrix-val" id="hw-cpu">4 vCores</div>
             </div>
-            <div class="hw-box">
-              <div class="hw-lbl">DDR5 ECC Memory</div>
-              <div class="hw-val" id="hw-ram">8 GB RAM</div>
+            <div class="matrix-box">
+              <div class="matrix-lbl">ECC Memory</div>
+              <div class="matrix-val" id="hw-ram">8 GB DDR5</div>
             </div>
-            <div class="hw-box">
-              <div class="hw-lbl">PCIe Gen4 NVMe</div>
-              <div class="hw-val" id="hw-disk">80 GB Storage</div>
+            <div class="matrix-box">
+              <div class="matrix-lbl">NVMe Storage</div>
+              <div class="matrix-val" id="hw-disk">80 GB Gen4</div>
             </div>
-            <div class="hw-box">
-              <div class="hw-lbl">Installed OS / Platform</div>
-              <div class="hw-val" id="hw-os">Ubuntu 24.04 LTS</div>
+            <div class="matrix-box">
+              <div class="matrix-lbl">Platform / OS</div>
+              <div class="matrix-val" id="hw-os">Ubuntu 24.04 LTS</div>
             </div>
           </div>
         </div>
 
-        <!-- TAB 2: LIVE WEB CONSOLE -->
-        <div class="tab-pane" id="pane-console">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-            <div style="font-size:0.9rem; color:var(--text-muted); font-family:'DM Mono',monospace;">Connected: /dev/ttyS0 (Direct Serial Stream)</div>
-            <button class="btn btn-sm btn-ghost" onclick="clearConsole()" style="font-size:0.75rem;">Clear Console</button>
+        <!-- TAB 2: CONSOLE -->
+        <div class="d-pane" id="pane-console">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <span style="font-size:0.78rem; color:var(--text-muted); font-family:'JetBrains Mono',monospace;">Port: /dev/ttyS0 · Direct Stream</span>
+            <button class="pill-btn" onclick="clearConsole()" style="font-size:0.75rem;">Clear Buffer</button>
           </div>
-          <div class="terminal-window" id="d-console">Initializing secure terminal stream...</div>
+          <div class="terminal-container" id="d-console">Establishing telemetry stream...</div>
         </div>
 
-        <!-- TAB 3: CRYO L7 FIREWALL & SECURITY CENTER -->
-        <div class="tab-pane" id="pane-network">
-          
-          <!-- Security Stats Strip -->
-          <div class="hw-grid" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 24px;">
-            <div class="hw-box">
-              <div class="hw-lbl">DDoS Mitigation Engine</div>
-              <div class="hw-val" style="color:#22c55e;">92 Tbps Active 🟢</div>
+        <!-- TAB 3: CRYO L7 FIREWALL -->
+        <div class="d-pane" id="pane-network">
+          <div class="firewall-stat-grid">
+            <div class="matrix-box">
+              <div class="matrix-lbl">Scrubbing Capacity</div>
+              <div class="matrix-val" style="color:var(--color-emerald);">92 Tbps Anycast</div>
             </div>
-            <div class="hw-box">
-              <div class="hw-lbl">CryoLimbo Anti-Bot</div>
-              <div class="hw-val" style="color:#38bdf8;">Handshake L7 Mode</div>
+            <div class="matrix-box">
+              <div class="matrix-lbl">L7 Filter Engine</div>
+              <div class="matrix-val" style="color:var(--color-sky);">Protocol Handshake</div>
             </div>
-            <div class="hw-box">
-              <div class="hw-lbl">Mitigations (24h)</div>
-              <div class="hw-val" style="color:#f59e0b;">14 Attacks Blocked</div>
+            <div class="matrix-box">
+              <div class="matrix-lbl">Mitigated Attacks (24h)</div>
+              <div class="matrix-val" style="color:var(--color-amber);">14 Blocked</div>
             </div>
-            <div class="hw-box">
-              <div class="hw-lbl">PROXY Protocol v2</div>
-              <div class="hw-val" style="color:#a78bfa;">Active (Real Player IPs)</div>
+            <div class="matrix-box">
+              <div class="matrix-lbl">PROXY Protocol v2</div>
+              <div class="matrix-val" style="color:#a78bfa;">Enabled (Origin IP)</div>
             </div>
           </div>
 
-          <!-- Interactive Security Rules Grid -->
-          <div style="display:grid; grid-template-columns: 1.2fr 1fr; gap: 20px; margin-bottom: 24px;">
-            
-            <!-- Left: Security Modules & Toggles -->
-            <div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:14px; padding:24px;">
-              <h3 style="font-size:1.1rem; font-weight:600; margin:0 0 16px 0; color:#fff; font-family:'Bricolage Grotesque',sans-serif;">
-                Layer 7 Protocol &amp; Anti-Bot Filters
-              </h3>
-
-              <div style="display:flex; flex-direction:column; gap:16px;">
-                
-                <!-- Rule 1: CryoLimbo -->
-                <div style="display:flex; justify-content:space-between; align-items:center; padding-bottom:14px; border-bottom:1px solid var(--border-subtle);">
-                  <div>
-                    <div style="font-weight:600; font-size:0.92rem; color:#fff; display:flex; align-items:center; gap:6px;">
-                      <span>🛡️</span> CryoLimbo Anti-Bot Verification
-                    </div>
-                    <div style="color:var(--text-muted); font-size:0.78rem; margin-top:2px;">
-                      Drops automated BotJoiner, MCStorm &amp; TCP flood attacks before reaching your box.
-                    </div>
-                  </div>
-                  <span style="font-size:0.75rem; padding:4px 10px; border-radius:20px; background:rgba(34,197,94,0.15); color:#4ade80; font-weight:600; font-family:'DM Mono',monospace;">ACTIVE 🟢</span>
+          <div style="display:grid; grid-template-columns: 1.2fr 1fr; gap: 16px; margin-bottom: 20px;">
+            <div class="security-toggle-card">
+              <h4 style="font-size:0.95rem; font-weight:600; margin-bottom:14px;">Layer 7 Anti-Bot Rules</h4>
+              
+              <div class="security-rule-row">
+                <div>
+                  <div class="rule-meta-title">CryoLimbo Handshake Verification</div>
+                  <div class="rule-meta-desc">Drops automated BotJoiner and synthetic TCP floods at edge.</div>
                 </div>
+                <span class="status-pill running"><span class="status-dot running"></span> Active</span>
+              </div>
 
-                <!-- Rule 2: Null Ping -->
-                <div style="display:flex; justify-content:space-between; align-items:center; padding-bottom:14px; border-bottom:1px solid var(--border-subtle);">
-                  <div>
-                    <div style="font-weight:600; font-size:0.92rem; color:#fff; display:flex; align-items:center; gap:6px;">
-                      <span>⚡</span> Null-Ping &amp; MOTD Exploit Dropper
-                    </div>
-                    <div style="color:var(--text-muted); font-size:0.78rem; margin-top:2px;">
-                      Instantly drops scraper bots and malformed server-list ping crashes.
-                    </div>
-                  </div>
-                  <span style="font-size:0.75rem; padding:4px 10px; border-radius:20px; background:rgba(34,197,94,0.15); color:#4ade80; font-weight:600; font-family:'DM Mono',monospace;">ACTIVE 🟢</span>
+              <div class="security-rule-row">
+                <div>
+                  <div class="rule-meta-title">Null-Ping &amp; MOTD Exploit Filter</div>
+                  <div class="rule-meta-desc">Filters malformed server-list ping scrapers before backend.</div>
                 </div>
+                <span class="status-pill running"><span class="status-dot running"></span> Active</span>
+              </div>
 
-                <!-- Rule 3: Geo Shielding -->
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                  <div>
-                    <div style="font-weight:600; font-size:0.92rem; color:#fff; display:flex; align-items:center; gap:6px;">
-                      <span>🌐</span> Geo-Optimized India Ingress
-                    </div>
-                    <div style="color:var(--text-muted); font-size:0.78rem; margin-top:2px;">
-                      Prioritizes low-latency domestic transit (Jio, Airtel, Tata) with sub-10ms routing.
-                    </div>
-                  </div>
-                  <span style="font-size:0.75rem; padding:4px 10px; border-radius:20px; background:rgba(56,189,248,0.15); color:#38bdf8; font-weight:600; font-family:'DM Mono',monospace;">ENABLED</span>
+              <div class="security-rule-row">
+                <div>
+                  <div class="rule-meta-title">Domestic Ingress Prioritization</div>
+                  <div class="rule-meta-desc">Optimizes domestic Indian peering routes (Jio, Airtel, Tata).</div>
                 </div>
-
+                <span class="status-pill running" style="background:var(--color-sky-bg); border-color:var(--color-sky-border); color:var(--color-sky);"><span class="status-dot" style="background:var(--color-sky);"></span> Enabled</span>
               </div>
             </div>
 
-            <!-- Right: IP Access Control & Custom Filter -->
-            <div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:14px; padding:24px; display:flex; flex-direction:column; justify-content:space-between;">
+            <div class="security-toggle-card" style="display:flex; flex-direction:column; justify-content:space-between;">
               <div>
-                <h3 style="font-size:1.1rem; font-weight:600; margin:0 0 8px 0; color:#fff; font-family:'Bricolage Grotesque',sans-serif;">
-                  IP Access Rule Manager
-                </h3>
-                <p style="color:var(--text-muted); font-size:0.8rem; margin:0 0 16px 0;">
-                  Block malicious subnets or add bypass rules for administrative connections.
-                </p>
+                <h4 style="font-size:0.95rem; font-weight:600; margin-bottom:6px;">IP Access Rule Manager</h4>
+                <p style="color:var(--text-muted); font-size:0.78rem; margin-bottom:14px;">Apply CIDR subnets or specific IPs to edge firewall.</p>
 
-                <div style="margin-bottom:12px;">
-                  <label style="display:block; font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; margin-bottom:4px;">IP or CIDR Subnet</label>
-                  <input type="text" id="ip-filter-input" placeholder="e.g. 192.168.1.0/24 or 45.33.21.10" style="width:100%; padding:10px 14px; background:#060b13; border:1px solid var(--border-subtle); border-radius:8px; color:#fff; font-family:'DM Mono',monospace; font-size:0.85rem; outline:none; box-sizing:border-box;">
+                <div class="input-field-group">
+                  <input type="text" id="ip-filter-input" placeholder="e.g. 192.168.1.0/24 or 45.33.21.10" style="width:100%; padding:8px 12px; background:var(--bg-surface-elevated); border:1px solid var(--border-subtle); border-radius:6px; color:#fff; font-family:'JetBrains Mono',monospace; font-size:0.8rem; outline:none;">
                 </div>
 
                 <div style="display:flex; gap:8px;">
-                  <button onclick="addIpRule('block')" class="btn btn-sm btn-ghost" style="flex:1; border-color:rgba(239,68,68,0.4); color:#ef4444;">
-                    ⛔ Block IP
+                  <button onclick="addIpRule('block')" class="pill-btn" style="flex:1; border-color:var(--color-rose-border); color:var(--color-rose);">
+                    Block Subnet
                   </button>
-                  <button onclick="addIpRule('whitelist')" class="btn btn-sm btn-ghost" style="flex:1; border-color:rgba(34,197,94,0.4); color:#4ade80;">
-                    ✓ Whitelist
+                  <button onclick="addIpRule('whitelist')" class="pill-btn" style="flex:1; border-color:var(--color-emerald-border); color:var(--color-emerald);">
+                    Whitelist
                   </button>
                 </div>
               </div>
 
-              <div id="ip-rule-status" style="font-size:0.78rem; color:#94a3b8; margin-top:12px; font-family:'DM Mono',monospace;">
-                0 custom firewall rules applied.
+              <div id="ip-rule-status" style="font-size:0.75rem; color:var(--text-muted); font-family:'JetBrains Mono',monospace; margin-top:14px;">
+                0 custom edge rules deployed.
               </div>
-            </div>
-
-          </div>
-
-          <!-- Real-Time Mitigation Audit Feed -->
-          <div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:14px; padding:22px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-              <div style="font-size:0.95rem; font-weight:600; color:#fff; display:flex; align-items:center; gap:8px;">
-                <span class="pulse-dot"></span> Live Scrubber Mitigation Feed
-              </div>
-              <span style="font-size:0.75rem; color:var(--text-muted); font-family:'DM Mono',monospace;">Real-Time Packet Stream</span>
-            </div>
-            
-            <div class="terminal-window" id="firewall-log-feed" style="height:200px; font-size:0.78rem; color:#94a3b8;">
-[MUM-EDGE-1] KryonShield BGP Scrubbing Cluster active (92 Tbps total absorption).
-[MUM-EDGE-1] Handshake filter initialized on port 25565.
-[MUM-EDGE-1] No active Layer 7 volumetric anomalies detected.
-[MUM-EDGE-1] 100% clean player traffic passing through to protected origin.
             </div>
           </div>
 
+          <div class="security-toggle-card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+              <h4 style="font-size:0.88rem; font-weight:600;">Live Mitigation Audit Stream</h4>
+              <span style="font-size:0.72rem; color:var(--text-muted); font-family:'JetBrains Mono',monospace;">Edge Node: BOM-EDGE-01</span>
+            </div>
+            <div class="terminal-container" id="firewall-log-feed" style="height:170px; color:#94a3b8;">
+[BOM-EDGE-1] KryonShield BGP Scrubbing Cluster active (92 Tbps total absorption).
+[BOM-EDGE-1] Handshake filter initialized on port 25565.
+[BOM-EDGE-1] No volumetric anomalies detected on current ingress.
+[BOM-EDGE-1] 100% clean traffic passing through to protected origin.
+            </div>
+          </div>
         </div>
 
       </div>
@@ -1034,37 +1300,37 @@
   </main>
 
   <!-- ACCESS / SSH MODAL -->
-  <div class="modal-overlay" id="creds-modal">
-    <div class="modal-box">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-        <h3 style="font-family:'Bricolage Grotesque',sans-serif; font-size:1.4rem; margin:0; color:#fff;">SSH &amp; SFTP Access</h3>
-        <button onclick="closeCredsModal()" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1.2rem;">&times;</button>
+  <div class="dialog-backdrop" id="creds-modal">
+    <div class="dialog-card">
+      <div class="dialog-header">
+        <h3 class="dialog-title">Connection Credentials</h3>
+        <button onclick="closeCredsModal()" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1.1rem;">&times;</button>
       </div>
 
-      <div style="margin-bottom:16px;">
-        <label style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase;">SSH Command</label>
-        <div class="copy-input-row">
+      <div class="input-field-group">
+        <label class="input-field-label">SSH Command</label>
+        <div class="field-copy-row">
           <input type="text" id="modal-ssh-cmd" readonly value="ssh root@0.0.0.0 -p 22">
-          <button class="btn-copy" onclick="copyToClipboard('modal-ssh-cmd')">Copy</button>
+          <button class="btn-action-copy" onclick="copyToClipboard('modal-ssh-cmd')">Copy</button>
         </div>
       </div>
 
-      <div style="margin-bottom:16px;">
-        <label style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase;">SFTP / File Transfer Host</label>
-        <div class="copy-input-row">
+      <div class="input-field-group">
+        <label class="input-field-label">SFTP Host</label>
+        <div class="field-copy-row">
           <input type="text" id="modal-sftp-host" readonly value="sftp://0.0.0.0:22">
-          <button class="btn-copy" onclick="copyToClipboard('modal-sftp-host')">Copy</button>
+          <button class="btn-action-copy" onclick="copyToClipboard('modal-sftp-host')">Copy</button>
         </div>
       </div>
 
-      <div style="margin-bottom:24px;">
-        <label style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase;">Default Username</label>
-        <div class="copy-input-row">
+      <div class="input-field-group" style="margin-bottom:20px;">
+        <label class="input-field-label">Default User</label>
+        <div class="field-copy-row">
           <input type="text" readonly value="root">
         </div>
       </div>
 
-      <button onclick="closeCredsModal()" class="btn btn-primary" style="width:100%; padding:12px;">Close</button>
+      <button onclick="closeCredsModal()" class="btn-header-deploy" style="width:100%; justify-content:center; padding:10px;">Done</button>
     </div>
   </div>
 
