@@ -5,6 +5,7 @@
 let currentServer = null;
 let currentUser = null;
 let pollingInterval = null;
+let realtimeChannel = null;
 
 // Chart.js Instances
 let cpuChart = null;
@@ -34,7 +35,7 @@ const chartOptions = {
 async function initPanel() {
   const { data: { session } } = await supabaseClient.auth.getSession();
   if (!session) {
-    window.location.href = '/login';
+    window.location.href = '/login?redirect=/panel';
     return;
   }
   currentUser = session.user;
@@ -47,13 +48,40 @@ async function initPanel() {
 
   Chart.defaults.color = 'rgba(255, 255, 255, 0.4)';
   showListView();
+  initRealtimeSubscription();
+}
+
+/* ── Real-Time Supabase Subscription ──────────────────────────────────────── */
+function initRealtimeSubscription() {
+  if (realtimeChannel) supabaseClient.removeChannel(realtimeChannel);
+
+  realtimeChannel = supabaseClient
+    .channel('public:servers')
+    .on(
+      'postgres_changes',
+      {
+        event: '*',
+        schema: 'public',
+        table: 'servers'
+      },
+      (payload) => {
+        console.log('⚡ Realtime server update received:', payload);
+        loadServers();
+
+        if (currentServer && payload.new && payload.new.id === currentServer.id) {
+          currentServer = payload.new;
+          renderDetail(currentServer);
+        }
+      }
+    )
+    .subscribe();
 }
 
 /* ── View Controls ────────────────────────────────────────────────────────── */
 function showListView() {
   document.getElementById('list-view').style.display = 'block';
   document.getElementById('detail-view').style.display = 'none';
-  document.getElementById('page-heading').textContent = 'Compute Instances';
+  document.getElementById('page-heading').textContent = 'Compute & Network Instances';
   
   currentServer = null;
   if (pollingInterval) clearInterval(pollingInterval);
@@ -102,22 +130,29 @@ async function loadServers() {
     container.innerHTML = `
       <div style="grid-column:1/-1; text-align:center; padding:5rem 2rem; background:rgba(255,255,255,0.02); border: 1px dashed rgba(255,255,255,0.1); border-radius: 16px;">
         <div style="width:54px; height:54px; border-radius:14px; background:rgba(124,106,255,0.1); border:1px solid rgba(124,106,255,0.25); display:inline-flex; align-items:center; justify-content:center; margin-bottom:16px; color:var(--purple-bright);">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/></svg>
         </div>
-        <div style="font-size:1.3rem; font-weight:600; color:#fff; margin-bottom:8px; font-family:'Bricolage Grotesque',sans-serif;">No Active Compute Instances</div>
-        <div style="color:var(--text-muted); font-size:0.92rem; max-width:440px; margin:0 auto 24px; line-height:1.5;">You do not have any deployed virtual machines or Minecraft nodes yet. Deploy one via our web configurator or Discord.</div>
+        <div style="font-size:1.3rem; font-weight:600; color:#fff; margin-bottom:8px; font-family:'Bricolage Grotesque',sans-serif;">No Active Instances</div>
+        <div style="color:var(--text-muted); font-size:0.92rem; max-width:440px; margin:0 auto 24px; line-height:1.5;">You do not have any deployed virtual machines, Minecraft nodes, or DDoS tunnels yet.</div>
         <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
-          <a href="/#configurator-section" class="btn btn-primary" style="padding:10px 24px;">Configure on Web</a>
-          <a href="https://discord.gg/kt9yPDwYT4" target="_blank" class="btn btn-ghost" style="padding:10px 24px; border:1px solid var(--border-subtle);">Order on Discord</a>
+          <a href="/vps" class="btn btn-primary" style="padding:10px 24px;">Cloud VPS</a>
+          <a href="/tunnels" class="btn btn-ghost" style="padding:10px 24px; border:1px solid var(--border-subtle);">DDoS Shield</a>
         </div>
       </div>`;
     return;
   }
 
   container.innerHTML = servers.map(s => {
-    const running = s.status === 'running';
-    const typeLabel = (s.service_type || 'vps').toUpperCase();
+    const isPendingDns = s.status === 'pending_dns';
+    const isRunning = s.status === 'running';
+    const isTunnel = s.service_type === 'tunnel' || (s.service_tier && s.service_tier.startsWith('tunnel'));
     
+    let typeLabel = (s.service_type || 'vps').toUpperCase();
+    if (isTunnel) typeLabel = 'DDoS SHIELD';
+
+    let statusBadgeClass = isPendingDns ? 'pending_dns' : (isRunning ? 'running' : 'stopped');
+    let statusBadgeText = isPendingDns ? '⏳ Awaiting DNS' : (isRunning ? '🟢 Active' : '🔴 Stopped');
+
     return `
       <div class="scard" onclick="showDetailView(${JSON.stringify(s).replace(/"/g, '&quot;')})">
         <div class="scard-header">
@@ -128,24 +163,24 @@ async function loadServers() {
               ${s.ip}
             </div>
           </div>
-          <div class="status-badge ${running ? 'running' : 'stopped'}">
-            <span class="dot ${running ? 'running' : 'stopped'}"></span>
-            ${s.status}
+          <div class="status-badge ${statusBadgeClass}">
+            <span class="dot ${statusBadgeClass}"></span>
+            ${statusBadgeText}
           </div>
         </div>
         
         <div class="scard-specs">
           <div class="spec-item">
-            <span class="spec-lbl">vCPU</span>
-            <span class="spec-val">${s.cpu_cores} Cores</span>
+            <span class="spec-lbl">${isTunnel ? 'Protection' : 'vCPU'}</span>
+            <span class="spec-val">${isTunnel ? '92 Tbps' : s.cpu_cores + ' Cores'}</span>
           </div>
           <div class="spec-item">
-            <span class="spec-lbl">RAM</span>
-            <span class="spec-val">${s.ram_gb} GB</span>
+            <span class="spec-lbl">${isTunnel ? 'Protocol' : 'RAM'}</span>
+            <span class="spec-val">${isTunnel ? 'TCP/UDP L7' : s.ram_gb + ' GB'}</span>
           </div>
           <div class="spec-item">
-            <span class="spec-lbl">Storage</span>
-            <span class="spec-val">${s.disk_gb} GB</span>
+            <span class="spec-lbl">${isTunnel ? 'Origin' : 'Storage'}</span>
+            <span class="spec-val" style="font-size:0.8rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${isTunnel ? 'Cloaked' : s.disk_gb + ' GB'}</span>
           </div>
         </div>
       </div>`;
@@ -154,20 +189,79 @@ async function loadServers() {
 
 /* ── Render Detail View ───────────────────────────────────────────────────── */
 function renderDetail(s) {
-  const running = s.status === 'running';
+  const isPendingDns = s.status === 'pending_dns';
+  const isRunning = s.status === 'running';
+  const isTunnel = s.service_type === 'tunnel' || (s.service_tier && s.service_tier.startsWith('tunnel'));
 
   document.getElementById('d-name').textContent = s.service_alias;
   document.getElementById('d-ip').textContent = s.ip;
-  document.getElementById('d-region').textContent = s.region || 'India (Mumbai Tier-4)';
+  document.getElementById('d-region').textContent = s.region || 'India (Mumbai Anycast Gateway)';
   
   const badge = document.getElementById('d-status-badge');
-  badge.className = `status-badge ${running ? 'running' : 'stopped'}`;
-  badge.innerHTML = `<span class="dot ${running ? 'running' : 'stopped'}"></span> ${s.status.toUpperCase()}`;
+  if (isPendingDns) {
+    badge.className = 'status-badge pending_dns';
+    badge.innerHTML = '<span class="dot pending_dns"></span> ⏳ AWAITING PROTECTED DNS ASSIGNMENT';
+  } else if (isRunning) {
+    badge.className = 'status-badge running';
+    badge.innerHTML = '<span class="dot running"></span> 🟢 DDOS SHIELD ACTIVE';
+  } else {
+    badge.className = 'status-badge stopped';
+    badge.innerHTML = `<span class="dot stopped"></span> ${s.status.toUpperCase()}`;
+  }
 
-  document.getElementById('hw-cpu').textContent = `${s.cpu_cores} vCores`;
-  document.getElementById('hw-ram').textContent = `${s.ram_gb} GB DDR5`;
-  document.getElementById('hw-disk').textContent = `${s.disk_gb} GB NVMe`;
-  document.getElementById('hw-os').textContent = s.os || 'Ubuntu 24.04 LTS';
+  // Render Real-Time DNS Setup Banner for Tunnels / DDoS Protection
+  const dnsBanner = document.getElementById('tunnel-dns-banner');
+  if (dnsBanner) {
+    if (isTunnel || isPendingDns) {
+      dnsBanner.style.display = 'block';
+
+      if (isPendingDns) {
+        dnsBanner.innerHTML = `
+          <div style="background: rgba(234, 179, 8, 0.08); border: 1px solid rgba(234, 179, 8, 0.35); border-radius: 14px; padding: 22px 24px; color: #fff;">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+              <span class="dot pending_dns"></span>
+              <h3 style="font-size:1.15rem; font-weight:700; color:#facc15; margin:0; font-family:'Bricolage Grotesque',sans-serif;">🛡️ Shield Request Dispatched (Awaiting DNS Assignment)</h3>
+            </div>
+            <p style="color:#cbd5e1; font-size:0.9rem; line-height:1.5; margin:0 0 12px 0;">
+              Your connection hostname <strong>${s.service_alias}</strong> with cloaked backend origin <code style="color:#38bdf8; font-family:'DM Mono',monospace; background:rgba(56,189,248,0.1); padding:2px 6px; border-radius:4px;">${s.ip}</code> has been registered.
+            </p>
+            <div style="font-size:0.82rem; color:#fef08a; background:rgba(234,179,8,0.12); padding:10px 14px; border-radius:8px; display:flex; align-items:center; gap:8px;">
+              <span>⏳</span>
+              <span><strong>Live Realtime Sync:</strong> Our automated Discord system / Network team is assigning your dedicated Anycast CNAME. This panel will update automatically in real-time within 1-5 minutes.</span>
+            </div>
+          </div>`;
+      } else {
+        const assignedCname = s.cname || 'edge-as216013.kryonhost.net';
+        dnsBanner.innerHTML = `
+          <div style="background: rgba(34, 197, 94, 0.08); border: 1px solid rgba(34, 197, 94, 0.35); border-radius: 14px; padding: 22px 24px; color: #fff;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:10px;">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <span class="dot running"></span>
+                <h3 style="font-size:1.15rem; font-weight:700; color:#4ade80; margin:0; font-family:'Bricolage Grotesque',sans-serif;">🟢 Anycast DDoS Shield Active &amp; Routing</h3>
+              </div>
+              <span style="font-size:0.75rem; padding:3px 8px; border-radius:6px; background:rgba(34,197,94,0.15); color:#4ade80; font-weight:600; font-family:'DM Mono',monospace;">92 TBPS DEFENSE READY</span>
+            </div>
+            <p style="color:#cbd5e1; font-size:0.88rem; margin:0 0 14px 0;">
+              Add the following CNAME record in your Cloudflare / DNS provider pointing <strong>${s.service_alias}</strong> to activate full Layer 7 scrubbing:
+            </p>
+            <div style="display:flex; gap:8px; align-items:center; margin-bottom:12px;">
+              <input type="text" id="cname-val-input" readonly value="${assignedCname}" style="flex:1; padding:10px 14px; background:#060b13; border:1px solid rgba(34,197,94,0.3); border-radius:8px; color:#4ade80; font-family:'DM Mono',monospace; font-size:0.9rem; outline:none;">
+              <button class="btn-copy" style="background:#15803d; border-color:#16a34a; padding:10px 18px;" onclick="copyToClipboard('cname-val-input')">Copy CNAME</button>
+            </div>
+            <div style="font-size:0.78rem; color:#94a3b8; font-family:'DM Mono',monospace; background:rgba(0,0,0,0.3); padding:8px 12px; border-radius:6px;">
+              Type: CNAME · Name: ${s.service_alias.split('.')[0] || '@'} · Target: ${assignedCname} · Proxy status: DNS only (Grey Cloud)
+            </div>
+          </div>`;
+      }
+    } else {
+      dnsBanner.style.display = 'none';
+    }
+  }
+
+  document.getElementById('hw-cpu').textContent = isTunnel ? 'Anycast Core' : `${s.cpu_cores} vCores`;
+  document.getElementById('hw-ram').textContent = isTunnel ? '92 Tbps Buffer' : `${s.ram_gb} GB DDR5`;
+  document.getElementById('hw-disk').textContent = isTunnel ? 'NVMe Cache' : `${s.disk_gb} GB Storage`;
+  document.getElementById('hw-os').textContent = isTunnel ? 'CryoLimbo L7 Shield' : (s.os || 'Ubuntu 24.04 LTS');
 
   // Modal setup
   document.getElementById('modal-ssh-cmd').value = `ssh root@${s.ip} -p 22`;
@@ -178,13 +272,23 @@ function populateConsole(s) {
   const con = document.getElementById('d-console');
   if (!con) return;
   const time = new Date().toLocaleTimeString();
-  con.textContent = `[${time}] KryonHost Virtualization Hypervisor v4.2.1 initialized.\n` +
-    `[${time}] Attached to guest container: ${s.service_alias} (${s.id})\n` +
-    `[${time}] IP Allocation: ${s.ip}/32 via Anycast gateway.\n` +
-    `[${time}] Status: ${s.status === 'running' ? 'Active / 20.0 TPS stable' : 'Stopped'}\n` +
-    `[${time}] CPU Cores: ${s.cpu_cores}x AMD Zen 4 @ 5.7GHz, RAM: ${s.ram_gb}GB DDR5 ECC.\n` +
-    `[${time}] Ready for interactive management commands.\n` +
-    `kryon@${s.service_alias.toLowerCase().replace(/\\s+/g, '-')}:~$ `;
+  const isTunnel = s.service_type === 'tunnel' || (s.service_tier && s.service_tier.startsWith('tunnel'));
+
+  if (isTunnel) {
+    con.textContent = `[${time}] KryonShield BGP Anycast Scrubber initialized.\n` +
+      `[${time}] Attached Hostname: ${s.service_alias}\n` +
+      `[${time}] Cloaked Backend Origin: ${s.ip}\n` +
+      `[${time}] Routing Status: ${s.status === 'pending_dns' ? 'PENDING DNS ASSIGNMENT' : 'ACTIVE / 92 TBPS SHIELDED'}\n` +
+      `[${time}] Layer 7 Protocol Filter: Minecraft / HTTP Handshake Active\n` +
+      `kryon@shield-edge:~$ `;
+  } else {
+    con.textContent = `[${time}] KryonHost Virtualization Hypervisor v4.2.1 initialized.\n` +
+      `[${time}] Attached to guest container: ${s.service_alias} (${s.id})\n` +
+      `[${time}] IP Allocation: ${s.ip}/32 via Anycast gateway.\n` +
+      `[${time}] Status: ${s.status === 'running' ? 'Active / 20.0 TPS stable' : s.status}\n` +
+      `[${time}] CPU Cores: ${s.cpu_cores}x AMD Zen 4 @ 5.7GHz, RAM: ${s.ram_gb}GB DDR5 ECC.\n` +
+      `kryon@${s.service_alias.toLowerCase().replace(/\\s+/g, '-')}:~$ `;
+  }
 }
 
 function clearConsole() {
