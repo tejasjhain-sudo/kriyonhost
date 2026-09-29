@@ -9,6 +9,10 @@ let activeFilter = 'all';
 let pollingInterval = null;
 let realtimeChannel = null;
 
+// Selected User Preferences
+let selectedWorkload = 'vps';
+let selectedRoles = new Set(['announcements', 'maintenance', 'updates', 'security']);
+
 // Chart.js Instances
 let cpuChart = null;
 let ramChart = null;
@@ -48,9 +52,146 @@ async function initPanel() {
   if (uEmail) uEmail.textContent = currentUser.email;
   if (uInitial) uInitial.textContent = currentUser.email.charAt(0).toUpperCase();
 
+  // Load existing user metadata for onboarding/roles if present
+  if (currentUser.user_metadata) {
+    if (currentUser.user_metadata.discord_handle) {
+      const handleInput = document.getElementById('onboard-discord-handle');
+      if (handleInput) handleInput.value = currentUser.user_metadata.discord_handle;
+    }
+    if (currentUser.user_metadata.notification_roles && Array.isArray(currentUser.user_metadata.notification_roles)) {
+      selectedRoles = new Set(currentUser.user_metadata.notification_roles);
+      updateRoleCardClasses();
+    }
+  }
+
   Chart.defaults.color = 'rgba(255, 255, 255, 0.4)';
   showListView();
   initRealtimeSubscription();
+
+  // Check if user has completed onboarding
+  checkOnboardingStatus();
+}
+
+/* ── Onboarding & Role Ping Logic ─────────────────────────────────────────── */
+function checkOnboardingStatus() {
+  const isCompleted = localStorage.getItem(`kryon_onboarding_${currentUser.id}`) || currentUser.user_metadata?.onboarding_completed;
+  if (!isCompleted) {
+    // Show onboarding modal on first visit
+    setTimeout(() => {
+      openOnboardingModal(1);
+    }, 600);
+  }
+}
+
+function openOnboardingModal(step = 1) {
+  const modal = document.getElementById('onboarding-modal');
+  if (modal) {
+    modal.classList.add('open');
+    goToOnboardStep(step);
+  }
+}
+
+function closeOnboardingModal() {
+  const modal = document.getElementById('onboarding-modal');
+  if (modal) modal.classList.remove('open');
+}
+
+function goToOnboardStep(step) {
+  document.getElementById('onboard-step-1').style.display = step === 1 ? 'block' : 'none';
+  document.getElementById('onboard-step-2').style.display = step === 2 ? 'block' : 'none';
+  document.getElementById('onboard-step-3').style.display = step === 3 ? 'block' : 'none';
+
+  // Update pills
+  for (let i = 1; i <= 3; i++) {
+    const pill = document.getElementById(`pill-step-${i}`);
+    if (pill) {
+      if (i <= step) {
+        pill.classList.add('active');
+      } else {
+        pill.classList.remove('active');
+      }
+    }
+  }
+
+  // Title update
+  const title = document.getElementById('onboard-modal-title');
+  if (title) {
+    if (step === 1) title.textContent = 'Welcome & Workload Setup';
+    if (step === 2) title.textContent = 'Notification & Ping Roles';
+    if (step === 3) title.textContent = 'Setup Complete';
+  }
+}
+
+function selectWorkload(el, workload) {
+  document.querySelectorAll('.workload-chip').forEach(c => c.classList.remove('selected'));
+  if (el) el.classList.add('selected');
+  selectedWorkload = workload;
+}
+
+function toggleRoleCard(el, roleKey) {
+  if (selectedRoles.has(roleKey)) {
+    selectedRoles.delete(roleKey);
+    el.classList.remove('selected');
+  } else {
+    selectedRoles.add(roleKey);
+    el.classList.add('selected');
+  }
+}
+
+function updateRoleCardClasses() {
+  document.querySelectorAll('.role-card-item').forEach(card => {
+    const roleAttr = card.getAttribute('onclick');
+    if (roleAttr) {
+      const match = roleAttr.match(/'([^']+)'/);
+      if (match && match[1]) {
+        const role = match[1];
+        if (selectedRoles.has(role)) {
+          card.classList.add('selected');
+        } else {
+          card.classList.remove('selected');
+        }
+      }
+    }
+  });
+}
+
+async function saveOnboardingSettings() {
+  const handleInput = document.getElementById('onboard-discord-handle');
+  const discordHandle = handleInput ? handleInput.value.trim() : '';
+  const rolesArray = Array.from(selectedRoles);
+
+  try {
+    // Update Supabase user metadata
+    await supabaseClient.auth.updateUser({
+      data: {
+        discord_handle: discordHandle,
+        workload_interest: selectedWorkload,
+        notification_roles: rolesArray,
+        onboarding_completed: true,
+        updated_at: new Date().toISOString()
+      }
+    });
+
+    localStorage.setItem(`kryon_onboarding_${currentUser.id}`, 'true');
+    showToast(`Role preferences saved (${rolesArray.length} alert roles active)`);
+    goToOnboardStep(3);
+  } catch (err) {
+    console.error('Error saving user metadata:', err);
+    localStorage.setItem(`kryon_onboarding_${currentUser.id}`, 'true');
+    goToOnboardStep(3);
+  }
+}
+
+function showToast(message) {
+  const toast = document.getElementById('panel-toast');
+  const text = document.getElementById('panel-toast-text');
+  if (toast && text) {
+    text.textContent = message;
+    toast.classList.add('visible');
+    setTimeout(() => {
+      toast.classList.remove('visible');
+    }, 3500);
+  }
 }
 
 /* ── Real-Time Supabase Subscription ──────────────────────────────────────── */
@@ -167,7 +308,7 @@ function renderInstancesGrid() {
       container.innerHTML = `
         <div style="grid-column:1/-1; text-align:center; padding:4rem 2rem; background:var(--bg-surface); border: 1px dashed var(--border-subtle); border-radius: 10px;">
           <div style="width:44px; height:44px; border-radius:8px; background:var(--bg-surface-elevated); border:1px solid var(--border-subtle); display:inline-flex; align-items:center; justify-content:center; margin-bottom:14px; color:var(--text-muted);">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/></svg>
           </div>
           <div style="font-size:1.1rem; font-weight:600; color:#fff; margin-bottom:6px;">No Active Instances</div>
           <div style="color:var(--text-muted); font-size:0.84rem; max-width:400px; margin:0 auto 20px; line-height:1.5;">You do not currently have any deployed cloud VPS, Minecraft nodes, or Anycast tunnels.</div>
@@ -343,7 +484,7 @@ function renderDetail(s) {
                   <td style="color:var(--color-emerald);">${assignedCname}</td>
                   <td><span style="color:var(--text-muted); font-size:0.75rem;">DNS Only (Grey Cloud)</span></td>
                   <td>
-                    <button class="btn-action-copy" style="padding:4px 10px; font-size:0.72rem;" onclick="navigator.clipboard.writeText('${assignedCname}'); this.textContent='Copied!'; setTimeout(() => this.textContent='Copy', 1500);">
+                    <button class="btn-action-copy" style="padding:4px 10px; font-size:0.72rem;" onclick="navigator.clipboard.writeText('${assignedCname}'); this.textContent='Copied!'; setTimeout(() => this.textContent='Copy Target', 1500);">
                       Copy Target
                     </button>
                   </td>
