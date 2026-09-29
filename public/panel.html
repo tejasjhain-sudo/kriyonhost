@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KryonHost — Client Cloud Dashboard</title>
-  <meta name="description" content="Manage your Cloud VPS, Minecraft servers, and Anycast DDoS protection from a unified control center.">
+  <title>KryonHost — Client Cloud Dashboard & Minecraft Control</title>
+  <meta name="description" content="Manage your Cloud VPS, Minecraft servers, and Anycast DDoS protection with Shulker API v2.">
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="/css/style.css">
   
@@ -20,19 +20,21 @@
 
   <style>
     :root {
-      --bg-base: #08080c;
-      --bg-sidebar: #0d0d12;
-      --bg-surface: #121218;
-      --bg-surface-elevated: #181822;
-      --bg-surface-hover: #1f1f2c;
-      --border-subtle: rgba(255, 255, 255, 0.08);
-      --border-strong: rgba(255, 255, 255, 0.14);
+      --bg-base: #07070b;
+      --bg-sidebar: #0b0b10;
+      --bg-surface: #101016;
+      --bg-surface-elevated: #151520;
+      --bg-surface-hover: #1c1c2b;
+      --border-subtle: rgba(255, 255, 255, 0.07);
+      --border-strong: rgba(255, 255, 255, 0.12);
       --border-accent: rgba(99, 102, 241, 0.4);
       --text-primary: #f4f4f5;
       --text-secondary: #a1a1aa;
       --text-muted: #71717a;
+      
       --color-brand: #6366f1;
       --color-brand-glow: rgba(99, 102, 241, 0.25);
+      --color-purple: #8b5cf6;
       --color-emerald: #10b981;
       --color-emerald-bg: rgba(16, 185, 129, 0.12);
       --color-emerald-border: rgba(16, 185, 129, 0.25);
@@ -65,13 +67,14 @@
 
     /* ── App Sidebar ── */
     .app-sidebar {
-      width: 250px;
+      width: 260px;
       background: var(--bg-sidebar);
       border-right: 1px solid var(--border-subtle);
       display: flex;
       flex-direction: column;
       flex-shrink: 0;
       z-index: 40;
+      height: 100vh;
     }
 
     .sidebar-brand {
@@ -79,37 +82,56 @@
       border-bottom: 1px solid var(--border-subtle);
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      gap: 12px;
     }
 
-    .brand-link {
+    .brand-logo-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
       display: flex;
       align-items: center;
-      gap: 10px;
-      text-decoration: none;
-      color: var(--text-primary);
+      justify-content: center;
+      color: #fff;
+      font-weight: 800;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
     }
 
-    .brand-logo-img {
-      width: 26px;
-      height: 26px;
-      border-radius: 6px;
-      object-fit: cover;
+    .brand-text-block {
+      display: flex;
+      flex-direction: column;
     }
 
     .brand-title {
-      font-size: 0.95rem;
-      font-weight: 600;
-      letter-spacing: -0.01em;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-subtitle-tag {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      letter-spacing: 0.02em;
     }
 
     .nav-container {
-      padding: 16px 10px;
+      padding: 14px 12px;
+      flex: 1;
+      overflow-y: auto;
       display: flex;
       flex-direction: column;
       gap: 3px;
-      flex: 1;
-      overflow-y: auto;
+    }
+
+    .sidebar-section-title {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      padding: 10px 10px 4px 10px;
+      font-weight: 600;
     }
 
     .sidebar-link {
@@ -117,25 +139,24 @@
       align-items: center;
       justify-content: space-between;
       padding: 9px 12px;
-      border-radius: 8px;
       color: var(--text-secondary);
       text-decoration: none;
       font-size: 0.84rem;
       font-weight: 500;
-      transition: all 0.15s ease;
+      border-radius: 8px;
+      transition: all 0.15s;
       cursor: pointer;
-      border: 1px solid transparent;
     }
 
     .sidebar-link:hover {
-      background: var(--bg-surface-hover);
-      color: var(--text-primary);
+      background: var(--bg-surface-elevated);
+      color: #fff;
     }
 
     .sidebar-link.active {
-      background: var(--bg-surface-elevated);
+      background: rgba(99, 102, 241, 0.15);
       color: #fff;
-      border-color: var(--border-subtle);
+      border: 1px solid var(--border-accent);
       font-weight: 600;
     }
 
@@ -145,42 +166,66 @@
       gap: 10px;
     }
 
-    .sidebar-link svg {
+    .nav-icon-text svg {
       width: 17px;
       height: 17px;
       stroke-width: 2;
+    }
+
+    /* Submenu inside Minecraft */
+    .sidebar-submenu {
+      margin-left: 20px;
+      padding-left: 10px;
+      border-left: 1px solid var(--border-subtle);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      margin-top: 3px;
+      margin-bottom: 6px;
+    }
+
+    .sub-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
       color: var(--text-muted);
-      flex-shrink: 0;
-      transition: color 0.15s;
+      text-decoration: none;
+      font-size: 0.78rem;
+      font-weight: 500;
+      border-radius: 6px;
+      transition: all 0.12s;
+      cursor: pointer;
     }
 
-    .sidebar-link.active svg,
-    .sidebar-link:hover svg {
+    .sub-link:hover {
+      color: #fff;
+      background: var(--bg-surface-elevated);
+    }
+
+    .sub-link.active {
       color: var(--color-brand);
+      background: rgba(99, 102, 241, 0.12);
+      font-weight: 600;
     }
 
-    .badge-pill-new {
-      font-size: 0.65rem;
-      font-weight: 700;
-      padding: 1px 5px;
-      border-radius: 4px;
-      background: rgba(16, 185, 129, 0.2);
-      color: var(--color-emerald);
-      border: 1px solid rgba(16, 185, 129, 0.3);
-      text-transform: uppercase;
+    .sub-link svg {
+      width: 14px;
+      height: 14px;
+      stroke-width: 2;
     }
 
-    /* Bottom Help Card */
+    /* Sidebar Bottom Support Card */
     .sidebar-help-box {
       margin: 12px;
       padding: 14px;
-      background: var(--bg-surface);
+      background: linear-gradient(180deg, rgba(99, 102, 241, 0.08), transparent);
       border: 1px solid var(--border-subtle);
       border-radius: 10px;
     }
 
     .sidebar-help-title {
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       font-weight: 600;
       color: #fff;
       display: flex;
@@ -192,766 +237,425 @@
     .sidebar-help-desc {
       font-size: 0.72rem;
       color: var(--text-muted);
-      line-height: 1.4;
+      line-height: 1.35;
       margin-bottom: 10px;
     }
 
-    .btn-discord-join {
+    .btn-ticket-join {
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
-      width: 100%;
-      padding: 6px;
-      border-radius: 6px;
-      background: #5865F2;
+      background: var(--color-brand);
       color: #fff;
-      font-size: 0.76rem;
+      font-size: 0.74rem;
       font-weight: 600;
+      padding: 7px 12px;
+      border-radius: 6px;
       text-decoration: none;
       transition: opacity 0.15s;
     }
-    .btn-discord-join:hover {
+    .btn-ticket-join:hover {
       opacity: 0.9;
     }
 
-    /* ── Main Workspace ── */
+    /* ── Main Layout ── */
     .app-main {
       flex: 1;
       display: flex;
       flex-direction: column;
-      overflow-y: auto;
+      height: 100vh;
+      overflow: hidden;
       background: var(--bg-base);
     }
 
     .app-topbar {
-      height: 58px;
+      height: 60px;
+      background: var(--bg-sidebar);
       border-bottom: 1px solid var(--border-subtle);
-      padding: 0 32px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      position: sticky;
-      top: 0;
-      background: rgba(8, 8, 12, 0.88);
-      backdrop-filter: blur(14px);
-      z-index: 30;
+      justify-content: space-between;
+      padding: 0 24px;
+      flex-shrink: 0;
     }
 
-    .topbar-brand-subtitle {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      font-family: 'JetBrains Mono', monospace;
+    .topbar-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.85rem;
+    }
+
+    .topbar-badge-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--color-emerald);
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .topbar-user-area {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 16px;
+    }
+
+    .btn-icon-topbar {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      transition: all 0.15s;
+    }
+    .btn-icon-topbar:hover {
+      color: #fff;
+      background: var(--bg-surface-elevated);
     }
 
     .user-profile-badge {
       display: flex;
       align-items: center;
       gap: 10px;
-      padding: 4px 10px 4px 4px;
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: 20px;
+      cursor: pointer;
     }
 
     .user-avatar-circle {
-      width: 26px;
-      height: 26px;
+      width: 34px;
+      height: 34px;
       border-radius: 50%;
-      background: var(--color-brand);
-      color: #fff;
-      font-weight: 700;
-      font-size: 0.76rem;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
       display: flex;
       align-items: center;
       justify-content: center;
+      color: #fff;
+      font-size: 0.82rem;
+      font-weight: 700;
     }
 
     .user-name-label {
-      font-size: 0.8rem;
+      font-size: 0.82rem;
       font-weight: 600;
       color: #fff;
     }
 
     .user-id-sub {
-      font-size: 0.68rem;
+      font-size: 0.7rem;
       color: var(--text-muted);
     }
 
+    /* Content Area */
     .main-content {
-      padding: 28px 32px 60px;
-      max-width: 1440px;
-      width: 100%;
-      margin: 0 auto;
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px;
     }
 
-    /* ── Top Welcome & Header Banner ── */
-    .welcome-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 24px;
-      flex-wrap: wrap;
-      gap: 16px;
-    }
-
-    .welcome-headline {
-      font-size: 1.65rem;
-      font-weight: 700;
-      color: #fff;
-      letter-spacing: -0.02em;
-      margin-bottom: 4px;
-    }
-
-    .welcome-sub {
-      font-size: 0.85rem;
-      color: var(--text-secondary);
-    }
-
-    .banner-share-pill {
-      display: flex;
+    /* ── Status Badges ── */
+    .status-pill {
+      display: inline-flex;
       align-items: center;
-      gap: 12px;
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: 10px;
-      padding: 10px 16px;
-      text-decoration: none;
-      transition: all 0.15s;
-    }
-
-    .banner-share-pill:hover {
-      background: var(--bg-surface-elevated);
-      border-color: var(--border-strong);
-    }
-
-    /* ── 4 Quick Stat Metric Cards ── */
-    .stats-strip-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 14px;
-      margin-bottom: 28px;
-    }
-
-    .stat-metric-card {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: 10px;
-      padding: 16px 18px;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .stat-card-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-
-    .stat-card-lbl {
+      gap: 6px;
+      padding: 3px 9px;
+      border-radius: 9999px;
       font-size: 0.72rem;
-      color: var(--text-muted);
-      margin-bottom: 2px;
-    }
-
-    .stat-card-val {
-      font-size: 1.35rem;
-      font-weight: 700;
-      color: #fff;
-      line-height: 1.1;
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    .stat-card-status {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 0.68rem;
-      color: var(--color-emerald);
-      margin-top: 3px;
-    }
-
-    .btn-add-funds {
-      margin-left: auto;
-      background: var(--color-brand);
-      color: #fff;
-      padding: 5px 12px;
-      border-radius: 6px;
-      font-size: 0.75rem;
       font-weight: 600;
-      border: none;
-      cursor: pointer;
-      transition: opacity 0.15s;
-    }
-    .btn-add-funds:hover {
-      opacity: 0.9;
     }
 
-    /* ── 2-Column Dashboard Grid Layout ── */
-    .dashboard-layout-grid {
-      display: grid;
-      grid-template-columns: 1fr 340px;
-      gap: 24px;
+    .status-pill.running {
+      background: var(--color-emerald-bg);
+      border: 1px solid var(--color-emerald-border);
+      color: var(--color-emerald);
     }
 
-    .dash-main-col {
-      display: flex;
-      flex-direction: column;
-      gap: 28px;
-      min-width: 0;
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--color-emerald);
+      box-shadow: 0 0 8px var(--color-emerald);
+      animation: pulseDot 2s infinite;
     }
 
-    .dash-side-col {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
+    @keyframes pulseDot {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+      100% { opacity: 1; transform: scale(1); }
     }
 
-    /* ── Section Header ── */
-    .dash-section-head {
+    /* ── 1. Hero Server Banner Card ── */
+    .server-hero-banner {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 12px;
+      margin-bottom: 20px;
+      gap: 20px;
+      position: relative;
+      overflow: hidden;
     }
 
-    .dash-section-title-wrap {
+    .banner-left-area {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .banner-thumb-img {
+      width: 140px;
+      height: 80px;
+      border-radius: 10px;
+      object-fit: cover;
+      border: 1px solid var(--border-subtle);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+    }
+
+    .banner-details {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .banner-title-row {
       display: flex;
       align-items: center;
       gap: 10px;
     }
 
-    .dash-section-icon {
-      width: 24px;
-      height: 24px;
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .dash-section-title {
-      font-size: 1.05rem;
-      font-weight: 600;
+    .banner-title {
+      font-size: 1.35rem;
+      font-weight: 700;
       color: #fff;
     }
 
-    .dash-section-sub {
-      font-size: 0.74rem;
-      color: var(--text-muted);
-      margin-top: 2px;
-    }
-
-    .dash-view-all {
+    .banner-sub {
       font-size: 0.78rem;
-      color: var(--color-brand);
-      text-decoration: none;
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      cursor: pointer;
-    }
-    .dash-view-all:hover {
-      text-decoration: underline;
-    }
-
-    /* ── Card Styling matching Reference Image ── */
-    .server-showcase-card {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: 12px;
-      padding: 20px;
-      transition: all 0.15s;
-      position: relative;
-    }
-
-    .server-showcase-card:hover {
-      background: var(--bg-surface-elevated);
-      border-color: var(--border-strong);
-    }
-
-    .card-meta-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 14px;
-    }
-
-    .card-title-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .card-thumb-img {
-      width: 42px;
-      height: 42px;
-      border-radius: 8px;
-      object-fit: cover;
-      border: 1px solid var(--border-subtle);
-    }
-
-    .card-thumb-icon {
-      width: 42px;
-      height: 42px;
-      border-radius: 8px;
-      background: var(--bg-surface-elevated);
-      border: 1px solid var(--border-subtle);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--color-brand);
-    }
-
-    .card-name-text {
-      font-size: 1rem;
-      font-weight: 600;
-      color: #fff;
+      color: var(--text-muted);
       display: flex;
       align-items: center;
       gap: 8px;
     }
 
-    .card-spec-tags {
+    .banner-ip-box {
       display: flex;
       align-items: center;
       gap: 8px;
       margin-top: 4px;
-      flex-wrap: wrap;
     }
 
-    .spec-tag-badge {
-      font-size: 0.68rem;
-      color: var(--text-muted);
+    .ip-code-pill {
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-strong);
+      padding: 4px 10px;
+      border-radius: 6px;
       font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: #fff;
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 6px;
+      cursor: pointer;
+    }
+    .ip-code-pill:hover {
+      border-color: var(--color-brand);
     }
 
-    .btn-manage-card {
+    .banner-right-area {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 12px;
+    }
+
+    .powered-by-shulker {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .btn-manage-server {
       background: var(--color-brand);
       color: #fff;
       border: none;
-      padding: 6px 14px;
-      border-radius: 6px;
-      font-size: 0.78rem;
+      padding: 9px 18px;
+      border-radius: 8px;
+      font-size: 0.84rem;
       font-weight: 600;
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 6px;
-      transition: opacity 0.15s;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);
+      transition: all 0.15s;
     }
-    .btn-manage-card:hover {
-      opacity: 0.9;
+    .btn-manage-server:hover {
+      opacity: 0.92;
+      transform: translateY(-1px);
     }
 
-    .card-info-grid {
+    /* ── 2. Metric Resource Cards (5 In a row) ── */
+    .metric-cards-5-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      padding: 12px 0;
-      border-top: 1px solid var(--border-subtle);
-      margin-top: 12px;
-    }
-
-    .info-lbl {
-      font-size: 0.66rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      margin-bottom: 2px;
-    }
-
-    .info-val-copyable {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.8rem;
-      color: #fff;
-      cursor: pointer;
-    }
-
-    .info-val-copyable svg {
-      width: 13px;
-      height: 13px;
-      color: var(--text-muted);
-    }
-    .info-val-copyable:hover svg {
-      color: var(--color-brand);
-    }
-
-    /* ── Resource Progress Meters ── */
-    .resource-meters-strip {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(5, 1fr);
       gap: 16px;
-      margin-top: 14px;
-      padding-top: 14px;
-      border-top: 1px solid var(--border-subtle);
+      margin-bottom: 20px;
     }
 
-    .meter-box-item {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .meter-top-info {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.68rem;
-      color: var(--text-muted);
-    }
-
-    .progress-track {
-      height: 5px;
-      background: rgba(255, 255, 255, 0.06);
-      border-radius: 3px;
-      overflow: hidden;
-    }
-
-    .progress-fill {
-      height: 100%;
-      background: var(--color-brand);
-      border-radius: 3px;
-    }
-
-    /* Quick Action Strip for Minecraft */
-    .quick-actions-strip {
-      display: flex;
-      gap: 8px;
-      margin-top: 14px;
-      padding-top: 14px;
-      border-top: 1px solid var(--border-subtle);
-      flex-wrap: wrap;
-    }
-
-    .btn-quick-act {
-      background: var(--bg-surface-elevated);
-      border: 1px solid var(--border-subtle);
-      color: var(--text-secondary);
-      font-size: 0.74rem;
-      font-weight: 500;
-      padding: 5px 12px;
-      border-radius: 6px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      transition: all 0.15s;
-    }
-
-    .btn-quick-act:hover {
-      background: var(--bg-surface-hover);
-      color: #fff;
-      border-color: var(--border-strong);
-    }
-
-    .btn-quick-act svg {
-      width: 13px;
-      height: 13px;
-    }
-
-    /* ── Multiplayer / Share Section ── */
-    .share-row-grid {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      overflow-x: auto;
-      padding-bottom: 4px;
-    }
-
-    .btn-invite-friend {
-      padding: 12px 18px;
-      background: var(--bg-surface-elevated);
-      border: 1px dashed var(--border-strong);
-      border-radius: 8px;
-      color: var(--text-primary);
-      font-size: 0.78rem;
-      font-weight: 500;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      white-space: nowrap;
-      transition: all 0.15s;
-    }
-    .btn-invite-friend:hover {
-      border-color: var(--color-brand);
-      color: var(--color-brand);
-    }
-
-    .shared-slot-box {
-      padding: 10px 14px;
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: 8px;
-      min-width: 140px;
-    }
-
-    .shared-user-chip {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 12px;
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: 8px;
-    }
-
-    /* ── Right Column Widgets ── */
-    .side-widget-card {
+    .metric-card-box {
       background: var(--bg-surface);
       border: 1px solid var(--border-subtle);
       border-radius: 12px;
-      padding: 18px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 120px;
     }
 
-    .widget-head-title {
+    .metric-top-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.76rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .metric-top-row svg {
+      width: 15px;
+      height: 15px;
+      color: var(--color-brand);
+    }
+
+    .metric-big-val {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #fff;
+      margin: 8px 0 4px 0;
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+
+    .metric-progress-track {
+      width: 100%;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 9999px;
+      overflow: hidden;
+      margin-top: 6px;
+    }
+
+    .metric-progress-fill {
+      height: 100%;
+      border-radius: 9999px;
+      background: var(--color-brand);
+      transition: width 0.3s;
+    }
+
+    .metric-sub-lbl {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+      margin-top: 6px;
+    }
+
+    /* ── 3. Main Workspace 2-Column Layout ── */
+    .control-workspace-grid {
+      display: grid;
+      grid-template-columns: 1.7fr 1fr;
+      gap: 20px;
+    }
+
+    .ws-left-col, .ws-right-col {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .panel-card-container {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .card-head-bar {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .card-head-title {
       font-size: 0.88rem;
       font-weight: 600;
       color: #fff;
       display: flex;
       align-items: center;
-      gap: 6px;
-      margin-bottom: 14px;
-    }
-
-    .action-links-list {
-      display: flex;
-      flex-direction: column;
       gap: 8px;
     }
 
-    .action-item-link {
+    .card-head-actions {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      padding: 10px 12px;
+      gap: 8px;
+    }
+
+    .btn-head-tool {
       background: var(--bg-surface-elevated);
       border: 1px solid var(--border-subtle);
-      border-radius: 8px;
-      text-decoration: none;
-      color: var(--text-primary);
-      transition: all 0.15s;
-    }
-
-    .action-item-link:hover {
-      background: var(--bg-surface-hover);
-      border-color: var(--border-strong);
-      transform: translateX(2px);
-    }
-
-    .action-item-left {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .action-item-icon {
-      width: 28px;
-      height: 28px;
-      border-radius: 6px;
-      background: rgba(99, 102, 241, 0.15);
-      color: var(--color-brand);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .action-title-text {
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: #fff;
-    }
-
-    .action-sub-text {
-      font-size: 0.68rem;
       color: var(--text-muted);
-    }
-
-    .locations-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .loc-row-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 0.78rem;
-    }
-
-    .loc-name {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      color: var(--text-secondary);
-    }
-
-    .loc-ping {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      color: var(--color-emerald);
-      font-family: 'JetBrains Mono', monospace;
       font-size: 0.72rem;
-    }
-
-    /* Promo Card */
-    .promo-banner-card {
-      background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(16, 185, 129, 0.1)), var(--bg-surface);
-      border: 1px solid var(--border-accent);
-      border-radius: 12px;
-      padding: 18px;
-    }
-
-    .promo-title {
-      font-size: 0.95rem;
-      font-weight: 700;
-      color: #fff;
-      margin-bottom: 4px;
-    }
-
-    .promo-desc {
-      font-size: 0.74rem;
-      color: var(--text-secondary);
-      line-height: 1.4;
-      margin-bottom: 12px;
-    }
-
-    /* ── Detail Control Panel View ── */
-    #detail-view {
-      display: none;
-    }
-
-    .btn-return-dash {
-      background: none;
-      border: none;
-      color: var(--text-muted);
-      font-size: 0.82rem;
-      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: 6px;
       cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      margin-bottom: 16px;
-      transition: color 0.15s;
+      transition: all 0.12s;
     }
-    .btn-return-dash:hover {
+    .btn-head-tool:hover {
       color: #fff;
+      border-color: var(--border-strong);
     }
 
-    .detail-hero-box {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: 12px;
-      padding: 20px 24px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 24px;
-      flex-wrap: wrap;
-      gap: 16px;
-    }
-
-    .ctrl-strip {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
-
-    .detail-tabs-bar {
-      display: flex;
-      gap: 20px;
-      border-bottom: 1px solid var(--border-subtle);
-      margin-bottom: 24px;
-      overflow-x: auto;
-    }
-
-    .d-tab-btn {
-      background: none;
-      border: none;
-      color: var(--text-muted);
-      font-size: 0.86rem;
-      font-weight: 500;
-      padding: 0 0 12px 0;
-      cursor: pointer;
-      position: relative;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      transition: color 0.15s;
-      white-space: nowrap;
-    }
-    .d-tab-btn:hover {
-      color: #fff;
-    }
-    .d-tab-btn.active {
-      color: #fff;
-      font-weight: 600;
-    }
-    .d-tab-btn.active::after {
-      content: '';
-      position: absolute;
-      bottom: -1px;
-      left: 0;
-      width: 100%;
-      height: 2px;
-      background: var(--color-brand);
-      border-radius: 2px 2px 0 0;
-    }
-
-    .d-pane {
-      display: none;
-    }
-    .d-pane.active {
-      display: block;
-    }
-
-    /* Terminal & Files inside Detail */
-    .terminal-screen {
+    /* Live Console */
+    .console-screen-box {
       background: #050508;
-      border: 1px solid var(--border-subtle);
-      border-radius: 8px 8px 0 0;
-      padding: 16px;
+      height: 280px;
+      padding: 14px;
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.78rem;
       color: #93c5fd;
-      height: 320px;
       overflow-y: auto;
       line-height: 1.6;
       white-space: pre-wrap;
     }
 
-    .terminal-cmd-bar {
-      display: flex;
+    .console-input-bar {
       background: var(--bg-surface-elevated);
-      border: 1px solid var(--border-subtle);
-      border-top: none;
-      border-radius: 0 0 8px 8px;
+      border-top: 1px solid var(--border-subtle);
       padding: 8px 12px;
-      gap: 8px;
+      display: flex;
       align-items: center;
+      gap: 8px;
     }
 
-    .terminal-cmd-bar input {
+    .console-input-bar input {
       flex: 1;
       background: transparent;
       border: none;
@@ -959,6 +663,328 @@
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.82rem;
       outline: none;
+    }
+
+    .btn-send-cmd {
+      background: var(--color-brand);
+      border: none;
+      color: #fff;
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    /* File Explorer & Tabs */
+    .file-tabs-strip {
+      display: flex;
+      background: var(--bg-surface-elevated);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 0 12px;
+      gap: 6px;
+    }
+
+    .ftab-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      font-weight: 500;
+      padding: 10px 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      position: relative;
+      transition: color 0.12s;
+    }
+    .ftab-btn:hover {
+      color: #fff;
+    }
+    .ftab-btn.active {
+      color: #fff;
+      font-weight: 600;
+    }
+    .ftab-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: var(--color-brand);
+    }
+
+    .file-path-nav {
+      padding: 10px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-subtle);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.74rem;
+      color: var(--text-muted);
+    }
+
+    .file-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.78rem;
+    }
+
+    .file-table th {
+      text-align: left;
+      padding: 8px 18px;
+      color: var(--text-muted);
+      font-weight: 500;
+      border-bottom: 1px solid var(--border-subtle);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+    }
+
+    .file-table td {
+      padding: 10px 18px;
+      border-bottom: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+    }
+
+    .file-table tr:hover td {
+      background: var(--bg-surface-elevated);
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .file-name-cell {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #fff;
+      font-weight: 500;
+    }
+
+    /* ── Right Column Widgets ── */
+    /* Server Info Card */
+    .server-info-list {
+      padding: 16px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .info-list-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+    }
+
+    .info-key {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-muted);
+    }
+
+    .info-val {
+      color: #fff;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+    }
+
+    /* Quick Actions 3x3 Grid */
+    .quick-act-3x3 {
+      padding: 16px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .btn-qa-tile {
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 14px 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+      color: var(--text-primary);
+      font-size: 0.75rem;
+      font-weight: 500;
+      transition: all 0.15s;
+    }
+
+    .btn-qa-tile:hover {
+      background: var(--bg-surface-hover);
+      border-color: var(--border-strong);
+      transform: translateY(-2px);
+    }
+
+    .btn-qa-tile svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    /* Server Settings Form */
+    .settings-form-grid {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .form-pair-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .form-ctrl-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .form-ctrl-group label {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .form-ctrl-group select, .form-ctrl-group input[type="text"], .form-ctrl-group input[type="number"] {
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      padding: 7px 10px;
+      border-radius: 6px;
+      color: #fff;
+      font-size: 0.78rem;
+      outline: none;
+    }
+
+    .toggle-row-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.76rem;
+      color: var(--text-secondary);
+      padding: 4px 0;
+    }
+
+    /* Checkbox toggle switch */
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 34px;
+      height: 18px;
+    }
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: rgba(255,255,255,0.15);
+      border-radius: 20px;
+      transition: .2s;
+    }
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 12px;
+      width: 12px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      border-radius: 50%;
+      transition: .2s;
+    }
+    input:checked + .toggle-slider {
+      background-color: var(--color-brand);
+    }
+    input:checked + .toggle-slider:before {
+      transform: translateX(16px);
+    }
+
+    .btn-save-settings {
+      background: var(--color-brand);
+      color: #fff;
+      border: none;
+      padding: 9px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 6px;
+      transition: opacity 0.15s;
+    }
+    .btn-save-settings:hover {
+      opacity: 0.9;
+    }
+
+    /* Integration Cards (Shulker API & DDoS) */
+    .integration-body {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .feature-check-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 0.74rem;
+      color: var(--text-secondary);
+    }
+
+    .feature-check-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .feature-check-item svg {
+      width: 13px;
+      height: 13px;
+      color: var(--color-emerald);
+    }
+
+    /* Promo Card */
+    .promo-upgrade-card {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(16, 185, 129, 0.1)), var(--bg-surface);
+      border: 1px solid var(--border-accent);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    /* Footer */
+    .app-footer-bar {
+      height: 38px;
+      background: var(--bg-sidebar);
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      flex-shrink: 0;
     }
 
     /* Toast */
@@ -986,19 +1012,32 @@
       opacity: 1;
     }
 
-    @media (max-width: 1080px) {
-      .dashboard-layout-grid {
-        grid-template-columns: 1fr;
+    /* Modal */
+    .dialog-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 20px;
+    }
+
+    @media (max-width: 1200px) {
+      .metric-cards-5-grid {
+        grid-template-columns: repeat(3, 1fr);
       }
-      .stats-strip-grid {
-        grid-template-columns: 1fr 1fr;
+      .control-workspace-grid {
+        grid-template-columns: 1fr;
       }
     }
     @media (max-width: 768px) {
       .app-sidebar {
         display: none;
       }
-      .stats-strip-grid {
+      .metric-cards-5-grid {
         grid-template-columns: 1fr;
       }
     }
@@ -1009,48 +1048,93 @@
   <!-- SIDEBAR -->
   <aside class="app-sidebar">
     <div class="sidebar-brand">
-      <a href="/" class="brand-link">
-        <img src="/images/logo.jpg" alt="Logo" class="brand-logo-img">
+      <div class="brand-logo-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+      </div>
+      <div class="brand-text-block">
         <span class="brand-title">KryonHost</span>
-      </a>
-      <span class="badge-pill-new">v2.4</span>
+        <span class="brand-subtitle-tag">VPS · Minecraft · More</span>
+      </div>
     </div>
     
     <nav class="nav-container">
-      <a class="sidebar-link active" onclick="filterCategory('dashboard', this)">
+      <div class="sidebar-section-title">Navigation</div>
+      
+      <a class="sidebar-link" onclick="switchMainView('fleet')">
         <div class="nav-icon-text">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
           Dashboard
         </div>
       </a>
 
-      <a class="sidebar-link" onclick="filterCategory('vps', this)">
+      <a class="sidebar-link" onclick="switchMainView('fleet')">
         <div class="nav-icon-text">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
           VPS
         </div>
+        <span style="font-size:0.75rem; color:var(--text-muted);">&rsaquo;</span>
       </a>
 
-      <a class="sidebar-link" onclick="filterCategory('minecraft', this)">
+      <!-- Minecraft Servers Accordion Active -->
+      <a class="sidebar-link active" onclick="switchMainView('minecraft')">
         <div class="nav-icon-text">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="4" width="16" height="16" rx="2"/><circle cx="9" cy="9" r="1.5"/><circle cx="15" cy="15" r="1.5"/></svg>
           Minecraft Servers
         </div>
+        <span style="font-size:0.75rem; color:var(--text-muted);">&rsaquo;</span>
       </a>
 
-      <a class="sidebar-link" onclick="filterCategory('share', this)">
-        <div class="nav-icon-text">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-          Multiplayer Share
-        </div>
-        <span class="badge-pill-new">NEW</span>
-      </a>
+      <!-- Active Server Submenu -->
+      <div class="sidebar-submenu" id="mc-active-submenu">
+        <a class="sub-link active" onclick="jumpToSubSection('overview')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Overview
+        </a>
+        <a class="sub-link" onclick="jumpToSubSection('console')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+          Console
+        </a>
+        <a class="sub-link" onclick="jumpToSubSection('files')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+          Files
+        </a>
+        <a class="sub-link" onclick="jumpToSubSection('files')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Config Files
+        </a>
+        <a class="sub-link" onclick="switchFileTab('plugins')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/></svg>
+          Plugins
+        </a>
+        <a class="sub-link" onclick="switchFileTab('worlds')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+          Worlds
+        </a>
+        <a class="sub-link" onclick="switchFileTab('backups')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
+          Backups
+        </a>
+        <a class="sub-link" onclick="switchFileTab('schedules')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Schedules
+        </a>
+        <a class="sub-link" onclick="showToast('Sub-users / Multiplayer share access active')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          Sub Users
+        </a>
+        <a class="sub-link" onclick="jumpToSubSection('settings')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          Settings
+        </a>
+      </div>
 
-      <a class="sidebar-link" href="/status">
+      <div class="sidebar-section-title">Account</div>
+      <a class="sidebar-link" href="/#configurator-section">
         <div class="nav-icon-text">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-          Platform Status
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+          Billing
         </div>
+        <span style="font-size:0.75rem; color:var(--text-muted);">&rsaquo;</span>
       </a>
 
       <a class="sidebar-link" href="https://discord.gg/kt9yPDwYT4" target="_blank">
@@ -1060,11 +1144,12 @@
         </div>
       </a>
 
-      <a class="sidebar-link" href="/#configurator-section">
+      <a class="sidebar-link" onclick="openCredsModal('sftp')">
         <div class="nav-icon-text">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-          Settings
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Account
         </div>
+        <span style="font-size:0.75rem; color:var(--text-muted);">&rsaquo;</span>
       </a>
     </nav>
 
@@ -1074,10 +1159,10 @@
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-brand)" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
         Need help?
       </div>
-      <div class="sidebar-help-desc">Join our Discord for instant support, setup guides and more.</div>
-      <a href="https://discord.gg/kt9yPDwYT4" target="_blank" class="btn-discord-join">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.929 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.893.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
-        Join Discord
+      <div class="sidebar-help-desc">Our support team is online 24/7 to assist you.</div>
+      <a href="https://discord.gg/kt9yPDwYT4" target="_blank" class="btn-ticket-join">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        Open Ticket
       </a>
     </div>
   </aside>
@@ -1085,19 +1170,25 @@
   <!-- MAIN WORKSPACE -->
   <main class="app-main">
     <header class="app-topbar">
-      <div class="topbar-brand-subtitle">
-        VPS · Minecraft · DDoS Tunnels
+      <div class="topbar-breadcrumb">
+        <div class="topbar-badge-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><circle cx="9" cy="9" r="1.5"/><circle cx="15" cy="15" r="1.5"/></svg>
+        </div>
+        <span style="color:var(--text-muted);">Minecraft Server</span>
+        <span style="color:var(--border-strong);">/</span>
+        <strong style="color:#fff;" id="top-srv-name">Survival-1</strong>
+        <span class="status-pill running"><span class="status-dot"></span> Online</span>
       </div>
 
       <div class="topbar-user-area">
-        <button onclick="openCredsModal('ssh')" style="background:none; border:none; color:var(--text-muted); cursor:pointer; padding:6px;">
+        <button class="btn-icon-topbar" onclick="showToast('No new notifications')">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
         </button>
 
-        <div class="user-profile-badge">
+        <div class="user-profile-badge" onclick="openCredsModal('sftp')">
           <div class="user-avatar-circle" id="u-initial">T</div>
           <div>
-            <div class="user-name-label" id="u-display-name">Tejas Jha</div>
+            <div class="user-name-label" id="u-display-name">Tejas Kumar</div>
             <div class="user-id-sub" id="u-sub-email">Client #2847</div>
           </div>
         </div>
@@ -1106,541 +1197,635 @@
 
     <div class="main-content">
       
-      <!-- 1. DASHBOARD OVERVIEW VIEW -->
-      <div id="overview-view">
+      <!-- 1. HERO SERVER BANNER CARD -->
+      <section class="server-hero-banner">
+        <div class="banner-left-area">
+          <img src="https://images.unsplash.com/photo-1627856013091-fed6e4e30025?w=280&auto=format&fit=crop&q=80" alt="Minecraft Banner" class="banner-thumb-img">
+          <div class="banner-details">
+            <div class="banner-title-row">
+              <h1 class="banner-title">Survival-1</h1>
+              <span class="status-pill running"><span class="status-dot"></span> Online</span>
+            </div>
+            <div class="banner-sub">
+              <span>Survival</span>
+              <span>•</span>
+              <span>Java Edition</span>
+              <span>•</span>
+              <span style="color:#fff; font-weight:600;">1.21.5</span>
+            </div>
+            <div class="banner-ip-box">
+              <div class="ip-code-pill" onclick="copyDirect('play.kryonhost.net:25565')">
+                <span>play.kryonhost.net:25565</span>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              </div>
+              <span class="status-pill running" style="font-size:0.68rem;"><span class="status-dot"></span> Connected</span>
+            </div>
+            <div style="font-size:0.72rem; color:var(--text-muted); margin-top:4px;">
+              Owner: <strong style="color:var(--text-secondary);">Tejas Kumar</strong> &nbsp;|&nbsp; Created: 12 Aug 2025
+            </div>
+          </div>
+        </div>
+
+        <div class="banner-right-area">
+          <div class="powered-by-shulker">
+            <span>Powered by</span>
+            <span style="color:#a855f7; font-weight:700; display:flex; align-items:center; gap:4px;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 2 7 12 12 22 7 12 2"/></svg>
+              SHULKER <span style="font-size:0.6rem; opacity:0.8;">API v2</span>
+            </span>
+          </div>
+
+          <button class="btn-manage-server" onclick="openCredsModal('sftp')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            Manage Server ▾
+          </button>
+        </div>
+      </section>
+
+      <!-- 2. 5 RESOURCE METRIC CARDS -->
+      <section class="metric-cards-5-grid">
         
-        <!-- Welcome Header + Share Pill -->
-        <div class="welcome-row">
+        <!-- CARD 1: SERVER STATUS -->
+        <div class="metric-card-box">
+          <div class="metric-top-row">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+            <span>Server Status</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:10px; margin: 6px 0;">
+            <div style="width:16px; height:16px; border-radius:50%; background:var(--color-emerald); box-shadow:0 0 12px var(--color-emerald);"></div>
+            <span style="font-size:1.15rem; font-weight:700; color:var(--color-emerald);">● Online</span>
+          </div>
+          <div style="display:flex; gap:6px; margin-top:4px;">
+            <button onclick="triggerAction('stop')" style="flex:1; background:var(--bg-surface-elevated); border:1px solid var(--border-subtle); color:var(--text-secondary); font-size:0.75rem; padding:6px; border-radius:6px; cursor:pointer;">Stop</button>
+            <button onclick="triggerAction('restart')" style="flex:1; background:var(--color-brand); border:none; color:#fff; font-size:0.75rem; padding:6px; border-radius:6px; cursor:pointer; font-weight:600;">Restart</button>
+          </div>
+        </div>
+
+        <!-- CARD 2: PLAYERS -->
+        <div class="metric-card-box">
+          <div class="metric-top-row">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>
+            <span>Players</span>
+          </div>
+          <div class="metric-big-val" id="val-players">12 / 100</div>
           <div>
-            <h1 class="welcome-headline" id="welcome-user-text">Welcome back, Tejas!</h1>
-            <p class="welcome-sub">Manage your VPS, Minecraft servers and share resources with your friends.</p>
-          </div>
-
-          <a href="#" class="banner-share-pill" onclick="filterCategory('share')">
-            <div style="width:32px; height:32px; border-radius:8px; background:rgba(99,102,241,0.15); display:flex; align-items:center; justify-content:center; color:var(--color-brand);">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <div class="metric-progress-track">
+              <div class="metric-progress-fill" style="width: 12%; background:var(--color-emerald);"></div>
             </div>
-            <div>
-              <div style="font-size:0.8rem; font-weight:600; color:#fff; display:flex; align-items:center; gap:6px;">
-                Try Multiplayer Share <span class="badge-pill-new">NEW</span>
-              </div>
-              <div style="font-size:0.7rem; color:var(--text-muted);">Share your server with friends easily &rarr;</div>
-            </div>
-          </a>
-        </div>
-
-        <!-- 4 Stat Metric Cards -->
-        <div class="stats-strip-grid">
-          <div class="stat-metric-card">
-            <div class="stat-card-icon" style="background:rgba(99,102,241,0.15); color:var(--color-brand);">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/></svg>
-            </div>
-            <div>
-              <div class="stat-card-lbl">Total VPS</div>
-              <div class="stat-card-val" id="metric-vps-count">1</div>
-              <div class="stat-card-status"><span class="status-dot running"></span> Running</div>
-            </div>
-          </div>
-
-          <div class="stat-metric-card">
-            <div class="stat-card-icon" style="background:rgba(16,185,129,0.15); color:var(--color-emerald);">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><circle cx="9" cy="9" r="1.5"/><circle cx="15" cy="15" r="1.5"/></svg>
-            </div>
-            <div>
-              <div class="stat-card-lbl">Minecraft Servers</div>
-              <div class="stat-card-val" id="metric-mc-count">1</div>
-              <div class="stat-card-status"><span class="status-dot running"></span> Running</div>
-            </div>
-          </div>
-
-          <div class="stat-metric-card">
-            <div class="stat-card-icon" style="background:rgba(56,189,248,0.15); color:var(--color-sky);">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>
-            </div>
-            <div>
-              <div class="stat-card-lbl">Shared Slots</div>
-              <div class="stat-card-val">2 / 5</div>
-              <div class="stat-card-status" style="color:var(--text-muted);">Active users</div>
-            </div>
-          </div>
-
-          <div class="stat-metric-card">
-            <div class="stat-card-icon" style="background:rgba(168,85,247,0.15); color:#c084fc;">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
-            </div>
-            <div>
-              <div class="stat-card-lbl">Account Balance</div>
-              <div class="stat-card-val">₹0.00</div>
-            </div>
-            <button class="btn-add-funds" onclick="showToast('Payment gateway balance top-up opening...')">Add Funds</button>
+            <div class="metric-sub-lbl" style="text-align:right;">12%</div>
           </div>
         </div>
 
-        <!-- 2-Column Dashboard Layout -->
-        <div class="dashboard-layout-grid">
+        <!-- CARD 3: CPU USAGE -->
+        <div class="metric-card-box">
+          <div class="metric-top-row">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/></svg>
+            <span>CPU Usage</span>
+          </div>
+          <div class="metric-big-val" id="val-cpu-text">18%</div>
+          <div>
+            <div style="height:24px; width:100%;">
+              <canvas id="sparkline-cpu"></canvas>
+            </div>
+            <div class="metric-sub-lbl">Ryzen 9 7950X</div>
+          </div>
+        </div>
+
+        <!-- CARD 4: RAM USAGE -->
+        <div class="metric-card-box">
+          <div class="metric-top-row">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/></svg>
+            <span>RAM Usage</span>
+          </div>
+          <div class="metric-big-val" id="val-ram-text">34%</div>
+          <div>
+            <div class="metric-progress-track">
+              <div class="metric-progress-fill" id="fill-ram-bar" style="width: 34%; background:#a855f7;"></div>
+            </div>
+            <div class="metric-sub-lbl" id="val-ram-gb">6.8 GB / 20 GB</div>
+          </div>
+        </div>
+
+        <!-- CARD 5: DISK USAGE -->
+        <div class="metric-card-box">
+          <div class="metric-top-row">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+            <span>Disk Usage</span>
+          </div>
+          <div class="metric-big-val">12%</div>
+          <div>
+            <div class="metric-progress-track">
+              <div class="metric-progress-fill" style="width: 12%; background:var(--color-sky);"></div>
+            </div>
+            <div class="metric-sub-lbl">12 GB / 100 GB</div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- 3. MAIN WORKSPACE 2-COLUMN GRID -->
+      <section class="control-workspace-grid">
+        
+        <!-- LEFT COLUMN (CONSOLE & FILES) -->
+        <div class="ws-left-col">
           
-          <!-- LEFT MAIN COLUMN -->
-          <div class="dash-main-col">
+          <!-- CONSOLE CARD -->
+          <div class="panel-card-container" id="section-console">
+            <div class="card-head-bar">
+              <div class="card-head-title">
+                <span style="font-family:'JetBrains Mono'; font-weight:700; color:var(--color-brand);">&sum;</span>
+                Console
+              </div>
+              <div class="card-head-actions">
+                <button class="btn-head-tool" onclick="clearConsoleLog()">Clear</button>
+                <button class="btn-head-tool" onclick="showToast('Terminal detached to background worker')">Detach</button>
+                <button class="btn-head-tool" onclick="toggleConsoleFull()">⛶</button>
+              </div>
+            </div>
+
+            <!-- Terminal Screen -->
+            <div class="console-screen-box" id="mc-console-window">[18:42:10] [Server] Starting minecraft server...
+[18:42:10] [Server] Using Java 21 (OpenJDK 64-Bit Server VM 21.0.3)
+[18:42:10] [Server] Loading libraries, please wait...
+[18:42:12] [Server] Spigot 1.21.5-R0.1-SNAPSHOT
+[18:42:12] [Server] Starting minecraft server on 0.0.0.0:25565
+[18:42:12] [Server] [CryoLimbo] 92 Tbps DDoS Packet Filter initialized.
+[18:42:12] [Server] Done (2.541s)! For help, type "help"</div>
+
+            <!-- Command Input Bar -->
+            <div class="console-input-bar">
+              <input type="text" id="cmd-input-box" placeholder="Type a command..." onkeydown="if(event.key==='Enter') executeMinecraftCmd()">
+              <button class="btn-send-cmd" onclick="executeMinecraftCmd()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- FILES & SUB-TABS CARD -->
+          <div class="panel-card-container" id="section-files">
             
-            <!-- SECTION 1: YOUR VPS -->
-            <div id="section-vps-showcase">
-              <div class="dash-section-head">
-                <div class="dash-section-title-wrap">
-                  <div class="dash-section-icon" style="background:rgba(99,102,241,0.15); color:var(--color-brand);">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/></svg>
-                  </div>
-                  <div>
-                    <div class="dash-section-title">Your VPS</div>
-                    <div class="dash-section-sub">Full control, real performance. Powered by Ryzen 9.</div>
-                  </div>
-                </div>
-                <a class="dash-view-all" onclick="filterCategory('vps')">View All &rarr;</a>
-              </div>
-
-              <!-- VPS Card -->
-              <div class="server-showcase-card">
-                <div class="card-meta-top">
-                  <div class="card-title-row">
-                    <div class="card-thumb-icon">
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/></svg>
-                    </div>
-                    <div>
-                      <div class="card-name-text">
-                        VPS-1 <span class="status-pill running"><span class="status-dot running"></span> Running</span>
-                      </div>
-                      <div class="card-spec-tags">
-                        <span class="spec-tag-badge">⚡ Ryzen 9 7950X</span>
-                        <span class="spec-tag-badge">💾 8 GB RAM</span>
-                        <span class="spec-tag-badge">💽 160 GB NVMe</span>
-                        <span class="spec-tag-badge">🐧 Ubuntu 24.04</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <button class="btn-manage-card" onclick="openVpsControlView()">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                    Manage
-                  </button>
-                </div>
-
-                <div class="card-info-grid">
-                  <div>
-                    <div class="info-lbl">IP Address</div>
-                    <div class="info-val-copyable" onclick="copyTextDirect('103.189.89.44')">
-                      <span>103.189.89.44</span>
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                    </div>
-                  </div>
-                  <div>
-                    <div class="info-lbl">Username</div>
-                    <div class="info-val-copyable" onclick="copyTextDirect('root')">
-                      <span>root</span>
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                    </div>
-                  </div>
-                  <div>
-                    <div class="info-lbl">Location</div>
-                    <div class="info-val-copyable">
-                      <span>📍 India (Mumbai)</span>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Resource Meters -->
-                <div class="resource-meters-strip">
-                  <div class="meter-box-item">
-                    <div class="meter-top-info">
-                      <span>CPU</span>
-                      <span id="vps-cpu-pct">18%</span>
-                    </div>
-                    <div class="progress-track"><div class="progress-fill" style="width: 18%;"></div></div>
-                  </div>
-                  <div class="meter-box-item">
-                    <div class="meter-top-info">
-                      <span>RAM</span>
-                      <span id="vps-ram-pct">34%</span>
-                    </div>
-                    <div class="progress-track"><div class="progress-fill" style="width: 34%; background:#a855f7;"></div></div>
-                  </div>
-                  <div class="meter-box-item">
-                    <div class="meter-top-info">
-                      <span>DISK</span>
-                      <span>12%</span>
-                    </div>
-                    <div class="progress-track"><div class="progress-fill" style="width: 12%; background:var(--color-sky);"></div></div>
-                  </div>
-                </div>
-              </div>
+            <div class="file-tabs-strip">
+              <button class="ftab-btn active" onclick="switchFileTab('files', this)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                Files
+              </button>
+              <button class="ftab-btn" onclick="switchFileTab('plugins', this)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/></svg>
+                Plugins
+              </button>
+              <button class="ftab-btn" onclick="switchFileTab('worlds', this)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                Worlds
+              </button>
+              <button class="ftab-btn" onclick="switchFileTab('backups', this)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
+                Backups
+              </button>
+              <button class="ftab-btn" onclick="switchFileTab('schedules', this)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                Schedules
+              </button>
             </div>
 
-            <!-- SECTION 2: YOUR MINECRAFT SERVERS -->
-            <div id="section-mc-showcase">
-              <div class="dash-section-head">
-                <div class="dash-section-title-wrap">
-                  <div class="dash-section-icon" style="background:rgba(16,185,129,0.15); color:var(--color-emerald);">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><circle cx="9" cy="9" r="1.5"/><circle cx="15" cy="15" r="1.5"/></svg>
-                  </div>
-                  <div>
-                    <div class="dash-section-title">Your Minecraft Servers</div>
-                    <div class="dash-section-sub">High performance. Low ping. Powered by Ryzen 9.</div>
-                  </div>
-                </div>
-                <a class="dash-view-all" onclick="filterCategory('minecraft')">View All &rarr;</a>
+            <div class="file-path-nav">
+              <div style="display:flex; align-items:center; gap:6px;">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+                <span>/ home / container /</span>
               </div>
-
-              <!-- Minecraft Card -->
-              <div class="server-showcase-card">
-                <div class="card-meta-top">
-                  <div class="card-title-row">
-                    <img src="https://images.unsplash.com/photo-1627856013091-fed6e4e30025?w=100&auto=format&fit=crop&q=80" alt="Minecraft Banner" class="card-thumb-img">
-                    <div>
-                      <div class="card-name-text">
-                        Survival-1 <span class="status-pill running"><span class="status-dot running"></span> Online</span>
-                      </div>
-                      <div class="card-spec-tags">
-                        <span class="spec-tag-badge" style="color:var(--color-emerald); background:rgba(16,185,129,0.15); padding:1px 6px; border-radius:4px;">Minecraft 1.21.1 Paper</span>
-                        <span class="spec-tag-badge">⚡ 5.7GHz Single-Core</span>
-                        <span class="spec-tag-badge">🛡️ 92 Tbps Anycast</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <button class="btn-manage-card" style="background:var(--color-emerald); color:#000;" onclick="openMinecraftControlView()">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
-                    Manage
-                  </button>
-                </div>
-
-                <div class="card-info-grid">
-                  <div>
-                    <div class="info-lbl">Server IP Address</div>
-                    <div class="info-val-copyable" onclick="copyTextDirect('play.myserver.com:25565')">
-                      <span>play.myserver.com</span>
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                    </div>
-                  </div>
-                  <div>
-                    <div class="info-lbl">Players Online</div>
-                    <div class="info-val-copyable">
-                      <span style="color:var(--color-sky);">12 / 100</span>
-                    </div>
-                  </div>
-                  <div>
-                    <div class="info-lbl">Location</div>
-                    <div class="info-val-copyable">
-                      <span>📍 India (Mumbai)</span>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Quick Action Button Strip under Card -->
-                <div class="quick-actions-strip">
-                  <button class="btn-quick-act" onclick="openMinecraftControlView('console')">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
-                    Console
-                  </button>
-                  <button class="btn-quick-act" onclick="quickMcPower('start')">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                    Start
-                  </button>
-                  <button class="btn-quick-act" onclick="quickMcPower('stop')">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/></svg>
-                    Stop
-                  </button>
-                  <button class="btn-quick-act" onclick="quickMcPower('restart')">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.59-9.21l5.64 5.64"/></svg>
-                    Restart
-                  </button>
-                  <button class="btn-quick-act" onclick="openMinecraftControlView('config')">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-                    Settings
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <!-- SECTION 3: MULTIPLAYER SHARE -->
-            <div id="section-share-showcase">
-              <div class="dash-section-head">
-                <div class="dash-section-title-wrap">
-                  <div class="dash-section-icon" style="background:rgba(56,189,248,0.15); color:var(--color-sky);">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>
-                  </div>
-                  <div>
-                    <div class="dash-section-title">Multiplayer Share <span class="badge-pill-new">NEW</span></div>
-                    <div class="dash-section-sub">Share your server with friends, family or team members. No extra cost.</div>
-                  </div>
-                </div>
-                <button class="pill-btn" onclick="showToast('Sub-user management active')">Manage Shares</button>
-              </div>
-
-              <div class="share-row-grid">
-                <button class="btn-invite-friend" onclick="showToast('Invite link copied to clipboard!')">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                  Invite a Friend
+              <div style="display:flex; gap:8px;">
+                <button class="btn-head-tool" style="background:var(--color-brand); color:#fff; border:none;" onclick="showToast('File upload dropzone active')">
+                  ↑ Upload
                 </button>
-
-                <div class="shared-slot-box">
-                  <div style="font-size:0.68rem; color:var(--text-muted); margin-bottom:2px;">Shared Slots</div>
-                  <div style="font-size:0.85rem; font-weight:700; color:#fff; font-family:'JetBrains Mono',monospace;">2 / 5</div>
-                  <div class="progress-track" style="margin-top:4px;"><div class="progress-fill" style="width: 40%; background:var(--color-sky);"></div></div>
-                </div>
-
-                <div class="shared-user-chip">
-                  <div style="width:24px; height:24px; border-radius:50%; background:var(--color-brand); display:flex; align-items:center; justify-content:center; font-size:0.7rem; font-weight:700;">R</div>
-                  <div>
-                    <div style="font-size:0.78rem; font-weight:600; color:#fff;">Rohit#4821</div>
-                    <div style="font-size:0.65rem; color:var(--color-emerald);">● Online</div>
-                  </div>
-                </div>
-
-                <div class="shared-user-chip">
-                  <div style="width:24px; height:24px; border-radius:50%; background:#a855f7; display:flex; align-items:center; justify-content:center; font-size:0.7rem; font-weight:700;">A</div>
-                  <div>
-                    <div style="font-size:0.78rem; font-weight:600; color:#fff;">Aarav#3012</div>
-                    <div style="font-size:0.65rem; color:var(--color-emerald);">● Online</div>
-                  </div>
-                </div>
+                <button class="btn-head-tool" onclick="showToast('Enter folder name in modal')">New Folder</button>
               </div>
             </div>
+
+            <!-- File Table List -->
+            <table class="file-table">
+              <thead>
+                <tr>
+                  <th>Name ▾</th>
+                  <th>Size</th>
+                  <th>Modified</th>
+                  <th style="text-align:right;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="file-tbody">
+                <tr onclick="openFileEditorModal('plugins/')">
+                  <td>
+                    <div class="file-name-cell">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                      plugins/
+                    </div>
+                  </td>
+                  <td>-</td>
+                  <td>2 days ago</td>
+                  <td style="text-align:right; color:var(--text-muted);">⋮</td>
+                </tr>
+
+                <tr onclick="openFileEditorModal('world/')">
+                  <td>
+                    <div class="file-name-cell">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                      world/
+                    </div>
+                  </td>
+                  <td>-</td>
+                  <td>2 days ago</td>
+                  <td style="text-align:right; color:var(--text-muted);">⋮</td>
+                </tr>
+
+                <tr onclick="openFileEditorModal('config/')">
+                  <td>
+                    <div class="file-name-cell">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                      config/
+                    </div>
+                  </td>
+                  <td>-</td>
+                  <td>3 days ago</td>
+                  <td style="text-align:right; color:var(--text-muted);">⋮</td>
+                </tr>
+
+                <tr onclick="openFileEditorModal('logs/')">
+                  <td>
+                    <div class="file-name-cell">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                      logs/
+                    </div>
+                  </td>
+                  <td>-</td>
+                  <td>2 hours ago</td>
+                  <td style="text-align:right; color:var(--text-muted);">⋮</td>
+                </tr>
+
+                <tr onclick="openFileEditorModal('server.jar')">
+                  <td>
+                    <div class="file-name-cell">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                      server.jar
+                    </div>
+                  </td>
+                  <td>52.4 MB</td>
+                  <td>2 days ago</td>
+                  <td style="text-align:right; color:var(--text-muted);">⋮</td>
+                </tr>
+
+                <tr onclick="openFileEditorModal('server.properties')">
+                  <td>
+                    <div class="file-name-cell">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                      server.properties
+                    </div>
+                  </td>
+                  <td>4.2 KB</td>
+                  <td>1 hour ago</td>
+                  <td style="text-align:right; color:var(--text-muted);">⋮</td>
+                </tr>
+
+                <tr onclick="openFileEditorModal('eula.txt')">
+                  <td>
+                    <div class="file-name-cell">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                      eula.txt
+                    </div>
+                  </td>
+                  <td>1 KB</td>
+                  <td>2 days ago</td>
+                  <td style="text-align:right; color:var(--text-muted);">⋮</td>
+                </tr>
+              </tbody>
+            </table>
 
           </div>
 
-          <!-- RIGHT SIDEBAR COLUMN (WIDGETS) -->
-          <div class="dash-side-col">
-            
-            <!-- Quick Actions Widget -->
-            <div class="side-widget-card">
-              <div class="widget-head-title">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--color-brand)" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </div>
+
+        <!-- RIGHT COLUMN (SERVER INFO, QUICK ACTIONS, SETTINGS, INTEGRATIONS) -->
+        <div class="ws-right-col">
+          
+          <!-- 1. SERVER INFO WIDGET -->
+          <div class="panel-card-container">
+            <div class="card-head-bar">
+              <div class="card-head-title">
+                <span style="color:var(--color-emerald);">🌱</span>
+                Server Info
+              </div>
+            </div>
+
+            <div class="server-info-list">
+              <div class="info-list-row">
+                <div class="info-key">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>
+                  <span>Name</span>
+                </div>
+                <div class="info-val">
+                  <span>Survival-1</span>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                </div>
+              </div>
+
+              <div class="info-list-row">
+                <div class="info-key">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>
+                  <span>Version</span>
+                </div>
+                <div class="info-val">
+                  <span>1.21.5 (Java)</span>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                </div>
+              </div>
+
+              <div class="info-list-row">
+                <div class="info-key">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+                  <span>Server Address</span>
+                </div>
+                <div class="info-val" onclick="copyDirect('play.kryonhost.net:25565')" style="cursor:pointer;">
+                  <span>play.kryonhost.net:25565</span>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                </div>
+              </div>
+
+              <div class="info-list-row">
+                <div class="info-key">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  <span>Location</span>
+                </div>
+                <div class="info-val">
+                  <span>India (Mumbai)</span>
+                </div>
+              </div>
+
+              <div class="info-list-row">
+                <div class="info-key">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  <span>Uptime</span>
+                </div>
+                <div class="info-val" style="color:var(--color-emerald);">
+                  <span>2d 14h 32m</span>
+                  <span style="width:6px; height:6px; border-radius:50%; background:var(--color-emerald);"></span>
+                </div>
+              </div>
+
+              <div class="info-list-row">
+                <div class="info-key">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  <span>Owner</span>
+                </div>
+                <div class="info-val">
+                  <span>Tejas Kumar</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. QUICK ACTIONS (3x3 TILES) -->
+          <div class="panel-card-container">
+            <div class="card-head-bar">
+              <div class="card-head-title">
+                <span style="color:var(--color-brand);">⚡</span>
                 Quick Actions
               </div>
+            </div>
 
-              <div class="action-links-list">
-                <a href="/vps" class="action-item-link">
-                  <div class="action-item-left">
-                    <div class="action-item-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg></div>
-                    <div>
-                      <div class="action-title-text">Order New VPS</div>
-                      <div class="action-sub-text">Get a new VPS in seconds</div>
-                    </div>
-                  </div>
-                  <span style="color:var(--text-muted); font-size:0.8rem;">&rsaquo;</span>
-                </a>
+            <div class="quick-act-3x3">
+              <button class="btn-qa-tile" onclick="triggerAction('start')">
+                <svg viewBox="0 0 24 24" fill="var(--color-emerald)" stroke="var(--color-emerald)"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                <span>Start</span>
+              </button>
 
-                <a href="/minecraft" class="action-item-link">
-                  <div class="action-item-left">
-                    <div class="action-item-icon" style="background:rgba(16,185,129,0.15); color:var(--color-emerald);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><circle cx="9" cy="9" r="1.5"/></svg></div>
-                    <div>
-                      <div class="action-title-text">Order Minecraft Server</div>
-                      <div class="action-sub-text">Start your server now</div>
-                    </div>
-                  </div>
-                  <span style="color:var(--text-muted); font-size:0.8rem;">&rsaquo;</span>
-                </a>
+              <button class="btn-qa-tile" onclick="triggerAction('stop')">
+                <svg viewBox="0 0 24 24" fill="var(--color-rose)" stroke="var(--color-rose)"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>
+                <span>Stop</span>
+              </button>
 
-                <a href="/tunnels" class="action-item-link">
-                  <div class="action-item-left">
-                    <div class="action-item-icon" style="background:rgba(56,189,248,0.15); color:var(--color-sky);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
-                    <div>
-                      <div class="action-title-text">Deploy DDoS Shield</div>
-                      <div class="action-sub-text">Protect your game domain</div>
-                    </div>
-                  </div>
-                  <span style="color:var(--text-muted); font-size:0.8rem;">&rsaquo;</span>
-                </a>
+              <button class="btn-qa-tile" onclick="triggerAction('restart')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="var(--color-sky)" stroke-width="2.5"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.59-9.21l5.64 5.64"/></svg>
+                <span>Restart</span>
+              </button>
 
-                <a href="https://discord.gg/kt9yPDwYT4" target="_blank" class="action-item-link">
-                  <div class="action-item-left">
-                    <div class="action-item-icon" style="background:rgba(168,85,247,0.15); color:#a855f7;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
-                    <div>
-                      <div class="action-title-text">Open Support Ticket</div>
-                      <div class="action-sub-text">Get help from our team</div>
-                    </div>
-                  </div>
-                  <span style="color:var(--text-muted); font-size:0.8rem;">&rsaquo;</span>
-                </a>
+              <button class="btn-qa-tile" onclick="triggerAction('kill')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="var(--color-rose)" stroke-width="2"><circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/><path d="M8 20v2h8v-2"/><path d="M12.5 17l-.5-1-.5 1"/><path d="M16 20a4 4 0 0 0 4-4V9a7 7 0 0 0-14 0v7a4 4 0 0 0 4 4z"/></svg>
+                <span>Kill</span>
+              </button>
+
+              <button class="btn-qa-tile" onclick="triggerAction('reload')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2.5"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                <span>Reload</span>
+              </button>
+
+              <button class="btn-qa-tile" onclick="triggerAction('backup')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#c084fc" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+                <span>Backup</span>
+              </button>
+
+              <button class="btn-qa-tile" onclick="copyDirect('play.kryonhost.net:25565')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="var(--color-sky)" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                <span>Copy IP</span>
+              </button>
+
+              <button class="btn-qa-tile" onclick="showToast('Select Minecraft version in modal')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+                <span>Change Version</span>
+              </button>
+
+              <button class="btn-qa-tile" onclick="jumpToSubSection('settings')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                <span>Edit Settings</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 3. SERVER SETTINGS CARD -->
+          <div class="panel-card-container" id="section-settings">
+            <div class="card-head-bar">
+              <div class="card-head-title">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                Server Settings
               </div>
             </div>
 
-            <!-- Server Locations / Low Ping Widget -->
-            <div class="side-widget-card">
-              <div class="widget-head-title">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
-                Server Locations
-              </div>
-
-              <div class="locations-list">
-                <div class="loc-row-item">
-                  <span class="loc-name"><span style="width:6px; height:6px; border-radius:50%; background:var(--color-emerald);"></span> India (Mumbai)</span>
-                  <span class="loc-ping">● Low Ping (12ms)</span>
+            <div class="settings-form-grid">
+              <div class="form-pair-row">
+                <div class="form-ctrl-group">
+                  <label>Java Version</label>
+                  <select><option>Java 21</option><option>Java 17</option><option>Java 8</option></select>
                 </div>
-                <div class="loc-row-item">
-                  <span class="loc-name"><span style="width:6px; height:6px; border-radius:50%; background:var(--color-emerald);"></span> Singapore</span>
-                  <span class="loc-ping">● Low Ping (38ms)</span>
-                </div>
-                <div class="loc-row-item">
-                  <span class="loc-name"><span style="width:6px; height:6px; border-radius:50%; background:var(--color-amber);"></span> US (New York)</span>
-                  <span class="loc-ping" style="color:var(--color-amber);">● 140ms</span>
-                </div>
-                <div class="loc-row-item">
-                  <span class="loc-name"><span style="width:6px; height:6px; border-radius:50%; background:var(--color-amber);"></span> Germany (Frankfurt)</span>
-                  <span class="loc-ping" style="color:var(--color-amber);">● 110ms</span>
+                <div class="form-ctrl-group">
+                  <label>Difficulty</label>
+                  <select><option>Normal</option><option>Hard</option><option>Easy</option><option>Peaceful</option></select>
                 </div>
               </div>
+
+              <div class="form-pair-row">
+                <div class="form-ctrl-group">
+                  <label>Gamemode</label>
+                  <select><option>Survival</option><option>Creative</option><option>Adventure</option></select>
+                </div>
+                <div class="form-ctrl-group">
+                  <label>Max Players</label>
+                  <input type="number" value="100">
+                </div>
+              </div>
+
+              <div class="form-pair-row" style="align-items:center;">
+                <div class="form-ctrl-group">
+                  <label>View Distance</label>
+                  <input type="number" value="12">
+                </div>
+                <div class="toggle-row-item" style="padding-top:16px;">
+                  <span>Force Gamemode</span>
+                  <label class="toggle-switch">
+                    <input type="checkbox">
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="toggle-row-item">
+                <span>Allow Commands</span>
+                <label class="toggle-switch">
+                  <input type="checkbox" checked>
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+
+              <div class="toggle-row-item">
+                <span>Whitelisted</span>
+                <label class="toggle-switch">
+                  <input type="checkbox">
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+
+              <div class="toggle-row-item">
+                <span>PVP</span>
+                <label class="toggle-switch">
+                  <input type="checkbox" checked>
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+
+              <button class="btn-save-settings" onclick="showToast('Server settings synchronized and saved to server.properties!')">Save Changes</button>
+            </div>
+          </div>
+
+          <!-- 4. SHULKER API v2 INTEGRATION CARD -->
+          <div class="panel-card-container">
+            <div class="card-head-bar">
+              <div class="card-head-title">
+                <span style="color:#a855f7;">⚡</span>
+                Shulker API v2
+              </div>
+              <span class="status-pill running" style="font-size:0.68rem;"><span class="status-dot"></span> Connected</span>
             </div>
 
-            <!-- Promo Banner Card -->
-            <div class="promo-banner-card">
-              <div class="promo-title">Better hosting. Bigger adventures.</div>
-              <div class="promo-desc">Get the best Minecraft experience with our AMD Ryzen 9 7950X 5.7GHz powered servers.</div>
-              <a href="/minecraft" class="btn-manage-card" style="width:fit-content; background:#10b981; color:#000;">Learn More &rarr;</a>
+            <div class="integration-body">
+              <div style="font-size:0.75rem; color:var(--text-muted);">Advanced server management via Shulker API v2.</div>
+              <div class="feature-check-list">
+                <div class="feature-check-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Server control (start/stop/restart)</div>
+                <div class="feature-check-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Live console &amp; logs</div>
+                <div class="feature-check-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> File management</div>
+                <div class="feature-check-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Plugin management</div>
+                <div class="feature-check-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Backup &amp; restore</div>
+                <div class="feature-check-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Status &amp; metrics</div>
+              </div>
+              <a href="https://shulker.in/docs/api-v2/" target="_blank" class="btn-head-tool" style="text-align:center; text-decoration:none; padding:8px; margin-top:4px;">API Documentation ↗</a>
+            </div>
+          </div>
+
+          <!-- 5. DDOS PROTECTION CARD -->
+          <div class="panel-card-container">
+            <div class="card-head-bar">
+              <div class="card-head-title">
+                <span style="color:var(--color-sky);">🛡️</span>
+                DDoS Protection
+              </div>
+              <span class="status-pill running" style="font-size:0.68rem;"><span class="status-dot"></span> Active</span>
             </div>
 
+            <div class="integration-body">
+              <div style="font-size:0.75rem; color:var(--text-muted);">Protected by KryonHost 92 Tbps Anycast L4/L7 DDoS mitigation.</div>
+              <div class="feature-check-list">
+                <div class="feature-check-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Sub-10ms Anycast Mumbai Edge</div>
+                <div class="feature-check-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> CryoLimbo Layer 7 Minecraft Protocol Filtering</div>
+                <div class="feature-check-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Real-time Ingress Scrubbing</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 6. UPGRADE PROMO BANNER -->
+          <div class="promo-upgrade-card">
+            <img src="https://images.unsplash.com/photo-1627856013091-fed6e4e30025?w=80&auto=format&fit=crop&q=80" style="width:60px; height:60px; border-radius:8px; object-fit:cover;" alt="Promo">
+            <div style="flex:1;">
+              <div style="font-size:0.8rem; font-weight:700; color:#fff; display:flex; justify-content:space-between; align-items:center;">
+                Need a bigger server?
+                <span class="status-pill running" style="font-size:0.62rem; padding:1px 6px;">● Active</span>
+              </div>
+              <div style="font-size:0.7rem; color:var(--text-secondary); margin:4px 0 8px 0;">Upgrade to a higher plan for more players, more RAM and better performance.</div>
+              <a href="/minecraft" class="btn-manage-server" style="padding:4px 12px; font-size:0.72rem; text-decoration:none; display:inline-block;">View Plans</a>
+            </div>
           </div>
 
         </div>
 
-      </div>
-
-      <!-- 2. DETAIL CONTROL PANEL (OPENS WHEN CLICKING MANAGE) -->
-      <div id="detail-view">
-        <button class="btn-return-dash" onclick="closeDetailView()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-          Back to Dashboard
-        </button>
-
-        <!-- Detail Hero Box -->
-        <div class="detail-hero-box">
-          <div>
-            <h2 style="font-size:1.4rem; font-weight:700; color:#fff;" id="det-name">Survival-1 (SMP)</h2>
-            <div style="display:flex; align-items:center; gap:12px; font-size:0.8rem; color:var(--text-secondary); margin-top:4px;">
-              <span class="status-pill running" id="det-status-pill"><span class="status-dot running"></span> Online · 20.0 TPS</span>
-              <span style="font-family:'JetBrains Mono',monospace; color:var(--color-sky);" id="det-ip">play.myserver.com:25565</span>
-              <span>📍 India (Mumbai Ryzen 9 7950X)</span>
-            </div>
-          </div>
-
-          <div class="ctrl-strip" id="det-ctrl-strip">
-            <!-- Dynamic power controls -->
-          </div>
-        </div>
-
-        <!-- Detail Tabs -->
-        <div class="detail-tabs-bar" id="det-tabs-nav">
-          <button class="d-tab-btn active" onclick="switchDetailTab('console', this)">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
-            Console &amp; Terminal
-          </button>
-          <button class="d-tab-btn" onclick="switchDetailTab('files', this)">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-            File Manager
-          </button>
-          <button class="d-tab-btn" onclick="switchDetailTab('players', this)">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-            Player Roster
-          </button>
-          <button class="d-tab-btn" onclick="switchDetailTab('settings', this)">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-            Server Properties
-          </button>
-        </div>
-
-        <!-- TAB: CONSOLE -->
-        <div class="d-pane active" id="pane-console">
-          <div class="terminal-screen" id="d-console-log">Connecting to live console stream...</div>
-          <div class="terminal-cmd-bar">
-            <span style="color:var(--color-brand); font-weight:700; font-family:'JetBrains Mono';">&gt;</span>
-            <input type="text" id="term-input" placeholder="Type a command (e.g. say Hello, op player, tps)..." onkeydown="handleTermKey(event)">
-            <button class="btn-manage-card" onclick="sendTermCmdDirect()" style="padding:4px 12px; font-size:0.75rem;">Send</button>
-          </div>
-        </div>
-
-        <!-- TAB: FILES -->
-        <div class="d-pane" id="pane-files">
-          <div style="background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:10px; padding:18px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-              <span style="font-weight:600; color:#fff;">Editing server.properties</span>
-              <button class="btn-manage-card" onclick="saveFileDirect()" style="padding:4px 12px; font-size:0.75rem;">Save Changes</button>
-            </div>
-            <textarea id="file-textarea" style="width:100%; height:320px; background:#050508; border:1px solid var(--border-subtle); border-radius:6px; color:#e2e8f0; font-family:'JetBrains Mono'; font-size:0.8rem; padding:12px;" spellcheck="false"></textarea>
-          </div>
-        </div>
-
-        <!-- TAB: PLAYERS -->
-        <div class="d-pane" id="pane-players">
-          <div style="background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:10px; padding:18px;">
-            <h4 style="font-size:0.95rem; font-weight:600; color:#fff; margin-bottom:12px;">Connected Players (12 / 100)</h4>
-            <div style="display:flex; flex-direction:column; gap:8px;">
-              <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 12px; background:var(--bg-surface-elevated); border-radius:6px;">
-                <div style="display:flex; align-items:center; gap:8px;">
-                  <img src="https://mc-heads.net/avatar/Alex/24" style="border-radius:4px;" alt="Alex">
-                  <strong style="color:#fff;">Alex</strong> <span class="badge-pill-new">OP ADMIN</span>
-                </div>
-                <div style="display:flex; gap:6px;">
-                  <button class="btn-quick-act" onclick="showToast('Kicked Alex')">Kick</button>
-                  <button class="btn-quick-act" onclick="showToast('Banned Alex')">Ban</button>
-                </div>
-              </div>
-              <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 12px; background:var(--bg-surface-elevated); border-radius:6px;">
-                <div style="display:flex; align-items:center; gap:8px;">
-                  <img src="https://mc-heads.net/avatar/Steve/24" style="border-radius:4px;" alt="Steve">
-                  <strong style="color:#fff;">Steve</strong>
-                </div>
-                <div style="display:flex; gap:6px;">
-                  <button class="btn-quick-act" onclick="showToast('Granted OP to Steve')">Make OP</button>
-                  <button class="btn-quick-act" onclick="showToast('Kicked Steve')">Kick</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- TAB: SETTINGS -->
-        <div class="d-pane" id="pane-settings">
-          <div style="background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:10px; padding:18px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-              <h4 style="font-size:0.95rem; font-weight:600; color:#fff;">Visual Gameplay Settings</h4>
-              <button class="btn-manage-card" onclick="showToast('Settings saved to server.properties!')" style="padding:4px 12px; font-size:0.75rem;">Save Settings</button>
-            </div>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
-              <div style="background:var(--bg-surface-elevated); padding:12px; border-radius:6px;">
-                <div style="font-size:0.78rem; font-weight:600; color:#fff;">Difficulty</div>
-                <select style="margin-top:4px; padding:6px; background:var(--bg-surface); border:1px solid var(--border-subtle); color:#fff; border-radius:4px; width:100%;">
-                  <option>Hard</option><option>Normal</option><option>Easy</option><option>Peaceful</option>
-                </select>
-              </div>
-              <div style="background:var(--bg-surface-elevated); padding:12px; border-radius:6px;">
-                <div style="font-size:0.78rem; font-weight:600; color:#fff;">Default Gamemode</div>
-                <select style="margin-top:4px; padding:6px; background:var(--bg-surface); border:1px solid var(--border-subtle); color:#fff; border-radius:4px; width:100%;">
-                  <option>Survival</option><option>Creative</option><option>Adventure</option>
-                </select>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
+      </section>
 
     </div>
+
+    <!-- FOOTER BAR -->
+    <footer class="app-footer-bar">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span style="color:#a855f7; font-weight:600;">⚡ Powered by Shulker API v2</span>
+        <span>|</span>
+        <span>Real-time server control</span>
+        <span>|</span>
+        <span>Secure</span>
+        <span>|</span>
+        <span>Fast</span>
+        <span>|</span>
+        <span>Reliable</span>
+      </div>
+
+      <div style="display:flex; align-items:center; gap:6px; color:var(--color-emerald);">
+        <span style="width:6px; height:6px; border-radius:50%; background:var(--color-emerald);"></span>
+        <span>All systems operational</span>
+      </div>
+    </footer>
   </main>
 
-  <!-- ACCESS / SSH / SFTP CREDENTIALS MODAL -->
-  <div class="dialog-backdrop" id="creds-modal" style="display:none;">
-    <div class="dialog-card" style="background:var(--bg-surface); border:1px solid var(--border-strong); border-radius:12px; padding:24px; max-width:460px; width:100%;">
+  <!-- FILE EDITOR MODAL -->
+  <div class="dialog-backdrop" id="file-modal">
+    <div style="background:var(--bg-surface); border:1px solid var(--border-strong); border-radius:12px; padding:20px; max-width:640px; width:100%;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <h3 style="font-size:1rem; font-weight:600; color:#fff;" id="file-modal-title">Editing server.properties</h3>
+        <button onclick="closeFileModal()" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1.2rem;">&times;</button>
+      </div>
+      <textarea id="file-editor-area" style="width:100%; height:320px; background:#050508; border:1px solid var(--border-subtle); border-radius:6px; color:#e2e8f0; font-family:'JetBrains Mono'; font-size:0.8rem; padding:12px;" spellcheck="false"></textarea>
+      <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:12px;">
+        <button onclick="closeFileModal()" class="btn-head-tool" style="padding:6px 14px;">Cancel</button>
+        <button onclick="saveFileFromModal()" class="btn-manage-server" style="padding:6px 16px;">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CREDENTIALS MODAL -->
+  <div class="dialog-backdrop" id="creds-modal">
+    <div style="background:var(--bg-surface); border:1px solid var(--border-strong); border-radius:12px; padding:24px; max-width:460px; width:100%;">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-        <h3 style="font-size:1.1rem; font-weight:600; color:#fff;">SSH &amp; SFTP Access</h3>
+        <h3 style="font-size:1.1rem; font-weight:600; color:#fff;">Minecraft SFTP &amp; Panel Access</h3>
         <button onclick="closeCredsModal()" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1.2rem;">&times;</button>
       </div>
       <div style="margin-bottom:12px;">
         <label style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase;">Host Address</label>
-        <input type="text" id="creds-host" readonly value="103.189.89.44" style="width:100%; padding:8px 12px; background:var(--bg-surface-elevated); border:1px solid var(--border-subtle); border-radius:6px; color:#fff; font-family:'JetBrains Mono'; font-size:0.8rem; margin-top:4px;">
+        <input type="text" id="creds-host" readonly value="sftp://play.kryonhost.net:2022" style="width:100%; padding:8px 12px; background:var(--bg-surface-elevated); border:1px solid var(--border-subtle); border-radius:6px; color:#fff; font-family:'JetBrains Mono'; font-size:0.8rem; margin-top:4px;">
       </div>
       <div style="margin-bottom:16px;">
         <label style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase;">Username</label>
-        <input type="text" id="creds-user" readonly value="root" style="width:100%; padding:8px 12px; background:var(--bg-surface-elevated); border:1px solid var(--border-subtle); border-radius:6px; color:#fff; font-family:'JetBrains Mono'; font-size:0.8rem; margin-top:4px;">
+        <input type="text" id="creds-user" readonly value="mc_survival1" style="width:100%; padding:8px 12px; background:var(--bg-surface-elevated); border:1px solid var(--border-subtle); border-radius:6px; color:#fff; font-family:'JetBrains Mono'; font-size:0.8rem; margin-top:4px;">
       </div>
-      <button onclick="closeCredsModal()" class="btn-manage-card" style="width:100%; justify-content:center; padding:10px;">Done</button>
+      <button onclick="closeCredsModal()" class="btn-manage-server" style="width:100%; justify-content:center; padding:10px;">Done</button>
     </div>
   </div>
 

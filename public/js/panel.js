@@ -1,370 +1,453 @@
 /* ═══════════════════════════════════════════════════════════════════════════
-   KryonHost — Enterprise Multi-Service Client Cloud Dashboard Engine
+   KryonHost — Minecraft Server Control Engine (Shulker API v2 Compatible)
    ═══════════════════════════════════════════════════════════════════════════ */
 
-let currentServer = null;
-let currentUser = null;
-let activeServiceMode = 'minecraft'; // 'vps' or 'minecraft'
+let currentServerId = 'mc-srv-01';
+let sparklineChart = null;
+let pollingTimer = null;
+let activeEditingFile = 'server.properties';
 
-// Chart.js Instances & Config
-let cpuChart = null;
-let ramChart = null;
-const MAX_DATA_POINTS = 20;
+const MAX_SPARKLINE_POINTS = 16;
+let sparklineData = [14, 16, 18, 15, 19, 22, 18, 17, 20, 18, 19, 21, 18, 17, 18, 18];
 
-const chartOptions = {
-  responsive: true,
-  maintainAspectRatio: false,
-  animation: { duration: 300, easing: 'linear' },
-  scales: {
-    x: { display: false },
-    y: { 
-      beginAtZero: true, 
-      grid: { color: 'rgba(255,255,255,0.04)', drawBorder: false },
-      ticks: { color: 'rgba(255,255,255,0.35)', font: { size: 10, family: 'JetBrains Mono' } }
-    }
-  },
-  plugins: { legend: { display: false }, tooltip: { enabled: false } },
-  elements: { point: { radius: 0 }, line: { tension: 0.35, borderWidth: 1.8 } },
-  interaction: { intersect: false, mode: 'index' }
-};
-
-/* ── Initialization & Authentication ─────────────────────────────────────── */
+/* ── Auth & Init ──────────────────────────────────────────────────────────── */
 async function initPanel() {
   try {
     if (typeof supabaseClient !== 'undefined') {
       const { data: { session } } = await supabaseClient.auth.getSession();
       if (session && session.user) {
-        currentUser = session.user;
-        const uEmail = document.getElementById('u-sub-email');
-        const uInitial = document.getElementById('u-initial');
-        const uDisp = document.getElementById('u-display-name');
-        const welcomeText = document.getElementById('welcome-user-text');
-        
-        const namePart = currentUser.email.split('@')[0];
+        const email = session.user.email;
+        const namePart = email.split('@')[0];
         const formattedName = namePart.charAt(0).toUpperCase() + namePart.slice(1);
         
-        if (uEmail) uEmail.textContent = currentUser.email;
-        if (uInitial) uInitial.textContent = formattedName.charAt(0);
+        const uDisp = document.getElementById('u-display-name');
+        const uEmail = document.getElementById('u-sub-email');
+        const uInitial = document.getElementById('u-initial');
+        
         if (uDisp) uDisp.textContent = formattedName;
-        if (welcomeText) welcomeText.textContent = `Welcome back, ${formattedName}!`;
+        if (uEmail) uEmail.textContent = email;
+        if (uInitial) uInitial.textContent = formattedName.charAt(0);
       }
     }
   } catch (err) {
-    console.warn('Auth session note:', err);
+    console.warn('Session check note:', err);
   }
 
-  // Load default sample server.properties in files tab
-  const fileArea = document.getElementById('file-textarea');
-  if (fileArea && !fileArea.value) {
-    fileArea.value = `# Minecraft server properties
-# KryonHost AMD Ryzen 9 7950X High-Performance Node
-server-port=25565
-gamemode=survival
-difficulty=hard
-pvp=true
-max-players=100
-view-distance=10
-simulation-distance=8
-enable-command-block=true
-motd=§a§lEnderCraft SMP §7- §bAMD Ryzen 9 7950X §8| §d92 Tbps DDoS Shield
-online-mode=true
-allow-flight=false
-white-list=false
-spawn-protection=0
-`;
-  }
+  initSparklineChart();
+  startTelemetryPolling();
 }
 
-/* ── Category & View Navigation ───────────────────────────────────────────── */
-function filterCategory(category, btnElement) {
-  // Update sidebar active link
-  document.querySelectorAll('.sidebar-link').forEach(link => link.classList.remove('active'));
-  if (btnElement) {
-    btnElement.classList.add('active');
-  } else {
-    const matchingLink = Array.from(document.querySelectorAll('.sidebar-link')).find(l => 
-      l.getAttribute('onclick') && l.getAttribute('onclick').includes(category)
-    );
-    if (matchingLink) matchingLink.classList.add('active');
-  }
+/* ── Sparkline CPU Chart ──────────────────────────────────────────────────── */
+function initSparklineChart() {
+  const canvas = document.getElementById('sparkline-cpu');
+  if (!canvas) return;
 
-  // Ensure overview is visible and detail view is hidden
-  closeDetailView();
+  const ctx = canvas.getContext('2d');
+  const gradient = ctx.createLinearGradient(0, 0, 0, 24);
+  gradient.addColorStop(0, 'rgba(99, 102, 241, 0.4)');
+  gradient.addColorStop(1, 'rgba(99, 102, 241, 0)');
 
-  const secVps = document.getElementById('section-vps-showcase');
-  const secMc = document.getElementById('section-mc-showcase');
-  const secShare = document.getElementById('section-share-showcase');
-
-  if (category === 'dashboard' || category === 'all') {
-    if (secVps) secVps.style.display = 'block';
-    if (secMc) secMc.style.display = 'block';
-    if (secShare) secShare.style.display = 'block';
-  } else if (category === 'vps') {
-    if (secVps) secVps.style.display = 'block';
-    if (secMc) secMc.style.display = 'none';
-    if (secShare) secShare.style.display = 'none';
-  } else if (category === 'minecraft') {
-    if (secVps) secVps.style.display = 'none';
-    if (secMc) secMc.style.display = 'block';
-    if (secShare) secShare.style.display = 'none';
-  } else if (category === 'share') {
-    if (secVps) secVps.style.display = 'none';
-    if (secMc) secMc.style.display = 'none';
-    if (secShare) secShare.style.display = 'block';
-    if (secShare) secShare.scrollIntoView({ behavior: 'smooth' });
-  }
-}
-
-/* ── Open Detail Control Panel: VPS ───────────────────────────────────────── */
-function openVpsControlView() {
-  activeServiceMode = 'vps';
-  const overview = document.getElementById('overview-view');
-  const detail = document.getElementById('detail-view');
-
-  if (overview) overview.style.display = 'none';
-  if (detail) detail.style.display = 'block';
-
-  document.getElementById('det-name').textContent = 'VPS-1 (Production App Node)';
-  document.getElementById('det-ip').textContent = '103.189.89.44';
-  
-  const statusPill = document.getElementById('det-status-pill');
-  if (statusPill) {
-    statusPill.className = 'status-pill running';
-    statusPill.innerHTML = '<span class="status-dot running"></span> Running · KVM Zen 4';
-  }
-
-  // Set VPS Power Strip
-  const ctrlStrip = document.getElementById('det-ctrl-strip');
-  if (ctrlStrip) {
-    ctrlStrip.innerHTML = `
-      <button class="btn-manage-card" style="background:#10b981; color:#000;" onclick="quickVpsPower('start')">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg> Boot VM
-      </button>
-      <button class="btn-manage-card" style="background:#f59e0b; color:#000;" onclick="quickVpsPower('reboot')">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.59-9.21l5.64 5.64"/></svg> Reboot
-      </button>
-      <button class="btn-manage-card" style="background:rgba(244,63,94,0.15); color:var(--color-rose); border:1px solid var(--color-rose-border);" onclick="quickVpsPower('stop')">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/></svg> Force Stop
-      </button>
-      <button class="btn-manage-card" style="background:var(--bg-surface-elevated); color:var(--text-primary); border:1px solid var(--border-subtle);" onclick="openCredsModal('ssh')">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> SSH Access
-      </button>
-    `;
-  }
-
-  // Load VPS terminal stream
-  const con = document.getElementById('d-console-log');
-  if (con) {
-    const now = new Date().toTimeString().slice(0, 8);
-    con.textContent = `[${now}] KryonHost KVM Enterprise Hypervisor (Mumbai Node 01)
-[${now}] Attached container instance: VPS-1 (103.189.89.44)
-[${now}] AMD Ryzen 9 7950X: 4 Dedicated vCores @ 5.7GHz, RAM: 8GB DDR5 ECC
-[${now}] Linux vps-node 6.8.0-45-generic x86_64 Ubuntu 24.04 LTS
-root@vps-1:~# `;
-    con.scrollTop = con.scrollHeight;
-  }
-
-  switchDetailTab('console');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-/* ── Open Detail Control Panel: Minecraft ─────────────────────────────────── */
-function openMinecraftControlView(initialTab = 'console') {
-  activeServiceMode = 'minecraft';
-  const overview = document.getElementById('overview-view');
-  const detail = document.getElementById('detail-view');
-
-  if (overview) overview.style.display = 'none';
-  if (detail) detail.style.display = 'block';
-
-  document.getElementById('det-name').textContent = 'Survival-1 (SMP)';
-  document.getElementById('det-ip').textContent = 'play.myserver.com:25565';
-  
-  const statusPill = document.getElementById('det-status-pill');
-  if (statusPill) {
-    statusPill.className = 'status-pill running';
-    statusPill.innerHTML = '<span class="status-dot running"></span> Online · 20.0 TPS Guaranteed';
-  }
-
-  // Set Minecraft Power Strip
-  const ctrlStrip = document.getElementById('det-ctrl-strip');
-  if (ctrlStrip) {
-    ctrlStrip.innerHTML = `
-      <button class="btn-manage-card" style="background:#10b981; color:#000;" onclick="quickMcPower('start')">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg> Start
-      </button>
-      <button class="btn-manage-card" style="background:#f59e0b; color:#000;" onclick="quickMcPower('restart')">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.59-9.21l5.64 5.64"/></svg> Restart
-      </button>
-      <button class="btn-manage-card" style="background:rgba(244,63,94,0.15); color:var(--color-rose); border:1px solid var(--color-rose-border);" onclick="quickMcPower('stop')">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/></svg> Stop
-      </button>
-      <button class="btn-manage-card" style="background:var(--bg-surface-elevated); color:var(--text-primary); border:1px solid var(--border-subtle);" onclick="openCredsModal('sftp')">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> SFTP Access
-      </button>
-    `;
-  }
-
-  // Load Minecraft console logs
-  const con = document.getElementById('d-console-log');
-  if (con) {
-    const now = new Date().toTimeString().slice(0, 8);
-    con.textContent = `[${now} INFO]: Loading Minecraft 1.21.1 with Paper (git-Paper-128)
-[${now} INFO]: [CryoLimbo] Anycast DDoS Packet Scrubbing active on 0.0.0.0:25565
-[${now} INFO]: Loaded world dimensions: 'world' (Overworld), 'world_nether', 'world_the_end'
-[${now} INFO]: Done (1.89s)! For help, type "help"
-[${now} INFO]: Server running smoothly at 20.0 TPS on AMD Ryzen 9 7950X (5.7GHz Single-Core)
-[${now} INFO]: 12 / 100 players connected.`;
-    con.scrollTop = con.scrollHeight;
-  }
-
-  // Switch to selected tab
-  if (initialTab === 'config' || initialTab === 'settings') {
-    switchDetailTab('settings');
-  } else if (initialTab === 'files') {
-    switchDetailTab('files');
-  } else if (initialTab === 'players') {
-    switchDetailTab('players');
-  } else {
-    switchDetailTab('console');
-  }
-
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-/* ── Close Detail View ────────────────────────────────────────────────────── */
-function closeDetailView() {
-  const overview = document.getElementById('overview-view');
-  const detail = document.getElementById('detail-view');
-  if (overview) overview.style.display = 'block';
-  if (detail) detail.style.display = 'none';
-}
-
-/* ── Detail Tabs Switcher ─────────────────────────────────────────────────── */
-function switchDetailTab(tabName, btnElement) {
-  document.querySelectorAll('.d-tab-btn').forEach(btn => btn.classList.remove('active'));
-  document.querySelectorAll('.d-pane').forEach(pane => pane.classList.remove('active'));
-
-  const targetPane = document.getElementById(`pane-${tabName}`);
-  if (targetPane) targetPane.classList.add('active');
-
-  if (btnElement) {
-    btnElement.classList.add('active');
-  } else {
-    const tabButtons = document.querySelectorAll('.d-tab-btn');
-    tabButtons.forEach(b => {
-      if (b.textContent.toLowerCase().includes(tabName)) b.classList.add('active');
-    });
-  }
-}
-
-/* ── Power Actions ────────────────────────────────────────────────────────── */
-function quickMcPower(action) {
-  const con = document.getElementById('d-console-log');
-  const now = new Date().toTimeString().slice(0, 8);
-  
-  if (action === 'start') {
-    showToast('Minecraft Server: Starting up container...');
-    if (con) {
-      con.textContent += `\n[${now} INFO]: [Daemon] Initializing Paper 1.21.1 startup sequence...`;
-      con.scrollTop = con.scrollHeight;
+  sparklineChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: Array(MAX_SPARKLINE_POINTS).fill(''),
+      datasets: [{
+        data: sparklineData,
+        borderColor: '#6366f1',
+        borderWidth: 1.8,
+        backgroundColor: gradient,
+        fill: true,
+        tension: 0.4,
+        pointRadius: 0
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: false,
+      plugins: { legend: { display: false }, tooltip: { enabled: false } },
+      scales: {
+        x: { display: false },
+        y: { display: false, min: 0, max: 100 }
+      },
+      layout: { padding: 0 }
     }
-  } else if (action === 'stop') {
-    showToast('Minecraft Server: Stopping cleanly & saving world...');
-    if (con) {
-      con.textContent += `\n[${now} INFO]: [Daemon] World save complete. Server stopped.`;
-      con.scrollTop = con.scrollHeight;
+  });
+}
+
+/* ── Real-Time Telemetry Simulation / Shulker API Poll ────────────────────── */
+function startTelemetryPolling() {
+  if (pollingTimer) clearInterval(pollingTimer);
+
+  pollingTimer = setInterval(async () => {
+    // Generate organic fluctuations around Ryzen 9 standard load
+    const cpuPct = (16 + Math.random() * 5).toFixed(0);
+    const ramPct = (33 + Math.random() * 3).toFixed(0);
+    const ramGb = ((20 * ramPct) / 100).toFixed(1);
+
+    const cpuText = document.getElementById('val-cpu-text');
+    const ramText = document.getElementById('val-ram-text');
+    const ramGbText = document.getElementById('val-ram-gb');
+    const ramFill = document.getElementById('fill-ram-bar');
+
+    if (cpuText) cpuText.textContent = `${cpuPct}%`;
+    if (ramText) ramText.textContent = `${ramPct}%`;
+    if (ramGbText) ramGbText.textContent = `${ramGb} GB / 20 GB`;
+    if (ramFill) ramFill.style.width = `${ramPct}%`;
+
+    if (sparklineChart) {
+      sparklineChart.data.datasets[0].data.push(parseInt(cpuPct));
+      if (sparklineChart.data.datasets[0].data.length > MAX_SPARKLINE_POINTS) {
+        sparklineChart.data.datasets[0].data.shift();
+      }
+      sparklineChart.update();
     }
-  } else if (action === 'restart') {
-    showToast('Minecraft Server: Rebooting...');
-    if (con) {
-      con.textContent += `\n[${now} INFO]: [Daemon] Reboot signal acknowledged. Restarting JVM...`;
-      con.scrollTop = con.scrollHeight;
-    }
+  }, 2500);
+}
+
+/* ── Main View & Submenu Navigation ───────────────────────────────────────── */
+function switchMainView(view) {
+  if (view === 'fleet') {
+    window.location.href = '/vps';
+  } else {
+    document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+    const mcLink = Array.from(document.querySelectorAll('.sidebar-link')).find(l => l.textContent.includes('Minecraft'));
+    if (mcLink) mcLink.classList.add('active');
+    jumpToSubSection('overview');
   }
 }
 
-function quickVpsPower(action) {
-  showToast(`VPS Instance: ${action.toUpperCase()} signal dispatched to KVM Hypervisor`);
-  const con = document.getElementById('d-console-log');
-  const now = new Date().toTimeString().slice(0, 8);
-  if (con) {
-    con.textContent += `\n[${now}] Hypervisor power action '${action}' applied successfully.`;
-    con.scrollTop = con.scrollHeight;
+function jumpToSubSection(sectionId) {
+  document.querySelectorAll('.sub-link').forEach(l => l.classList.remove('active'));
+  const clicked = Array.from(document.querySelectorAll('.sub-link')).find(l => 
+    l.textContent.toLowerCase().includes(sectionId)
+  );
+  if (clicked) clicked.classList.add('active');
+
+  if (sectionId === 'console') {
+    const el = document.getElementById('section-console');
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+    const input = document.getElementById('cmd-input-box');
+    if (input) input.focus();
+  } else if (sectionId === 'files') {
+    const el = document.getElementById('section-files');
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+  } else if (sectionId === 'settings') {
+    const el = document.getElementById('section-settings');
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+  } else if (sectionId === 'overview') {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 }
 
-/* ── Console Command Handling ─────────────────────────────────────────────── */
-function handleTermKey(e) {
-  if (e.key === 'Enter') sendTermCmdDirect();
-}
-
-function sendTermCmdDirect() {
-  const input = document.getElementById('term-input');
+/* ── Console Command Execution ────────────────────────────────────────────── */
+async function executeMinecraftCmd() {
+  const input = document.getElementById('cmd-input-box');
   if (!input || !input.value.trim()) return;
 
   const cmd = input.value.trim();
   input.value = '';
 
-  const con = document.getElementById('d-console-log');
+  const con = document.getElementById('mc-console-window');
   const now = new Date().toTimeString().slice(0, 8);
 
   if (con) {
-    if (activeServiceMode === 'minecraft') {
-      con.textContent += `\n> ${cmd}`;
-      if (cmd.startsWith('say ')) {
-        con.textContent += `\n[${now} INFO]: [Server] ${cmd.slice(4)}`;
-      } else if (cmd.startsWith('op ')) {
-        con.textContent += `\n[${now} INFO]: Made ${cmd.slice(3)} a server operator`;
-      } else if (cmd === 'tps') {
-        con.textContent += `\n[${now} INFO]: TPS from last 1m, 5m, 15m: 20.0, 20.0, 20.0 (Memory: 3,420 MB / 8,192 MB)`;
-      } else if (cmd === 'list') {
-        con.textContent += `\n[${now} INFO]: There are 12 of a max of 100 players online: Alex, Steve, Notch, ShadowX, EnderKing...`;
-      } else {
-        con.textContent += `\n[${now} INFO]: Executed command: ${cmd}`;
-      }
-    } else {
-      con.textContent += `\nroot@vps-1:~# ${cmd}\n[${now}] Command executed: ${cmd}\nroot@vps-1:~# `;
-    }
+    con.textContent += `\n> ${cmd}`;
     con.scrollTop = con.scrollHeight;
   }
-}
 
-/* ── File Manager Direct Save ─────────────────────────────────────────────── */
-function saveFileDirect() {
-  const textarea = document.getElementById('file-textarea');
-  if (textarea) {
-    showToast('File "server.properties" saved successfully!');
-  }
-}
-
-/* ── Direct Clipboard Copy ────────────────────────────────────────────────── */
-function copyTextDirect(text) {
-  navigator.clipboard.writeText(text);
-  showToast(`Copied "${text}" to clipboard`);
-}
-
-/* ── Access / SSH / SFTP Modal ────────────────────────────────────────────── */
-function openCredsModal(type = 'ssh') {
-  const modal = document.getElementById('creds-modal');
-  const host = document.getElementById('creds-host');
-  const user = document.getElementById('creds-user');
-
-  if (modal) {
-    if (type === 'sftp') {
-      if (host) host.value = 'sftp://play.myserver.com:2022';
-      if (user) user.value = 'mc_survival1';
-    } else {
-      if (host) host.value = 'ssh root@103.189.89.44:22';
-      if (user) user.value = 'root';
+  // Try backend Shulker API route
+  try {
+    const res = await fetch(`/api/minecraft/${currentServerId}/command`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ command: cmd, server_name: 'Survival-1' })
+    });
+    const data = await res.json();
+    if (con && data.response) {
+      con.textContent += `\n[${now}] [Server] ${data.response}`;
+      con.scrollTop = con.scrollHeight;
+      return;
     }
-    modal.style.display = 'flex';
+  } catch (err) {
+    // Local simulation fallback
   }
+
+  // Simulated server responses
+  if (con) {
+    setTimeout(() => {
+      const respTime = new Date().toTimeString().slice(0, 8);
+      if (cmd.startsWith('say ')) {
+        con.textContent += `\n[${respTime}] [Server] [Broadcast] ${cmd.slice(4)}`;
+      } else if (cmd.startsWith('op ')) {
+        con.textContent += `\n[${respTime}] [Server] Made ${cmd.slice(3)} a server operator`;
+      } else if (cmd === 'tps') {
+        con.textContent += `\n[${respTime}] [Server] TPS from last 1m, 5m, 15m: 20.0, 20.0, 20.0 (Memory: 6,940 MB / 20,480 MB)`;
+      } else if (cmd === 'list') {
+        con.textContent += `\n[${respTime}] [Server] There are 12 of a max of 100 players online: Alex, Steve, Notch, KryonAdmin, EnderKing, ShadowX, PixelMaster...`;
+      } else if (cmd === 'help') {
+        con.textContent += `\n[${respTime}] [Server] Available commands: /say, /op, /deop, /tps, /list, /whitelist, /kick, /ban, /save-all, /stop`;
+      } else {
+        con.textContent += `\n[${respTime}] [Server] Command '${cmd}' executed successfully.`;
+      }
+      con.scrollTop = con.scrollHeight;
+    }, 180);
+  }
+}
+
+function clearConsoleLog() {
+  const con = document.getElementById('mc-console-window');
+  if (con) con.textContent = '[Console cleared]';
+}
+
+function toggleConsoleFull() {
+  const con = document.getElementById('mc-console-window');
+  if (!con) return;
+  if (con.style.height === '500px') {
+    con.style.height = '280px';
+  } else {
+    con.style.height = '500px';
+  }
+}
+
+/* ── Server Actions (Start, Stop, Restart, Kill, Reload, Backup) ───────────── */
+async function triggerAction(action) {
+  const con = document.getElementById('mc-console-window');
+  const now = new Date().toTimeString().slice(0, 8);
+
+  if (action === 'start') {
+    showToast('Starting Minecraft container on Ryzen 9 7950X...');
+    if (con) {
+      con.textContent += `\n[${now}] [Daemon] Allocating 20 GB DDR5 ECC RAM...`;
+      con.textContent += `\n[${now}] [Server] Spigot 1.21.5 started on port 25565. TPS: 20.0.`;
+      con.scrollTop = con.scrollHeight;
+    }
+  } else if (action === 'stop') {
+    showToast('Stopping Minecraft server safely (saving world)...');
+    if (con) {
+      con.textContent += `\n[${now}] [Server] Saving world dimensions (overworld, nether, the_end)...`;
+      con.textContent += `\n[${now}] [Daemon] Server container stopped cleanly.`;
+      con.scrollTop = con.scrollHeight;
+    }
+  } else if (action === 'restart') {
+    showToast('Restarting Minecraft server...');
+    if (con) {
+      con.textContent += `\n[${now}] [Daemon] Reboot signal acknowledged. Restarting JVM...`;
+      con.textContent += `\n[${now}] [Server] Done (2.1s)! Server running at 20.0 TPS.`;
+      con.scrollTop = con.scrollHeight;
+    }
+  } else if (action === 'kill') {
+    showToast('Forced SIGKILL sent to server container');
+    if (con) {
+      con.textContent += `\n[${now}] [Daemon] Process terminated immediately (SIGKILL).`;
+      con.scrollTop = con.scrollHeight;
+    }
+  } else if (action === 'reload') {
+    showToast('Reloading server configuration & plugins...');
+    if (con) {
+      con.textContent += `\n[${now}] [Server] Reload complete. 18 plugins refreshed.`;
+      con.scrollTop = con.scrollHeight;
+    }
+  } else if (action === 'backup') {
+    showToast('Creating full NVMe snapshot backup of world & configs...');
+    if (con) {
+      con.textContent += `\n[${now}] [Backup] Snapshot backup created: survival-1_backup_${Date.now()}.tar.gz (1.4 GB)`;
+      con.scrollTop = con.scrollHeight;
+    }
+  }
+}
+
+/* ── File Explorer Sub-Tabs & Editor ──────────────────────────────────────── */
+function switchFileTab(tabName, btnElement) {
+  document.querySelectorAll('.ftab-btn').forEach(btn => btn.classList.remove('active'));
+  if (btnElement) {
+    btnElement.classList.add('active');
+  } else {
+    const matchingBtn = Array.from(document.querySelectorAll('.ftab-btn')).find(b => 
+      b.textContent.toLowerCase().includes(tabName)
+    );
+    if (matchingBtn) matchingBtn.classList.add('active');
+  }
+
+  const tbody = document.getElementById('file-tbody');
+  if (!tbody) return;
+
+  if (tabName === 'plugins') {
+    tbody.innerHTML = `
+      <tr onclick="showToast('Viewing EssentialsX.jar')">
+        <td><div class="file-name-cell">🧩 EssentialsX-2.20.1.jar</div></td>
+        <td>4.2 MB</td>
+        <td>2 days ago</td>
+        <td style="text-align:right; color:var(--text-muted);">⋮</td>
+      </tr>
+      <tr onclick="showToast('Viewing LuckPerms.jar')">
+        <td><div class="file-name-cell">🧩 LuckPerms-Bukkit-5.4.jar</div></td>
+        <td>2.8 MB</td>
+        <td>2 days ago</td>
+        <td style="text-align:right; color:var(--text-muted);">⋮</td>
+      </tr>
+      <tr onclick="showToast('Viewing WorldEdit.jar')">
+        <td><div class="file-name-cell">🧩 WorldEdit-7.3.0.jar</div></td>
+        <td>6.1 MB</td>
+        <td>2 days ago</td>
+        <td style="text-align:right; color:var(--text-muted);">⋮</td>
+      </tr>
+      <tr onclick="showToast('Viewing Vault.jar')">
+        <td><div class="file-name-cell">🧩 Vault.jar</div></td>
+        <td>420 KB</td>
+        <td>2 days ago</td>
+        <td style="text-align:right; color:var(--text-muted);">⋮</td>
+      </tr>
+    `;
+  } else if (tabName === 'worlds') {
+    tbody.innerHTML = `
+      <tr onclick="showToast('World directory: world')">
+        <td><div class="file-name-cell">🌍 world (Overworld)</div></td>
+        <td>420 MB</td>
+        <td>1 hour ago</td>
+        <td style="text-align:right; color:var(--text-muted);">⋮</td>
+      </tr>
+      <tr onclick="showToast('World directory: world_nether')">
+        <td><div class="file-name-cell">🔥 world_nether (Nether)</div></td>
+        <td>180 MB</td>
+        <td>1 hour ago</td>
+        <td style="text-align:right; color:var(--text-muted);">⋮</td>
+      </tr>
+      <tr onclick="showToast('World directory: world_the_end')">
+        <td><div class="file-name-cell">🌌 world_the_end (The End)</div></td>
+        <td>95 MB</td>
+        <td>1 hour ago</td>
+        <td style="text-align:right; color:var(--text-muted);">⋮</td>
+      </tr>
+    `;
+  } else if (tabName === 'backups') {
+    tbody.innerHTML = `
+      <tr onclick="showToast('Snapshot ready for download')">
+        <td><div class="file-name-cell">💾 auto_backup_2026-09-29.tar.gz</div></td>
+        <td>1.42 GB</td>
+        <td>Today at 04:00 AM</td>
+        <td style="text-align:right; color:var(--text-muted);">⋮</td>
+      </tr>
+      <tr onclick="showToast('Snapshot ready for download')">
+        <td><div class="file-name-cell">💾 auto_backup_2026-09-28.tar.gz</div></td>
+        <td>1.39 GB</td>
+        <td>Yesterday at 04:00 AM</td>
+        <td style="text-align:right; color:var(--text-muted);">⋮</td>
+      </tr>
+    `;
+  } else if (tabName === 'schedules') {
+    tbody.innerHTML = `
+      <tr onclick="showToast('Schedule: Daily Restart at 04:00')">
+        <td><div class="file-name-cell">⏰ Daily Automated Reboot &amp; World Save</div></td>
+        <td>Every 24h (04:00 IST)</td>
+        <td>Active</td>
+        <td style="text-align:right; color:var(--text-muted);">⋮</td>
+      </tr>
+      <tr onclick="showToast('Schedule: Daily Automated Backup')">
+        <td><div class="file-name-cell">⏰ Automated NVMe Snapshot Backup</div></td>
+        <td>Every 24h (04:15 IST)</td>
+        <td>Active</td>
+        <td style="text-align:right; color:var(--text-muted);">⋮</td>
+      </tr>
+    `;
+  } else {
+    // Reset to root files
+    tbody.innerHTML = `
+      <tr onclick="openFileEditorModal('plugins/')">
+        <td><div class="file-name-cell"><svg width="15" height="15" viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg> plugins/</div></td>
+        <td>-</td><td>2 days ago</td><td style="text-align:right; color:var(--text-muted);">⋮</td>
+      </tr>
+      <tr onclick="openFileEditorModal('world/')">
+        <td><div class="file-name-cell"><svg width="15" height="15" viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg> world/</div></td>
+        <td>-</td><td>2 days ago</td><td style="text-align:right; color:var(--text-muted);">⋮</td>
+      </tr>
+      <tr onclick="openFileEditorModal('config/')">
+        <td><div class="file-name-cell"><svg width="15" height="15" viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg> config/</div></td>
+        <td>-</td><td>3 days ago</td><td style="text-align:right; color:var(--text-muted);">⋮</td>
+      </tr>
+      <tr onclick="openFileEditorModal('logs/')">
+        <td><div class="file-name-cell"><svg width="15" height="15" viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg> logs/</div></td>
+        <td>-</td><td>2 hours ago</td><td style="text-align:right; color:var(--text-muted);">⋮</td>
+      </tr>
+      <tr onclick="openFileEditorModal('server.jar')">
+        <td><div class="file-name-cell"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> server.jar</div></td>
+        <td>52.4 MB</td><td>2 days ago</td><td style="text-align:right; color:var(--text-muted);">⋮</td>
+      </tr>
+      <tr onclick="openFileEditorModal('server.properties')">
+        <td><div class="file-name-cell"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> server.properties</div></td>
+        <td>4.2 KB</td><td>1 hour ago</td><td style="text-align:right; color:var(--text-muted);">⋮</td>
+      </tr>
+      <tr onclick="openFileEditorModal('eula.txt')">
+        <td><div class="file-name-cell"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> eula.txt</div></td>
+        <td>1 KB</td><td>2 days ago</td><td style="text-align:right; color:var(--text-muted);">⋮</td>
+      </tr>
+    `;
+  }
+}
+
+function openFileEditorModal(filename) {
+  if (filename.endsWith('/')) {
+    showToast(`Opened folder: ${filename}`);
+    return;
+  }
+  activeEditingFile = filename;
+  const modal = document.getElementById('file-modal');
+  const title = document.getElementById('file-modal-title');
+  const area = document.getElementById('file-editor-area');
+
+  if (title) title.textContent = `Editing ${filename}`;
+  if (area) {
+    if (filename === 'server.properties') {
+      area.value = `# Minecraft server properties
+# KryonHost AMD Ryzen 9 7950X High-Performance Node
+server-port=25565
+gamemode=survival
+difficulty=normal
+pvp=true
+max-players=100
+view-distance=12
+simulation-distance=10
+enable-command-block=true
+motd=§a§lSurvival-1 §7- §bAMD Ryzen 9 7950X §8| §d92 Tbps DDoS Shield
+online-mode=true
+allow-flight=false
+white-list=false
+spawn-protection=0
+`;
+    } else if (filename === 'eula.txt') {
+      area.value = `# By changing the setting below to TRUE you are indicating your agreement to our EULA (https://aka.ms/MinecraftEULA).\neula=true\n`;
+    } else {
+      area.value = `# Configuration file: ${filename}\n`;
+    }
+  }
+
+  if (modal) modal.style.display = 'flex';
+}
+
+function closeFileModal() {
+  const modal = document.getElementById('file-modal');
+  if (modal) modal.style.display = 'none';
+}
+
+function saveFileFromModal() {
+  closeFileModal();
+  showToast(`File "${activeEditingFile}" saved successfully!`);
+}
+
+/* ── Credentials Modal & Direct Copy ──────────────────────────────────────── */
+function openCredsModal(type = 'sftp') {
+  const modal = document.getElementById('creds-modal');
+  if (modal) modal.style.display = 'flex';
 }
 
 function closeCredsModal() {
   const modal = document.getElementById('creds-modal');
   if (modal) modal.style.display = 'none';
+}
+
+function copyDirect(text) {
+  navigator.clipboard.writeText(text);
+  showToast(`Copied "${text}" to clipboard`);
 }
 
 /* ── Toast Notifications ──────────────────────────────────────────────────── */
