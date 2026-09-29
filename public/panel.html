@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>KryonHost — Cloud VPS & Infrastructure Control Center</title>
-  <meta name="description" content="Enterprise Cloud VPS, Minecraft nodes, and DDoS mitigation powered by Shulker API v2.">
+  <meta name="description" content="Enterprise Cloud VPS, Minecraft nodes, and DDoS mitigation.">
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -884,7 +884,7 @@
       gap: 5px;
     }
 
-    /* Shulker API v2 Box */
+    /* API Box Styles */
     .api-integration-card-body {
       padding: 14px 16px;
       display: flex;
@@ -1073,14 +1073,6 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
           Support
         </div>
-      </a>
-
-      <a class="sidebar-item-link" href="https://shulker.in/docs/api-v2/" target="_blank">
-        <div class="nav-icon-label">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-          API Docs
-        </div>
-        <span style="font-size:0.62rem; color:var(--color-brand); font-weight:700;">Beta</span>
       </a>
     </nav>
 
@@ -1447,7 +1439,7 @@ root@srv-7f3a9c2e:~# </div>
 
         </div>
 
-        <!-- RIGHT COLUMN (QUICK ACTIONS, SERVER DETAILS, NETWORK, SHULKER API) -->
+        <!-- RIGHT COLUMN (QUICK ACTIONS, SERVER DETAILS, NETWORK) -->
         <div class="col-stack">
           
           <!-- QUICK ACTIONS LIST CARD -->
@@ -1592,71 +1584,12 @@ root@srv-7f3a9c2e:~# </div>
             </div>
           </div>
 
-          <!-- SHULKER API v2 INTEGRATION CARD -->
-          <div class="clean-box-card" id="pane-api-card">
-            <div class="box-card-header">
-              <div class="box-card-title">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--color-brand)" stroke-width="2.5"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-                Shulker API v2
-              </div>
-              <a href="https://shulker.in/docs/api-v2/" target="_blank" style="font-size:0.7rem; color:var(--color-brand); text-decoration:none;">Docs ↗</a>
-            </div>
-
-            <div class="api-integration-card-body">
-              <div style="display:flex; justify-content:space-between; align-items:center;">
-                <span class="status-badge-running" style="font-size:0.65rem; padding:1px 6px;"><span class="status-dot-blink"></span> Enabled</span>
-              </div>
-              <div style="font-size:0.7rem; color:var(--text-muted);">Use the Shulker API v2 to manage your VPS programmatically.</div>
-
-              <div>
-                <div style="font-size:0.65rem; color:var(--text-muted); text-transform:uppercase; margin-bottom:2px;">Base URL</div>
-                <div class="api-key-mask-box" onclick="copyVpsText('https://panel.kryoncloud.in/api/v2')">
-                  <span>https://panel.kryoncloud.in/api/v2</span>
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                </div>
-              </div>
-
-              <div>
-                <div style="font-size:0.65rem; color:var(--text-muted); text-transform:uppercase; margin-bottom:2px;">API Key</div>
-                <div class="api-key-mask-box">
-                  <span id="api-key-masked-val">shk_live_••••••••••••••</span>
-                  <div style="display:flex; gap:6px;">
-                    <button class="btn-restore-pill" onclick="toggleApiKeyVisibility()" style="padding:1px 6px;">Reveal</button>
-                    <button class="btn-restore-pill" onclick="showVpsToast('New Shulker API v2 Key Generated!')" style="padding:1px 6px;">Regenerate</button>
-                  </div>
-                </div>
-              </div>
-
-              <div style="font-size:0.68rem; color:var(--text-muted); margin-top:2px;">
-                <div style="font-weight:600; color:var(--text-secondary); margin-bottom:4px;">Available API Endpoints</div>
-                <div style="display:flex; flex-direction:column; gap:3px;">
-                  <div><span style="color:var(--color-emerald);">✓</span> Create / Delete VPS</div>
-                  <div><span style="color:var(--color-emerald);">✓</span> Start / Stop / Reboot</div>
-                  <div><span style="color:var(--color-emerald);">✓</span> Get Server Info &amp; Metrics</div>
-                  <div><span style="color:var(--color-emerald);">✓</span> Change Plan / Resources</div>
-                  <div><span style="color:var(--color-emerald);">✓</span> Manage Firewall Rules</div>
-                  <div><span style="color:var(--color-emerald);">✓</span> Create Snapshots</div>
-                  <div><span style="color:var(--color-emerald);">✓</span> Get Console WebSocket</div>
-                  <div><span style="color:var(--color-emerald);">✓</span> List / Manage SSH Keys</div>
-                </div>
-              </div>
-
-              <a href="https://shulker.in/docs/api-v2/" target="_blank" class="btn-api-cta">View Full API Documentation ↗</a>
-            </div>
-          </div>
-
-        </div>
-
-      </div>
-
-    </div>
-
     <!-- FOOTER -->
     <footer class="app-footer-strip">
       <div style="display:flex; align-items:center; gap:8px;">
         <span style="color:#fff; font-weight:600;">KryonHost</span>
         <span>·</span>
-        <span>Powered by Shulker API v2</span>
+        <span>Enterprise Cloud Platform</span>
         <span>·</span>
         <span>Reliable</span>
         <span>·</span>

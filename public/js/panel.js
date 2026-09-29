@@ -1,10 +1,9 @@
 /* ═══════════════════════════════════════════════════════════════════════════
-   KryonHost — Cloud VPS Infrastructure & Shulker API v2 Controller
+   KryonHost — Cloud VPS Infrastructure & Virtualization Engine Controller
    ═══════════════════════════════════════════════════════════════════════════ */
 
 let vpsMultiChart = null;
 let currentVpsId = 'srv-7f3a9c2e';
-let isApiKeyRevealed = false;
 
 /* ── Initialization ───────────────────────────────────────────────────────── */
 async function initVpsPanel() {
@@ -152,9 +151,6 @@ function switchVpsTab(tabName, btnElement) {
   } else if (tabName === 'networking') {
     const el = document.getElementById('pane-networking-card');
     if (el) el.scrollIntoView({ behavior: 'smooth' });
-  } else if (tabName === 'api') {
-    const el = document.getElementById('pane-api-card');
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
   } else {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
@@ -239,20 +235,6 @@ async function handleVpsPowerAction(action) {
   if (term) {
     term.textContent += `\n[${now}] Hypervisor power signal: ${action.toUpperCase()} acknowledged.`;
     term.scrollTop = term.scrollHeight;
-  }
-}
-
-/* ── API Key Masking & Clipboard ──────────────────────────────────────────── */
-function toggleApiKeyVisibility() {
-  const span = document.getElementById('api-key-masked-val');
-  if (!span) return;
-
-  if (isApiKeyRevealed) {
-    span.textContent = 'shk_live_••••••••••••••';
-    isApiKeyRevealed = false;
-  } else {
-    span.textContent = 'shk_live_89f2a4b10e7c3d2891';
-    isApiKeyRevealed = true;
   }
 }
 
