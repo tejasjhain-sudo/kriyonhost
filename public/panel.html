@@ -3,121 +3,679 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KryonHost — Client Platform</title>
+  <title>KryonHost — Client Cloud Console</title>
+  <meta name="description" content="Manage high-performance Cloud VPS, Minecraft servers, network metrics, and bare-metal telemetry.">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=Inter:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="/css/style.css">
   
-  <!-- Chart.js for Professional Graphs -->
+  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <!-- Supabase Auth -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     :root {
-      --bg-dark: #000000;
-      --bg-panel: #0a0a0a;
-      --bg-card: #111111;
-      --border-subtle: #222222;
-      --border-focus: #333333;
-      --text-main: #ededed;
-      --text-muted: #a1a1aa;
-      --accent-blue: #0070f3;
-      --accent-green: #10b981;
+      --bg-dark: #05050a;
+      --bg-panel: #0a0914;
+      --bg-card: #0f0e1c;
+      --bg-card-hover: #151426;
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-focus: rgba(124, 106, 255, 0.4);
+      --text-main: #f4f4f6;
+      --text-muted: #9494a8;
+      --accent-purple: #7c6aff;
+      --accent-blue: #38bdf8;
+      --accent-green: #22c55e;
       --accent-red: #ef4444;
       --accent-amber: #f59e0b;
     }
-    
-    body { background: var(--bg-dark); color: var(--text-main); font-family: 'Inter', -apple-system, sans-serif; display: flex; height: 100vh; overflow: hidden; margin: 0; }
-    
-    /* Modern Sidebar */
-    .sidebar { width: 260px; background: var(--bg-panel); border-right: 1px solid var(--border-subtle); display: flex; flex-direction: column; flex-shrink: 0; }
-    .sidebar-header { padding: 24px; border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; gap: 12px; }
-    .brand-logo { width: 28px; height: 28px; border-radius: 6px; object-fit: contain; }
-    .brand-name { font-family: 'Bricolage Grotesque', sans-serif; font-size: 1.2rem; font-weight: 500; letter-spacing: -0.02em; }
-    
-    .nav-group { padding: 16px 12px; display: flex; flex-direction: column; gap: 4px; flex: 1; }
-    .nav-label { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; padding: 0 12px; margin-bottom: 8px; margin-top: 16px; }
-    .nav-item { padding: 10px 12px; border-radius: 8px; color: var(--text-muted); text-decoration: none; display: flex; align-items: center; gap: 12px; font-size: 0.9rem; transition: all 0.2s; cursor: pointer; border: 1px solid transparent; }
-    .nav-item:hover { background: rgba(255,255,255,0.03); color: var(--text-main); }
-    .nav-item.active { background: rgba(255,255,255,0.05); color: var(--text-main); border-color: var(--border-focus); box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
-    .nav-item svg { width: 18px; height: 18px; stroke-width: 2; opacity: 0.8; }
-    
-    .sidebar-footer { padding: 16px; border-top: 1px solid var(--border-subtle); }
-    .user-profile { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 8px; background: rgba(255,255,255,0.02); border: 1px solid var(--border-focus); }
-    .avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--accent-blue), #8b5cf6); display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.9rem; }
-    .user-info { flex: 1; min-width: 0; }
-    .user-email { font-size: 0.8rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .user-role { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
-    .btn-logout { background: transparent; border: none; color: var(--text-muted); cursor: pointer; padding: 4px; transition: 0.2s; }
-    .btn-logout:hover { color: var(--accent-red); }
+
+    body {
+      background: var(--bg-dark);
+      color: var(--text-main);
+      font-family: 'Inter', -apple-system, sans-serif;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+      margin: 0;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 260px;
+      background: var(--bg-panel);
+      border-right: 1px solid var(--border-subtle);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      z-index: 50;
+    }
+
+    .sidebar-header {
+      padding: 22px 24px;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .brand-logo {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      object-fit: contain;
+    }
+
+    .brand-name {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .nav-group {
+      padding: 16px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .nav-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 0 12px;
+      margin-bottom: 6px;
+      margin-top: 14px;
+    }
+
+    .nav-item {
+      padding: 10px 14px;
+      border-radius: 9px;
+      color: var(--text-muted);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      transition: all 0.15s ease;
+      cursor: pointer;
+      border: 1px solid transparent;
+    }
+
+    .nav-item:hover {
+      background: rgba(255, 255, 255, 0.03);
+      color: #fff;
+    }
+
+    .nav-item.active {
+      background: rgba(124, 106, 255, 0.14);
+      color: #fff;
+      border-color: rgba(124, 106, 255, 0.3);
+      font-weight: 600;
+    }
+
+    .nav-item svg {
+      width: 17px;
+      height: 17px;
+      stroke-width: 2;
+      opacity: 0.85;
+      flex-shrink: 0;
+    }
+
+    .sidebar-footer {
+      padding: 16px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-purple), #c084fc);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .user-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .user-email {
+      font-size: 0.8rem;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: #fff;
+      font-family: 'DM Mono', monospace;
+    }
+
+    .user-role {
+      font-size: 0.68rem;
+      color: var(--accent-green);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .btn-logout {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      transition: 0.2s;
+    }
+
+    .btn-logout:hover {
+      background: rgba(239, 68, 68, 0.12);
+      color: var(--accent-red);
+    }
 
     /* Main Area */
-    .main-area { flex: 1; display: flex; flex-direction: column; overflow-y: auto; background: var(--bg-dark); }
-    .top-header { padding: 24px 40px; border-bottom: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(12px); z-index: 10; }
-    .page-title { font-family: 'Bricolage Grotesque', sans-serif; font-size: 1.5rem; font-weight: 500; letter-spacing: -0.02em; }
-    
-    .content-wrap { padding: 40px; max-width: 1400px; margin: 0 auto; width: 100%; box-sizing: border-box; }
+    .main-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      background: var(--bg-dark);
+      position: relative;
+    }
 
-    /* Premium Server Grid */
-    .server-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 24px; }
-    .scard { background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 24px; transition: all 0.2s; cursor: pointer; position: relative; overflow: hidden; }
-    .scard:hover { border-color: var(--border-focus); transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.4); }
-    .scard-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
-    .scard-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
-    .scard-ip { font-family: 'DM Mono', monospace; font-size: 0.85rem; color: var(--text-muted); }
-    
-    .status-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
-    .status-badge.running { background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2); color: var(--accent-green); }
-    .status-badge.stopped { background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); color: var(--accent-red); }
-    .dot { width: 6px; height: 6px; border-radius: 50%; }
-    .dot.running { background: var(--accent-green); box-shadow: 0 0 8px var(--accent-green); animation: pulse 2s infinite; }
-    .dot.stopped { background: var(--accent-red); }
-    
-    .scard-specs { display: flex; justify-content: space-between; padding-top: 16px; border-top: 1px solid var(--border-subtle); margin-top: 16px; }
-    .spec-item { display: flex; flex-direction: column; gap: 4px; }
-    .spec-val { font-weight: 600; font-size: 0.95rem; }
-    .spec-lbl { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+    .top-header {
+      padding: 18px 36px;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      background: rgba(5, 5, 10, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      z-index: 20;
+    }
 
-    /* Dashboard Detail View */
-    #detail-view { display: none; }
-    .dash-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 32px; }
-    .dash-title-group h1 { font-size: 2rem; font-family: 'Bricolage Grotesque', sans-serif; margin: 0 0 8px 0; }
-    .dash-meta { display: flex; gap: 16px; color: var(--text-muted); font-size: 0.9rem; align-items: center; }
-    
-    .power-strip { display: flex; gap: 12px; background: var(--bg-card); padding: 12px; border-radius: 12px; border: 1px solid var(--border-subtle); }
-    .btn-power { display: flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; border: 1px solid transparent; transition: 0.2s; }
-    .btn-p-start { background: rgba(16, 185, 129, 0.1); color: var(--accent-green); border-color: rgba(16, 185, 129, 0.2); }
-    .btn-p-start:hover { background: rgba(16, 185, 129, 0.2); }
-    .btn-p-stop { background: rgba(239, 68, 68, 0.1); color: var(--accent-red); border-color: rgba(239, 68, 68, 0.2); }
-    .btn-p-stop:hover { background: rgba(239, 68, 68, 0.2); }
-    .btn-p-reboot { background: rgba(245, 158, 11, 0.1); color: var(--accent-amber); border-color: rgba(245, 158, 11, 0.2); }
-    .btn-p-reboot:hover { background: rgba(245, 158, 11, 0.2); }
-    
+    .content-wrap {
+      padding: 32px 36px 60px;
+      max-width: 1440px;
+      margin: 0 auto;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    /* Server Grid Cards */
+    .server-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 20px;
+    }
+
+    .scard {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 22px;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .scard:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border-focus);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .scard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+
+    .scard-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: #fff;
+    }
+
+    .scard-ip {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.82rem;
+      color: var(--accent-blue);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-family: 'DM Mono', monospace;
+    }
+
+    .status-badge.running {
+      background: rgba(34, 197, 94, 0.12);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      color: var(--accent-green);
+    }
+
+    .status-badge.stopped {
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: var(--accent-red);
+    }
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+
+    .dot.running {
+      background: var(--accent-green);
+      box-shadow: 0 0 8px var(--accent-green);
+      animation: pulse 2s infinite;
+    }
+
+    .dot.stopped {
+      background: var(--accent-red);
+    }
+
+    .scard-specs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border-subtle);
+      margin-top: 14px;
+    }
+
+    .spec-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .spec-lbl {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .spec-val {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #fff;
+    }
+
+    /* Detail View */
+    #detail-view {
+      display: none;
+    }
+
+    .dash-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+      gap: 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 24px 28px;
+    }
+
+    .dash-title-group h1 {
+      font-size: 1.8rem;
+      font-family: 'Bricolage Grotesque', sans-serif;
+      margin: 0 0 6px 0;
+      color: #fff;
+    }
+
+    .dash-meta {
+      display: flex;
+      gap: 16px;
+      color: var(--text-muted);
+      font-size: 0.88rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    /* Action Buttons Strip */
+    .power-strip {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn-power {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 18px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.2s ease;
+    }
+
+    .btn-p-start {
+      background: rgba(34, 197, 94, 0.14);
+      color: var(--accent-green);
+      border-color: rgba(34, 197, 94, 0.3);
+    }
+    .btn-p-start:hover {
+      background: rgba(34, 197, 94, 0.25);
+    }
+
+    .btn-p-stop {
+      background: rgba(239, 68, 68, 0.14);
+      color: var(--accent-red);
+      border-color: rgba(239, 68, 68, 0.3);
+    }
+    .btn-p-stop:hover {
+      background: rgba(239, 68, 68, 0.25);
+    }
+
+    .btn-p-reboot {
+      background: rgba(245, 158, 11, 0.14);
+      color: var(--accent-amber);
+      border-color: rgba(245, 158, 11, 0.3);
+    }
+    .btn-p-reboot:hover {
+      background: rgba(245, 158, 11, 0.25);
+    }
+
+    .btn-p-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      color: #fff;
+      border-color: var(--border-subtle);
+    }
+    .btn-p-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
     /* Tabs */
-    .tabs { display: flex; gap: 32px; border-bottom: 1px solid var(--border-subtle); margin-bottom: 32px; }
-    .tab { padding: 0 0 16px 0; color: var(--text-muted); font-size: 0.9rem; font-weight: 500; cursor: pointer; position: relative; }
-    .tab:hover { color: var(--text-main); }
-    .tab.active { color: var(--text-main); }
-    .tab.active::after { content: ''; position: absolute; bottom: -1px; left: 0; width: 100%; height: 2px; background: var(--accent-blue); border-radius: 2px 2px 0 0; }
+    .tabs-nav {
+      display: flex;
+      gap: 24px;
+      border-bottom: 1px solid var(--border-subtle);
+      margin-bottom: 28px;
+      overflow-x: auto;
+    }
 
-    /* Graph Grid */
-    .metrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
-    .metric-card { background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 24px; }
-    .metric-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-    .metric-title { font-size: 0.95rem; font-weight: 600; display: flex; align-items: center; gap: 8px; }
-    .metric-val { font-family: 'DM Mono', monospace; font-size: 1.25rem; font-weight: 500; color: var(--accent-blue); }
-    .chart-container { position: relative; height: 180px; width: 100%; }
+    .tab-btn {
+      padding: 0 0 14px 0;
+      color: var(--text-muted);
+      font-size: 0.92rem;
+      font-weight: 500;
+      cursor: pointer;
+      position: relative;
+      background: none;
+      border: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+      transition: color 0.2s;
+    }
 
-    /* Hardware Info Box */
-    .hw-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
-    .hw-box { background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 20px; }
-    .hw-lbl { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
-    .hw-val { font-size: 1.1rem; font-weight: 500; }
+    .tab-btn:hover {
+      color: #fff;
+    }
 
-    /* Utility */
-    .btn-back { background: transparent; border: none; color: var(--text-muted); font-size: 0.9rem; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 24px; padding: 0; transition: 0.2s; }
-    .btn-back:hover { color: var(--text-main); transform: translateX(-4px); }
-    
-    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); } 70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); } 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
+    .tab-btn.active {
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .tab-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: var(--accent-purple);
+      border-radius: 2px 2px 0 0;
+    }
+
+    /* Tab Contents */
+    .tab-pane {
+      display: none;
+    }
+    .tab-pane.active {
+      display: block;
+    }
+
+    /* Graphs Grid */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    .metric-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 22px;
+    }
+
+    .metric-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .metric-title {
+      font-size: 0.92rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #fff;
+    }
+
+    .metric-val {
+      font-family: 'DM Mono', monospace;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--accent-blue);
+    }
+
+    .chart-container {
+      position: relative;
+      height: 170px;
+      width: 100%;
+    }
+
+    /* Hardware Specifications Grid */
+    .hw-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .hw-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 18px;
+    }
+
+    .hw-lbl {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 6px;
+    }
+
+    .hw-val {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    /* Terminal Window */
+    .terminal-window {
+      background: #06050e;
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 18px;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.8rem;
+      color: #38bdf8;
+      height: 320px;
+      overflow-y: auto;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      box-shadow: inset 0 2px 10px rgba(0,0,0,0.6);
+    }
+
+    /* Credentials Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal-box {
+      background: #0a0914;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 18px;
+      padding: 32px;
+      width: 100%;
+      max-width: 500px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.8);
+    }
+
+    .copy-input-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .copy-input-row input {
+      flex: 1;
+      padding: 10px 14px;
+      background: #11101d;
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      color: #38bdf8;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.85rem;
+      outline: none;
+    }
+
+    .btn-copy {
+      padding: 10px 16px;
+      border-radius: 8px;
+      background: rgba(124, 106, 255, 0.15);
+      border: 1px solid rgba(124, 106, 255, 0.3);
+      color: #fff;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .btn-copy:hover {
+      background: var(--purple-bright);
+    }
+
+    /* Back Button */
+    .btn-back {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+      padding: 0;
+      transition: all 0.2s ease;
+    }
+
+    .btn-back:hover {
+      color: #fff;
+      transform: translateX(-4px);
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
+      70% { box-shadow: 0 0 0 6px rgba(34, 197, 94, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+    }
   </style>
 </head>
 <body>
@@ -125,29 +683,36 @@
   <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="sidebar-header">
-      <img src="/images/logo.jpg" alt="Logo" class="brand-logo">
-      <span class="brand-name">KryonPanel</span>
+      <a href="/" class="brand-group">
+        <img src="/images/logo.jpg" alt="Logo" class="brand-logo">
+        <span class="brand-name">KryonPanel</span>
+      </a>
+      <span class="brand-tag">BETA</span>
     </div>
     
     <div class="nav-group">
-      <div class="nav-label">Infrastructure</div>
+      <div class="nav-label">Fleet Management</div>
       <a class="nav-item active" onclick="showListView()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-        Compute Instances
+        Active Instances
       </a>
-      <a class="nav-item" href="#">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
-        Anycast Network
+      <a class="nav-item" href="/status">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        Live System Status
+      </a>
+      <a class="nav-item" href="/tunnels">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Anycast Tunnels
       </a>
       
-      <div class="nav-label">Account</div>
-      <a class="nav-item" href="#">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-        Security & API Keys
+      <div class="nav-label">Support &amp; Community</div>
+      <a class="nav-item" href="https://discord.gg/kt9yPDwYT4" target="_blank">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Discord Tickets &amp; Help
       </a>
-      <a class="nav-item" href="#">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
-        Usage & Billing
+      <a class="nav-item" href="/">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Return to Website
       </a>
     </div>
 
@@ -156,20 +721,29 @@
         <div class="avatar" id="u-initial">U</div>
         <div class="user-info">
           <div class="user-email" id="u-email">Loading...</div>
-          <div class="user-role">Client Account</div>
+          <div class="user-role">
+            <span style="width:5px; height:5px; border-radius:50%; background:var(--accent-green);"></span> Verified Client
+          </div>
         </div>
         <button class="btn-logout" onclick="handleLogout()" title="Sign Out">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
         </button>
       </div>
     </div>
   </aside>
 
-  <!-- MAIN -->
+  <!-- MAIN VIEW -->
   <main class="main-area">
     <header class="top-header" id="top-header">
-      <div class="page-title">Compute Instances</div>
-      <button class="btn-p-start" style="padding:8px 16px; border-radius:6px; cursor:pointer;" onclick="window.location.href='/#plans-section'">Deploy New Server</button>
+      <div style="display:flex; align-items:center; gap:16px;">
+        <h1 class="page-title" style="font-family:'Bricolage Grotesque',sans-serif; font-size:1.4rem; font-weight:600; margin:0;" id="page-heading">Compute Instances</h1>
+      </div>
+      <div style="display:flex; align-items:center; gap:12px;">
+        <a href="/#configurator-section" class="btn btn-sm btn-primary" style="padding:8px 18px; font-size:0.85rem; display:inline-flex; align-items:center; gap:6px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Deploy New Server
+        </a>
+      </div>
     </header>
 
     <div class="content-wrap">
@@ -177,113 +751,192 @@
       <!-- LIST VIEW -->
       <div id="list-view">
         <div class="server-grid" id="servers-container">
-          <div style="color:var(--text-muted);">Fetching your infrastructure...</div>
+          <div style="color:var(--text-muted); font-size:0.9rem;">Connecting to KryonHost telemetry...</div>
         </div>
       </div>
 
       <!-- DETAIL VIEW -->
       <div id="detail-view">
         <button class="btn-back" onclick="showListView()">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-          Back to Instances
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+          Back to Server Fleet
         </button>
 
+        <!-- Server Hero Header -->
         <div class="dash-header">
           <div class="dash-title-group">
-            <h1 id="d-name">Loading...</h1>
+            <h1 id="d-name">Server Name</h1>
             <div class="dash-meta">
               <span id="d-status-badge" class="status-badge running"><span class="dot running"></span> ONLINE</span>
-              <span style="font-family:'DM Mono',monospace;" id="d-ip">0.0.0.0</span>
-              <span id="d-region">Mumbai, India</span>
+              <span style="font-family:'DM Mono',monospace; color:#38bdf8; display:inline-flex; align-items:center; gap:6px;" id="d-ip">0.0.0.0</span>
+              <span id="d-region">India (Mumbai Tier-4)</span>
             </div>
           </div>
           
+          <!-- Power & Access Controls -->
           <div class="power-strip">
             <button class="btn-power btn-p-start" onclick="powerAction('start')">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg> Start
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg> Start
             </button>
             <button class="btn-power btn-p-reboot" onclick="powerAction('reboot')">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.59-9.21l5.64 5.64"/></svg> Reboot
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.59-9.21l5.64 5.64"/></svg> Reboot
             </button>
             <button class="btn-power btn-p-stop" onclick="powerAction('stop')">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/></svg> Force Stop
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/></svg> Force Stop
+            </button>
+            <button class="btn-power btn-p-secondary" onclick="openCredsModal()">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Access Info
             </button>
           </div>
         </div>
 
-        <div class="tabs">
-          <div class="tab active">Monitoring & Graphing</div>
-          <div class="tab">Network</div>
-          <div class="tab">Settings</div>
+        <!-- Tabs Navigation -->
+        <div class="tabs-nav">
+          <button class="tab-btn active" onclick="switchDetailTab('telemetry', this)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            Live Telemetry &amp; Metrics
+          </button>
+          <button class="tab-btn" onclick="switchDetailTab('console', this)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+            Live Web Console
+          </button>
+          <button class="tab-btn" onclick="switchDetailTab('network', this)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+            Cryo L7 Firewall
+          </button>
         </div>
 
-        <!-- Charts -->
-        <div class="metrics-grid">
-          
-          <div class="metric-card">
-            <div class="metric-head">
-              <div class="metric-title">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
-                CPU Usage
+        <!-- TAB 1: TELEMETRY -->
+        <div class="tab-pane active" id="pane-telemetry">
+          <!-- Charts Grid -->
+          <div class="metrics-grid">
+            <div class="metric-card">
+              <div class="metric-head">
+                <div class="metric-title">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent-purple)" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+                  CPU Usage History
+                </div>
+                <div class="metric-val" id="val-cpu">0.0%</div>
               </div>
-              <div class="metric-val" id="val-cpu">0.0%</div>
+              <div class="chart-container">
+                <canvas id="chart-cpu"></canvas>
+              </div>
             </div>
-            <div class="chart-container">
-              <canvas id="chart-cpu"></canvas>
+
+            <div class="metric-card">
+              <div class="metric-head">
+                <div class="metric-title">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#c084fc" stroke-width="2"><line x1="22" y1="12" x2="2" y2="12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
+                  Allocated RAM Consumption
+                </div>
+                <div class="metric-val" id="val-ram" style="color:#c084fc;">0.0 MB</div>
+              </div>
+              <div class="chart-container">
+                <canvas id="chart-ram"></canvas>
+              </div>
+            </div>
+
+            <div class="metric-card" style="grid-column: 1 / -1;">
+              <div class="metric-head">
+                <div class="metric-title">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent-green)" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                  Real-Time Network Ingress / Egress (Mbps)
+                </div>
+                <div class="metric-val" style="color:var(--accent-green);" id="val-net">0.0 IN / 0.0 OUT</div>
+              </div>
+              <div class="chart-container">
+                <canvas id="chart-net"></canvas>
+              </div>
             </div>
           </div>
 
-          <div class="metric-card">
-            <div class="metric-head">
-              <div class="metric-title">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2"><line x1="22" y1="12" x2="2" y2="12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/><line x1="6" y1="16" x2="6.01" y2="16"/><line x1="10" y1="16" x2="10.01" y2="16"/></svg>
-                Memory Usage
-              </div>
-              <div class="metric-val" id="val-ram">0.0 MB</div>
+          <!-- Hardware Specs -->
+          <h3 style="margin-top:28px; margin-bottom:14px; font-size:1.1rem; font-weight:600; color:#fff;">Hardware Allocation</h3>
+          <div class="hw-grid">
+            <div class="hw-box">
+              <div class="hw-lbl">Virtual CPU</div>
+              <div class="hw-val" id="hw-cpu">4 vCores</div>
             </div>
-            <div class="chart-container">
-              <canvas id="chart-ram"></canvas>
+            <div class="hw-box">
+              <div class="hw-lbl">DDR5 ECC Memory</div>
+              <div class="hw-val" id="hw-ram">8 GB RAM</div>
             </div>
-          </div>
-
-          <div class="metric-card" style="grid-column: 1 / -1;">
-            <div class="metric-head">
-              <div class="metric-title">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-                Network Traffic (Mbps)
-              </div>
-              <div class="metric-val" style="color:var(--accent-green);" id="val-net">0.0 IN / 0.0 OUT</div>
+            <div class="hw-box">
+              <div class="hw-lbl">PCIe Gen4 NVMe</div>
+              <div class="hw-val" id="hw-disk">80 GB Storage</div>
             </div>
-            <div class="chart-container">
-              <canvas id="chart-net"></canvas>
+            <div class="hw-box">
+              <div class="hw-lbl">Installed OS / Platform</div>
+              <div class="hw-val" id="hw-os">Ubuntu 24.04 LTS</div>
             </div>
           </div>
-          
         </div>
 
-        <h3 style="margin-top:24px; margin-bottom:16px; font-size:1.1rem; font-weight:500;">Hardware Specifications</h3>
-        <div class="hw-grid">
-          <div class="hw-box">
-            <div class="hw-lbl">Processor</div>
-            <div class="hw-val" id="hw-cpu">4 vCores</div>
+        <!-- TAB 2: LIVE WEB CONSOLE -->
+        <div class="tab-pane" id="pane-console">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <div style="font-size:0.9rem; color:var(--text-muted); font-family:'DM Mono',monospace;">Connected: /dev/ttyS0 (Direct Serial Stream)</div>
+            <button class="btn btn-sm btn-ghost" onclick="clearConsole()" style="font-size:0.75rem;">Clear Console</button>
           </div>
-          <div class="hw-box">
-            <div class="hw-lbl">Allocated Memory</div>
-            <div class="hw-val" id="hw-ram">8 GB DDR5</div>
-          </div>
-          <div class="hw-box">
-            <div class="hw-lbl">Storage Volume</div>
-            <div class="hw-val" id="hw-disk">80 GB NVMe</div>
-          </div>
-          <div class="hw-box">
-            <div class="hw-lbl">Operating System</div>
-            <div class="hw-val" id="hw-os">Ubuntu 24.04 LTS</div>
+          <div class="terminal-window" id="d-console">Initializing secure terminal stream...</div>
+        </div>
+
+        <!-- TAB 3: FIREWALL -->
+        <div class="tab-pane" id="pane-network">
+          <div class="hw-grid" style="grid-template-columns: repeat(3, 1fr);">
+            <div class="hw-box">
+              <div class="hw-lbl">DDoS Mitigation Engine</div>
+              <div class="hw-val" style="color:#22c55e;">92 Tbps Cryo Active 🟢</div>
+            </div>
+            <div class="hw-box">
+              <div class="hw-lbl">PROXY Protocol v2</div>
+              <div class="hw-val" style="color:#38bdf8;">Enabled (Real Client IPs)</div>
+            </div>
+            <div class="hw-box">
+              <div class="hw-lbl">Rate Limiting</div>
+              <div class="hw-val">50,000 req/min (Anti-Flood)</div>
+            </div>
           </div>
         </div>
 
       </div>
     </div>
   </main>
+
+  <!-- ACCESS / SSH MODAL -->
+  <div class="modal-overlay" id="creds-modal">
+    <div class="modal-box">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+        <h3 style="font-family:'Bricolage Grotesque',sans-serif; font-size:1.4rem; margin:0; color:#fff;">SSH &amp; SFTP Access</h3>
+        <button onclick="closeCredsModal()" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1.2rem;">&times;</button>
+      </div>
+
+      <div style="margin-bottom:16px;">
+        <label style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase;">SSH Command</label>
+        <div class="copy-input-row">
+          <input type="text" id="modal-ssh-cmd" readonly value="ssh root@0.0.0.0 -p 22">
+          <button class="btn-copy" onclick="copyToClipboard('modal-ssh-cmd')">Copy</button>
+        </div>
+      </div>
+
+      <div style="margin-bottom:16px;">
+        <label style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase;">SFTP / File Transfer Host</label>
+        <div class="copy-input-row">
+          <input type="text" id="modal-sftp-host" readonly value="sftp://0.0.0.0:22">
+          <button class="btn-copy" onclick="copyToClipboard('modal-sftp-host')">Copy</button>
+        </div>
+      </div>
+
+      <div style="margin-bottom:24px;">
+        <label style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase;">Default Username</label>
+        <div class="copy-input-row">
+          <input type="text" readonly value="root">
+        </div>
+      </div>
+
+      <button onclick="closeCredsModal()" class="btn btn-primary" style="width:100%; padding:12px;">Close</button>
+    </div>
+  </div>
 
   <script src="/js/supabase-config.js"></script>
   <script src="/js/panel.js"></script>
