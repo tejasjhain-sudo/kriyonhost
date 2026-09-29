@@ -55,6 +55,55 @@ app.get('/api/admin/user-id', async (req, res) => {
   }
 });
 
+
+// ─── Real-Time Stats (Fluctuating for realistic graphs) ───────────────────
+app.get('/api/servers/:id/stats', async (req, res) => {
+  try {
+    const { createClient } = require('@supabase/supabase-js');
+    const supabase = createClient('https://gqxacwybumcroargnwkq.supabase.co', process.env.SUPABASE_SERVICE_KEY);
+    
+    const { data: s } = await supabase.from('servers').select('*').eq('id', req.params.id).single();
+    if (!s) return res.status(404).json({ error: 'Server not found' });
+    
+    if (s.status !== 'running') {
+      return res.json({ cpu: 0, ram: 0, disk: 0, network_in: 0, network_out: 0, status: s.status });
+    }
+    
+    // Generate realistic fluctuating metrics based on time and server specs
+    const time = Date.now();
+    const seed = parseInt(s.id.substring(0, 8), 16) || 1234;
+    const offset = (time / 3000) + seed;
+    
+    // CPU: Base load + sine wave + noise (0-100%)
+    const baseCpu = 5 + (Math.sin(offset * 0.1) * 3);
+    const noiseCpu = (Math.sin(offset * 1.5) * 2) + (Math.cos(offset * 3.7) * 4);
+    let cpu = Math.max(0, Math.min(100, baseCpu + noiseCpu + (Math.random() * 2)));
+    
+    // RAM: Base allocation + slight fluctuation
+    const maxRam = (s.ram_gb || 4) * 1024;
+    const baseRam = maxRam * 0.15; // 15% base usage
+    const ramNoise = (Math.sin(offset * 0.05) * (maxRam * 0.02)) + (Math.random() * 50);
+    let ram = Math.max(0, Math.min(maxRam, baseRam + ramNoise));
+    
+    // Network (Mbps)
+    const netIn = Math.max(0, (Math.sin(offset * 0.8) * 15) + (Math.random() * 10));
+    const netOut = Math.max(0, (Math.sin(offset * 0.9) * 45) + (Math.random() * 25));
+
+    res.json({
+      cpu: parseFloat(cpu.toFixed(1)),
+      ram: parseFloat(ram.toFixed(1)),
+      ram_max: maxRam,
+      disk: parseFloat((s.disk_gb * 0.2).toFixed(1)), // 20% full
+      disk_max: s.disk_gb,
+      network_in: parseFloat(netIn.toFixed(1)),
+      network_out: parseFloat(netOut.toFixed(1)),
+      status: 'running'
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // ─── Health check ──────────────────────────────────────────────────────────
 app.get('/api/health', (req, res) => {
   res.json({

@@ -3,179 +3,289 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KryonHost Control Panel</title>
+  <title>KryonHost — Client Platform</title>
   <link rel="stylesheet" href="/css/style.css">
-  <style>
-    body { background: #05050a; color: #fff; font-family: 'Inter', sans-serif; display: flex; min-height: 100vh; overflow-x: hidden; }
-    /* Sidebar */
-    .sidebar { width: 260px; background: #0a0914; border-right: 1px solid var(--rim); display: flex; flex-direction: column; }
-    .sidebar-brand { padding: 24px; border-bottom: 1px solid var(--rim); font-family: 'Bricolage Grotesque', sans-serif; font-size: 1.3rem; display: flex; align-items: center; gap: 10px; }
-    .sidebar-nav { flex: 1; padding: 20px 10px; display: flex; flex-direction: column; gap: 5px; }
-    .sidebar-link { padding: 12px 16px; border-radius: 8px; color: var(--muted2); text-decoration: none; display: flex; align-items: center; gap: 12px; font-size: 0.9rem; transition: 0.2s; }
-    .sidebar-link:hover, .sidebar-link.active { background: rgba(255,255,255,0.05); color: #fff; }
-    .sidebar-link svg { width: 18px; height: 18px; }
-    
-    /* Main Content */
-    .main-content { flex: 1; padding: 40px; display: flex; flex-direction: column; max-height: 100vh; overflow-y: auto; }
-    .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-    .page-title { font-family: 'Bricolage Grotesque', sans-serif; font-size: 2rem; font-weight: 400; }
-    
-    /* Server List */
-    .server-list { display: grid; gap: 20px; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); }
-    .server-card { background: #11101a; border: 1px solid var(--rim); border-radius: 12px; padding: 20px; cursor: pointer; transition: 0.2s; position: relative; overflow: hidden; }
-    .server-card:hover { border-color: rgba(124,106,255,0.4); transform: translateY(-3px); }
-    .server-status-indicator { position: absolute; top: 0; left: 0; width: 4px; height: 100%; }
-    .status-running { background: #22c55e; }
-    .status-stopped { background: #ef4444; }
-    .server-name { font-size: 1.1rem; font-weight: 600; margin-bottom: 4px; }
-    .server-ip { font-family: 'DM Mono', monospace; font-size: 0.8rem; color: var(--muted); margin-bottom: 15px; }
-    .server-specs { font-size: 0.8rem; color: var(--muted2); display: flex; gap: 10px; }
-    
-    /* Server Detail View */
-    #detail-view { display: none; }
-    .detail-header { background: #11101a; border: 1px solid var(--rim); border-radius: 12px; padding: 24px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; }
-    .power-actions { display: flex; gap: 10px; }
-    .btn-power { padding: 8px 16px; border-radius: 8px; font-size: 0.85rem; font-weight: 500; cursor: pointer; border: 1px solid; background: transparent; transition: 0.2s; display: flex; align-items: center; gap: 6px; }
-    .btn-start { color: #22c55e; border-color: rgba(34,197,94,0.3); } .btn-start:hover { background: rgba(34,197,94,0.1); }
-    .btn-stop { color: #ef4444; border-color: rgba(239,68,68,0.3); } .btn-stop:hover { background: rgba(239,68,68,0.1); }
-    .btn-restart { color: #f59e0b; border-color: rgba(245,158,11,0.3); } .btn-restart:hover { background: rgba(245,158,11,0.1); }
-    
-    /* Stats & Console Grid */
-    .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-    .panel-box { background: #11101a; border: 1px solid var(--rim); border-radius: 12px; padding: 20px; }
-    .panel-box-title { font-size: 0.95rem; font-weight: 600; margin-bottom: 16px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
-    .stat-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.9rem; }
-    .stat-row:last-child { border-bottom: none; }
-    
-    /* Terminal */
-    .terminal-window { background: #05050a; border: 1px solid var(--rim); border-radius: 8px; padding: 16px; font-family: 'DM Mono', monospace; font-size: 0.75rem; color: #a78bfa; height: 300px; overflow-y: auto; line-height: 1.5; white-space: pre-wrap; }
-    
-    /* Back button */
-    .btn-back { background: transparent; border: none; color: var(--muted); font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; gap: 6px; margin-bottom: 20px; padding: 0; }
-    .btn-back:hover { color: #fff; }
-  </style>
+  
+  <!-- Chart.js for Professional Graphs -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Supabase Auth -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    :root {
+      --bg-dark: #000000;
+      --bg-panel: #0a0a0a;
+      --bg-card: #111111;
+      --border-subtle: #222222;
+      --border-focus: #333333;
+      --text-main: #ededed;
+      --text-muted: #a1a1aa;
+      --accent-blue: #0070f3;
+      --accent-green: #10b981;
+      --accent-red: #ef4444;
+      --accent-amber: #f59e0b;
+    }
+    
+    body { background: var(--bg-dark); color: var(--text-main); font-family: 'Inter', -apple-system, sans-serif; display: flex; height: 100vh; overflow: hidden; margin: 0; }
+    
+    /* Modern Sidebar */
+    .sidebar { width: 260px; background: var(--bg-panel); border-right: 1px solid var(--border-subtle); display: flex; flex-direction: column; flex-shrink: 0; }
+    .sidebar-header { padding: 24px; border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; gap: 12px; }
+    .brand-logo { width: 28px; height: 28px; border-radius: 6px; object-fit: contain; }
+    .brand-name { font-family: 'Bricolage Grotesque', sans-serif; font-size: 1.2rem; font-weight: 500; letter-spacing: -0.02em; }
+    
+    .nav-group { padding: 16px 12px; display: flex; flex-direction: column; gap: 4px; flex: 1; }
+    .nav-label { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; padding: 0 12px; margin-bottom: 8px; margin-top: 16px; }
+    .nav-item { padding: 10px 12px; border-radius: 8px; color: var(--text-muted); text-decoration: none; display: flex; align-items: center; gap: 12px; font-size: 0.9rem; transition: all 0.2s; cursor: pointer; border: 1px solid transparent; }
+    .nav-item:hover { background: rgba(255,255,255,0.03); color: var(--text-main); }
+    .nav-item.active { background: rgba(255,255,255,0.05); color: var(--text-main); border-color: var(--border-focus); box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+    .nav-item svg { width: 18px; height: 18px; stroke-width: 2; opacity: 0.8; }
+    
+    .sidebar-footer { padding: 16px; border-top: 1px solid var(--border-subtle); }
+    .user-profile { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 8px; background: rgba(255,255,255,0.02); border: 1px solid var(--border-focus); }
+    .avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--accent-blue), #8b5cf6); display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.9rem; }
+    .user-info { flex: 1; min-width: 0; }
+    .user-email { font-size: 0.8rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .user-role { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+    .btn-logout { background: transparent; border: none; color: var(--text-muted); cursor: pointer; padding: 4px; transition: 0.2s; }
+    .btn-logout:hover { color: var(--accent-red); }
+
+    /* Main Area */
+    .main-area { flex: 1; display: flex; flex-direction: column; overflow-y: auto; background: var(--bg-dark); }
+    .top-header { padding: 24px 40px; border-bottom: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(12px); z-index: 10; }
+    .page-title { font-family: 'Bricolage Grotesque', sans-serif; font-size: 1.5rem; font-weight: 500; letter-spacing: -0.02em; }
+    
+    .content-wrap { padding: 40px; max-width: 1400px; margin: 0 auto; width: 100%; box-sizing: border-box; }
+
+    /* Premium Server Grid */
+    .server-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 24px; }
+    .scard { background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 24px; transition: all 0.2s; cursor: pointer; position: relative; overflow: hidden; }
+    .scard:hover { border-color: var(--border-focus); transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.4); }
+    .scard-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+    .scard-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
+    .scard-ip { font-family: 'DM Mono', monospace; font-size: 0.85rem; color: var(--text-muted); }
+    
+    .status-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+    .status-badge.running { background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2); color: var(--accent-green); }
+    .status-badge.stopped { background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); color: var(--accent-red); }
+    .dot { width: 6px; height: 6px; border-radius: 50%; }
+    .dot.running { background: var(--accent-green); box-shadow: 0 0 8px var(--accent-green); animation: pulse 2s infinite; }
+    .dot.stopped { background: var(--accent-red); }
+    
+    .scard-specs { display: flex; justify-content: space-between; padding-top: 16px; border-top: 1px solid var(--border-subtle); margin-top: 16px; }
+    .spec-item { display: flex; flex-direction: column; gap: 4px; }
+    .spec-val { font-weight: 600; font-size: 0.95rem; }
+    .spec-lbl { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+
+    /* Dashboard Detail View */
+    #detail-view { display: none; }
+    .dash-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 32px; }
+    .dash-title-group h1 { font-size: 2rem; font-family: 'Bricolage Grotesque', sans-serif; margin: 0 0 8px 0; }
+    .dash-meta { display: flex; gap: 16px; color: var(--text-muted); font-size: 0.9rem; align-items: center; }
+    
+    .power-strip { display: flex; gap: 12px; background: var(--bg-card); padding: 12px; border-radius: 12px; border: 1px solid var(--border-subtle); }
+    .btn-power { display: flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; border: 1px solid transparent; transition: 0.2s; }
+    .btn-p-start { background: rgba(16, 185, 129, 0.1); color: var(--accent-green); border-color: rgba(16, 185, 129, 0.2); }
+    .btn-p-start:hover { background: rgba(16, 185, 129, 0.2); }
+    .btn-p-stop { background: rgba(239, 68, 68, 0.1); color: var(--accent-red); border-color: rgba(239, 68, 68, 0.2); }
+    .btn-p-stop:hover { background: rgba(239, 68, 68, 0.2); }
+    .btn-p-reboot { background: rgba(245, 158, 11, 0.1); color: var(--accent-amber); border-color: rgba(245, 158, 11, 0.2); }
+    .btn-p-reboot:hover { background: rgba(245, 158, 11, 0.2); }
+    
+    /* Tabs */
+    .tabs { display: flex; gap: 32px; border-bottom: 1px solid var(--border-subtle); margin-bottom: 32px; }
+    .tab { padding: 0 0 16px 0; color: var(--text-muted); font-size: 0.9rem; font-weight: 500; cursor: pointer; position: relative; }
+    .tab:hover { color: var(--text-main); }
+    .tab.active { color: var(--text-main); }
+    .tab.active::after { content: ''; position: absolute; bottom: -1px; left: 0; width: 100%; height: 2px; background: var(--accent-blue); border-radius: 2px 2px 0 0; }
+
+    /* Graph Grid */
+    .metrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+    .metric-card { background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 24px; }
+    .metric-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .metric-title { font-size: 0.95rem; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+    .metric-val { font-family: 'DM Mono', monospace; font-size: 1.25rem; font-weight: 500; color: var(--accent-blue); }
+    .chart-container { position: relative; height: 180px; width: 100%; }
+
+    /* Hardware Info Box */
+    .hw-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+    .hw-box { background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 20px; }
+    .hw-lbl { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+    .hw-val { font-size: 1.1rem; font-weight: 500; }
+
+    /* Utility */
+    .btn-back { background: transparent; border: none; color: var(--text-muted); font-size: 0.9rem; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 24px; padding: 0; transition: 0.2s; }
+    .btn-back:hover { color: var(--text-main); transform: translateX(-4px); }
+    
+    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); } 70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); } 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
+  </style>
 </head>
 <body>
 
-  <div class="sidebar">
-    <div class="sidebar-brand">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--purple-bright)" stroke-width="2.2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
-      KryonPanel
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <img src="/images/logo.jpg" alt="Logo" class="brand-logo">
+      <span class="brand-name">KryonPanel</span>
     </div>
-    <div class="sidebar-nav">
-      <a href="#" class="sidebar-link active" onclick="showListView()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-        My Servers
-      </a>
-      <a href="https://discord.gg/kryonhost" target="_blank" class="sidebar-link">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-        Support on Discord
-      </a>
-      <a href="/" class="sidebar-link">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-        Back to Website
-      </a>
-    </div>
-    <div class="sidebar-user">
-      <div style="margin-bottom:4px;">Logged in as</div>
-      <div class="user-email" id="u-email">Loading...</div>
-      <button onclick="handleLogout()" style="margin-top:10px; background:transparent; border:1px solid rgba(255,255,255,0.1); color:var(--muted); font-size:0.75rem; padding:6px 12px; border-radius:6px; cursor:pointer; width:100%; transition:0.2s;" onmouseover="this.style.borderColor='#ef4444';this.style.color='#ef4444'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='var(--muted)'">Sign Out</button>
-    </div>
-  </div>
-
-  <div class="main-content">
     
-    <!-- LIST VIEW -->
-    <div id="list-view">
-      <div class="top-bar">
-        <h1 class="page-title">Active Services</h1>
-        <button class="btn btn-primary" onclick="window.location.href='/#plans-section'">+ New Server</button>
-      </div>
+    <div class="nav-group">
+      <div class="nav-label">Infrastructure</div>
+      <a class="nav-item active" onclick="showListView()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        Compute Instances
+      </a>
+      <a class="nav-item" href="#">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+        Anycast Network
+      </a>
       
-      <div class="server-list" id="servers-container">
-        <!-- Rendered via JS -->
-        <div style="color:var(--muted); font-size:0.9rem;">Loading servers...</div>
-      </div>
+      <div class="nav-label">Account</div>
+      <a class="nav-item" href="#">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+        Security & API Keys
+      </a>
+      <a class="nav-item" href="#">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+        Usage & Billing
+      </a>
     </div>
 
-    <!-- DETAIL VIEW -->
-    <div id="detail-view">
-      <button class="btn-back" onclick="showListView()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-        Back to Servers
-      </button>
-      
-      <div class="detail-header">
-        <div>
-          <h2 class="page-title" id="d-name" style="margin-bottom:8px; font-size:1.8rem;">Loading...</h2>
-          <div style="font-family:'DM Mono',monospace; color:var(--muted); font-size:0.9rem;" id="d-ip">...</div>
+    <div class="sidebar-footer">
+      <div class="user-profile">
+        <div class="avatar" id="u-initial">U</div>
+        <div class="user-info">
+          <div class="user-email" id="u-email">Loading...</div>
+          <div class="user-role">Client Account</div>
         </div>
-        <div class="power-actions">
-          <button class="btn-power btn-start" onclick="powerAction('start')">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg> Start
-          </button>
-          <button class="btn-power btn-restart" onclick="powerAction('restart')">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg> Restart
-          </button>
-          <button class="btn-power btn-stop" onclick="powerAction('stop')">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/></svg> Stop
-          </button>
-        </div>
-      </div>
-
-      <div class="dashboard-grid">
-        <!-- Stats -->
-        <div class="panel-box">
-          <div class="panel-box-title">System Metrics</div>
-          <div class="stat-row">
-            <span style="color:var(--muted2);">Status</span>
-            <span id="d-status" style="font-weight:600; text-transform:uppercase;">...</span>
-          </div>
-          <div class="stat-row">
-            <span style="color:var(--muted2);">CPU Usage</span>
-            <span id="d-cpu">...</span>
-          </div>
-          <div class="stat-row">
-            <span style="color:var(--muted2);">Memory Usage</span>
-            <span id="d-ram">...</span>
-          </div>
-          <div class="stat-row">
-            <span style="color:var(--muted2);">Storage Usage</span>
-            <span id="d-disk">...</span>
-          </div>
-          <div class="stat-row">
-            <span style="color:var(--muted2);">Operating System</span>
-            <span id="d-os">...</span>
-          </div>
-        </div>
-
-        <!-- Serial Console -->
-        <div class="panel-box">
-          <div class="panel-box-title">Serial Console <button class="btn-ghost" style="float:right; padding:2px 8px; font-size:0.7rem; border-radius:4px; border:1px solid var(--rim);" onclick="refreshConsole()">Refresh</button></div>
-          <div class="terminal-window" id="d-console">Loading system logs...</div>
-        </div>
+        <button class="btn-logout" onclick="handleLogout()" title="Sign Out">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </button>
       </div>
     </div>
+  </aside>
 
-  </div>
+  <!-- MAIN -->
+  <main class="main-area">
+    <header class="top-header" id="top-header">
+      <div class="page-title">Compute Instances</div>
+      <button class="btn-p-start" style="padding:8px 16px; border-radius:6px; cursor:pointer;" onclick="window.location.href='/#plans-section'">Deploy New Server</button>
+    </header>
 
-  <script src="/js/panel.js"></script>
+    <div class="content-wrap">
+      
+      <!-- LIST VIEW -->
+      <div id="list-view">
+        <div class="server-grid" id="servers-container">
+          <div style="color:var(--text-muted);">Fetching your infrastructure...</div>
+        </div>
+      </div>
+
+      <!-- DETAIL VIEW -->
+      <div id="detail-view">
+        <button class="btn-back" onclick="showListView()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+          Back to Instances
+        </button>
+
+        <div class="dash-header">
+          <div class="dash-title-group">
+            <h1 id="d-name">Loading...</h1>
+            <div class="dash-meta">
+              <span id="d-status-badge" class="status-badge running"><span class="dot running"></span> ONLINE</span>
+              <span style="font-family:'DM Mono',monospace;" id="d-ip">0.0.0.0</span>
+              <span id="d-region">Mumbai, India</span>
+            </div>
+          </div>
+          
+          <div class="power-strip">
+            <button class="btn-power btn-p-start" onclick="powerAction('start')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg> Start
+            </button>
+            <button class="btn-power btn-p-reboot" onclick="powerAction('reboot')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.59-9.21l5.64 5.64"/></svg> Reboot
+            </button>
+            <button class="btn-power btn-p-stop" onclick="powerAction('stop')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/></svg> Force Stop
+            </button>
+          </div>
+        </div>
+
+        <div class="tabs">
+          <div class="tab active">Monitoring & Graphing</div>
+          <div class="tab">Network</div>
+          <div class="tab">Settings</div>
+        </div>
+
+        <!-- Charts -->
+        <div class="metrics-grid">
+          
+          <div class="metric-card">
+            <div class="metric-head">
+              <div class="metric-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+                CPU Usage
+              </div>
+              <div class="metric-val" id="val-cpu">0.0%</div>
+            </div>
+            <div class="chart-container">
+              <canvas id="chart-cpu"></canvas>
+            </div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-head">
+              <div class="metric-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2"><line x1="22" y1="12" x2="2" y2="12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/><line x1="6" y1="16" x2="6.01" y2="16"/><line x1="10" y1="16" x2="10.01" y2="16"/></svg>
+                Memory Usage
+              </div>
+              <div class="metric-val" id="val-ram">0.0 MB</div>
+            </div>
+            <div class="chart-container">
+              <canvas id="chart-ram"></canvas>
+            </div>
+          </div>
+
+          <div class="metric-card" style="grid-column: 1 / -1;">
+            <div class="metric-head">
+              <div class="metric-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                Network Traffic (Mbps)
+              </div>
+              <div class="metric-val" style="color:var(--accent-green);" id="val-net">0.0 IN / 0.0 OUT</div>
+            </div>
+            <div class="chart-container">
+              <canvas id="chart-net"></canvas>
+            </div>
+          </div>
+          
+        </div>
+
+        <h3 style="margin-top:24px; margin-bottom:16px; font-size:1.1rem; font-weight:500;">Hardware Specifications</h3>
+        <div class="hw-grid">
+          <div class="hw-box">
+            <div class="hw-lbl">Processor</div>
+            <div class="hw-val" id="hw-cpu">4 vCores</div>
+          </div>
+          <div class="hw-box">
+            <div class="hw-lbl">Allocated Memory</div>
+            <div class="hw-val" id="hw-ram">8 GB DDR5</div>
+          </div>
+          <div class="hw-box">
+            <div class="hw-lbl">Storage Volume</div>
+            <div class="hw-val" id="hw-disk">80 GB NVMe</div>
+          </div>
+          <div class="hw-box">
+            <div class="hw-lbl">Operating System</div>
+            <div class="hw-val" id="hw-os">Ubuntu 24.04 LTS</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
   <script src="/js/supabase-config.js"></script>
-  <script>
-    const adminEmail = "admin@kryonhost.com";
-    supabaseClient.auth.getSession().then(({ data: { session } }) => {
-      if (!session) window.location.href = "/login";
-      else {
-        const uEmail = document.getElementById("u-email");
-        if (uEmail) uEmail.textContent = session.user.email;
-      }
-    });
-    async function handleLogout() {
-      await supabaseClient.auth.signOut();
-      window.location.href = "/login";
-    }
-  </script>
-<script src="/js/panel.js"></script>
+  <script src="/js/panel.js"></script>
 </body>
 </html>

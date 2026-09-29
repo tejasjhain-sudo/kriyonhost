@@ -1,10 +1,34 @@
 /* ═══════════════════════════════════════════════════════════════════════════
-   KryonPanel — Client Panel (Supabase-Powered)
-   Reads the logged-in user's servers from Supabase `servers` table.
+   KryonPanel — Next-Gen Client Panel with Real-Time Charting
    ═══════════════════════════════════════════════════════════════════════════ */
 
 let currentServer = null;
 let currentUser = null;
+let pollingInterval = null;
+
+// Chart.js Instances
+let cpuChart = null;
+let ramChart = null;
+let netChart = null;
+const MAX_DATA_POINTS = 20;
+
+// Common Chart.js styling config
+const chartOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  animation: { duration: 400, easing: 'linear' },
+  scales: {
+    x: { display: false },
+    y: { 
+      beginAtZero: true, 
+      grid: { color: 'rgba(255,255,255,0.05)', drawBorder: false },
+      ticks: { color: 'rgba(255,255,255,0.4)', font: { size: 10, family: 'DM Mono' } }
+    }
+  },
+  plugins: { legend: { display: false }, tooltip: { enabled: false } },
+  elements: { point: { radius: 0 }, line: { tension: 0.4, borderWidth: 2 } },
+  interaction: { intersect: false, mode: 'index' }
+};
 
 /* ── Auth Guard ───────────────────────────────────────────────────────────── */
 async function initPanel() {
@@ -15,10 +39,11 @@ async function initPanel() {
   }
   currentUser = session.user;
 
-  // Show user email in sidebar
-  const el = document.getElementById('u-email');
-  if (el) el.textContent = currentUser.email;
+  // Sidebar profile
+  document.getElementById('u-email').textContent = currentUser.email;
+  document.getElementById('u-initial').textContent = currentUser.email.charAt(0).toUpperCase();
 
+  Chart.defaults.color = 'rgba(255, 255, 255, 0.4)';
   showListView();
 }
 
@@ -26,7 +51,11 @@ async function initPanel() {
 function showListView() {
   document.getElementById('list-view').style.display = 'block';
   document.getElementById('detail-view').style.display = 'none';
+  document.getElementById('top-header').querySelector('.page-title').textContent = 'Compute Instances';
+  
   currentServer = null;
+  if (pollingInterval) clearInterval(pollingInterval);
+  
   loadServers();
 }
 
@@ -34,13 +63,17 @@ function showDetailView(server) {
   currentServer = server;
   document.getElementById('list-view').style.display = 'none';
   document.getElementById('detail-view').style.display = 'block';
+  document.getElementById('top-header').querySelector('.page-title').textContent = 'Server Overview';
+  
   renderDetail(server);
+  initCharts();
+  startPolling();
 }
 
-/* ── Load Servers From Supabase ───────────────────────────────────────────── */
+/* ── Load Servers ─────────────────────────────────────────────────────────── */
 async function loadServers() {
   const container = document.getElementById('servers-container');
-  container.innerHTML = `<div style="color:var(--muted); font-size:0.9rem;">Loading your services...</div>`;
+  container.innerHTML = `<div style="color:var(--text-muted);">Fetching your infrastructure...</div>`;
 
   const { data: servers, error } = await supabaseClient
     .from('servers')
@@ -48,100 +81,208 @@ async function loadServers() {
     .order('created_at', { ascending: false });
 
   if (error) {
-    container.innerHTML = `<div style="color:#ef4444;">Error loading servers: ${error.message}</div>`;
+    container.innerHTML = `<div style="color:var(--accent-red);">Error loading servers: ${error.message}</div>`;
     return;
   }
 
   if (!servers || servers.length === 0) {
     container.innerHTML = `
-      <div style="grid-column:1/-1; text-align:center; padding:5rem 0;">
-        <div style="font-size:3rem; margin-bottom:1rem;">🖥️</div>
-        <div style="font-size:1.1rem; color:#fff; margin-bottom:8px;">No Active Servers</div>
-        <div style="color:var(--muted); font-size:0.9rem; margin-bottom:1.5rem;">You don't have any deployed servers yet. Order one via Discord!</div>
-        <a href="https://discord.gg/kryonhost" target="_blank" class="btn btn-primary">Order via Discord</a>
+      <div style="grid-column:1/-1; text-align:center; padding:6rem 0; border: 1px dashed var(--border-subtle); border-radius: 16px;">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--border-focus)" stroke-width="1.5" style="margin-bottom:16px;"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        <div style="font-size:1.2rem; font-weight:500; color:#fff; margin-bottom:8px;">No Active Instances</div>
+        <div style="color:var(--text-muted); font-size:0.9rem; margin-bottom:24px;">You haven't deployed any servers yet. Order via Discord.</div>
+        <a href="https://discord.gg/kt9yPDwYT4" target="_blank" class="btn-p-start" style="padding:10px 24px; border-radius:8px; text-decoration:none; display:inline-block;">Order via Discord</a>
       </div>`;
     return;
   }
 
   container.innerHTML = servers.map(s => {
     const running = s.status === 'running';
-    const created = new Date(s.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
-    const typeColor = { vps:'#7c6aff', minecraft:'#22c55e', tunnel:'#38bdf8', dedicated:'#f59e0b' }[s.service_type || 'vps'] || '#7c6aff';
-
+    
     return `
-      <div class="server-card" onclick="showDetailView(${JSON.stringify(s).replace(/"/g, '&quot;')})">
-        <div class="server-status-indicator ${running ? 'status-running' : 'status-stopped'}"></div>
-        <div style="padding-left:12px;">
-          <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
-            <div class="server-name">${s.service_alias}</div>
-            <span style="font-size:0.6rem; padding:2px 8px; border-radius:20px; background:${typeColor}22; color:${typeColor}; font-weight:600; text-transform:uppercase;">${s.service_type || 'VPS'}</span>
+      <div class="scard" onclick="showDetailView(${JSON.stringify(s).replace(/"/g, '&quot;')})">
+        <div class="scard-header">
+          <div>
+            <div class="scard-title">${s.service_alias}</div>
+            <div class="scard-ip">${s.ip}</div>
           </div>
-          <div class="server-ip">${s.ip}</div>
-          <div class="server-specs">
-            <span>${s.cpu_cores} vCPU</span>
-            <span style="color:rgba(255,255,255,0.2);">|</span>
-            <span>${s.ram_gb} GB RAM</span>
-            <span style="color:rgba(255,255,255,0.2);">|</span>
-            <span>${s.disk_gb} GB NVMe</span>
+          <div class="status-badge ${running ? 'running' : 'stopped'}">
+            <span class="dot ${running ? 'running' : 'stopped'}"></span>
+            ${s.status}
           </div>
-          <div style="margin-top:12px; display:flex; justify-content:space-between; align-items:center;">
-            ${running
-              ? `<span style="font-size:0.75rem; color:#22c55e; display:flex; align-items:center; gap:5px;">
-                   <span style="width:6px;height:6px;background:#22c55e;border-radius:50%;box-shadow:0 0 6px #22c55e;display:inline-block;animation:pulse 2s infinite;"></span>Online
-                 </span>`
-              : `<span style="font-size:0.75rem; color:#ef4444; display:flex; align-items:center; gap:5px;">
-                   <span style="width:6px;height:6px;background:#ef4444;border-radius:50%;display:inline-block;"></span>Stopped
-                 </span>`
-            }
-            <span style="font-size:0.72rem; color:var(--muted); font-family:'DM Mono',monospace;">Since ${created}</span>
+        </div>
+        
+        <div class="scard-specs">
+          <div class="spec-item">
+            <span class="spec-lbl">vCPU</span>
+            <span class="spec-val">${s.cpu_cores} Cores</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-lbl">RAM</span>
+            <span class="spec-val">${s.ram_gb} GB</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-lbl">Storage</span>
+            <span class="spec-val">${s.disk_gb} GB</span>
           </div>
         </div>
       </div>`;
   }).join('');
 }
 
-/* ── Render Server Detail ─────────────────────────────────────────────────── */
+/* ── Detail View Rendering ────────────────────────────────────────────────── */
 function renderDetail(s) {
   const running = s.status === 'running';
-  const created = new Date(s.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
 
   document.getElementById('d-name').textContent = s.service_alias;
-  document.getElementById('d-ip').textContent = `${s.ip} · ${s.region || 'India (Mumbai)'}`;
-  document.getElementById('d-os').textContent = s.os || 'Ubuntu 24.04 LTS';
-  document.getElementById('d-status').innerHTML = running
-    ? `<span style="color:#22c55e;">● ONLINE</span>`
-    : `<span style="color:#ef4444;">● OFFLINE</span>`;
+  document.getElementById('d-ip').textContent = s.ip;
+  document.getElementById('d-region').textContent = s.region || 'India (Mumbai)';
+  
+  const badge = document.getElementById('d-status-badge');
+  badge.className = `status-badge ${running ? 'running' : 'stopped'}`;
+  badge.innerHTML = `<span class="dot ${running ? 'running' : 'stopped'}"></span> ${s.status.toUpperCase()}`;
 
-  document.getElementById('d-cpu').innerHTML = `<span style="color:#a78bfa;">${s.cpu_cores} vCores</span>`;
-  document.getElementById('d-ram').innerHTML = `<span style="color:#22d3ee;">${s.ram_gb} GB DDR5 RAM</span>`;
-  document.getElementById('d-disk').innerHTML = `<span style="color:#f59e0b;">${s.disk_gb} GB NVMe Gen4</span>`;
-
-  // Info box at bottom
-  const infoBox = document.getElementById('d-info-box');
-  if (infoBox) {
-    infoBox.innerHTML = `
-      <div class="stat-row"><span style="color:var(--muted);">Server Alias</span><span>${s.service_alias}</span></div>
-      <div class="stat-row"><span style="color:var(--muted);">Service Type</span><span style="text-transform:capitalize;">${s.service_type || 'VPS'}</span></div>
-      <div class="stat-row"><span style="color:var(--muted);">Tier</span><span>${s.service_tier?.toUpperCase() || '—'}</span></div>
-      <div class="stat-row"><span style="color:var(--muted);">IP Address</span><span style="font-family:'DM Mono',monospace;color:#38bdf8;">${s.ip}</span></div>
-      <div class="stat-row"><span style="color:var(--muted);">Region</span><span>${s.region || 'India (Mumbai)'}</span></div>
-      <div class="stat-row"><span style="color:var(--muted);">OS</span><span>${s.os || 'Ubuntu 24.04 LTS'}</span></div>
-      <div class="stat-row"><span style="color:var(--muted);">Deployed On</span><span>${created}</span></div>
-    `;
-  }
-
-  // Console placeholder
-  const con = document.getElementById('d-console');
-  if (con) {
-    con.textContent = `[KryonHost] Service: ${s.service_alias}\n[KryonHost] IP: ${s.ip}\n[KryonHost] Status: ${running ? 'Running' : 'Stopped'}\n[KryonHost] Region: ${s.region || 'Mumbai, India'}\n[KryonHost] Tier: ${s.service_tier || 'N/A'}\n\nFor server management, contact support via Discord.\nFor SSH access, use the credentials provided at deployment.`;
-  }
+  document.getElementById('hw-cpu').textContent = `${s.cpu_cores} vCores`;
+  document.getElementById('hw-ram').textContent = `${s.ram_gb} GB DDR5`;
+  document.getElementById('hw-disk').textContent = `${s.disk_gb} GB NVMe`;
+  document.getElementById('hw-os').textContent = s.os || 'Ubuntu 24.04 LTS';
 }
 
-/* ── Logout ───────────────────────────────────────────────────────────────── */
+/* ── Chart Initialization ─────────────────────────────────────────────────── */
+function initCharts() {
+  if (cpuChart) cpuChart.destroy();
+  if (ramChart) ramChart.destroy();
+  if (netChart) netChart.destroy();
+
+  const createData = () => ({
+    labels: Array(MAX_DATA_POINTS).fill(''),
+    datasets: [{ data: Array(MAX_DATA_POINTS).fill(0) }]
+  });
+
+  const ctxCpu = document.getElementById('chart-cpu').getContext('2d');
+  const gradientCpu = ctxCpu.createLinearGradient(0, 0, 0, 180);
+  gradientCpu.addColorStop(0, 'rgba(0, 112, 243, 0.4)');
+  gradientCpu.addColorStop(1, 'rgba(0, 112, 243, 0)');
+
+  cpuChart = new Chart(ctxCpu, {
+    type: 'line',
+    data: {
+      labels: Array(MAX_DATA_POINTS).fill(''),
+      datasets: [{
+        data: Array(MAX_DATA_POINTS).fill(0),
+        borderColor: '#0070f3',
+        backgroundColor: gradientCpu,
+        fill: true
+      }]
+    },
+    options: { ...chartOptions, scales: { ...chartOptions.scales, y: { ...chartOptions.scales.y, max: 100 } } }
+  });
+
+  const ctxRam = document.getElementById('chart-ram').getContext('2d');
+  const gradientRam = ctxRam.createLinearGradient(0, 0, 0, 180);
+  gradientRam.addColorStop(0, 'rgba(139, 92, 246, 0.4)');
+  gradientRam.addColorStop(1, 'rgba(139, 92, 246, 0)');
+
+  ramChart = new Chart(ctxRam, {
+    type: 'line',
+    data: {
+      labels: Array(MAX_DATA_POINTS).fill(''),
+      datasets: [{
+        data: Array(MAX_DATA_POINTS).fill(0),
+        borderColor: '#8b5cf6',
+        backgroundColor: gradientRam,
+        fill: true
+      }]
+    },
+    options: { ...chartOptions, scales: { ...chartOptions.scales, y: { ...chartOptions.scales.y, max: (currentServer.ram_gb || 4) * 1024 } } }
+  });
+
+  const ctxNet = document.getElementById('chart-net').getContext('2d');
+  const gradientIn = ctxNet.createLinearGradient(0, 0, 0, 180);
+  gradientIn.addColorStop(0, 'rgba(16, 185, 129, 0.4)');
+  gradientIn.addColorStop(1, 'rgba(16, 185, 129, 0)');
+
+  const gradientOut = ctxNet.createLinearGradient(0, 0, 0, 180);
+  gradientOut.addColorStop(0, 'rgba(239, 68, 68, 0.4)');
+  gradientOut.addColorStop(1, 'rgba(239, 68, 68, 0)');
+
+  netChart = new Chart(ctxNet, {
+    type: 'line',
+    data: {
+      labels: Array(MAX_DATA_POINTS).fill(''),
+      datasets: [
+        { data: Array(MAX_DATA_POINTS).fill(0), borderColor: '#10b981', backgroundColor: gradientIn, fill: true }, // IN
+        { data: Array(MAX_DATA_POINTS).fill(0), borderColor: '#ef4444', backgroundColor: gradientOut, fill: true } // OUT
+      ]
+    },
+    options: chartOptions
+  });
+}
+
+/* ── Live Polling ─────────────────────────────────────────────────────────── */
+function startPolling() {
+  if (pollingInterval) clearInterval(pollingInterval);
+  
+  const fetchStats = async () => {
+    if (!currentServer) return;
+    try {
+      const res = await fetch(`/api/servers/${currentServer.id}/stats`);
+      const stats = await res.json();
+      
+      // Update DOM Text
+      document.getElementById('val-cpu').textContent = `${stats.cpu}%`;
+      document.getElementById('val-ram').textContent = `${stats.ram} MB`;
+      document.getElementById('val-net').textContent = `${stats.network_in} IN / ${stats.network_out} OUT`;
+      
+      if (stats.status !== currentServer.status) {
+        currentServer.status = stats.status;
+        renderDetail(currentServer); // update badge
+      }
+
+      // Update Charts
+      const updateChart = (chart, newVal, datasetIndex = 0) => {
+        const data = chart.data.datasets[datasetIndex].data;
+        data.push(newVal);
+        if (data.length > MAX_DATA_POINTS) data.shift();
+      };
+
+      updateChart(cpuChart, stats.cpu);
+      cpuChart.update();
+
+      updateChart(ramChart, stats.ram);
+      ramChart.update();
+
+      updateChart(netChart, stats.network_in, 0); // IN
+      updateChart(netChart, stats.network_out, 1); // OUT
+      netChart.update();
+
+    } catch (e) {
+      console.log('Stats polling failed:', e);
+    }
+  };
+
+  fetchStats(); // immediate
+  pollingInterval = setInterval(fetchStats, 2000);
+}
+
+/* ── Actions ──────────────────────────────────────────────────────────────── */
+async function powerAction(action) {
+  if (!currentServer) return;
+  const newStatus = action === 'start' ? 'running' : (action === 'stop' ? 'stopped' : 'rebooting');
+  
+  // Optimistic UI update
+  const badge = document.getElementById('d-status-badge');
+  badge.innerHTML = `<span class="dot ${action === 'start' ? 'running' : 'stopped'}"></span> Processing...`;
+  
+  await supabaseClient.from('servers').update({ status: action === 'start' ? 'running' : 'stopped' }).eq('id', currentServer.id);
+  
+  currentServer.status = action === 'start' ? 'running' : 'stopped';
+  renderDetail(currentServer);
+}
+
 async function handleLogout() {
   await supabaseClient.auth.signOut();
   window.location.href = '/login';
 }
 
-/* ── Init ─────────────────────────────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', initPanel);
