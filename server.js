@@ -17,9 +17,11 @@ const {
 const shulker = require('./services/shulkerService');
 
 // Supabase admin client (service_role — server-side only, never exposed to browser)
+const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdxeGFjd3lidW1jcm9hcmdud2txIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc5MDYxNzUzOSwiZXhwIjoyMTA2MTkzNTM5fQ.5xea24fdKrZBXYUDlGjw6TB4SzXbmkDP_rtrP0NIwB4';
+
 const supabaseAdmin = createClient(
   'https://gqxacwybumcroargnwkq.supabase.co',
-  process.env.SUPABASE_SERVICE_KEY || ''
+  SUPABASE_SERVICE_KEY
 );
 
 const app = express();
@@ -477,13 +479,15 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-app.listen(PORT, () => {
-  console.log(`\n======================================================`);
-  console.log(`🚀 KryonHost Cloud Platform running at http://localhost:${PORT}`);
-  console.log(`📡 Bare-Metal Node Orchestration: Connected`);
-  console.log(`💎 Brand: ${process.env.BRAND_NAME || 'KryonHost'}`);
-  console.log(`======================================================\n`);
-});
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`\n======================================================`);
+    console.log(`🚀 KryonHost Cloud Platform running at http://localhost:${PORT}`);
+    console.log(`📡 Bare-Metal Node Orchestration: Connected`);
+    console.log(`💎 Brand: ${process.env.BRAND_NAME || 'KryonHost'}`);
+    console.log(`======================================================\n`);
+  });
+}
 
 // Export for Vercel serverless
 module.exports = app;
