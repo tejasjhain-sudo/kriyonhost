@@ -546,6 +546,191 @@
       </div>
 
 <!-- ═══════════════════════════════════════════════════════════════════════
+       INTERACTIVE CUSTOM CONFIGURATOR & PRICING
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <section class="s" id="configurator-section">
+    <div class="wrap">
+      
+      <div style="text-align:center; max-width:600px; margin:0 auto 3rem;">
+        <span class="eyebrow"><span class="eyebrow-dot"></span> Bare-Metal Virtualization</span>
+        <h2 class="sh">Calculate &amp; Configure Your Server</h2>
+        <p class="sub">Select your workload, hardware tier, and exact resources. VPS and Minecraft servers share the same hardware with sub-3s delivery.</p>
+      </div>
+
+      <div class="config-card">
+        <!-- Builder Controls -->
+        <div class="config-builder">
+          
+          <!-- Mode Switcher -->
+          <div class="mode-switch-wrap">
+            <button id="mode-vps" class="mode-btn active">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+              Cloud VPS (Linux / Windows)
+            </button>
+            <button id="mode-mc" class="mode-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+              Minecraft Server (Same Price)
+            </button>
+          </div>
+
+          <!-- Tier Pickers -->
+          <label style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.12em; color:var(--muted); font-family:'DM Mono',monospace; margin-bottom:0.75rem; display:block;">Select CPU Architecture Tier</label>
+          <div class="tier-select-grid">
+            <div class="tier-opt" data-tier="eco">
+              <div class="tier-opt-head">
+                <span class="tier-opt-title">ECO</span>
+                <span class="badge b-green">Budget</span>
+              </div>
+              <div class="tier-opt-cpu">Intel Xeon E5 · Multi-core</div>
+              <div class="tier-opt-rates">Microservices, proxies &amp; bots</div>
+            </div>
+
+            <div class="tier-opt selected" data-tier="std">
+              <div class="tier-opt-head">
+                <span class="tier-opt-title">STD</span>
+                <span class="badge b-purple">Popular</span>
+              </div>
+              <div class="tier-opt-cpu">AMD EPYC 7003 · Balanced</div>
+              <div class="tier-opt-rates">Web clusters, production SMP</div>
+            </div>
+
+            <div class="tier-opt" data-tier="perf">
+              <div class="tier-opt-head">
+                <span class="tier-opt-title">PERF</span>
+                <span class="badge b-blue">High Clock</span>
+              </div>
+              <div class="tier-opt-cpu">Intel Core i7 · 4.8GHz Turbo</div>
+              <div class="tier-opt-rates">High tick rate &amp; heavy queries</div>
+            </div>
+
+            <div class="tier-opt" data-tier="pwr">
+              <div class="tier-opt-head">
+                <span class="tier-opt-title">PWR</span>
+                <span class="badge b-gold">Extreme</span>
+              </div>
+              <div class="tier-opt-cpu">AMD Ryzen 9 · 5.7GHz Beast</div>
+              <div class="tier-opt-rates">Modded Minecraft (ATM9/Forge)</div>
+            </div>
+          </div>
+
+          <!-- Sliders -->
+          <div class="slider-group">
+            <div class="slider-head">
+              <span class="slider-label">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+                Processor (vCPU Cores)
+              </span>
+              <span class="slider-val-badge" id="val-cpu">4 vCPU</span>
+            </div>
+            <input type="range" id="slider-cpu" min="1" max="32" value="4" step="1">
+          </div>
+
+          <div class="slider-group">
+            <div class="slider-head">
+              <span class="slider-label">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 19v-3"/><path d="M10 19v-3"/><path d="M14 19v-3"/><path d="M18 19v-3"/><path d="M6 8V5"/><path d="M10 8V5"/><path d="M14 8V5"/><path d="M18 8V5"/><rect x="2" y="8" width="20" height="8" rx="2"/></svg>
+                Memory (High-Speed RAM)
+              </span>
+              <span class="slider-val-badge" id="val-ram">8 GB RAM</span>
+            </div>
+            <input type="range" id="slider-ram" min="1" max="96" value="8" step="1">
+          </div>
+
+          <div class="slider-group">
+            <div class="slider-head">
+              <span class="slider-label">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+                NVMe Gen4 Storage
+              </span>
+              <span class="slider-val-badge" id="val-disk">80 GB NVMe</span>
+            </div>
+            <input type="range" id="slider-disk" min="10" max="1000" value="80" step="10">
+          </div>
+
+          <!-- Selectors -->
+          <div class="selector-row">
+            <div class="field-group">
+              <label>Operating System / Software</label>
+              <select id="select-os" class="custom-select">
+                <option value="ubuntu-2404">Ubuntu 24.04 LTS (Noble Numbat)</option>
+                <option value="ubuntu-2204">Ubuntu 22.04 LTS (Jammy Jellyfish)</option>
+                <option value="debian-12">Debian 12 (Bookworm)</option>
+                <option value="alpine-320">Alpine Linux 3.20 (Minimal)</option>
+                <option value="windows-server-2022">Windows Server 2022 (ISO / RDP)</option>
+                <option value="windows-11">Windows 11 Enterprise (ISO / RDP)</option>
+              </select>
+            </div>
+
+            <div class="field-group">
+              <label>Datacenter Region</label>
+              <select id="select-region" class="custom-select">
+                <option value="India">Mumbai, India (Lowest Latency · 12ms)</option>
+                <option value="India-Delhi">Delhi, India (National Hub · 18ms)</option>
+                <option value="Germany">Frankfurt, Germany (European Transit)</option>
+              </select>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Summary & Price Breakdown -->
+        <div class="config-summary">
+          <div class="quote-top">
+            <div class="quote-badge-row">
+              <span class="badge b-purple" id="quote-tier-badge">STD Balanced · AMD EPYC</span>
+              <span class="badge b-green">Sub-3s Provisioning</span>
+              <span class="badge b-blue">92 Tbps Shield</span>
+            </div>
+            <div class="quote-title" id="quote-service-type">Enterprise Cloud VPS</div>
+            <div style="font-size:0.75rem; color:var(--muted); margin-bottom:1.2rem;" id="quote-specs-text">
+              4 vCPU • 8GB RAM • 80GB NVMe Storage • Dedicated IPv4
+            </div>
+
+            <ul class="quote-specs-list">
+              <li class="quote-spec-row">
+                <span>Dedicated Public IPv4</span>
+                <span>Included Free</span>
+              </li>
+              <li class="quote-spec-row">
+                <span>Anti-DDoS Shield (Anycast)</span>
+                <span style="color:var(--green);">Active (92 Tbps)</span>
+              </li>
+              <li class="quote-spec-row">
+                <span>Automated Backups &amp; Snapshots</span>
+                <span style="color:var(--green);">Available</span>
+              </li>
+              <li class="quote-spec-row">
+                <span>Root / Serial / VNC Access</span>
+                <span style="color:var(--green);">Full Unrestricted</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="quote-bottom">
+            <div class="price-display-box">
+              <span class="price-tag-sub">Total Monthly Price (30 Days)</span>
+              <div class="big-price-num">
+                <span id="quote-retail-price">₹847</span>
+                <span class="price-period">/ month</span>
+              </div>
+              <p class="price-note">All taxes included. Transparent billing with automated node activation.</p>
+            </div>
+
+            <button id="btn-deploy-server" class="btn btn-primary" style="width:100%; padding:14px;" onclick="deployConfiguredServer()">
+              Deploy Instance Now
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       FEATURED TURNKEY PLANS
+
+<!-- ═══════════════════════════════════════════════════════════════════════
        FEATURED TURNKEY PLANS
        ═══════════════════════════════════════════════════════════════════════ -->
   <section class="s" id="plans-section">
