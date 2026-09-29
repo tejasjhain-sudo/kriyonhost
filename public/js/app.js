@@ -958,3 +958,79 @@ function showToast(msg) {
     toast.classList.remove('show');
   }, 3500);
 }
+
+// ─── Mobile Navigation System (Mobile Only) ──────────────────────────────────
+function initMobileNav() {
+  const navInner = document.querySelector('.nav-inner');
+  if (!navInner || document.getElementById('mobile-drawer')) return;
+
+  // 1. Create Hamburger Button (CSS hides on PC, shows <= 980px)
+  const menuBtn = document.createElement('button');
+  menuBtn.className = 'mobile-menu-btn';
+  menuBtn.setAttribute('aria-label', 'Toggle Navigation Menu');
+  menuBtn.innerHTML = `
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+      <line x1="3" y1="6" x2="21" y2="6"/>
+      <line x1="3" y1="12" x2="21" y2="12"/>
+      <line x1="3" y1="18" x2="21" y2="18"/>
+    </svg>
+  `;
+
+  // 2. Create Mobile Drawer Overlay
+  const drawer = document.createElement('div');
+  drawer.id = 'mobile-drawer';
+  drawer.className = 'mobile-nav-drawer';
+  drawer.innerHTML = `
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2rem;">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <img src="/images/logo.jpg" alt="KryonHost" style="width:24px;height:24px;object-fit:contain;border-radius:4px;">
+        <span style="font-family:'Bricolage Grotesque',sans-serif; font-size:1.2rem; font-weight:600;">KryonHost</span>
+        <span class="brand-tag">BETA</span>
+      </div>
+      <button id="close-mobile-drawer" style="background:none; border:none; color:#fff; cursor:pointer; padding:4px;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <ul class="mobile-nav-links">
+      <li><a href="/" class="mobile-nav-item"><span>🏠 Home</span> &rarr;</a></li>
+      <li><a href="/vps" class="mobile-nav-item"><span>⚡ Cloud VPS</span> &rarr;</a></li>
+      <li><a href="/minecraft" class="mobile-nav-item"><span>⛏️ Minecraft Server</span> &rarr;</a></li>
+      <li><a href="/tunnels" class="mobile-nav-item"><span>🛡️ Anycast Tunnels</span> &rarr;</a></li>
+      <li><a href="/devspace" class="mobile-nav-item"><span>🚀 DevSpace Docker</span> &rarr;</a></li>
+      <li><a href="/status" class="mobile-nav-item" style="border-color:rgba(34,197,94,0.3); color:#22c55e;"><span>🟢 Live Status</span> &rarr;</a></li>
+    </ul>
+
+    <div class="mobile-nav-actions">
+      <a href="/login" class="btn btn-ghost" style="width:100%; text-align:center; padding:12px; border:1px solid var(--rim);">Client Login</a>
+      <a href="https://discord.gg/kt9yPDwYT4" target="_blank" class="btn btn-primary" style="width:100%; text-align:center; padding:12px;">Join Discord Support</a>
+    </div>
+  `;
+
+  document.body.appendChild(drawer);
+  navInner.appendChild(menuBtn);
+
+  // Event Listeners
+  menuBtn.addEventListener('click', () => {
+    drawer.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  });
+
+  const closeBtn = document.getElementById('close-mobile-drawer');
+  if (closeBtn) {
+    closeBtn.addEventListener('click', () => {
+      drawer.classList.remove('open');
+      document.body.style.overflow = '';
+    });
+  }
+
+  // Close when clicking on any drawer link
+  drawer.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      drawer.classList.remove('open');
+      document.body.style.overflow = '';
+    });
+  });
+}
+
+document.addEventListener('DOMContentLoaded', initMobileNav);
