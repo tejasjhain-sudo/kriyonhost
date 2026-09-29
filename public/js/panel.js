@@ -84,6 +84,80 @@ function navigateToView(viewName, subSection) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+/* ── Dynamic Instance Openers ─────────────────────────────────────────────── */
+function openSpecificVps(id, name, ip, os) {
+  currentVpsId = id;
+  navigateToView('vps');
+
+  const vpsBreadcrumb = document.querySelector('#view-vps .breadcrumb-row span:last-child');
+  if (vpsBreadcrumb) vpsBreadcrumb.textContent = id;
+
+  const headingSpan = document.querySelector('#view-vps .server-heading-title span:first-child');
+  if (headingSpan) headingSpan.textContent = id;
+
+  const specsSub = document.querySelector('#view-vps .server-specs-subtext');
+  if (specsSub) specsSub.textContent = `${os || 'Ubuntu 24.04 LTS'} · AMD Ryzen 9 7950X Zen 4 · Dedicated KVM Node`;
+
+  const ipMetric = document.querySelector('#view-vps .top-metric-tile:nth-child(2) .metric-tile-val');
+  if (ipMetric) {
+    ipMetric.textContent = ip;
+    ipMetric.setAttribute('onclick', `copyVpsText('${ip}')`);
+  }
+
+  const serverIdRow = document.querySelector('#view-vps .locations-list .loc-row:nth-child(1) span:last-child');
+  if (serverIdRow) serverIdRow.textContent = id;
+
+  const osRow = document.querySelector('#view-vps .locations-list .loc-row:nth-child(2) span:last-child');
+  if (osRow) osRow.textContent = os || 'Ubuntu 24.04 LTS';
+
+  const ipv4Row = document.querySelector('#view-vps .locations-list .loc-row:nth-child(4) span:last-child');
+  if (ipv4Row) ipv4Row.textContent = ip;
+
+  const term = document.getElementById('vps-term-window');
+  if (term) {
+    term.textContent = `root@${id}:~# neofetch
+          \`o/\`                   root@${id}
+         \`ooo/                   -----------------
+        \`+oooo:                  OS: ${os || 'Ubuntu 24.04 LTS'} x86_64
+       \`+oooooo:                 Host: KVM Hypervisor Zen 4
+       -+oooooo+:                Kernel: 6.8.0-45-generic
+     \`/:-:++oooo+:               Uptime: 2 days, 14 hours, 32 mins
+    \`/++++/+++++++:              Packages: 1087 (dpkg)
+   \`/++++++++++++++:             Shell: bash 5.2.21
+  \`/+++ooooooooooooo/\`           CPU: AMD Ryzen 9 7950X @ 4.500GHz (5.7GHz Boost)
+ ./ooosssso++osssssso+\`          Memory: 1.4GiB / 8.0GiB (18%)
+.oossssso-\`\`\`\`/ossssss+\`         Disk: 28.0GB / 160.0GB (17%)
+root@${id}:~# `;
+  }
+}
+
+function openSpecificMc(name, ip, players) {
+  currentMcId = name.toLowerCase();
+  navigateToView('minecraft');
+
+  const mcBreadcrumb = document.querySelector('#view-minecraft .breadcrumb-row span:last-child');
+  if (mcBreadcrumb) mcBreadcrumb.textContent = name;
+
+  const nameTitle = document.querySelector('#view-minecraft .showcase-name-text');
+  if (nameTitle) {
+    nameTitle.innerHTML = `${name} <span class="status-badge-running"><span class="status-dot-blink"></span> Online · 20.0 TPS</span>`;
+  }
+
+  const specSub = document.querySelector('#view-minecraft .showcase-top-row .showcase-title-area div div:last-child');
+  if (specSub) {
+    specSub.innerHTML = `Server IP: <strong style="color:#fff; font-family:'JetBrains Mono'; cursor:pointer;" onclick="copyVpsText('${ip}')">${ip}</strong> &nbsp;|&nbsp; Location: <strong>India (Mumbai)</strong>`;
+  }
+
+  const con = document.getElementById('mc-console-window');
+  if (con) {
+    const now = new Date().toTimeString().slice(0, 8);
+    con.textContent = `[${now}] [Server] Server node '${name}' running on 0.0.0.0:25565
+[${now}] [Server] Using Java 21 OpenJDK (AMD Ryzen 9 7950X 5.7GHz)
+[${now}] [Server] 92 Tbps Anycast Shield: Packet filtering ACTIVE
+[${now}] [Server] Connected players: ${players} online. TPS: 20.0 (100% tick health)`;
+  }
+}
+
 /* ── Multi-Line Resource Usage Chart (VPS) ────────────────────────────────── */
 function initMultiLineChart() {
   const canvas = document.getElementById('vps-multiline-chart');
