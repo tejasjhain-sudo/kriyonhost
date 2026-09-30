@@ -50,6 +50,9 @@ app.get('/panel', (req, res) => res.sendFile(path.join(__dirname, 'public', 'pan
 app.get('/login', (req, res) => res.sendFile(path.join(__dirname, 'public', 'login.html')));
 app.get('/admin', (req, res) => res.sendFile(path.join(__dirname, 'public', 'admin.html')));
 app.get('/status', (req, res) => res.sendFile(path.join(__dirname, 'public', 'status.html')));
+app.get('/docs/sdx', (req, res) => res.sendFile(path.join(__dirname, 'public', 'docs-sdx.html')));
+app.get('/docs/storage', (req, res) => res.sendFile(path.join(__dirname, 'public', 'docs-sdx.html')));
+app.get('/storage', (req, res) => res.redirect('/panel?view=sdx'));
 
 // ─── Admin: Lookup user UUID by email (service role) ─────────────────────────
 app.get('/api/admin/user-id', async (req, res) => {
@@ -639,64 +642,213 @@ app.post('/api/ai/admin/add-keys', async (req, res) => {
   }
 });
 
-// ─── SDX Object Storage Endpoints ──────────────────────────────────────────
+// ─── SDX Object Storage & File Manager Multi-Node Endpoints ──────────────────
+app.get('/api/storage/nodes', (req, res) => {
+  storage.incrementRequestCount();
+  const nodes = storage.listAllNodes();
+  res.json({ success: true, nodes });
+});
+
+app.post('/api/storage/create-trial', (req, res) => {
+  storage.incrementRequestCount();
+  const userName = req.body.userName || req.body.user || 'Guest';
+  const result = storage.createTrialNode(userName);
+  res.json(result);
+});
+
+app.post('/api/storage/deploy-production', (req, res) => {
+  storage.incrementRequestCount();
+  const userName = req.body.userName || req.body.user || 'Guest';
+  const planName = req.body.planName || 'SDX Production';
+  const result = storage.deployProductionNode(planName, userName);
+  res.json(result);
+});
+
+app.delete('/api/storage/delete-node', (req, res) => {
+  storage.incrementRequestCount();
+  const nodeId = req.query.node || req.body.node;
+  const result = storage.deleteDeployedNode(nodeId);
+  res.json(result);
+});
+
+app.delete('/api/storage/delete-trial', (req, res) => {
+  storage.incrementRequestCount();
+  const nodeId = req.query.node || req.body.node;
+  const result = storage.deleteDeployedNode(nodeId);
+  res.json(result);
+});
+
+app.get('/api/storage/account-info', (req, res) => {
+  storage.incrementRequestCount();
+  const nodeId = req.query.node || req.query.node_id || storage.DEFAULT_NODE_ID;
+  const usage = storage.calculateNodeUsage(nodeId);
+  res.json({ success: true, ...usage });
+});
+
+app.get('/api/storage/list-contents', (req, res) => {
+  storage.incrementRequestCount();
+  const nodeId = req.query.node || req.query.node_id || storage.DEFAULT_NODE_ID;
+  const targetPath = req.query.path || '/';
+  const result = storage.listContents(nodeId, targetPath);
+  res.json(result);
+});
+
+app.post('/api/storage/create-folder', (req, res) => {
+  storage.incrementRequestCount();
+  const nodeId = req.query.node || req.body.node || storage.DEFAULT_NODE_ID;
+  const folderName = req.body.folderName || req.body.name || req.body.folder_name;
+  const targetPath = req.query.path || req.body.path || '/';
+  const result = storage.createFolder(nodeId, folderName, targetPath);
+  res.json(result);
+});
+
+app.post('/api/storage/rename', (req, res) => {
+  storage.incrementRequestCount();
+  const nodeId = req.query.node || req.body.node || storage.DEFAULT_NODE_ID;
+  const oldPath = req.body.oldPath || req.body.path;
+  const newName = req.body.newName || req.body.name;
+  const result = storage.renameItem(nodeId, oldPath, newName);
+  res.json(result);
+});
+
+app.post('/api/storage/move', (req, res) => {
+  storage.incrementRequestCount();
+  const nodeId = req.query.node || req.body.node || storage.DEFAULT_NODE_ID;
+  const sourcePath = req.body.sourcePath || req.body.path;
+  const targetDir = req.body.targetDir || req.body.targetPath || '/';
+  const result = storage.moveItem(nodeId, sourcePath, targetDir);
+  res.json(result);
+});
+
+app.delete('/api/storage/delete', (req, res) => {
+  storage.incrementRequestCount();
+  const nodeId = req.query.node || req.body.node || storage.DEFAULT_NODE_ID;
+  const targetPath = req.query.path || req.body.path;
+  const result = storage.deleteItem(nodeId, targetPath);
+  res.json(result);
+});
+
+app.post('/api/storage/delete', (req, res) => {
+  storage.incrementRequestCount();
+  const nodeId = req.query.node || req.body.node || storage.DEFAULT_NODE_ID;
+  const targetPath = req.body.path || req.query.path;
+  const result = storage.deleteItem(nodeId, targetPath);
+  res.json(result);
+});
+
+app.get('/api/storage/read-file', (req, res) => {
+  storage.incrementRequestCount();
+  const nodeId = req.query.node || storage.DEFAULT_NODE_ID;
+  const targetPath = req.query.path;
+  const result = storage.readFileContent(nodeId, targetPath);
+  if (!result.success) {
+    return res.status(400).json(result);
+  }
+  res.json(result);
+});
+
+app.post('/api/storage/save-file', (req, res) => {
+  storage.incrementRequestCount();
+  const nodeId = req.query.node || req.body.node || storage.DEFAULT_NODE_ID;
+  const targetPath = req.body.path || req.query.path;
+  const content = req.body.content !== undefined ? req.body.content : '';
+  const result = storage.saveFileContent(nodeId, targetPath, content);
+  res.json(result);
+});
+
+app.get('/api/storage/download', (req, res) => {
+  storage.incrementRequestCount();
+  const nodeId = req.query.node || storage.DEFAULT_NODE_ID;
+  const targetPath = req.query.path;
+  const fileObj = storage.getFileForDownload(nodeId, targetPath);
+  if (!fileObj) {
+    return res.status(404).json({ success: false, error: 'File not found on storage node' });
+  }
+  res.setHeader('Content-Type', fileObj.mimeType);
+  res.setHeader('Content-Disposition', `attachment; filename="${fileObj.name}"`);
+  res.sendFile(fileObj.fullPath);
+});
+
+// Chunked Upload Endpoints
+app.post('/api/storage/upload-init', (req, res) => {
+  storage.incrementRequestCount();
+  const nodeId = req.query.node || req.body.node || storage.DEFAULT_NODE_ID;
+  const { fileName, fileSize, totalChunks, mimeType } = req.body;
+  const targetPath = req.query.path || req.body.path || '/';
+  const result = storage.initUpload(nodeId, fileName, fileSize, totalChunks, mimeType, targetPath);
+  res.json(result);
+});
+
+app.post('/api/storage/upload-chunk', express.raw({ type: '*/*', limit: '25mb' }), (req, res) => {
+  storage.incrementRequestCount();
+  const uploadId = req.headers['x-upload-id'] || req.query.upload_id;
+  const chunkIndex = req.headers['x-chunk-index'] !== undefined ? req.headers['x-chunk-index'] : req.query.chunk_index;
+  if (!uploadId || chunkIndex === undefined) {
+    return res.status(400).json({ success: false, error: 'X-Upload-ID and X-Chunk-Index headers required' });
+  }
+  const chunkBuffer = Buffer.isBuffer(req.body) ? req.body : Buffer.from(req.body || '');
+  const result = storage.saveUploadChunk(uploadId, chunkIndex, chunkBuffer);
+  res.json(result);
+});
+
+app.post('/api/storage/upload-complete', (req, res) => {
+  storage.incrementRequestCount();
+  const uploadId = req.body.uploadId || req.body.upload_id;
+  if (!uploadId) {
+    return res.status(400).json({ success: false, error: 'uploadId is required' });
+  }
+  const result = storage.completeUpload(uploadId);
+  res.json(result);
+});
+
+app.post('/api/storage/upload-direct', (req, res) => {
+  storage.incrementRequestCount();
+  const nodeId = req.query.node || req.body.node || storage.DEFAULT_NODE_ID;
+  const targetPath = req.query.path || req.body.path || '/';
+  const { name, base64 } = req.body;
+  if (!name) {
+    return res.status(400).json({ success: false, error: 'File name is required' });
+  }
+  const fileBuffer = base64 ? Buffer.from(base64, 'base64') : Buffer.from('');
+  const result = storage.saveDirectFile(nodeId, name, fileBuffer, targetPath);
+  res.json(result);
+});
+
+// Legacy Aliases for backward compatibility
 app.get('/api/v1/storage/overview', (req, res) => {
   storage.incrementRequestCount();
-  const overview = storage.getStorageOverview();
-  res.json({ success: true, ...overview });
+  const usage = storage.calculateNodeUsage('node-1');
+  res.json({ success: true, ...usage });
 });
 
 app.get('/api/v1/storage/files', (req, res) => {
   storage.incrementRequestCount();
-  const files = storage.listFiles();
-  res.json({ success: true, files });
+  const result = storage.listContents('node-1', '/');
+  res.json({ success: true, files: result.items });
 });
 
 app.post('/api/v1/storage/upload', (req, res) => {
   storage.incrementRequestCount();
-  const { name, data, base64, contentType } = req.body;
-  if (!name) {
-    return res.status(400).json({ success: false, error: 'File name is required' });
-  }
-
-  let fileBuffer;
-  if (base64) {
-    fileBuffer = Buffer.from(base64, 'base64');
-  } else if (data) {
-    fileBuffer = Buffer.from(data);
-  } else {
-    fileBuffer = Buffer.from('');
-  }
-
-  const saved = storage.saveFile(name, fileBuffer);
-  res.json({
-    success: true,
-    message: 'Object uploaded successfully to SDX bucket',
-    object: {
-      ...saved,
-      url: `/api/v1/storage/files/${saved.name}`
-    }
-  });
+  const { name, base64 } = req.body;
+  const buffer = base64 ? Buffer.from(base64, 'base64') : Buffer.from('');
+  const result = storage.saveDirectFile('node-1', name || 'file.bin', buffer, '/');
+  res.json({ success: true, message: 'Uploaded successfully', object: result });
 });
 
 app.get('/api/v1/storage/files/:filename', (req, res) => {
   storage.incrementRequestCount();
-  const fileObj = storage.getFilePath(req.params.filename);
+  const fileObj = storage.getFileForDownload('node-1', '/' + req.params.filename);
   if (!fileObj) {
-    return res.status(404).json({ success: false, error: 'Object not found in SDX bucket' });
+    return res.status(404).json({ success: false, error: 'File not found' });
   }
-  res.setHeader('Content-Type', fileObj.type);
-  res.sendFile(fileObj.path);
+  res.setHeader('Content-Type', fileObj.mimeType);
+  res.sendFile(fileObj.fullPath);
 });
 
 app.delete('/api/v1/storage/files/:filename', (req, res) => {
   storage.incrementRequestCount();
-  const deleted = storage.deleteFile(req.params.filename);
-  if (deleted) {
-    res.json({ success: true, message: 'Object removed from SDX bucket' });
-  } else {
-    res.status(404).json({ success: false, error: 'Object not found' });
-  }
+  const result = storage.deleteItem('node-1', '/' + req.params.filename);
+  res.json(result);
 });
 
 // ─── Manual Orders & QR UPI Payment Endpoints ─────────────────────────────────

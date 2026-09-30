@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SDX API Documentation | KryonHost High-Speed Object Storage</title>
+  <meta name="description" content="Official REST API documentation for KryonHost SDX Object Storage. Chunked uploads up to 1TB, folder management, zero egress fees, and sub-10ms India latency.">
+  
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/fonts/geist-sans/style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/fonts/geist-mono/style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+  <link rel="icon" href="/favicon.png" type="image/png" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --font: 'Geist Sans', system-ui, -apple-system, sans-serif;
+      --mono: 'Geist Mono', 'JetBrains Mono', monospace;
+      --sidebar-w: 240px;
+      --toc-w: 190px;
+      --topbar-h: 52px;
+
+      --bg: #07070a;
+      --bg-2: #0d0d12;
+      --bg-3: #14141c;
+      --border: rgba(255, 255, 255, 0.08);
+      --border-2: rgba(255, 255, 255, 0.14);
+      --text: #f3f4f6;
+      --text-2: #9ca3af;
+      --text-3: #6b7280;
+      
+      --accent: #7c6aff;
+      --accent-bg: rgba(124, 106, 255, 0.12);
+      --accent-border: rgba(124, 106, 255, 0.35);
+      
+      --green: #10b981;
+      --green-bg: rgba(16, 185, 129, 0.12);
+      --green-border: rgba(16, 185, 129, 0.3);
+      
+      --red: #f43f5e;
+      --red-bg: rgba(244, 63, 94, 0.12);
+      --red-border: rgba(244, 63, 94, 0.3);
+      
+      --amber: #f59e0b;
+      --purple: #a855f7;
+      --code-bg: #09090d;
+      --code-border: rgba(255, 255, 255, 0.09);
+    }
+
+    html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--font); font-size: 13.5px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+    a { color: inherit; text-decoration: none; }
+    
+    code {
+      font-family: var(--mono);
+      font-size: 12px;
+      background: var(--bg-3);
+      border: 1px solid var(--border);
+      padding: 1px 6px;
+      border-radius: 4px;
+      color: #a78bfa;
+    }
+
+    .shell { display: flex; min-height: 100vh; }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: var(--sidebar-w);
+      flex-shrink: 0;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg-2);
+      border-right: 1px solid var(--border);
+      z-index: 30;
+    }
+
+    .sb-head {
+      padding: 16px 14px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sb-logo {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 12px;
+    }
+
+    .sb-logo-mark {
+      width: 26px;
+      height: 26px;
+      background: linear-gradient(135deg, #7c6aff, #3b82f6);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 800;
+      font-size: 13px;
+    }
+
+    .sb-brand-name {
+      font-size: 13.5px;
+      font-weight: 600;
+      letter-spacing: -0.2px;
+      color: #fff;
+    }
+    .sb-brand-name span { color: var(--text-3); font-weight: 400; font-size: 12px; }
+
+    .sb-search {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--bg-3);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 6px 10px;
+    }
+    .sb-search input {
+      background: none;
+      border: none;
+      outline: none;
+      font-size: 12px;
+      color: var(--text);
+      width: 100%;
+      font-family: var(--font);
+    }
+
+    .sb-nav {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px 0 16px;
+    }
+    .sb-nav::-webkit-scrollbar { width: 4px; }
+    .sb-nav::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+
+    .sb-group { padding: 10px 0 2px; }
+    .sb-group-label {
+      padding: 4px 14px 6px;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-3);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .sb-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      font-size: 12.5px;
+      color: var(--text-2);
+      cursor: pointer;
+      transition: all 0.15s;
+      border-right: 2px solid transparent;
+    }
+    .sb-item:hover { background: rgba(255,255,255,0.03); color: #fff; }
+    .sb-item.active {
+      background: var(--accent-bg);
+      color: #c4b5fd;
+      font-weight: 500;
+      border-right-color: var(--accent);
+    }
+    .sb-item i { font-size: 14px; color: var(--text-3); }
+    .sb-item.active i { color: #a78bfa; }
+
+    .sb-foot {
+      padding: 12px 14px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--text-3);
+    }
+
+    /* ── Main Content ── */
+    .main {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg);
+    }
+
+    .topbar {
+      height: var(--topbar-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      background: rgba(13, 13, 18, 0.8);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12.5px;
+      color: var(--text-3);
+    }
+    .breadcrumb .sep { color: var(--border-2); }
+    .breadcrumb .cur { color: #fff; font-weight: 500; }
+
+    .topbar-right { display: flex; align-items: center; gap: 10px; }
+    .top-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      font-size: 12px;
+      color: var(--text);
+      background: var(--bg-3);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      transition: all 0.15s;
+    }
+    .top-btn:hover { border-color: var(--border-2); background: rgba(255,255,255,0.06); }
+    .top-btn-primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+      font-weight: 600;
+    }
+    .top-btn-primary:hover { background: #6b56f8; }
+
+    .content-area {
+      flex: 1;
+      display: flex;
+      min-height: 0;
+    }
+
+    .doc-body {
+      flex: 1;
+      min-width: 0;
+      padding: 36px 42px 64px;
+      overflow-y: auto;
+      max-width: 900px;
+    }
+
+    .toc-col {
+      width: var(--toc-w);
+      flex-shrink: 0;
+      padding: 36px 20px 36px 0;
+      position: sticky;
+      top: var(--topbar-h);
+      height: calc(100vh - var(--topbar-h));
+      overflow-y: auto;
+    }
+    .toc-col::-webkit-scrollbar { width: 0; }
+
+    .page-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #a78bfa;
+      background: var(--accent-bg);
+      border: 1px solid var(--accent-border);
+      padding: 3px 9px;
+      border-radius: 4px;
+      margin-bottom: 14px;
+    }
+
+    h1 {
+      font-size: 26px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.4px;
+      margin-bottom: 10px;
+    }
+
+    .page-desc {
+      font-size: 14px;
+      color: var(--text-2);
+      line-height: 1.7;
+      margin-bottom: 18px;
+    }
+
+    .page-meta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding-bottom: 22px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 32px;
+    }
+    .page-meta span { display: flex; align-items: center; gap: 5px; font-size: 11.5px; color: var(--text-3); }
+
+    .live-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--green);
+      background: var(--green-bg);
+      border: 1px solid var(--green-border);
+      padding: 2px 8px;
+      border-radius: 20px;
+    }
+    .live-dot { width: 6px; height: 6px; background: var(--green); border-radius: 50%; box-shadow: 0 0 8px var(--green); }
+
+    .doc-section { margin-bottom: 42px; scroll-margin-top: 70px; }
+
+    h2 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      letter-spacing: -0.2px;
+    }
+    h2 i { color: #a78bfa; font-size: 17px; }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .feature-card {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      transition: all 0.2s;
+    }
+    .feature-card:hover { border-color: var(--border-2); transform: translateY(-1px); }
+
+    .fc-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10px;
+      font-size: 15px;
+    }
+    .fc-icon.purple { background: rgba(124,106,255,0.15); color: #a78bfa; }
+    .fc-icon.green { background: rgba(16,185,129,0.15); color: #34d399; }
+    .fc-icon.blue { background: rgba(59,130,246,0.15); color: #60a5fa; }
+
+    .fc-name { font-size: 13px; font-weight: 600; color: #fff; margin-bottom: 4px; }
+    .fc-desc { font-size: 12px; color: var(--text-2); line-height: 1.5; }
+
+    .callout {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+      padding: 12px 16px;
+      margin-bottom: 20px;
+    }
+    .callout p { font-size: 12.5px; color: var(--text-2); line-height: 1.6; }
+    .callout strong { color: #fff; font-weight: 600; }
+    .callout.green { border-left-color: var(--green); }
+    .callout.warn { border-left-color: var(--amber); }
+
+    /* ── Code Blocks & Syntax ── */
+    .code-block {
+      background: var(--code-bg);
+      border: 1px solid var(--code-border);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    .code-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 14px;
+      border-bottom: 1px solid var(--code-border);
+      background: rgba(255,255,255,0.02);
+    }
+    .code-dots { display: flex; gap: 6px; }
+    .dot { width: 9px; height: 9px; border-radius: 50%; }
+    .dot.r { background: #ff5f56; }
+    .dot.y { background: #ffbd2e; }
+    .dot.g { background: #27c93f; }
+
+    .code-label {
+      font-size: 11px;
+      font-family: var(--mono);
+      color: var(--text-3);
+    }
+
+    .code-copy {
+      font-size: 11px;
+      color: var(--text-3);
+      background: var(--bg-3);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 3px 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s;
+    }
+    .code-copy:hover { color: #fff; border-color: var(--border-2); }
+
+    .code-body {
+      padding: 14px 16px;
+      font-family: var(--mono);
+      font-size: 12px;
+      line-height: 1.75;
+      overflow-x: auto;
+      color: #e5e7eb;
+    }
+    .code-body pre { margin: 0; white-space: pre; }
+
+    .t-keyword { color: #c084fc; font-weight: 600; }
+    .t-string { color: #6ee7b7; }
+    .t-number { color: #fb923c; }
+    .t-fn { color: #60a5fa; }
+    .t-flag { color: #fcd34d; }
+    .t-cmd { color: #34d399; font-weight: 600; }
+    .t-comment { color: #6b7280; font-style: italic; }
+
+    /* ── Tables ── */
+    .params-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 22px;
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .params-table th {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-3);
+      text-align: left;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      background: rgba(255,255,255,0.02);
+    }
+    .params-table td {
+      font-size: 12.5px;
+      color: var(--text-2);
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .params-table tr:last-child td { border-bottom: none; }
+    .param-name { font-family: var(--mono); font-size: 12px; color: #a78bfa; font-weight: 500; }
+
+    .badge {
+      display: inline-flex;
+      padding: 2px 7px;
+      background: var(--bg-3);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-family: var(--mono);
+      font-size: 10.5px;
+      color: var(--text-3);
+      font-weight: 600;
+    }
+    .badge-post { background: var(--green-bg); color: var(--green); border-color: var(--green-border); }
+    .badge-get { background: var(--accent-bg); color: #a78bfa; border-color: var(--accent-border); }
+    .badge-delete { background: var(--red-bg); color: var(--red); border-color: var(--red-border); }
+
+    /* ── TOC Column ── */
+    .toc-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-3);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 12px;
+      padding-left: 12px;
+    }
+    .toc-item {
+      display: flex;
+      align-items: center;
+      padding: 4px 0 4px 12px;
+      font-size: 12px;
+      color: var(--text-3);
+      border-left: 2px solid var(--border);
+      transition: all 0.15s;
+    }
+    .toc-item:hover { color: #fff; border-left-color: var(--border-2); }
+    .toc-item.active { color: #a78bfa; border-left-color: var(--accent); font-weight: 500; }
+
+    @media (max-width: 960px) {
+      .sidebar { display: none; }
+      .toc-col { display: none; }
+      .doc-body { padding: 24px 18px; }
+      .feature-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- ═══ SIDEBAR ═══ -->
+  <aside class="sidebar">
+    <div class="sb-head">
+      <div class="sb-logo">
+        <div class="sb-logo-mark">K</div>
+        <div class="sb-brand-name">KryonHost <span>/ SDX Docs</span></div>
+      </div>
+      <div class="sb-search">
+        <i class="ti ti-search" style="color:var(--text-3);"></i>
+        <input placeholder="Search API docs..." id="doc-search-input" onkeyup="filterDocs(this.value)">
+      </div>
+    </div>
+
+    <nav class="sb-nav">
+      <div class="sb-group">
+        <div class="sb-group-label">Getting Started</div>
+        <a href="#introduction" class="sb-item active"><i class="ti ti-rocket"></i> Introduction</a>
+        <a href="#authentication" class="sb-item"><i class="ti ti-key"></i> Authentication</a>
+        <a href="#nodes" class="sb-item"><i class="ti ti-server-2"></i> Storage Nodes</a>
+      </div>
+
+      <div class="sb-group">
+        <div class="sb-group-label">Upload Protocol</div>
+        <a href="#upload-init" class="sb-item"><i class="ti ti-upload"></i> Upload Init</a>
+        <a href="#upload-chunk" class="sb-item"><i class="ti ti-arrow-up-circle"></i> Upload Chunk</a>
+        <a href="#upload-complete" class="sb-item"><i class="ti ti-check-circle"></i> Complete Upload</a>
+        <a href="#upload-resume" class="sb-item"><i class="ti ti-player-track-next"></i> Resume Upload</a>
+      </div>
+
+      <div class="sb-group">
+        <div class="sb-group-label">Object & Folder API</div>
+        <a href="#list-contents" class="sb-item"><i class="ti ti-folder-open"></i> List Contents</a>
+        <a href="#download" class="sb-item"><i class="ti ti-download"></i> Download File</a>
+        <a href="#read-file" class="sb-item"><i class="ti ti-file-text"></i> Read File Content</a>
+        <a href="#create-folder" class="sb-item"><i class="ti ti-folder-plus"></i> Create Folder</a>
+        <a href="#rename" class="sb-item"><i class="ti ti-edit"></i> Rename Item</a>
+        <a href="#delete" class="sb-item"><i class="ti ti-trash"></i> Delete Item</a>
+        <a href="#account-info" class="sb-item"><i class="ti ti-chart-pie"></i> Account & Quota</a>
+      </div>
+
+      <div class="sb-group">
+        <div class="sb-group-label">Reference</div>
+        <a href="#error-handling" class="sb-item"><i class="ti ti-alert-triangle"></i> Error Codes</a>
+        <a href="/panel" class="sb-item" style="color:#a78bfa;"><i class="ti ti-layout-dashboard"></i> Open Storage Panel</a>
+      </div>
+    </nav>
+
+    <div class="sb-foot">
+      <span>SDX API v1.0.4</span>
+      <span>India North 1</span>
+    </div>
+  </aside>
+
+  <!-- ═══ MAIN ═══ -->
+  <div class="main">
+    <header class="topbar">
+      <nav class="breadcrumb">
+        <a href="/">KryonHost</a>
+        <span class="sep">/</span>
+        <a href="/docs/sdx">Docs</a>
+        <span class="sep">/</span>
+        <span class="cur">SDX Storage API</span>
+      </nav>
+      <div class="topbar-right">
+        <a href="/panel" class="top-btn top-btn-primary"><i class="ti ti-folders"></i> Storage Console</a>
+        <a href="/status" class="top-btn"><i class="ti ti-activity"></i> Network Status</a>
+      </div>
+    </header>
+
+    <div class="content-area">
+      <article class="doc-body">
+        
+        <div class="page-tag"><i class="ti ti-cloud"></i> High-Speed Object Store</div>
+        <h1>KryonHost SDX API <span style="font-size:14px; font-weight:400; color:var(--text-3); font-family:var(--mono);">Storage Data eXchange v1.0</span></h1>
+        <p class="page-desc">
+          High-performance distributed object storage engine for game saves, backups, AI models, and production media. Upload files up to <strong>1TB</strong> with 5MB chunking, auto-resume, zero egress fees, and sub-10ms latency across India.
+        </p>
+        
+        <div class="page-meta">
+          <span><i class="ti ti-clock"></i> Updated Live</span>
+          <span><i class="ti ti-shield-check"></i> Enterprise SLA</span>
+          <span><span class="live-pill"><span class="live-dot"></span> Online (in-north-1)</span></span>
+        </div>
+
+        <!-- ── SECTION: INTRODUCTION ── -->
+        <div class="doc-section" id="introduction">
+          <h2><i class="ti ti-rocket"></i> Overview & Architecture</h2>
+          <div class="feature-grid">
+            <div class="feature-card">
+              <div class="fc-icon purple"><i class="ti ti-upload"></i></div>
+              <div class="fc-name">Chunked Uploads</div>
+              <div class="fc-desc">Files are split into 5MB chunks for maximum upload throughput and failure-resilience.</div>
+            </div>
+            <div class="feature-card">
+              <div class="fc-icon green"><i class="ti ti-database"></i></div>
+              <div class="fc-name">Up to 1TB Files</div>
+              <div class="fc-desc">Handles massive database dumps, world archives, and datasets seamlessly.</div>
+            </div>
+            <div class="feature-card">
+              <div class="fc-icon blue"><i class="ti ti-currency-rupee"></i></div>
+              <div class="fc-name">Zero Egress Fees</div>
+              <div class="fc-desc">Download and stream media without unexpected per-gigabyte bandwidth surcharges.</div>
+            </div>
+          </div>
+
+          <div class="callout green">
+            <p><strong>🔒 Security & Authentication Architecture:</strong> All customer API interactions route securely through <code>kriyonhost.vercel.app/api/storage/*</code> proxy backend with verified user sessions, preventing any exposure of master node credentials.</p>
+          </div>
+        </div>
+
+        <!-- ── SECTION: AUTHENTICATION ── -->
+        <div class="doc-section" id="authentication">
+          <h2><i class="ti ti-key"></i> Authentication</h2>
+          <p style="color:var(--text-2); margin-bottom:14px;">Requests require your authenticated customer session or API token passed in the Authorization header or request parameter.</p>
+          
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+              <span class="code-label">Header Format</span>
+              <button class="code-copy" onclick="copyCode(this, 'auth-header-code')"><i class="ti ti-copy"></i> copy</button>
+            </div>
+            <div class="code-body">
+<pre id="auth-header-code"><span class="t-comment"># In HTTP Headers</span>
+Authorization: Bearer <span class="t-string">your_session_or_api_token</span></pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── SECTION: STORAGE NODES ── -->
+        <div class="doc-section" id="nodes">
+          <h2><i class="ti ti-server-2"></i> Active Storage Nodes</h2>
+          <p style="color:var(--text-2); margin-bottom:14px;">KryonHost operates 3 high-speed storage allocations deployed in the India North region:</p>
+          
+          <table class="params-table">
+            <thead><tr><th>Node ID</th><th>Tier & Hardware</th><th>Region</th><th>Directory Bucket</th><th>Max Quota</th></tr></thead>
+            <tbody>
+              <tr><td class="param-name">node-1</td><td>Node 1 · Ultra NVMe</td><td>in-north-1 (India)</td><td><code>1_31fcee88</code></td><td>100 GB</td></tr>
+              <tr><td class="param-name">node-2</td><td>Node 2 · Edge Compute NVMe</td><td>in-north-1 (India)</td><td><code>2_node_4f4adb91</code></td><td>100 GB</td></tr>
+              <tr><td class="param-name">node-3</td><td>Node 3 · Enterprise NVMe</td><td>in-north-1 (India)</td><td><code>3_node_4f23b526</code></td><td>200 GB</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ── SECTION: UPLOAD INIT ── -->
+        <div class="doc-section" id="upload-init">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <h2><i class="ti ti-upload"></i> Initialize Upload</h2>
+            <span class="badge badge-post">POST</span>
+          </div>
+          <p style="color:var(--text-2); margin-bottom:14px;">Initializes a chunked file upload, calculates chunk requirements, and allocates a unique session ID.</p>
+
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+              <span class="code-label">Endpoint</span>
+              <button class="code-copy" onclick="copyCode(this, 'ep-up-init')"><i class="ti ti-copy"></i> copy</button>
+            </div>
+            <div class="code-body">
+<pre id="ep-up-init"><span class="t-cmd">POST</span> <span class="t-string">/api/storage/upload-init?node=node-1&path=/backups</span></pre>
+            </div>
+          </div>
+
+          <table class="params-table">
+            <thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td class="param-name">fileName</td><td><span class="badge">String</span></td><td>Name of the file to upload (e.g. <code>world.tar.gz</code>)</td></tr>
+              <tr><td class="param-name">fileSize</td><td><span class="badge">Integer</span></td><td>Total size in bytes (max 1TB)</td></tr>
+              <tr><td class="param-name">totalChunks</td><td><span class="badge">Integer</span></td><td>Number of 5MB chunks (<code>Math.ceil(fileSize / (5*1024*1024))</code>)</td></tr>
+              <tr><td class="param-name">mimeType</td><td><span class="badge">String</span></td><td>MIME type of the file</td></tr>
+            </tbody>
+          </table>
+
+          <div class="code-block">
+            <div class="code-header"><div class="code-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div><span class="code-label">JavaScript</span><button class="code-copy" onclick="copyCode(this, 'js-up-init')"><i class="ti ti-copy"></i> copy</button></div>
+            <div class="code-body">
+<pre id="js-up-init"><span class="t-keyword">async function</span> <span class="t-fn">initUpload</span>(file, path = <span class="t-string">'/'</span>, node = <span class="t-string">'node-1'</span>) {
+  <span class="t-keyword">const</span> totalChunks = Math.ceil(file.size / (<span class="t-number">5</span> * <span class="t-number">1024</span> * <span class="t-number">1024</span>));
+  <span class="t-keyword">const</span> res = <span class="t-keyword">await</span> fetch(<span class="t-string">`/api/storage/upload-init?node=<span class="t-flag">${node}</span>&path=<span class="t-flag">${path}</span>`</span>, {
+    method: <span class="t-string">'POST'</span>,
+    headers: { <span class="t-string">'Content-Type'</span>: <span class="t-string">'application/json'</span> },
+    body: JSON.stringify({
+      fileName: file.name,
+      fileSize: file.size,
+      totalChunks,
+      mimeType: file.type || <span class="t-string">'application/octet-stream'</span>
+    })
+  });
+  <span class="t-keyword">return await</span> res.json();
+}</pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── SECTION: UPLOAD CHUNK ── -->
+        <div class="doc-section" id="upload-chunk">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <h2><i class="ti ti-arrow-up-circle"></i> Upload Chunk</h2>
+            <span class="badge badge-post">POST</span>
+          </div>
+          <p style="color:var(--text-2); margin-bottom:14px;">Upload individual 5MB binary chunks with chunk index headers.</p>
+
+          <div class="code-block">
+            <div class="code-header">
+              <div class="code-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+              <span class="code-label">Endpoint & Headers</span>
+              <button class="code-copy" onclick="copyCode(this, 'ep-up-chunk')"><i class="ti ti-copy"></i> copy</button>
+            </div>
+            <div class="code-body">
+<pre id="ep-up-chunk"><span class="t-cmd">POST</span> <span class="t-string">/api/storage/upload-chunk</span>
+X-Upload-ID: <span class="t-string">sdx_67890abcdef</span>
+X-Chunk-Index: <span class="t-number">0</span>
+Content-Type: <span class="t-string">application/octet-stream</span></pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── SECTION: UPLOAD COMPLETE ── -->
+        <div class="doc-section" id="upload-complete">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <h2><i class="ti ti-check-circle"></i> Complete Upload</h2>
+            <span class="badge badge-post">POST</span>
+          </div>
+          <p style="color:var(--text-2); margin-bottom:14px;">Merges all uploaded chunks into the final destination file on the NVMe node.</p>
+
+          <div class="code-block">
+            <div class="code-header"><div class="code-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div><span class="code-label">JavaScript</span><button class="code-copy" onclick="copyCode(this, 'js-up-comp')"><i class="ti ti-copy"></i> copy</button></div>
+            <div class="code-body">
+<pre id="js-up-comp"><span class="t-keyword">async function</span> <span class="t-fn">completeUpload</span>(uploadId) {
+  <span class="t-keyword">const</span> res = <span class="t-keyword">await</span> fetch(<span class="t-string">'/api/storage/upload-complete'</span>, {
+    method: <span class="t-string">'POST'</span>,
+    headers: { <span class="t-string">'Content-Type'</span>: <span class="t-string">'application/json'</span> },
+    body: JSON.stringify({ uploadId })
+  });
+  <span class="t-keyword">return await</span> res.json();
+}</pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── SECTION: LIST CONTENTS ── -->
+        <div class="doc-section" id="list-contents">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <h2><i class="ti ti-folder-open"></i> List Contents</h2>
+            <span class="badge badge-get">GET</span>
+          </div>
+          <p style="color:var(--text-2); margin-bottom:14px;">Lists all files and subfolders within a specific directory path.</p>
+
+          <div class="code-block">
+            <div class="code-header"><div class="code-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div><span class="code-label">cURL</span><button class="code-copy" onclick="copyCode(this, 'curl-list')"><i class="ti ti-copy"></i> copy</button></div>
+            <div class="code-body">
+<pre id="curl-list"><span class="t-cmd">curl</span> <span class="t-string">"https://kriyonhost.vercel.app/api/storage/list-contents?node=node-1&path=/"</span></pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── SECTION: DOWNLOAD ── -->
+        <div class="doc-section" id="download">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <h2><i class="ti ti-download"></i> Download File</h2>
+            <span class="badge badge-get">GET</span>
+          </div>
+          <p style="color:var(--text-2); margin-bottom:14px;">Streams the requested file directly with accurate Content-Type and Content-Disposition headers.</p>
+
+          <div class="code-block">
+            <div class="code-header"><div class="code-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div><span class="code-label">Endpoint</span><button class="code-copy" onclick="copyCode(this, 'ep-dl')"><i class="ti ti-copy"></i> copy</button></div>
+            <div class="code-body">
+<pre id="ep-dl"><span class="t-cmd">GET</span> <span class="t-string">/api/storage/download?node=node-1&path=/backups/server.zip</span></pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── SECTION: READ FILE ── -->
+        <div class="doc-section" id="read-file">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <h2><i class="ti ti-file-text"></i> Read File Content</h2>
+            <span class="badge badge-get">GET</span>
+          </div>
+          <p style="color:var(--text-2); margin-bottom:14px;">Fetches text content for configuration files, JSON, YAML, scripts, or documentation (up to 10MB).</p>
+
+          <div class="code-block">
+            <div class="code-header"><div class="code-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div><span class="code-label">Endpoint</span><button class="code-copy" onclick="copyCode(this, 'ep-read')"><i class="ti ti-copy"></i> copy</button></div>
+            <div class="code-body">
+<pre id="ep-read"><span class="t-cmd">GET</span> <span class="t-string">/api/storage/read-file?node=node-1&path=/server.properties</span></pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── SECTION: CREATE FOLDER ── -->
+        <div class="doc-section" id="create-folder">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <h2><i class="ti ti-folder-plus"></i> Create Folder</h2>
+            <span class="badge badge-post">POST</span>
+          </div>
+          <p style="color:var(--text-2); margin-bottom:14px;">Creates a new subfolder in the specified path.</p>
+
+          <div class="code-block">
+            <div class="code-header"><div class="code-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div><span class="code-label">JavaScript</span><button class="code-copy" onclick="copyCode(this, 'js-cf')"><i class="ti ti-copy"></i> copy</button></div>
+            <div class="code-body">
+<pre id="js-cf"><span class="t-keyword">const</span> res = <span class="t-keyword">await</span> fetch(<span class="t-string">'/api/storage/create-folder?node=node-1&path=/'</span>, {
+  method: <span class="t-string">'POST'</span>,
+  headers: { <span class="t-string">'Content-Type'</span>: <span class="t-string">'application/json'</span> },
+  body: JSON.stringify({ folderName: <span class="t-string">'media_assets'</span> })
+});</pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── SECTION: RENAME & DELETE ── -->
+        <div class="doc-section" id="rename">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <h2><i class="ti ti-edit"></i> Rename Item</h2>
+            <span class="badge badge-post">POST</span>
+          </div>
+          <p style="color:var(--text-2); margin-bottom:14px;">Renames an existing file or directory.</p>
+
+          <div class="code-block">
+            <div class="code-header"><div class="code-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div><span class="code-label">Endpoint</span><button class="code-copy" onclick="copyCode(this, 'ep-ren')"><i class="ti ti-copy"></i> copy</button></div>
+            <div class="code-body">
+<pre id="ep-ren"><span class="t-cmd">POST</span> <span class="t-string">/api/storage/rename?node=node-1</span>
+Body: { <span class="t-string">"path"</span>: <span class="t-string">"/old_name.png"</span>, <span class="t-string">"newName"</span>: <span class="t-string">"new_name.png"</span> }</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="doc-section" id="delete">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <h2><i class="ti ti-trash"></i> Delete Item</h2>
+            <span class="badge badge-delete">DELETE</span>
+          </div>
+          <p style="color:var(--text-2); margin-bottom:14px;">Deletes a file or directory recursively.</p>
+
+          <div class="code-block">
+            <div class="code-header"><div class="code-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div><span class="code-label">Endpoint</span><button class="code-copy" onclick="copyCode(this, 'ep-del')"><i class="ti ti-copy"></i> copy</button></div>
+            <div class="code-body">
+<pre id="ep-del"><span class="t-cmd">DELETE</span> <span class="t-string">/api/storage/delete?node=node-1&path=/media_assets/old_video.mp4</span></pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── SECTION: ACCOUNT INFO ── -->
+        <div class="doc-section" id="account-info">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <h2><i class="ti ti-chart-pie"></i> Account & Storage Quota</h2>
+            <span class="badge badge-get">GET</span>
+          </div>
+          <p style="color:var(--text-2); margin-bottom:14px;">Retrieves storage allocation, used gigabytes, percentage, and total stored objects.</p>
+
+          <div class="code-block">
+            <div class="code-header"><div class="code-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div><span class="code-label">Success Response</span><button class="code-copy" onclick="copyCode(this, 'resp-acc')"><i class="ti ti-copy"></i> copy</button></div>
+            <div class="code-body">
+<pre id="resp-acc">{
+  <span class="t-string">"success"</span>: <span class="t-keyword">true</span>,
+  <span class="t-string">"node_id"</span>: <span class="t-string">"node-1"</span>,
+  <span class="t-string">"region"</span>: <span class="t-string">"in-north-1 (India)"</span>,
+  <span class="t-string">"bucket_directory"</span>: <span class="t-string">"1_31fcee88"</span>,
+  <span class="t-string">"storage_used_gb"</span>: <span class="t-number">0.024</span>,
+  <span class="t-string">"storage_limit_gb"</span>: <span class="t-number">100</span>,
+  <span class="t-string">"storage_used_percent"</span>: <span class="t-number">0.02</span>,
+  <span class="t-string">"total_files"</span>: <span class="t-number">14</span>,
+  <span class="t-string">"total_folders"</span>: <span class="t-number">3</span>,
+  <span class="t-string">"status"</span>: <span class="t-string">"healthy"</span>
+}</pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── SECTION: ERROR CODES ── -->
+        <div class="doc-section" id="error-handling">
+          <h2><i class="ti ti-alert-triangle"></i> Error Codes & Status Reference</h2>
+          
+          <table class="params-table">
+            <thead><tr><th>Status</th><th>Meaning</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><span class="badge" style="color:var(--amber);">400</span></td><td>Bad Request</td><td>Missing parameters or file size exceeded quota limits.</td></tr>
+              <tr><td><span class="badge" style="color:var(--red);">401</span></td><td>Unauthorized</td><td>Session expired or invalid authentication token.</td></tr>
+              <tr><td><span class="badge" style="color:#60a5fa;">404</span></td><td>Not Found</td><td>Target path, file, or folder does not exist.</td></tr>
+              <tr><td><span class="badge" style="color:var(--red);">500</span></td><td>Internal Error</td><td>Temporary upstream storage node synchronization error.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+      </article>
+
+      <!-- ═══ TABLE OF CONTENTS ═══ -->
+      <aside class="toc-col">
+        <div class="toc-label">On This Page</div>
+        <a class="toc-item active" href="#introduction">Overview</a>
+        <a class="toc-item" href="#authentication">Authentication</a>
+        <a class="toc-item" href="#nodes">Storage Nodes</a>
+        <a class="toc-item" href="#upload-init">Upload Init</a>
+        <a class="toc-item" href="#upload-chunk">Upload Chunk</a>
+        <a class="toc-item" href="#upload-complete">Complete Upload</a>
+        <a class="toc-item" href="#list-contents">List Contents</a>
+        <a class="toc-item" href="#download">Download</a>
+        <a class="toc-item" href="#read-file">Read File</a>
+        <a class="toc-item" href="#create-folder">Create Folder</a>
+        <a class="toc-item" href="#rename">Rename</a>
+        <a class="toc-item" href="#delete">Delete</a>
+        <a class="toc-item" href="#account-info">Account Info</a>
+        <a class="toc-item" href="#error-handling">Error Codes</a>
+      </aside>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function copyCode(btn, id) {
+    const el = document.getElementById(id);
+    const text = el ? el.innerText : '';
+    navigator.clipboard.writeText(text).then(() => {
+      const orig = btn.innerHTML;
+      btn.innerHTML = '<i class="ti ti-check" style="color:#34d399;"></i> copied';
+      setTimeout(() => { btn.innerHTML = orig; }, 1600);
+    });
+  }
+
+  function filterDocs(query) {
+    const q = (query || '').toLowerCase().trim();
+    document.querySelectorAll('.sb-item').forEach(item => {
+      const text = item.textContent.toLowerCase();
+      item.style.display = (!q || text.includes(q)) ? 'flex' : 'none';
+    });
+  }
+
+  const tocItems = document.querySelectorAll('.toc-item');
+  const sections = document.querySelectorAll('.doc-section');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        tocItems.forEach(item => item.classList.remove('active'));
+        const match = document.querySelector(`.toc-item[href="#${entry.target.id}"]`);
+        if (match) match.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -65% 0px' });
+  sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>

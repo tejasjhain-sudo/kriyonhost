@@ -925,7 +925,7 @@
       <a class="subnav-link-item" id="nav-sdx" onclick="navigateToView('sdx')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
         SDX Storage
-        <span style="font-size:0.6rem; font-weight:700; padding:1px 5px; border-radius:3px; background:rgba(217,119,6,0.1); color:var(--color-amber); border:1px solid rgba(217,119,6,0.25); text-transform:uppercase; letter-spacing:0.04em; margin-left:3px;">SOON</span>
+        <span style="font-size:0.6rem; font-weight:700; padding:1px 5px; border-radius:3px; background:rgba(16,185,129,0.12); color:var(--color-emerald); border:1px solid rgba(16,185,129,0.3); text-transform:uppercase; letter-spacing:0.04em; margin-left:3px;">LIVE</span>
       </a>
       <a class="subnav-link-item" onclick="showVpsToast('No recent security audit anomalies detected')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
@@ -2025,68 +2025,488 @@ root@srv-7f3a9c2e:~# </div>
     </section>
 
     <!-- ══════════════════════════════════════════════════════════════════════
-         VIEW 5: SDX OBJECT STORAGE (COMING SOON)
+         VIEW 5: SDX OBJECT STORAGE (EXACT SHULKER DASHBOARD SYSTEM)
          ══════════════════════════════════════════════════════════════════════ -->
     <section id="view-sdx" style="display:none;">
       
-      <!-- Top Breadcrumb & Hero Header -->
-      <div class="breadcrumb-row" style="margin-bottom:18px;">
-        <a onclick="navigateToView('dashboard')">Deployments</a>
-        <span>&rsaquo;</span>
-        <strong>SDX Object Storage</strong>
-      </div>
-
-      <div class="hero-instance-header" style="margin-bottom:24px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; width:100%; flex-wrap:wrap; gap:16px;">
-          <div>
-            <div style="display:flex; align-items:center; gap:10px; margin-bottom:4px;">
-              <span class="hero-instance-title">SDX Object Storage</span>
-              <span style="display:inline-flex; align-items:center; gap:5px; padding:3px 9px; border-radius:9999px; font-size:0.72rem; font-weight:700; background:rgba(217,119,6,0.1); color:var(--color-amber); border:1px solid rgba(217,119,6,0.25);">
-                COMING SOON
-              </span>
-            </div>
-            <div class="hero-instance-specs">
-              High-throughput S3-compatible NVMe object store for production media, assets, and automated backups.
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- COMING SOON CARD -->
-      <div class="clean-box-card" style="padding:48px 28px; text-align:center;">
-        <div style="width:54px; height:54px; border-radius:14px; background:var(--bg-surface-elevated); border:1px solid var(--border-subtle); display:flex; align-items:center; justify-content:center; margin:0 auto 18px auto; color:var(--text-muted);">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
-        </div>
+      <!-- ══════════════════════════════════════════════════════════════════════
+           SUB-VIEW A: MY SDX STORAGE OVERVIEW (GRID OF ALL SDXES - SCREENSHOT 3)
+           ══════════════════════════════════════════════════════════════════════ -->
+      <div id="sdx-subview-overview">
         
-        <h3 style="font-size:1.15rem; font-weight:700; color:var(--text-primary); margin-bottom:8px;">
-          SDX Object Storage is in Private Preview
-        </h3>
-        <p style="font-size:0.85rem; color:var(--text-muted); max-width:560px; margin:0 auto 24px auto; line-height:1.5;">
-          We are upgrading our S3-compatible NVMe storage infrastructure with zero egress fees, edge caching across India nodes, and instant 1-click bucket provisioning for all customers.
-        </p>
+        <!-- Header Bar -->
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <h2 style="font-size:1.35rem; font-weight:700; color:var(--text-primary); margin:0;">My SDX Storage</h2>
+            <button class="btn-restore-pill" style="padding:2px 7px; font-size:0.75rem; display:flex; align-items:center; gap:3px;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              <span>&or;</span>
+            </button>
+            <span style="color:var(--text-muted); cursor:pointer;" title="SDX Storage Info">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            </span>
+          </div>
 
-        <!-- Feature Grid Preview -->
-        <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:16px; max-width:760px; margin:0 auto 28px auto; text-align:left;">
-          <div style="background:var(--bg-surface-elevated); padding:16px; border-radius:8px; border:1px solid var(--border-subtle);">
-            <div style="font-size:0.82rem; font-weight:700; color:var(--text-primary); margin-bottom:4px;">10 GB Free Starter Quota</div>
-            <div style="font-size:0.75rem; color:var(--text-muted); line-height:1.4;">Every account will get 10 GB of NVMe SSD bucket storage at zero cost.</div>
+          <button class="btn-primary-deploy" style="background:#0f1117; color:#fff; border:1px solid rgba(255,255,255,0.15); padding:8px 16px; font-size:0.82rem; display:flex; align-items:center; gap:6px;" onclick="openSdxDeployModal()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            Deploy SDX
+          </button>
+        </div>
+
+        <!-- Top 3 Stat Cards -->
+        <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:16px; margin-bottom:20px;">
+          <!-- Card 1 -->
+          <div class="clean-box-card" style="padding:18px 20px; display:flex; align-items:center; gap:16px;">
+            <div style="width:44px; height:44px; border-radius:10px; background:var(--bg-surface-elevated); border:1px solid var(--border-subtle); display:flex; align-items:center; justify-content:center; color:var(--text-muted); flex-shrink:0;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+            </div>
+            <div>
+              <div style="font-size:1.35rem; font-weight:700; color:var(--text-primary); line-height:1.2;" id="sdx-overview-total-count">0 <span style="font-size:0.85rem; font-weight:400; color:var(--text-muted);">/ 5</span></div>
+              <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">Total SDXes</div>
+            </div>
           </div>
-          <div style="background:var(--bg-surface-elevated); padding:16px; border-radius:8px; border:1px solid var(--border-subtle);">
-            <div style="font-size:0.82rem; font-weight:700; color:var(--text-primary); margin-bottom:4px;">Full S3 API Compatibility</div>
-            <div style="font-size:0.75rem; color:var(--text-muted); line-height:1.4;">Plug-and-play with AWS CLI, rclone, Cyberduck, and standard S3 SDKs.</div>
+
+          <!-- Card 2 -->
+          <div class="clean-box-card" style="padding:18px 20px; display:flex; align-items:center; gap:16px;">
+            <div style="width:44px; height:44px; border-radius:10px; background:var(--bg-surface-elevated); border:1px solid var(--border-subtle); display:flex; align-items:center; justify-content:center; color:var(--text-muted); flex-shrink:0;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+            </div>
+            <div>
+              <div style="font-size:1.35rem; font-weight:700; color:var(--text-primary); line-height:1.2;" id="sdx-overview-total-quota">0 <span style="font-size:0.85rem; font-weight:400; color:var(--text-muted);">GB</span></div>
+              <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">Total Storage</div>
+            </div>
           </div>
-          <div style="background:var(--bg-surface-elevated); padding:16px; border-radius:8px; border:1px solid var(--border-subtle);">
-            <div style="font-size:0.82rem; font-weight:700; color:var(--text-primary); margin-bottom:4px;">Zero Egress Fees</div>
-            <div style="font-size:0.75rem; color:var(--text-muted); line-height:1.4;">Download and stream your media without unpredictable bandwidth bills.</div>
+
+          <!-- Card 3 -->
+          <div class="clean-box-card" style="padding:18px 20px; display:flex; align-items:center; gap:16px;">
+            <div style="width:44px; height:44px; border-radius:10px; background:var(--bg-surface-elevated); border:1px solid var(--border-subtle); display:flex; align-items:center; justify-content:center; color:var(--text-muted); flex-shrink:0;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            </div>
+            <div>
+              <div style="font-size:1.35rem; font-weight:700; color:var(--text-primary); line-height:1.2;" id="sdx-overview-total-used">0.00 <span style="font-size:0.85rem; font-weight:400; color:var(--text-muted);">GB</span></div>
+              <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">Storage Used</div>
+            </div>
           </div>
         </div>
 
-        <button class="btn-primary-deploy" style="padding:10px 24px; font-size:0.84rem;" onclick="showVpsToast('You are on the early access priority list!')">
-          Notify Me When Live
-        </button>
+        <!-- Slot Limit Progress Box -->
+        <div class="clean-box-card" style="padding:16px 20px; margin-bottom:24px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <div style="display:flex; align-items:center; gap:6px;">
+              <span style="font-size:0.82rem; font-weight:700; color:var(--text-primary);" id="sdx-slots-text-label">0 <span style="font-weight:400; color:var(--text-muted);">/ 5</span></span>
+              <span style="font-size:0.65rem; font-weight:700; padding:1px 6px; border-radius:4px; background:rgba(255,255,255,0.06); color:var(--text-muted); border:1px solid var(--border-subtle);">FREE</span>
+            </div>
+            <span style="font-size:0.75rem; color:var(--text-muted);" id="sdx-slots-left-label">5 slot(s) left</span>
+          </div>
+
+          <div style="width:100%; height:4px; background:rgba(255,255,255,0.06); border-radius:2px; overflow:hidden; margin-bottom:10px;">
+            <div style="width:0%; height:100%; background:#4b5563; border-radius:2px;" id="sdx-slots-progress-fill"></div>
+          </div>
+
+          <div style="display:flex; align-items:center; gap:6px; font-size:0.75rem; color:var(--text-muted);" id="sdx-slots-remaining-alert">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            5 SDX slot(s) available to deploy.
+          </div>
+        </div>
+
+        <!-- Section Title & Search -->
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:12px;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--text-muted);"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            <span style="font-size:0.75rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.06em;">YOUR SDXES</span>
+            <span style="font-size:0.68rem; font-weight:700; padding:1px 6px; border-radius:4px; background:var(--bg-surface-elevated); color:var(--text-muted); border:1px solid var(--border-subtle);" id="sdx-cards-count-badge">0</span>
+          </div>
+
+          <div style="position:relative; width:220px;">
+            <input type="text" id="sdx-overview-search" placeholder="Search SDXes..." onkeyup="filterSdxCards(this.value)" class="form-control-input" style="padding:5px 8px 5px 28px; font-size:0.75rem; height:32px;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="position:absolute; left:9px; top:10px; color:var(--text-muted);"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </div>
+        </div>
+
+        <!-- SDX Grid of Cards (Screenshot 3) -->
+        <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:16px;" id="sdx-cards-grid">
+          <!-- Dynamically populated via JS -->
+        </div>
+
       </div>
+
+      <!-- ══════════════════════════════════════════════════════════════════════
+           SUB-VIEW B: SINGLE SDX NODE MANAGEMENT (SCREENSHOTS 1 & 2)
+           ══════════════════════════════════════════════════════════════════════ -->
+      <div id="sdx-subview-detail" style="display:none;">
+        
+        <!-- Back Button & Breadcrumbs -->
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:18px;">
+          <button class="btn-restore-pill" onclick="closeSdxNodeDetail()" style="padding:5px 12px; font-size:0.78rem; display:flex; align-items:center; gap:6px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            Back to SDXes
+          </button>
+        </div>
+
+        <!-- Top Node Header Card (Screenshot 1) -->
+        <div class="clean-box-card" style="padding:22px 24px; margin-bottom:20px;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:16px; flex-wrap:wrap; gap:12px;">
+            <div style="display:flex; align-items:center; gap:14px;">
+              <div style="width:46px; height:46px; border-radius:12px; background:var(--bg-surface-elevated); border:1px solid var(--border-subtle); display:flex; align-items:center; justify-content:center; color:var(--text-muted); flex-shrink:0;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+              </div>
+              <div>
+                <h3 style="font-size:1.35rem; font-weight:700; color:var(--text-primary); margin:0 0 6px 0;" id="sdx-detail-node-title">3 node</h3>
+                <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                  <span style="display:inline-flex; align-items:center; gap:4px; font-size:0.7rem; font-weight:600; padding:2px 8px; border-radius:4px; background:rgba(59,130,246,0.12); color:#60a5fa; border:1px solid rgba(59,130,246,0.25);">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/></svg>
+                    in-north-1
+                  </span>
+                  <span style="display:inline-flex; align-items:center; gap:4px; font-size:0.7rem; font-weight:600; padding:2px 8px; border-radius:4px; background:rgba(16,185,129,0.1); color:#34d399; border:1px solid rgba(16,185,129,0.25);">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    India
+                  </span>
+                  <span style="display:inline-flex; align-items:center; gap:4px; font-size:0.7rem; font-weight:600; padding:2px 8px; border-radius:4px; background:rgba(16,185,129,0.12); color:var(--color-emerald); border:1px solid rgba(16,185,129,0.3);">
+                    <span style="width:5px; height:5px; border-radius:50%; background:var(--color-emerald);"></span>
+                    Active
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div style="text-align:right;">
+              <div style="font-size:0.68rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.06em;">CREATED</div>
+              <div style="font-size:0.82rem; font-weight:600; color:var(--text-secondary); margin-top:2px;" id="sdx-detail-created-date">Sep 30, 2026</div>
+            </div>
+          </div>
+
+          <!-- Usage Bar -->
+          <div style="margin-top:16px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+              <span style="font-size:0.75rem; color:var(--text-muted);">Storage Usage</span>
+              <span style="font-size:0.78rem; font-weight:700; color:var(--text-primary); font-family:'JetBrains Mono', monospace;" id="sdx-detail-usage-text">0.00 / 0 GB</span>
+            </div>
+            <div style="width:100%; height:4px; background:rgba(255,255,255,0.06); border-radius:2px; overflow:hidden; margin-bottom:6px;">
+              <div style="width:0%; height:100%; background:#4b5563; border-radius:2px;" id="sdx-detail-progress-bar"></div>
+            </div>
+            <div style="font-size:0.7rem; color:var(--text-muted); font-family:'JetBrains Mono', monospace;" id="sdx-detail-available-text">100.0% available</div>
+          </div>
+        </div>
+
+        <!-- 4 Metric Cards (Screenshot 1) -->
+        <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:16px; margin-bottom:20px;">
+          <!-- Card 1: Total Uploads -->
+          <div class="clean-box-card" style="padding:16px 18px; display:flex; align-items:center; gap:14px;">
+            <div style="width:40px; height:40px; border-radius:8px; background:var(--bg-surface-elevated); border:1px solid var(--border-subtle); display:flex; align-items:center; justify-content:center; color:var(--text-muted); flex-shrink:0;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            </div>
+            <div>
+              <div style="font-size:1.25rem; font-weight:700; color:var(--text-primary); line-height:1.2;" id="sdx-detail-total-uploads">0</div>
+              <div style="font-size:0.72rem; color:var(--text-muted); margin-top:2px;">Total Uploads</div>
+            </div>
+          </div>
+
+          <!-- Card 2: API Requests -->
+          <div class="clean-box-card" style="padding:16px 18px; display:flex; align-items:center; gap:14px;">
+            <div style="width:40px; height:40px; border-radius:8px; background:var(--bg-surface-elevated); border:1px solid var(--border-subtle); display:flex; align-items:center; justify-content:center; color:var(--text-muted); flex-shrink:0;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            </div>
+            <div>
+              <div style="font-size:1.25rem; font-weight:700; color:var(--text-primary); line-height:1.2;" id="sdx-detail-api-requests">0</div>
+              <div style="font-size:0.72rem; color:var(--text-muted); margin-top:2px;">API Requests</div>
+            </div>
+          </div>
+
+          <!-- Card 3: Last Request -->
+          <div class="clean-box-card" style="padding:16px 18px; display:flex; align-items:center; gap:14px;">
+            <div style="width:40px; height:40px; border-radius:8px; background:var(--bg-surface-elevated); border:1px solid var(--border-subtle); display:flex; align-items:center; justify-content:center; color:var(--text-muted); flex-shrink:0;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <div>
+              <div style="font-size:1.25rem; font-weight:700; color:var(--text-primary); line-height:1.2;" id="sdx-detail-last-request">-</div>
+              <div style="font-size:0.72rem; color:var(--text-muted); margin-top:2px;">Last Request</div>
+            </div>
+          </div>
+
+          <!-- Card 4: Billing -->
+          <div class="clean-box-card" style="padding:16px 18px; display:flex; align-items:center; gap:14px;">
+            <div style="width:40px; height:40px; border-radius:8px; background:var(--bg-surface-elevated); border:1px solid var(--border-subtle); display:flex; align-items:center; justify-content:center; color:var(--text-muted); flex-shrink:0;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            </div>
+            <div>
+              <div style="font-size:1.25rem; font-weight:700; color:var(--text-primary); line-height:1.2;">Free</div>
+              <div style="font-size:0.72rem; color:var(--text-muted); margin-top:2px;">Billing</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- API Configuration Card (Screenshots 1 & 2) -->
+        <div class="clean-box-card" style="padding:22px 24px; margin-bottom:24px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;">
+            <h4 style="font-size:0.95rem; font-weight:700; color:var(--text-primary); margin:0;">API Configuration</h4>
+            <span style="display:inline-flex; align-items:center; gap:4px; font-size:0.7rem; font-weight:600; padding:2px 8px; border-radius:4px; background:rgba(16,185,129,0.12); color:var(--color-emerald); border:1px solid rgba(16,185,129,0.3);">
+              <span style="width:5px; height:5px; border-radius:50%; background:var(--color-emerald);"></span>
+              Active
+            </span>
+          </div>
+
+          <!-- Field 1: API Endpoint -->
+          <div style="margin-bottom:18px;">
+            <label style="display:block; font-size:0.7rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:6px;">API ENDPOINT</label>
+            <div style="display:flex; gap:8px;">
+              <input type="text" readonly id="sdx-api-endpoint-val" value="https://kriyonhost.vercel.app/api/storage" class="form-control-input" style="font-family:'JetBrains Mono', monospace; font-size:0.78rem; background:var(--bg-surface-elevated); color:var(--text-primary);">
+              <button class="btn-restore-pill" onclick="copySdxFieldValue('sdx-api-endpoint-val', 'API Endpoint copied')" style="padding:0 12px;" title="Copy Endpoint">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              </button>
+            </div>
+            <div style="display:flex; align-items:center; gap:5px; font-size:0.72rem; color:var(--text-muted); margin-top:5px;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              Based on your selected region.
+            </div>
+          </div>
+
+          <!-- Field 2: SDX Key -->
+          <div style="margin-bottom:18px;">
+            <label style="display:block; font-size:0.7rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:6px;">SDX KEY</label>
+            <div style="display:flex; gap:8px;">
+              <input type="password" readonly id="sdx-key-val-input" value="••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••" class="form-control-input" style="font-family:'JetBrains Mono', monospace; font-size:0.78rem; background:var(--bg-surface-elevated); color:var(--text-primary);">
+              <button class="btn-restore-pill" onclick="toggleSdxKeyReveal()" style="padding:0 12px;" title="Show/Hide Key" id="btn-toggle-sdx-key">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+              <button class="btn-restore-pill" onclick="copySdxActualKey()" style="padding:0 12px;" title="Copy Key">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              </button>
+            </div>
+            <div style="display:flex; align-items:center; gap:5px; font-size:0.72rem; color:var(--color-amber); margin-top:5px;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              Keep your key secure &mdash; It provides full access to your storage bucket.
+            </div>
+          </div>
+
+          <!-- Field 3: Bucket Directory -->
+          <div style="margin-bottom:20px;">
+            <label style="display:block; font-size:0.7rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:6px;">BUCKET DIRECTORY</label>
+            <div style="display:flex; gap:8px;">
+              <input type="text" readonly id="sdx-bucket-dir-input" value="3_node_4f23b526" class="form-control-input" style="font-family:'JetBrains Mono', monospace; font-size:0.78rem; background:var(--bg-surface-elevated); color:var(--text-primary);">
+              <button class="btn-restore-pill" onclick="copySdxFieldValue('sdx-bucket-dir-input', 'Bucket Directory copied')" style="padding:0 12px;" title="Copy Bucket Directory">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Action Buttons (Screenshot 2) -->
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button class="btn-restore-pill" style="border-color:rgba(16,185,129,0.4); color:#34d399; font-size:0.78rem; padding:6px 14px; display:flex; align-items:center; gap:5px;" onclick="openSdxDeployModal()">
+              <span>+</span> Add Storage
+            </button>
+            <a href="/docs/sdx" target="_blank" class="btn-restore-pill" style="font-size:0.78rem; padding:6px 14px; display:flex; align-items:center; gap:6px; text-decoration:none;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              API Docs
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Tabs Switcher: Uploads & API Requests (Screenshot 2) -->
+        <div style="display:flex; gap:16px; border-bottom:1px solid var(--border-subtle); margin-bottom:20px; padding-bottom:2px;">
+          <button class="btn-restore-pill active" id="tab-sdx-uploads" onclick="switchSdxDetailTab('uploads')" style="border-radius:0; border:none; background:transparent; border-bottom:2px solid #7c6aff; color:#fff; font-weight:600; padding:8px 4px; display:flex; align-items:center; gap:6px;">
+            Uploads
+            <span style="font-size:0.65rem; padding:1px 6px; border-radius:4px; background:rgba(255,255,255,0.06); color:var(--text-muted);" id="sdx-tab-uploads-count">0</span>
+          </button>
+          <button class="btn-restore-pill" id="tab-sdx-requests" onclick="switchSdxDetailTab('requests')" style="border-radius:0; border:none; background:transparent; color:var(--text-muted); padding:8px 4px; display:flex; align-items:center; gap:6px;">
+            API Requests
+            <span style="font-size:0.65rem; padding:1px 6px; border-radius:4px; background:rgba(255,255,255,0.06); color:var(--text-muted);" id="sdx-tab-requests-count">0</span>
+          </button>
+        </div>
+
+        <!-- ── TAB CONTENT 1: UPLOADS & FILE BROWSER ── -->
+        <div id="sdx-content-uploads">
+          
+          <!-- Upload Toolbar -->
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:10px;">
+            <!-- Breadcrumbs -->
+            <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;" id="sdx-detail-breadcrumbs">
+              <button class="btn-restore-pill" style="padding:4px 8px; font-size:0.75rem;" onclick="navigateSdxPath('/')">root</button>
+            </div>
+
+            <!-- Actions -->
+            <div style="display:flex; align-items:center; gap:8px;">
+              <button class="btn-primary-deploy" style="padding:6px 14px; font-size:0.78rem; display:flex; align-items:center; gap:6px;" onclick="triggerSdxUpload()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                Upload Files
+              </button>
+              <button class="btn-restore-pill" style="padding:6px 12px; font-size:0.78rem; display:flex; align-items:center; gap:6px;" onclick="openCreateFolderModal()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/></svg>
+                New Folder
+              </button>
+              <button class="btn-restore-pill" style="padding:6px 10px; font-size:0.78rem;" title="Refresh" onclick="loadSdxCurrentDirectory()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Active Upload Tracker -->
+          <div id="sdx-upload-tracker" style="display:none; padding:12px 18px; background:rgba(124,106,255,0.08); border:1px solid rgba(124,106,255,0.2); border-radius:8px; margin-bottom:14px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <div class="status-indicator-dot running" style="width:8px; height:8px;"></div>
+                <span style="font-size:0.78rem; font-weight:600; color:var(--text-primary);" id="sdx-upload-filename">Uploading...</span>
+              </div>
+              <span style="font-size:0.75rem; font-weight:700; color:#c4b5fd; font-family:'JetBrains Mono', monospace;" id="sdx-upload-percentage">0%</span>
+            </div>
+            <div style="width:100%; height:4px; background:rgba(255,255,255,0.1); border-radius:2px; overflow:hidden;">
+              <div id="sdx-upload-tracker-bar" style="width:0%; height:100%; background:linear-gradient(90deg, #7c6aff, #10b981); border-radius:2px; transition:width 0.2s linear;"></div>
+            </div>
+          </div>
+
+          <!-- Drag and Drop Dropzone Container (Matching Screenshot 2) -->
+          <div id="sdx-dropzone-container" style="border:1px dashed var(--border-subtle); border-radius:12px; background:rgba(255,255,255,0.01); min-height:240px; position:relative;" ondragover="handleSdxDragOver(event)" ondragleave="handleSdxDragLeave(event)" ondrop="handleSdxDrop(event)">
+            
+            <!-- Empty State (Screenshot 2) -->
+            <div id="sdx-empty-folder-state" style="padding:60px 20px; text-align:center;">
+              <div style="width:48px; height:48px; border-radius:12px; background:var(--bg-surface-elevated); border:1px solid var(--border-subtle); display:flex; align-items:center; justify-content:center; margin:0 auto 14px auto; color:var(--text-muted);">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+              </div>
+              <h4 style="font-size:0.95rem; font-weight:600; color:var(--text-primary); margin-bottom:4px;">No uploads yet</h4>
+              <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:16px;">Start uploading files to your SDX bucket.</p>
+              <button class="btn-restore-pill" onclick="triggerSdxUpload()" style="font-size:0.78rem; padding:6px 14px;">
+                Choose Files to Upload
+              </button>
+            </div>
+
+            <!-- Table for when files exist -->
+            <table style="width:100%; border-collapse:collapse; text-align:left; display:none;" id="sdx-file-table">
+              <thead>
+                <tr style="border-bottom:1px solid var(--border-subtle); background:rgba(255,255,255,0.02); font-size:0.72rem; color:var(--text-muted); text-transform:uppercase;">
+                  <th style="padding:10px 18px;">Name</th>
+                  <th style="padding:10px 18px; width:120px;">Size</th>
+                  <th style="padding:10px 18px; width:140px;">Type</th>
+                  <th style="padding:10px 18px; width:180px;">Last Modified</th>
+                  <th style="padding:10px 18px; width:220px; text-align:right;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="sdx-file-list-tbody"></tbody>
+            </table>
+
+            <!-- Drag Overlay -->
+            <div id="sdx-drag-overlay" style="display:none; position:absolute; inset:0; background:rgba(124,106,255,0.15); border:2px dashed #7c6aff; border-radius:12px; backdrop-filter:blur(4px); z-index:10; align-items:center; justify-content:center; flex-direction:column; gap:10px;">
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              <span style="font-size:0.9rem; font-weight:700; color:#fff;">Drop files to upload to SDX bucket</span>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- ── TAB CONTENT 2: API REQUESTS LOG ── -->
+        <div id="sdx-content-requests" style="display:none;">
+          <div class="clean-box-card" style="padding:0; overflow:hidden;">
+            <table style="width:100%; border-collapse:collapse; text-align:left;">
+              <thead>
+                <tr style="border-bottom:1px solid var(--border-subtle); background:rgba(255,255,255,0.02); font-size:0.72rem; color:var(--text-muted); text-transform:uppercase;">
+                  <th style="padding:10px 18px;">Method / Action</th>
+                  <th style="padding:10px 18px;">Path</th>
+                  <th style="padding:10px 18px; width:120px;">Status</th>
+                  <th style="padding:10px 18px; width:180px; text-align:right;">Timestamp</th>
+                </tr>
+              </thead>
+              <tbody id="sdx-requests-log-tbody">
+                <tr style="border-bottom:1px solid var(--border-subtle);">
+                  <td style="padding:12px 18px; font-family:'JetBrains Mono', monospace; font-size:0.78rem; color:#34d399;">GET list-contents</td>
+                  <td style="padding:12px 18px; font-family:'JetBrains Mono', monospace; font-size:0.78rem; color:var(--text-secondary);">/</td>
+                  <td style="padding:12px 18px;"><span class="badge b-green" style="font-size:0.65rem;">200 OK</span></td>
+                  <td style="padding:12px 18px; text-align:right; font-size:0.75rem; color:var(--text-muted);">Just now</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Hidden file input for uploads -->
+      <input type="file" id="sdx-hidden-file-input" multiple style="display:none;" onchange="handleSdxFilesSelected(event)">
 
     </section>
+
+    <!-- ── MODAL: CREATE SDX FOLDER ── -->
+    <div class="app-modal-overlay" id="modal-sdx-new-folder">
+      <div class="app-modal-box">
+        <div class="modal-head-bar">
+          <div class="modal-head-title">Create New Folder</div>
+          <button class="btn-restore-pill" onclick="closeModal('modal-sdx-new-folder')">&times;</button>
+        </div>
+        <div class="modal-body-content">
+          <div class="form-group-item">
+            <label class="form-group-label">Folder Name</label>
+            <input type="text" class="form-control-input" id="sdx-new-folder-input" placeholder="e.g. backups, world_saves, media">
+          </div>
+        </div>
+        <div class="modal-foot-bar">
+          <button class="btn-restore-pill" onclick="closeModal('modal-sdx-new-folder')">Cancel</button>
+          <button class="btn-primary-deploy" onclick="submitCreateSdxFolder()">Create Folder</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── MODAL: RENAME SDX ITEM ── -->
+    <div class="app-modal-overlay" id="modal-sdx-rename">
+      <div class="app-modal-box">
+        <div class="modal-head-bar">
+          <div class="modal-head-title">Rename Item</div>
+          <button class="btn-restore-pill" onclick="closeModal('modal-sdx-rename')">&times;</button>
+        </div>
+        <div class="modal-body-content">
+          <div class="form-group-item">
+            <label class="form-group-label">New Name</label>
+            <input type="text" class="form-control-input" id="sdx-rename-input">
+            <input type="hidden" id="sdx-rename-target-path">
+          </div>
+        </div>
+        <div class="modal-foot-bar">
+          <button class="btn-restore-pill" onclick="closeModal('modal-sdx-rename')">Cancel</button>
+          <button class="btn-primary-deploy" onclick="submitRenameSdxItem()">Save Rename</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── MODAL: MOVE SDX ITEM ── -->
+    <div class="app-modal-overlay" id="modal-sdx-move">
+      <div class="app-modal-box">
+        <div class="modal-head-bar">
+          <div class="modal-head-title">Move File / Folder</div>
+          <button class="btn-restore-pill" onclick="closeModal('modal-sdx-move')">&times;</button>
+        </div>
+        <div class="modal-body-content">
+          <div class="form-group-item">
+            <label class="form-group-label">Target Destination Directory</label>
+            <input type="text" class="form-control-input" id="sdx-move-destination-input" placeholder="e.g. / or /backups">
+            <input type="hidden" id="sdx-move-source-path">
+          </div>
+        </div>
+        <div class="modal-foot-bar">
+          <button class="btn-restore-pill" onclick="closeModal('modal-sdx-move')">Cancel</button>
+          <button class="btn-primary-deploy" onclick="submitMoveSdxItem()">Move Item</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── MODAL: SDX FILE VIEWER & EDITOR ── -->
+    <div class="app-modal-overlay" id="modal-sdx-editor">
+      <div class="app-modal-box" style="max-width:760px;">
+        <div class="modal-head-bar">
+          <div class="modal-head-title" style="display:flex; align-items:center; gap:8px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            <span id="modal-sdx-editor-title">file.txt</span>
+          </div>
+          <button class="btn-restore-pill" onclick="closeModal('modal-sdx-editor')">&times;</button>
+        </div>
+        <div class="modal-body-content" style="padding:0;">
+          <textarea id="modal-sdx-editor-textarea" spellcheck="false" style="width:100%; height:380px; background:#0a0a0f; color:#f3f4f6; font-family:'JetBrains Mono', monospace; font-size:0.82rem; padding:18px; border:none; outline:none; resize:none; line-height:1.6;"></textarea>
+          <input type="hidden" id="modal-sdx-editor-path">
+        </div>
+        <div class="modal-foot-bar">
+          <span style="font-size:0.75rem; color:var(--text-muted); margin-right:auto;" id="modal-sdx-editor-size">Size: 0 B</span>
+          <button class="btn-restore-pill" onclick="closeModal('modal-sdx-editor')">Close</button>
+          <button class="btn-primary-deploy" onclick="saveSdxEditedFile()">Save Changes</button>
+        </div>
+      </div>
+    </div>
 
   </main>
 
@@ -2163,6 +2583,84 @@ root@srv-7f3a9c2e:~# </div>
       <div class="modal-foot-bar">
         <button class="btn-restore-pill" onclick="closeModal('modal-create-snapshot')">Cancel</button>
         <button class="btn-primary-deploy" onclick="submitCreateSnapshot()">Take Snapshot</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MODAL: DEPLOY SDX OPTIONS (BUY & FREE 2-HOUR TRIAL) ── -->
+  <div class="app-modal-overlay" id="modal-sdx-deploy-options">
+    <div class="app-modal-box" style="max-width:680px;">
+      <div class="modal-head-bar">
+        <div class="modal-head-title" style="display:flex; align-items:center; gap:8px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+          <span>Deploy SDX Object Storage</span>
+        </div>
+        <button class="btn-restore-pill" onclick="closeModal('modal-sdx-deploy-options')">&times;</button>
+      </div>
+      <div class="modal-body-content" style="padding:22px;">
+        <p style="font-size:0.84rem; color:var(--text-secondary); margin:0 0 18px 0; line-height:1.5;">
+          Select your deployment option below. You can launch a <strong>Free 2-Hour Trial</strong> sandbox to test live bucket operations or buy a <strong>Production SDX Node</strong> with unlimited persistent storage.
+        </p>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+          
+          <!-- Option 1: Free 2-Hour Trial -->
+          <div class="clean-box-card" style="padding:18px; border:1px solid rgba(245,158,11,0.4); background:rgba(245,158,11,0.03); border-radius:10px; display:flex; flex-direction:column; justify-content:space-between;">
+            <div>
+              <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;">
+                <span style="font-size:0.68rem; font-weight:700; padding:2px 8px; border-radius:4px; background:rgba(245,158,11,0.18); color:#f59e0b; border:1px solid rgba(245,158,11,0.35);">
+                  ⚡ FREE 2-HOUR TRY
+                </span>
+                <span style="font-size:1.15rem; font-weight:800; color:var(--text-primary);">₹0</span>
+              </div>
+              <h4 style="font-size:1.05rem; font-weight:700; color:var(--text-primary); margin:0 0 6px 0;">2-Hour Sandbox Trial</h4>
+              <p style="font-size:0.78rem; color:var(--text-muted); line-height:1.4; margin-bottom:14px;">
+                Test full object storage features with 1 dedicated SDX node for 2 hours.
+              </p>
+              <ul style="font-size:0.75rem; color:var(--text-secondary); line-height:1.6; padding-left:18px; margin:0 0 18px 0;">
+                <li>1 SDX Storage Node</li>
+                <li>5 GB NVMe Storage Quota</li>
+                <li>Full REST & S3 API Key</li>
+                <li>2 Hours Active Usage Window</li>
+                <li>Instant 1-Click Provisioning</li>
+              </ul>
+            </div>
+            <button class="btn-restore-pill" style="background:#f59e0b; color:#111; font-weight:700; border:none; padding:8px 12px; font-size:0.8rem; width:100%; justify-content:center; display:flex; align-items:center; gap:6px;" onclick="claimSdxFreeTrial()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              <span>Launch Free Trial (2h)</span>
+            </button>
+          </div>
+
+          <!-- Option 2: Buy Production SDX -->
+          <div class="clean-box-card" style="padding:18px; border:1px solid rgba(124,106,255,0.4); background:rgba(124,106,255,0.03); border-radius:10px; display:flex; flex-direction:column; justify-content:space-between;">
+            <div>
+              <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;">
+                <span style="font-size:0.68rem; font-weight:700; padding:2px 8px; border-radius:4px; background:rgba(124,106,255,0.18); color:#a78bfa; border:1px solid rgba(124,106,255,0.35);">
+                  PRO PRODUCTION
+                </span>
+                <span style="font-size:1.15rem; font-weight:800; color:#a78bfa;">₹99 <span style="font-size:0.72rem; font-weight:400; color:var(--text-muted);">/mo</span></span>
+              </div>
+              <h4 style="font-size:1.05rem; font-weight:700; color:var(--text-primary); margin:0 0 6px 0;">Production SDX Storage</h4>
+              <p style="font-size:0.78rem; color:var(--text-muted); line-height:1.4; margin-bottom:14px;">
+                Permanent, multi-node high throughput object storage for bots, servers & web apps.
+              </p>
+              <ul style="font-size:0.75rem; color:var(--text-secondary); line-height:1.6; padding-left:18px; margin:0 0 18px 0;">
+                <li>Permanent Persistence</li>
+                <li>25 GB Gen4 NVMe Storage</li>
+                <li>Unmetered Fast Bandwidth</li>
+                <li>Sub-10ms India Tier-4 Routing</li>
+                <li>99.99% Guaranteed SLA</li>
+              </ul>
+            </div>
+            <button class="btn-primary-deploy" style="background:#7c6aff; color:#fff; font-weight:700; border:none; padding:8px 12px; font-size:0.8rem; width:100%; justify-content:center; display:flex; align-items:center; gap:6px;" onclick="openBuySdxModal()">
+              <span>Buy SDX Storage &rarr;</span>
+            </button>
+          </div>
+
+        </div>
+      </div>
+      <div class="modal-foot-bar">
+        <button class="btn-restore-pill" onclick="closeModal('modal-sdx-deploy-options')">Close</button>
       </div>
     </div>
   </div>

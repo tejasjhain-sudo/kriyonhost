@@ -1,6 +1,5 @@
 {
   "pool": [
-    "7955c352e1aba2676cba5dd5f5a5253bf8298ed210c85f3a714b1b3d8548243c",
     "ca016ca3597bd359c176fff1093bf4527b7496b05a698ebc985419f72a69e2c7",
     "80f3ae4962050fc068e30a6fff2d474bc81528fc98279816de6d26f83a87dfc2",
     "bda2886765dbf21ee3eab9fe8f102824a2fde7b6ef2feba7ed8f6b1fab861bfa",
@@ -23,6 +22,22 @@
       "metadata": {
         "name": "My Production AI",
         "region": "India (Mumbai Tier-4 Datacenter)",
+        "ip": "::1",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/27.0 Safari/605.1.15"
+      }
+    },
+    "tejas": {
+      "key": "7955c352e1aba2676cba5dd5f5a5253bf8298ed210c85f3a714b1b3d8548243c",
+      "assignedAt": "2026-09-30T11:54:46.230Z",
+      "model": "Colide Pro (Advanced Reasoning)",
+      "rateLimit": "800 requests/day",
+      "tokenLimit": "25,000 tokens/month",
+      "tier": "Free Tier",
+      "name": "My Production AI",
+      "region": "India (Mumbai Node)",
+      "metadata": {
+        "name": "My Production AI",
+        "region": "India (Mumbai Node)",
         "ip": "::1",
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/27.0 Safari/605.1.15"
       }

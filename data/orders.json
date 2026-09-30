@@ -23,13 +23,21 @@
     "upi_id": "8750287172@fam",
     "qr_image_url": "/images/upi-qr.png",
     "utr_number": "8750287172",
-    "status": "pending_approval",
+    "status": "rejected",
     "server_details": null,
     "admin_notes": null,
     "sender_upi_id": "user@hdfc",
     "screenshot_url": null,
     "screenshot_data": null,
     "payment_submitted_at": "2026-09-30T11:03:08.849Z",
-    "rejection_reason": null
+    "rejection_reason": "Payment verification failed or UTR not found in bank statement",
+    "rejected_at": "2026-09-30T11:06:14.017Z"
+  },
+  {
+    "id": "KRYON-ORD-TEST-123",
+    "amount": 799,
+    "status": "rejected",
+    "rejected_at": "2026-09-30T11:01:39.410Z",
+    "rejection_reason": "Payment verification failed or UTR not found in bank statement"
   }
 ]
