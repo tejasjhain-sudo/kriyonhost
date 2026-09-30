@@ -280,7 +280,7 @@
             <li>Full Root &amp; Web VNC Console</li>
           </ul>
 
-          <button onclick="prefillAndScroll('std', 2, 4, 50)" class="btn btn-ghost" style="width:100%; margin-top:1.5rem;">Configure &amp; Deploy</button>
+          <button onclick="deployDirectPlan('Cloud Starter', 949, 2, 4, 50, 'std')" class="btn btn-ghost" style="width:100%; margin-top:1.5rem;">Configure &amp; Deploy</button>
         </div>
 
         <!-- Card 2 -->
@@ -303,7 +303,7 @@
             <li>Automated Daily Snapshots</li>
           </ul>
 
-          <button onclick="prefillAndScroll('perf', 4, 16, 100)" class="btn btn-primary" style="width:100%; margin-top:1.5rem;">Configure &amp; Deploy</button>
+          <button onclick="deployDirectPlan('Gaming Node', 2399, 4, 16, 100, 'perf')" class="btn btn-primary" style="width:100%; margin-top:1.5rem;">Configure &amp; Deploy</button>
         </div>
 
         <!-- Card 3 -->
@@ -326,7 +326,7 @@
             <li>Priority Hypervisor Pinning</li>
           </ul>
 
-          <button onclick="prefillAndScroll('pwr', 8, 40, 200)" class="btn btn-primary" style="width:100%; margin-top:1.5rem; background:#f59e0b; border-color:#f59e0b; color:#000;">Deploy Flagship</button>
+          <button onclick="deployDirectPlan('Power Beast', 5948, 8, 40, 200, 'pwr')" class="btn btn-primary" style="width:100%; margin-top:1.5rem; background:#f59e0b; border-color:#f59e0b; color:#000;">Deploy Flagship</button>
         </div>
 
         <!-- Card 4 -->
@@ -349,19 +349,19 @@
             <li>Custom BGP Anycast Available</li>
           </ul>
 
-          <button onclick="prefillAndScroll('pwr', 16, 64, 400)" class="btn btn-ghost" style="width:100%; margin-top:1.5rem;">Configure &amp; Deploy</button>
+          <button onclick="deployDirectPlan('Titan Cluster', 10499, 16, 64, 400, 'pwr')" class="btn btn-ghost" style="width:100%; margin-top:1.5rem;">Configure &amp; Deploy</button>
         </div>
       </div>
     </div>
   </section>
 
   <!-- ═══════════════════════════════════════════════════════════════════════
-       INTERACTIVE HARDWARE CONFIGURATOR
+       CUSTOM VPS MAKER
        ═══════════════════════════════════════════════════════════════════════ -->
   <section class="s" id="vps-builder" style="background:rgba(255,255,255,0.01);">
     <div class="wrap">
       <div class="sec-head">
-        <span class="eyebrow"><span class="eyebrow-dot"></span> Live Configurator</span>
+        <span class="eyebrow"><span class="eyebrow-dot"></span> Custom VPS Maker</span>
         <h2 class="sh">Build Your Custom Virtual Machine</h2>
         <p class="sub">Choose your architecture tier, dial in your CPU, RAM, and NVMe disk in real-time, and deploy immediately.</p>
       </div>
@@ -371,31 +371,31 @@
         <div class="tier-opt" data-tier="eco" onclick="selectVpsTier('eco', this)">
           <div class="tier-opt-top">
             <span class="tier-name">ECO Budget</span>
-            <span class="badge b-blue" style="font-size:0.6rem;">₹19.2/core</span>
+            <span class="badge b-blue" style="font-size:0.6rem;">₹19.2/core · IN STOCK</span>
           </div>
           <div class="tier-desc">Intel Xeon E5 · DDR4 · Budget dev &amp; lightweight tools</div>
         </div>
 
-        <div class="tier-opt selected" data-tier="std" onclick="selectVpsTier('std', this)">
+        <div class="tier-opt disabled" data-tier="std" style="opacity:0.55; cursor:not-allowed; border-color:rgba(239,68,68,0.3); background:rgba(239,68,68,0.03);" title="Currently Out of Stock">
           <div class="tier-opt-top">
-            <span class="tier-name">STD Balanced</span>
-            <span class="badge b-purple" style="font-size:0.6rem;">POPULAR</span>
+            <span class="tier-name" style="color:#9ca3af;">STD Balanced</span>
+            <span class="badge" style="background:rgba(239,68,68,0.15); color:#ef4444; border:1px solid rgba(239,68,68,0.3); font-size:0.6rem; font-weight:700;">OUT OF STOCK</span>
           </div>
-          <div class="tier-desc">AMD EPYC 7003 · DDR4 ECC · Web APIs &amp; microservices</div>
+          <div class="tier-desc" style="color:#6b7280;">AMD EPYC 7003 · DDR4 ECC · Web APIs &amp; microservices</div>
         </div>
 
-        <div class="tier-opt" data-tier="perf" onclick="selectVpsTier('perf', this)">
+        <div class="tier-opt disabled" data-tier="perf" style="opacity:0.55; cursor:not-allowed; border-color:rgba(239,68,68,0.3); background:rgba(239,68,68,0.03);" title="Currently Out of Stock">
           <div class="tier-opt-top">
-            <span class="tier-name">PERF Compute</span>
-            <span class="badge b-cyan" style="font-size:0.6rem;">4.8GHz</span>
+            <span class="tier-name" style="color:#9ca3af;">PERF Compute</span>
+            <span class="badge" style="background:rgba(239,68,68,0.15); color:#ef4444; border:1px solid rgba(239,68,68,0.3); font-size:0.6rem; font-weight:700;">OUT OF STOCK</span>
           </div>
-          <div class="tier-desc">Intel Core i5/i7 · High-frequency single-thread compute</div>
+          <div class="tier-desc" style="color:#6b7280;">Intel Core i5/i7 · High-frequency single-thread compute</div>
         </div>
 
-        <div class="tier-opt" data-tier="pwr" onclick="selectVpsTier('pwr', this)">
+        <div class="tier-opt selected" data-tier="pwr" onclick="selectVpsTier('pwr', this)" style="border-color:rgba(245,158,11,0.5); background:rgba(245,158,11,0.05);">
           <div class="tier-opt-top">
-            <span class="tier-name">PWR Extreme</span>
-            <span class="badge b-gold" style="font-size:0.6rem;">5.7GHz RYZEN</span>
+            <span class="tier-name" style="color:#f59e0b;">PWR Extreme</span>
+            <span class="badge b-gold" style="font-size:0.6rem; font-weight:700;">5.7GHz RYZEN · IN STOCK</span>
           </div>
           <div class="tier-desc">AMD Ryzen 9 7950X · DDR5 ECC · Ultimate single-core speed</div>
         </div>
@@ -686,7 +686,7 @@
   <script src="/js/app.js"></script>
   <script src="/js/checkout.js"></script>
   <script>
-    let vpsCurrentTier = 'std';
+    let vpsCurrentTier = 'pwr';
     const VPS_RATES = {
       eco: { name: 'ECO Budget (Xeon)', cpu: 19.2, ram: 31.2, disk: 0.312 },
       std: { name: 'STD Balanced (EPYC)', cpu: 31.2, ram: 44.4, disk: 0.444 },
@@ -695,6 +695,10 @@
     };
 
     function selectVpsTier(tier, el) {
+      if (tier === 'std' || tier === 'perf') {
+        alert('Notice: ' + VPS_RATES[tier].name + ' is currently OUT OF STOCK due to high demand. Please select PWR Extreme (Ryzen 9) or ECO Budget.');
+        return;
+      }
       document.querySelectorAll('.tier-opt').forEach(t => t.classList.remove('selected'));
       el.classList.add('selected');
       vpsCurrentTier = tier;
@@ -710,7 +714,7 @@
       document.getElementById('vps-val-ram').textContent = `${ram} GB RAM`;
       document.getElementById('vps-val-disk').textContent = `${disk} GB NVMe`;
 
-      const rate = VPS_RATES[vpsCurrentTier];
+      const rate = VPS_RATES[vpsCurrentTier] || VPS_RATES.pwr;
       const baseHardware = (cpu * rate.cpu) + (ram * rate.ram) + (disk * rate.disk);
       const wholesale = baseHardware + 150; // flat IP
 
@@ -730,6 +734,9 @@
     }
 
     function prefillAndScroll(tier, cpu, ram, disk) {
+      if (tier === 'std' || tier === 'perf') {
+        tier = 'pwr';
+      }
       vpsCurrentTier = tier;
       document.querySelectorAll('.tier-opt').forEach(t => {
         if (t.dataset.tier === tier) t.classList.add('selected');
@@ -742,6 +749,26 @@
 
       syncVpsQuote();
       document.getElementById('vps-builder').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function deployDirectPlan(planName, price, cpu, ram, disk, tier) {
+      if (window.KryonCheckout) {
+        window.KryonCheckout.open({
+          service_type: 'vps',
+          plan_name: `Cloud VPS — ${planName}`,
+          amount: price,
+          specs: {
+            cpu: cpu,
+            ram: ram,
+            disk: disk,
+            tier: tier || 'pwr',
+            region: 'India (Mumbai Tier-4)',
+            summary: `${cpu} vCPU · ${ram}GB RAM · ${disk}GB NVMe · 1 Dedicated IPv4`
+          }
+        });
+      } else {
+        prefillAndScroll(tier, cpu, ram, disk);
+      }
     }
 
     function openVpsDeployModal() {
