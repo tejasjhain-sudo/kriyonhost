@@ -60,25 +60,46 @@ class OrderService {
     try {
       const { data, error } = await supabaseAdmin.storage.from(BUCKET_NAME).download(REMOTE_ORDERS_FILE);
       if (error) {
-        // If remote doesn't exist yet, upload local data if available
-        if (this.orders && this.orders.length > 0) {
-          await this.saveRemote();
+        if (!this.orders || this.orders.length === 0) {
+          if (fs.existsSync(BUNDLED_ORDERS_FILE)) {
+            try {
+              this.orders = JSON.parse(fs.readFileSync(BUNDLED_ORDERS_FILE, 'utf8'));
+            } catch (e) {}
+          }
         }
-        return this.orders;
+        return this.orders || [];
       }
 
       if (data) {
-        const text = await data.text();
-        const remoteOrders = JSON.parse(text);
-        if (Array.isArray(remoteOrders)) {
-          this.orders = remoteOrders;
-          this.saveLocal();
+        let text = '';
+        if (typeof data.text === 'function') {
+          text = await data.text();
+        } else if (Buffer.isBuffer(data)) {
+          text = data.toString('utf8');
+        } else if (data.arrayBuffer) {
+          const ab = await data.arrayBuffer();
+          text = Buffer.from(ab).toString('utf8');
+        }
+        
+        if (text) {
+          const remoteOrders = JSON.parse(text);
+          if (Array.isArray(remoteOrders) && remoteOrders.length > 0) {
+            this.orders = remoteOrders;
+            this.saveLocal();
+          }
         }
       }
     } catch (err) {
       console.warn('[OrderService] Remote sync warning:', err.message);
+      if (!this.orders || this.orders.length === 0) {
+        if (fs.existsSync(BUNDLED_ORDERS_FILE)) {
+          try {
+            this.orders = JSON.parse(fs.readFileSync(BUNDLED_ORDERS_FILE, 'utf8'));
+          } catch (e) {}
+        }
+      }
     }
-    return this.orders;
+    return this.orders || [];
   }
 
   saveLocal() {

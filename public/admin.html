@@ -492,7 +492,9 @@
     /* ── Sections ───────────────────────────────────────────────────────────── */
     function loadSection(name) {
       document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
-      event?.target?.closest('.sidebar-link')?.classList.add('active');
+      const activeLink = document.querySelector(`.sidebar-link[onclick*="${name}"]`);
+      if (activeLink) activeLink.classList.add('active');
+
       if (name === 'overview') renderOverview();
       else if (name === 'orders') renderOrders();
       else if (name === 'servers') renderServers();
@@ -502,167 +504,193 @@
     /* ── Overview ───────────────────────────────────────────────────────────── */
     async function renderOverview() {
       const main = document.getElementById('main-content');
-      main.innerHTML = `<div style="color:var(--muted);">Loading overview...</div>`;
+      main.innerHTML = `<div style="color:var(--muted); text-align:center; margin-top:2rem;">Loading platform overview...</div>`;
       
-      const { data: servers } = await supabaseClient.from('servers').select('*');
-      const orderRes = await fetch('/api/admin/orders');
-      const orderJson = await orderRes.json();
-      const allOrders = orderJson?.data || [];
-      const pendingOrders = allOrders.filter(o => o.status === 'pending_approval');
-      
-      const total = servers?.length || 0;
-      const running = servers?.filter(s => s.status === 'running').length || 0;
-      const totalRevenue = (servers?.reduce((acc, s) => acc + (s.price || 0), 0) || 0) + (allOrders.filter(o=>o.status==='approved').reduce((acc, o)=>acc+(o.amount||0), 0));
-      const uniqueUsers = [...new Set(servers?.map(s => s.user_email))].length;
+      try {
+        let servers = [];
+        if (typeof supabaseClient !== 'undefined') {
+          const { data } = await supabaseClient.from('servers').select('*');
+          servers = data || [];
+        }
 
-      main.innerHTML = `
-        <h1 class="page-title">Admin Overview</h1>
-        <p class="page-sub">Real-time platform metrics and manual order approval pipeline.</p>
-        
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-title">Pending Orders</div>
-            <div class="stat-val" style="color:#f59e0b;">${pendingOrders.length}</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-title">Active Servers</div>
-            <div class="stat-val" style="color:#22c55e;">${running}</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-title">Unique Clients</div>
-            <div class="stat-val" style="color:#38bdf8;">${uniqueUsers}</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-title">Total Revenue</div>
-            <div class="stat-val" style="color:#a78bfa;">₹${totalRevenue.toLocaleString('en-IN')}</div>
-          </div>
-        </div>
+        let allOrders = [];
+        try {
+          const orderRes = await fetch('/api/admin/orders');
+          const orderJson = await orderRes.json();
+          allOrders = orderJson?.data || [];
+        } catch (e) {
+          console.warn('Could not fetch orders:', e);
+        }
 
-        ${pendingOrders.length > 0 ? `
-        <div class="admin-card" style="border-color:rgba(245,158,11,0.4); background:#161208;">
-          <div class="admin-card-head" style="background:#1c160a;">
-            <div style="display:flex; align-items:center; gap:8px;">
-              <span class="status-dot status-pending"></span>
-              <span class="admin-card-title" style="color:#f59e0b;">${pendingOrders.length} Manual Payment(s) Awaiting Approval</span>
+        const pendingOrders = allOrders.filter(o => o && o.status === 'pending_approval');
+        const total = servers.length;
+        const running = servers.filter(s => s && s.status === 'running').length;
+        const totalRevenue = servers.reduce((acc, s) => acc + (Number(s?.price) || 0), 0) + 
+          allOrders.filter(o => o && o.status === 'approved').reduce((acc, o) => acc + (Number(o?.amount) || 0), 0);
+        const uniqueUsers = [...new Set(servers.map(s => s?.user_email).filter(Boolean))].length;
+
+        main.innerHTML = `
+          <h1 class="page-title">Admin Overview</h1>
+          <p class="page-sub">Real-time platform metrics and manual order approval pipeline.</p>
+          
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-title">Pending Orders</div>
+              <div class="stat-val" style="color:#f59e0b;">${pendingOrders.length}</div>
             </div>
-            <button class="btn-sm btn-amber" onclick="loadSection('orders')">Review All Orders &rarr;</button>
+            <div class="stat-card">
+              <div class="stat-title">Active Servers</div>
+              <div class="stat-val" style="color:#22c55e;">${running}</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-title">Unique Clients</div>
+              <div class="stat-val" style="color:#38bdf8;">${uniqueUsers}</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-title">Total Revenue</div>
+              <div class="stat-val" style="color:#a78bfa;">₹${totalRevenue.toLocaleString('en-IN')}</div>
+            </div>
           </div>
-          <table>
-            <thead><tr>
-              <th>Order ID</th><th>Customer</th><th>Plan</th><th>Amount</th><th>Submitted UTR</th><th>Action</th>
-            </tr></thead>
-            <tbody>
-              ${pendingOrders.map(o => `
-                <tr>
-                  <td style="font-family:'DM Mono',monospace; font-weight:700; color:#38bdf8;">#${o.id}</td>
-                  <td>${o.customer_name}<br><span style="font-size:0.75rem; color:var(--muted); font-family:'DM Mono',monospace;">${o.customer_email}</span></td>
-                  <td>${o.plan_name}</td>
-                  <td style="color:#22c55e; font-weight:700; font-family:'DM Mono',monospace;">₹${o.amount.toLocaleString('en-IN')}</td>
-                  <td style="font-family:'DM Mono',monospace; color:#f59e0b; font-weight:700;">${o.utr_number || 'Pending'}</td>
-                  <td>
-                    <button class="btn-sm btn-emerald" onclick="openApproveModal('${o.id}')">Approve & Deliver</button>
-                  </td>
-                </tr>`).join('')}
-            </tbody>
-          </table>
-        </div>` : ''}
 
-        <div class="admin-card">
-          <div class="admin-card-head">
-            <span class="admin-card-title">Recent Server Deployments</span>
-            <button class="btn-add" onclick="openAddModal()">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              Add Server for Client
-            </button>
-          </div>
-          <table>
-            <thead><tr>
-              <th>Name</th><th>Client</th><th>Type</th><th>IP</th><th>Status</th><th>Added</th>
-            </tr></thead>
-            <tbody>
-              ${(servers?.slice(0,8) || []).map(s => `
-                <tr>
-                  <td style="font-weight:500;">${s.service_alias}</td>
-                  <td style="font-family:'DM Mono',monospace; font-size:0.8rem; color:#38bdf8;">${s.user_email}</td>
-                  <td><span class="badge" style="background:rgba(124,106,255,0.1);color:#a78bfa;">${s.service_type||'vps'}</span></td>
-                  <td style="font-family:'DM Mono',monospace; font-size:0.8rem;">${s.ip}</td>
-                  <td><span class="status-dot ${s.status==='running'?'status-running':'status-stopped'}"></span>${s.status}</td>
-                  <td style="color:var(--muted); font-size:0.8rem;">${new Date(s.created_at).toLocaleDateString('en-IN')}</td>
-                </tr>`).join('') || `<tr><td colspan="6" style="text-align:center;padding:30px;color:var(--muted);">No servers yet. Add the first one!</td></tr>`}
-            </tbody>
-          </table>
-        </div>`;
+          ${pendingOrders.length > 0 ? `
+          <div class="admin-card" style="border-color:rgba(245,158,11,0.4); background:#161208;">
+            <div class="admin-card-head" style="background:#1c160a;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span class="status-dot status-pending"></span>
+                <span class="admin-card-title" style="color:#f59e0b;">${pendingOrders.length} Manual Payment(s) Awaiting Approval</span>
+              </div>
+              <button class="btn-sm btn-amber" onclick="loadSection('orders')">Review All Orders &rarr;</button>
+            </div>
+            <table>
+              <thead><tr>
+                <th>Order ID</th><th>Customer</th><th>Plan</th><th>Amount</th><th>Submitted UTR</th><th>Action</th>
+              </tr></thead>
+              <tbody>
+                ${pendingOrders.map(o => `
+                  <tr>
+                    <td style="font-family:'DM Mono',monospace; font-weight:700; color:#38bdf8;">#${o.id || '-'}</td>
+                    <td>${o.customer_name || 'Client'}<br><span style="font-size:0.75rem; color:var(--muted); font-family:'DM Mono',monospace;">${o.customer_email || '-'}</span></td>
+                    <td>${o.plan_name || 'Cloud Plan'}</td>
+                    <td style="color:#22c55e; font-weight:700; font-family:'DM Mono',monospace;">₹${(Number(o.amount) || 0).toLocaleString('en-IN')}</td>
+                    <td style="font-family:'DM Mono',monospace; color:#f59e0b; font-weight:700;">${o.utr_number || 'Pending'}</td>
+                    <td>
+                      <button class="btn-sm btn-emerald" onclick="openApproveModal('${o.id}')">Approve & Deliver</button>
+                    </td>
+                  </tr>`).join('')}
+              </tbody>
+            </table>
+          </div>` : ''}
+
+          <div class="admin-card">
+            <div class="admin-card-head">
+              <span class="admin-card-title">Recent Server Deployments</span>
+              <button class="btn-add" onclick="openAddModal()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Add Server for Client
+              </button>
+            </div>
+            <table>
+              <thead><tr>
+                <th>Name</th><th>Client</th><th>Type</th><th>IP</th><th>Status</th><th>Added</th>
+              </tr></thead>
+              <tbody>
+                ${servers.slice(0,8).map(s => `
+                  <tr>
+                    <td style="font-weight:500;">${s.service_alias || 'Server'}</td>
+                    <td style="font-family:'DM Mono',monospace; font-size:0.8rem; color:#38bdf8;">${s.user_email || '-'}</td>
+                    <td><span class="badge" style="background:rgba(124,106,255,0.1);color:#a78bfa;">${s.service_type||'vps'}</span></td>
+                    <td style="font-family:'DM Mono',monospace; font-size:0.8rem;">${s.ip || '-'}</td>
+                    <td><span class="status-dot ${s.status==='running'?'status-running':'status-stopped'}"></span>${s.status || 'unknown'}</td>
+                    <td style="color:var(--muted); font-size:0.8rem;">${s.created_at ? new Date(s.created_at).toLocaleDateString('en-IN') : '-'}</td>
+                  </tr>`).join('') || `<tr><td colspan="6" style="text-align:center;padding:30px;color:var(--muted);">No servers yet. Add the first one!</td></tr>`}
+              </tbody>
+            </table>
+          </div>`;
+      } catch (err) {
+        main.innerHTML = `<div style="color:#ef4444; padding:20px;">Error loading overview: ${err.message}</div>`;
+      }
     }
 
     /* ── Orders Management ──────────────────────────────────────────────────── */
     async function renderOrders() {
       const main = document.getElementById('main-content');
-      main.innerHTML = `<div style="color:var(--muted);">Loading manual orders...</div>`;
+      main.innerHTML = `<div style="color:var(--muted); text-align:center; margin-top:2rem;">Loading manual orders...</div>`;
       
-      const res = await fetch('/api/admin/orders');
-      const json = await res.json();
-      const orders = json.data || [];
+      try {
+        const res = await fetch('/api/admin/orders');
+        const json = await res.json();
+        const orders = (json.data || []).filter(o => o && o.id);
 
-      main.innerHTML = `
-        <h1 class="page-title">Manual Orders & Approvals</h1>
-        <p class="page-sub">Review incoming UPI QR transactions, verify UTR reference numbers & screenshots, and deliver servers to client dashboards.</p>
+        main.innerHTML = `
+          <h1 class="page-title">Manual Orders & Approvals</h1>
+          <p class="page-sub">Review incoming UPI QR transactions, verify UTR reference numbers & screenshots, and deliver servers to client dashboards.</p>
 
-        <div class="admin-card">
-          <div class="admin-card-head">
-            <span class="admin-card-title">${orders.length} Total Orders</span>
-          </div>
-          <table>
-            <thead><tr>
-              <th>Order ID</th><th>Customer Info</th><th>Plan & Specs</th><th>Amount</th><th>UTR & Sender UPI</th><th>Proof Receipt</th><th>Status</th><th>Actions</th>
-            </tr></thead>
-            <tbody>
-              ${orders.map(o => {
-                let statusBadge = `<span class="badge" style="background:rgba(245,158,11,0.15);color:#f59e0b;">Pending Approval</span>`;
-                if (o.status === 'approved') statusBadge = `<span class="badge" style="background:rgba(34,197,94,0.15);color:#22c55e;">Done · Delivered</span>`;
-                else if (o.status === 'rejected') statusBadge = `<span class="badge" style="background:rgba(239,68,68,0.15);color:#ef4444;">Rejected</span>`;
-                else if (o.status === 'pending_payment') statusBadge = `<span class="badge" style="background:rgba(156,163,175,0.15);color:#9ca3af;">Awaiting Payment</span>`;
+          <div class="admin-card">
+            <div class="admin-card-head">
+              <span class="admin-card-title">${orders.length} Total Orders</span>
+              <button class="btn-sm btn-amber" onclick="renderOrders()" style="display:flex; align-items:center; gap:6px;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                Refresh Orders
+              </button>
+            </div>
+            <table>
+              <thead><tr>
+                <th>Order ID</th><th>Customer Info</th><th>Plan & Specs</th><th>Amount</th><th>UTR & Sender UPI</th><th>Proof Receipt</th><th>Status</th><th>Actions</th>
+              </tr></thead>
+              <tbody>
+                ${orders.map(o => {
+                  let statusBadge = `<span class="badge" style="background:rgba(245,158,11,0.15);color:#f59e0b;">Pending Approval</span>`;
+                  if (o.status === 'approved') statusBadge = `<span class="badge" style="background:rgba(34,197,94,0.15);color:#22c55e;">Done · Delivered</span>`;
+                  else if (o.status === 'rejected') statusBadge = `<span class="badge" style="background:rgba(239,68,68,0.15);color:#ef4444;">Rejected</span>`;
+                  else if (o.status === 'pending_payment') statusBadge = `<span class="badge" style="background:rgba(156,163,175,0.15);color:#9ca3af;">Awaiting Payment</span>`;
 
-                const proofSrc = o.screenshot_url || o.screenshot_data;
-                const proofHtml = proofSrc 
-                  ? `<button class="btn-sm btn-amber" onclick="viewProofModal('${proofSrc}')" style="display:flex; align-items:center; gap:4px; font-size:0.75rem;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg> View Receipt</button>` 
-                  : `<span style="color:var(--muted); font-size:0.75rem;">None</span>`;
+                  const proofSrc = o.screenshot_url || o.screenshot_data;
+                  const proofHtml = proofSrc 
+                    ? `<button class="btn-sm btn-amber" onclick="viewProofModal('${proofSrc}')" style="display:flex; align-items:center; gap:4px; font-size:0.75rem;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg> View Receipt</button>` 
+                    : `<span style="color:var(--muted); font-size:0.75rem;">None</span>`;
 
-                return `
-                <tr>
-                  <td style="font-family:'DM Mono',monospace; font-weight:700; color:#38bdf8;">
-                    #${o.id}<br>
-                    <span style="font-size:0.72rem; color:var(--muted);">${new Date(o.created_at).toLocaleDateString('en-IN')}</span>
-                  </td>
-                  <td>
-                    <strong style="color:#fff;">${o.customer_name}</strong><br>
-                    <span style="font-family:'DM Mono',monospace; font-size:0.78rem; color:#a1a1aa;">${o.customer_email}</span>
-                    ${o.customer_phone ? `<br><span style="font-size:0.72rem; color:var(--muted);">${o.customer_phone}</span>` : ''}
-                  </td>
-                  <td>
-                    <span style="font-weight:600;">${o.plan_name}</span><br>
-                    <span style="font-size:0.75rem; color:var(--muted2);">${o.specs?.cpu || 2}vCPU · ${o.specs?.ram || 4}GB · ${o.specs?.disk || 40}GB</span>
-                  </td>
-                  <td style="font-family:'DM Mono',monospace; font-weight:700; color:#22c55e;">₹${o.amount.toLocaleString('en-IN')}</td>
-                  <td>
-                    ${o.utr_number ? `<span style="font-family:'DM Mono',monospace; font-weight:700; color:#f59e0b; background:rgba(245,158,11,0.1); padding:2px 6px; border-radius:4px;">${o.utr_number}</span>` : `<span style="color:var(--muted); font-size:0.8rem;">Not submitted yet</span>`}
-                    ${o.sender_upi_id ? `<br><span style="font-size:0.74rem; color:#a78bfa; font-family:'DM Mono',monospace;">UPI: ${o.sender_upi_id}</span>` : ''}
-                  </td>
-                  <td>${proofHtml}</td>
-                  <td>${statusBadge}</td>
-                  <td style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
-                    <button class="btn-sm btn-add" style="background:#1e1b4b; border-color:#6366f1; color:#a5b4fc; font-size:0.75rem;" onclick="openDetailModal('${o.id}')">See Details</button>
-                    ${o.status === 'pending_approval' || o.status === 'pending_payment' ? `
-                      <button class="btn-sm btn-emerald" onclick="openApproveModal('${o.id}')">Approve</button>
-                      <button class="btn-sm btn-danger" onclick="rejectOrder('${o.id}')">Reject</button>
-                    ` : o.status === 'approved' ? `
-                      <span style="font-size:0.75rem; color:#22c55e; font-weight:600;">✓ Delivered</span>
-                    ` : `<span style="font-size:0.75rem; color:var(--muted);">Closed</span>`}
-                  </td>
-                </tr>`;
-              }).join('') || `<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--muted);">No manual orders recorded yet.</td></tr>`}
-            </tbody>
-          </table>
-        </div>`;
+                  const createdDate = o.created_at ? new Date(o.created_at).toLocaleDateString('en-IN') : '-';
+                  const amountFormatted = (Number(o.amount) || 0).toLocaleString('en-IN');
+
+                  return `
+                  <tr>
+                    <td style="font-family:'DM Mono',monospace; font-weight:700; color:#38bdf8;">
+                      #${o.id}<br>
+                      <span style="font-size:0.72rem; color:var(--muted);">${createdDate}</span>
+                    </td>
+                    <td>
+                      <strong style="color:#fff;">${o.customer_name || 'Client'}</strong><br>
+                      <span style="font-family:'DM Mono',monospace; font-size:0.78rem; color:#a1a1aa;">${o.customer_email || '-'}</span>
+                      ${o.customer_phone ? `<br><span style="font-size:0.72rem; color:var(--muted);">${o.customer_phone}</span>` : ''}
+                    </td>
+                    <td>
+                      <span style="font-weight:600;">${o.plan_name || 'Cloud Plan'}</span><br>
+                      <span style="font-size:0.75rem; color:var(--muted2);">${o.specs?.cpu || 2}vCPU · ${o.specs?.ram || 4}GB · ${o.specs?.disk || 40}GB</span>
+                    </td>
+                    <td style="font-family:'DM Mono',monospace; font-weight:700; color:#22c55e;">₹${amountFormatted}</td>
+                    <td>
+                      ${o.utr_number ? `<span style="font-family:'DM Mono',monospace; font-weight:700; color:#f59e0b; background:rgba(245,158,11,0.1); padding:2px 6px; border-radius:4px;">${o.utr_number}</span>` : `<span style="color:var(--muted); font-size:0.8rem;">Not submitted yet</span>`}
+                      ${o.sender_upi_id ? `<br><span style="font-size:0.74rem; color:#a78bfa; font-family:'DM Mono',monospace;">UPI: ${o.sender_upi_id}</span>` : ''}
+                    </td>
+                    <td>${proofHtml}</td>
+                    <td>${statusBadge}</td>
+                    <td style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+                      <button class="btn-sm btn-add" style="background:#1e1b4b; border-color:#6366f1; color:#a5b4fc; font-size:0.75rem;" onclick="openDetailModal('${o.id}')">See Details</button>
+                      ${o.status === 'pending_approval' || o.status === 'pending_payment' ? `
+                        <button class="btn-sm btn-emerald" onclick="openApproveModal('${o.id}')">Approve</button>
+                        <button class="btn-sm btn-danger" onclick="rejectOrder('${o.id}')">Reject</button>
+                      ` : o.status === 'approved' ? `
+                        <span style="font-size:0.75rem; color:#22c55e; font-weight:600;">✓ Delivered</span>
+                      ` : `<span style="font-size:0.75rem; color:var(--muted);">Closed</span>`}
+                    </td>
+                  </tr>`;
+                }).join('') || `<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--muted);">No manual orders recorded yet.</td></tr>`}
+              </tbody>
+            </table>
+          </div>`;
+      } catch (err) {
+        main.innerHTML = `<div style="color:#ef4444; padding:20px;">Error loading orders: ${err.message}</div>`;
+      }
     }
 
     /* ── Order Full Details Modal ───────────────────────────────────────────── */
