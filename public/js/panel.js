@@ -91,13 +91,11 @@ async function initPanel() {
         const formattedName = namePart.charAt(0).toUpperCase() + namePart.slice(1);
         
         const uDisp = document.getElementById('u-display-name');
-        const uEmail = document.getElementById('u-sub-email');
         const uInitial = document.getElementById('u-initial');
         const welcomeText = document.getElementById('welcome-user-text');
         
-        if (uDisp) uDisp.textContent = formattedName;
-        if (uEmail) uEmail.textContent = email;
-        if (uInitial) uInitial.textContent = formattedName.charAt(0);
+        if (uDisp) uDisp.textContent = formattedName.toLowerCase();
+        if (uInitial) uInitial.textContent = formattedName.charAt(0).toUpperCase();
         if (welcomeText) welcomeText.textContent = `Welcome back, ${formattedName}!`;
       }
     }
@@ -105,7 +103,7 @@ async function initPanel() {
     console.warn('Auth state check:', err);
   }
 
-  // Land on overview by default
+  // Default to deployments overview
   navigateToView('dashboard');
 }
 
@@ -121,7 +119,7 @@ function navigateToView(viewName) {
   if (viewMc) viewMc.style.display = 'none';
   if (viewShare) viewShare.style.display = 'none';
 
-  document.querySelectorAll('.sidebar-item-link').forEach(link => link.classList.remove('active'));
+  document.querySelectorAll('.subnav-link-item').forEach(link => link.classList.remove('active'));
 
   if (viewName === 'dashboard') {
     if (viewDash) viewDash.style.display = 'block';
@@ -155,6 +153,27 @@ function navigateToView(viewName) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+/* ── Search Filter for Rows ───────────────────────────────────────────────── */
+function filterDashboardRows(query) {
+  const q = (query || '').toLowerCase().trim();
+  document.querySelectorAll('.table-data-row').forEach(row => {
+    const text = row.textContent.toLowerCase();
+    if (!q || text.includes(q)) {
+      row.style.display = 'grid';
+    } else {
+      row.style.display = 'none';
+    }
+  });
+}
+
+/* ── Platform Dark/Light Theme Switcher ───────────────────────────────────── */
+function togglePlatformTheme() {
+  const current = document.documentElement.getAttribute('data-theme') || 'light';
+  const next = current === 'light' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', next);
+  showVpsToast(`Switched to ${next} theme mode`);
+}
+
 /* ── Dynamic Instance Switching ───────────────────────────────────────────── */
 function openSpecificVps(id, name, ip, os) {
   currentVpsId = id;
@@ -182,29 +201,14 @@ function renderVpsData(id) {
   const heroSpecs = document.getElementById('vps-hero-specs');
   if (heroSpecs) heroSpecs.textContent = `${meta.os} · AMD Ryzen 9 7950X Zen 4 · Dedicated KVM Node`;
 
-  const ipMetric = document.getElementById('vps-metric-ip');
-  if (ipMetric) {
-    ipMetric.textContent = meta.ip;
-    ipMetric.setAttribute('onclick', `copyVpsText('${meta.ip}')`);
-  }
-
-  const locMetric = document.getElementById('vps-metric-loc');
-  if (locMetric) locMetric.textContent = meta.location;
-
-  const specsMetric = document.getElementById('vps-metric-specs');
-  if (specsMetric) specsMetric.textContent = meta.specs.split('·')[0].trim() + ' / ' + meta.specs.split('·')[1].trim();
-
-  const diskMetric = document.getElementById('vps-metric-disk');
-  if (diskMetric) diskMetric.textContent = `${meta.diskPercent}% Allocated`;
-
-  const dtId = document.getElementById('vps-dt-id');
-  if (dtId) dtId.textContent = id;
+  const dtIp = document.getElementById('vps-dt-ip');
+  if (dtIp) dtIp.textContent = meta.ip;
 
   const dtOs = document.getElementById('vps-dt-os');
   if (dtOs) dtOs.textContent = meta.os;
 
-  const netIp = document.getElementById('net-cfg-ip');
-  if (netIp) netIp.value = meta.ip;
+  const dtLoc = document.getElementById('vps-dt-loc');
+  if (dtLoc) dtLoc.textContent = meta.location;
 
   const term = document.getElementById('vps-term-window');
   if (term) {
@@ -249,14 +253,8 @@ function renderMcData(name) {
 
   const heroSub = document.getElementById('mc-hero-sub');
   if (heroSub) {
-    heroSub.innerHTML = `IP: <strong style="color:#fff; font-family:'JetBrains Mono'; cursor:pointer;" onclick="copyVpsText('${meta.ip}')">${meta.ip}</strong> &nbsp;|&nbsp; Engine: <strong>${meta.software}</strong> &nbsp;|&nbsp; <strong>India (Mumbai)</strong>`;
+    heroSub.textContent = `${meta.ip} · ${meta.software} · 92 Tbps Anycast Shield`;
   }
-
-  const heroBanner = document.getElementById('mc-hero-banner');
-  if (heroBanner && meta.banner) heroBanner.src = meta.banner;
-
-  const playersMetric = document.getElementById('mc-metric-players');
-  if (playersMetric) playersMetric.textContent = meta.players.split(' ')[0];
 
   const con = document.getElementById('mc-console-window');
   if (con) {
@@ -309,46 +307,46 @@ function initMultiLineChart(datasetRange) {
         {
           label: 'CPU Usage',
           data: [12, 14, 15, 18, 14, 16, 22, 18, 18],
-          borderColor: '#ffffff',
+          borderColor: '#111827',
           backgroundColor: 'transparent',
           borderWidth: 1.8,
           tension: 0.35,
           pointRadius: 0,
           pointHoverRadius: 4,
-          pointBackgroundColor: '#ffffff'
+          pointBackgroundColor: '#111827'
         },
         {
           label: 'RAM Allocation',
           data: [32, 32, 33, 34, 34, 34, 35, 34, 34],
-          borderColor: '#a1a1aa',
+          borderColor: '#6b7280',
           backgroundColor: 'transparent',
           borderWidth: 1.8,
           tension: 0.35,
           pointRadius: 0,
           pointHoverRadius: 4,
-          pointBackgroundColor: '#a1a1aa'
+          pointBackgroundColor: '#6b7280'
         },
         {
           label: 'Disk I/O %',
           data: [42, 42, 42, 42, 42, 42, 42, 42, 42],
-          borderColor: '#60a5fa',
+          borderColor: '#0284c7',
           backgroundColor: 'transparent',
           borderWidth: 1.8,
           tension: 0.35,
           pointRadius: 0,
           pointHoverRadius: 4,
-          pointBackgroundColor: '#60a5fa'
+          pointBackgroundColor: '#0284c7'
         },
         {
           label: 'Network Mb/s',
           data: [4, 6, 8, 12, 18, 24, 64, 20, 14],
-          borderColor: '#34d399',
+          borderColor: '#10b981',
           backgroundColor: 'transparent',
           borderWidth: 1.8,
           tension: 0.35,
           pointRadius: 0,
           pointHoverRadius: 4,
-          pointBackgroundColor: '#34d399'
+          pointBackgroundColor: '#10b981'
         }
       ]
     },
@@ -361,25 +359,23 @@ function initMultiLineChart(datasetRange) {
         tooltip: {
           mode: 'index',
           intersect: false,
-          backgroundColor: '#18181c',
-          titleColor: '#fafafa',
-          bodyColor: '#a1a1aa',
-          borderColor: '#27272a',
-          borderWidth: 1,
+          backgroundColor: '#111827',
+          titleColor: '#ffffff',
+          bodyColor: '#e5e7eb',
           padding: 8
         }
       },
       scales: {
         x: {
-          grid: { color: 'rgba(255, 255, 255, 0.03)', drawBorder: false },
-          ticks: { color: '#71717a', font: { size: 10, family: 'JetBrains Mono' } }
+          grid: { color: 'rgba(0, 0, 0, 0.04)', drawBorder: false },
+          ticks: { color: '#6b7280', font: { size: 10, family: 'JetBrains Mono' } }
         },
         y: {
           beginAtZero: true,
           max: 100,
-          grid: { color: 'rgba(255, 255, 255, 0.03)', drawBorder: false },
+          grid: { color: 'rgba(0, 0, 0, 0.04)', drawBorder: false },
           ticks: {
-            color: '#71717a',
+            color: '#6b7280',
             font: { size: 10, family: 'JetBrains Mono' },
             callback: (val) => `${val}%`
           }
@@ -396,14 +392,6 @@ function filterVpsChart(range) {
 }
 
 /* ── Interactive Terminal Engine (VPS) ────────────────────────────────────── */
-function insertVpsCmd(cmd) {
-  const input = document.getElementById('vps-cmd-input');
-  if (input) {
-    input.value = cmd;
-    input.focus();
-  }
-}
-
 async function executeVpsCommandDirect() {
   const input = document.getElementById('vps-cmd-input');
   if (!input || !input.value.trim()) return;
@@ -429,10 +417,6 @@ async function executeVpsCommandDirect() {
       term.textContent += `\n 18:52:04 up 2 days, 14:32,  1 user,  load average: 0.18, 0.14, 0.11`;
     } else if (cmd === 'docker ps') {
       term.textContent += `\nCONTAINER ID   IMAGE          COMMAND                  CREATED        STATUS        PORTS                    NAMES\n7f82b14c9a2e   nginx:alpine   "/docker-entrypoint.…"   2 days ago     Up 2 days     0.0.0.0:80->80/tcp       web-frontend\n9e14a2b8c34f   redis:7-alpine "docker-entrypoint.s…"   2 days ago     Up 2 days     0.0.0.0:6379->6379/tcp   redis-cache`;
-    } else if (cmd === 'systemctl status nginx') {
-      term.textContent += `\n● nginx.service - A high performance web server and a reverse proxy server\n   Loaded: loaded (/lib/systemd/system/nginx.service; enabled; vendor preset: enabled)\n   Active: active (running) since Sat 2026-09-27 04:18:10 UTC; 2 days ago`;
-    } else if (cmd === 'iptables -L') {
-      term.textContent += `\nChain INPUT (policy DROP)\ntarget     prot opt source               destination         \nACCEPT     tcp  --  anywhere             anywhere             tcp dpt:ssh\nACCEPT     tcp  --  anywhere             anywhere             tcp dpt:http\nACCEPT     tcp  --  anywhere             anywhere             tcp dpt:https`;
     } else if (cmd === 'clear') {
       term.textContent = `root@${currentVpsId}:~# `;
       return;
@@ -449,14 +433,6 @@ function clearVpsTerminal() {
 }
 
 /* ── Interactive Minecraft Console ────────────────────────────────────────── */
-function insertMcCmd(cmd) {
-  const input = document.getElementById('mc-cmd-input');
-  if (input) {
-    input.value = cmd;
-    input.focus();
-  }
-}
-
 async function executeMcCommandDirect() {
   const input = document.getElementById('mc-cmd-input');
   if (!input || !input.value.trim()) return;
@@ -477,20 +453,12 @@ async function executeMcCommandDirect() {
     const respTime = new Date().toTimeString().slice(0, 8);
     if (cmd.startsWith('say ')) {
       con.textContent += `\n[${respTime}] [Server] [Broadcast] ${cmd.slice(4)}`;
-    } else if (cmd.startsWith('op ')) {
-      con.textContent += `\n[${respTime}] [Server] Made ${cmd.slice(3)} a server operator`;
     } else if (cmd === 'tps') {
       con.textContent += `\n[${respTime}] [Server] TPS from last 1m, 5m, 15m: 20.0, 20.0, 20.0 (Memory: 4.8 GB / 16.0 GB)`;
     } else if (cmd === 'list') {
-      con.textContent += `\n[${respTime}] [Server] 18 / 100 players online: KryonMaster, StevePro_99, DiamondMiner, AlexCrafter...`;
-    } else if (cmd === 'save-all') {
-      con.textContent += `\n[${respTime}] [Server] Saving the game (all chunks, player data, and world containers flushed to NVMe)`;
-    } else if (cmd === 'weather clear') {
-      con.textContent += `\n[${respTime}] [Server] Set the weather to clear`;
-    } else if (cmd === 'time set day') {
-      con.textContent += `\n[${respTime}] [Server] Set the time to 1000`;
+      con.textContent += `\n[${respTime}] [Server] 18 / 100 players online: KryonMaster, StevePro_99, DiamondMiner...`;
     } else {
-      con.textContent += `\n[${respTime}] [Server] Command '${cmd}' dispatched and acknowledged.`;
+      con.textContent += `\n[${respTime}] [Server] Command '${cmd}' dispatched.`;
     }
     con.scrollTop = con.scrollHeight;
   }, 120);
@@ -504,7 +472,6 @@ function clearMcConsole() {
 /* ── Power Actions ────────────────────────────────────────────────────────── */
 async function handleVpsPowerAction(action) {
   showVpsToast(`Dispatched '${action.toUpperCase()}' signal to KVM Zen 4 Hypervisor`);
-  
   const term = document.getElementById('vps-term-window');
   const now = new Date().toTimeString().slice(0, 8);
   if (term) {
@@ -539,14 +506,14 @@ function submitAddFirewallRule() {
   const name = document.getElementById('fw-rule-name')?.value || 'Custom Rule';
   const proto = document.getElementById('fw-protocol')?.value || 'TCP';
   const port = document.getElementById('fw-port')?.value || '8080';
-  const src = document.getElementById('fw-source')?.value || '0.0.0.0/0';
 
   closeModal('modal-add-firewall');
 
   const tbody = document.querySelector('#vps-firewall-table tbody');
   if (tbody) {
     const row = document.createElement('tr');
-    row.innerHTML = `<td><strong>${name}</strong></td><td>${proto}</td><td>${port}</td><td>${src}</td><td style="color:var(--color-emerald); font-weight:600;">ALLOW</td><td><span class="status-badge-running" style="font-size:0.65rem;">Active</span></td>`;
+    row.style.borderBottom = '1px solid var(--border-subtle)';
+    row.innerHTML = `<td style="padding:10px 14px;"><strong>${name}</strong></td><td style="padding:10px 14px;">${proto}</td><td style="padding:10px 14px;">${port}</td><td style="padding:10px 14px;"><span class="status-badge-live">ALLOW</span></td>`;
     tbody.insertBefore(row, tbody.lastElementChild);
   }
 
@@ -561,14 +528,6 @@ function openCreateSnapshotModal() {
 function submitCreateSnapshot() {
   const name = document.getElementById('snap-name')?.value || 'instant-snapshot';
   closeModal('modal-create-snapshot');
-
-  const tbody = document.querySelector('#vps-snapshot-table tbody');
-  if (tbody) {
-    const row = document.createElement('tr');
-    row.innerHTML = `<td><strong>${name}</strong></td><td>21.4 GB</td><td>NVMe Pool Mumbai-01</td><td>Just now</td><td><button class="btn-restore-pill" onclick="showVpsToast('Restoring snapshot...')">Restore</button></td>`;
-    tbody.insertBefore(row, tbody.firstChild);
-  }
-
   showVpsToast(`Snapshot '${name}' created successfully on NVMe pool`);
 }
 
@@ -579,8 +538,8 @@ function confirmReinstallOS(osName) {
     if (dtOs) dtOs.textContent = osName;
     const heroSpecs = document.getElementById('vps-hero-specs');
     if (heroSpecs) heroSpecs.textContent = `${osName} · AMD Ryzen 9 7950X Zen 4 · Dedicated KVM Node`;
-    showVpsToast(`${osName} installed! New root password dispatched.`);
-  }, 2500);
+    showVpsToast(`${osName} installed! New root credentials generated.`);
+  }, 2000);
 }
 
 function closeModal(modalId) {
