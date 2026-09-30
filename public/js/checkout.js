@@ -1,6 +1,6 @@
 /**
  * KryonHost Universal Manual Checkout & UPI QR Flow
- * Multi-step modal: Details Form -> 5-Min UPI QR Billing -> UTR Verification -> Dashboard Sync
+ * Multi-step modal: 1. Details -> 2. Scanner & QR -> 3. Payment Verification -> 4. Confirmation
  */
 
 (function() {
@@ -8,42 +8,44 @@
   .kryon-modal-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    background: rgba(4, 4, 8, 0.88);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     display: none;
     align-items: center;
     justify-content: center;
     z-index: 99999;
     padding: 16px;
     opacity: 0;
-    transition: opacity 0.2s ease;
+    transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .kryon-modal-overlay.active {
     display: flex;
     opacity: 1;
   }
   .kryon-checkout-card {
-    background: #0d0c14;
+    background: #0d0c15;
     border: 1px solid rgba(124, 106, 255, 0.25);
-    border-radius: 18px;
+    border-radius: 20px;
     width: 100%;
-    max-width: 540px;
-    max-height: 90vh;
+    max-width: 520px;
+    max-height: 92vh;
     overflow-y: auto;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 30px rgba(124, 106, 255, 0.15);
+    box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.9), 0 0 40px rgba(124, 106, 255, 0.12);
     position: relative;
     color: #fafafa;
     font-family: 'Inter', -apple-system, sans-serif;
   }
+  
+  /* Header */
   .checkout-header {
-    padding: 20px 24px;
+    padding: 18px 24px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: #11101d;
-    border-radius: 18px 18px 0 0;
+    background: #121120;
+    border-radius: 20px 20px 0 0;
   }
   .checkout-title-wrap {
     display: flex;
@@ -57,7 +59,7 @@
     object-fit: contain;
   }
   .checkout-title {
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     font-weight: 700;
     letter-spacing: -0.02em;
     color: #fff;
@@ -78,21 +80,84 @@
     background: rgba(255, 255, 255, 0.1);
     color: #fff;
   }
+
+  /* Multi-Step Progress Stepper */
+  .kco-stepper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 28px;
+    background: #0a0912;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+  .kco-step-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.74rem;
+    font-weight: 600;
+    color: #6b7280;
+    transition: 0.2s;
+  }
+  .kco-step-item.active {
+    color: #a78bfa;
+  }
+  .kco-step-item.completed {
+    color: #34d399;
+  }
+  .kco-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #181726;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    color: #9ca3af;
+    font-family: 'DM Mono', monospace;
+  }
+  .kco-step-item.active .kco-dot {
+    background: #7c6aff;
+    border-color: #7c6aff;
+    color: #fff;
+    box-shadow: 0 0 10px rgba(124, 106, 255, 0.5);
+  }
+  .kco-step-item.completed .kco-dot {
+    background: #10b981;
+    border-color: #10b981;
+    color: #fff;
+  }
+  .kco-step-divider {
+    flex: 1;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.08);
+    margin: 0 8px;
+  }
+
   .checkout-body {
-    padding: 24px;
+    padding: 22px 24px;
   }
   .checkout-step {
     display: none;
+    animation: kcoFadeIn 0.2s ease forwards;
   }
   .checkout-step.active {
     display: block;
   }
+  @keyframes kcoFadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Order Summary Box */
   .checkout-order-summary {
-    background: #151424;
+    background: #141322;
     border: 1px solid rgba(124, 106, 255, 0.2);
     border-radius: 12px;
-    padding: 16px;
-    margin-bottom: 20px;
+    padding: 14px 16px;
+    margin-bottom: 18px;
   }
   .cos-row {
     display: flex;
@@ -106,11 +171,11 @@
     border-top: 1px dashed rgba(255, 255, 255, 0.1);
   }
   .cos-label {
-    font-size: 0.82rem;
+    font-size: 0.8rem;
     color: #9ca3af;
   }
   .cos-val {
-    font-size: 0.85rem;
+    font-size: 0.84rem;
     font-weight: 600;
     color: #fff;
   }
@@ -120,33 +185,38 @@
     color: #22c55e;
     font-family: 'DM Mono', monospace;
   }
+
+  /* Form Elements */
   .form-group {
     margin-bottom: 14px;
   }
   .form-label {
     display: block;
-    font-size: 0.8rem;
-    font-weight: 500;
+    font-size: 0.78rem;
+    font-weight: 600;
     color: #d1d5db;
     margin-bottom: 6px;
+    letter-spacing: 0.01em;
   }
   .form-input, .form-select {
     width: 100%;
     padding: 10px 14px;
-    background: #151424;
+    background: #141322;
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 8px;
     color: #fff;
-    font-size: 0.9rem;
+    font-size: 0.88rem;
     outline: none;
     transition: 0.2s;
     box-sizing: border-box;
   }
   .form-input:focus, .form-select:focus {
     border-color: #7c6aff;
-    background: #181729;
-    box-shadow: 0 0 0 3px rgba(124, 106, 255, 0.15);
+    background: #171629;
+    box-shadow: 0 0 0 3px rgba(124, 106, 255, 0.18);
   }
+
+  /* Buttons */
   .btn-checkout-primary {
     width: 100%;
     padding: 13px;
@@ -154,7 +224,7 @@
     border: none;
     border-radius: 10px;
     color: #fff;
-    font-size: 0.95rem;
+    font-size: 0.92rem;
     font-weight: 700;
     cursor: pointer;
     display: flex;
@@ -170,7 +240,7 @@
   }
   .btn-checkout-success {
     width: 100%;
-    padding: 13px;
+    padding: 14px;
     background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     border: none;
     border-radius: 10px;
@@ -183,11 +253,27 @@
     justify-content: center;
     gap: 8px;
     transition: 0.2s;
-    box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.35);
   }
   .btn-checkout-success:hover {
     filter: brightness(1.1);
     transform: translateY(-1px);
+  }
+  .btn-kco-back {
+    background: transparent;
+    border: none;
+    color: #9ca3af;
+    font-size: 0.78rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 0;
+    transition: 0.15s;
+    text-decoration: none;
+  }
+  .btn-kco-back:hover {
+    color: #fff;
   }
   
   /* QR & Timer Screen */
@@ -199,7 +285,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 18px;
+    margin-bottom: 16px;
   }
   .timer-clock {
     font-family: 'DM Mono', monospace;
@@ -215,14 +301,14 @@
     justify-content: center;
     background: #ffffff;
     border-radius: 14px;
-    padding: 16px;
+    padding: 14px;
     width: fit-content;
-    margin: 0 auto 16px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    margin: 0 auto 14px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
   }
   .qr-image {
-    width: 190px;
-    height: 190px;
+    width: 185px;
+    height: 185px;
     display: block;
     image-rendering: pixelated;
   }
@@ -230,21 +316,21 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    background: #151424;
+    background: #141322;
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 8px;
     padding: 8px 12px;
     font-family: 'DM Mono', monospace;
-    font-size: 0.85rem;
+    font-size: 0.84rem;
     color: #38bdf8;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
     justify-content: space-between;
   }
   .copy-upi-btn {
     background: rgba(56, 189, 248, 0.15);
     border: 1px solid rgba(56, 189, 248, 0.3);
     color: #38bdf8;
-    padding: 4px 8px;
+    padding: 4px 10px;
     border-radius: 5px;
     font-size: 0.72rem;
     cursor: pointer;
@@ -257,9 +343,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
-    margin-bottom: 16px;
-    font-size: 0.75rem;
+    gap: 8px;
+    margin-bottom: 20px;
+    font-size: 0.72rem;
     color: #9ca3af;
   }
   .app-tag {
@@ -269,21 +355,40 @@
     border: 1px solid rgba(255, 255, 255, 0.08);
     font-size: 0.7rem;
     font-weight: 500;
+    color: #d1d5db;
   }
+
+  /* Screenshot Upload Area */
+  .screenshot-upload-wrap {
+    position: relative;
+    background: #141322;
+    border: 1px dashed rgba(124, 106, 255, 0.35);
+    border-radius: 10px;
+    padding: 14px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  .screenshot-upload-wrap:hover {
+    border-color: #7c6aff;
+    background: #171628;
+  }
+
+  /* Confirmation Step */
   .pending-card {
     text-align: center;
-    padding: 24px 12px;
+    padding: 16px 8px;
   }
   .pending-icon-ring {
-    width: 64px;
-    height: 64px;
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
     background: rgba(245, 158, 11, 0.15);
     border: 2px solid rgba(245, 158, 11, 0.4);
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 16px;
+    margin: 0 auto 14px;
     color: #f59e0b;
   }
   `;
@@ -293,10 +398,12 @@
   styleEl.textContent = CHECKOUT_CSS;
   document.head.appendChild(styleEl);
 
-  // Modal HTML Template
+  // Modal HTML Template with Stepper & Clean Scanner Screen
   const MODAL_HTML = `
   <div class="kryon-modal-overlay" id="kryon-checkout-modal">
     <div class="kryon-checkout-card">
+      
+      <!-- Header -->
       <div class="checkout-header">
         <div class="checkout-title-wrap">
           <img src="/images/logo.jpg" alt="KryonHost" class="checkout-brand-logo">
@@ -307,8 +414,34 @@
         </button>
       </div>
 
+      <!-- 4-Step Progress Stepper -->
+      <div class="kco-stepper">
+        <div class="kco-step-item active" id="kco-step-ind-1">
+          <div class="kco-dot">1</div>
+          <span>Config</span>
+        </div>
+        <div class="kco-step-divider"></div>
+        <div class="kco-step-item" id="kco-step-ind-2">
+          <div class="kco-dot">2</div>
+          <span>UPI QR</span>
+        </div>
+        <div class="kco-step-divider"></div>
+        <div class="kco-step-item" id="kco-step-ind-3">
+          <div class="kco-dot">3</div>
+          <span>Verify</span>
+        </div>
+        <div class="kco-step-divider"></div>
+        <div class="kco-step-item" id="kco-step-ind-4">
+          <div class="kco-dot">4</div>
+          <span>Done</span>
+        </div>
+      </div>
+
       <div class="checkout-body">
-        <!-- STEP 1: CUSTOMER & SERVER DETAILS -->
+        
+        <!-- ═══════════════════════════════════════════════════════════════════
+             STEP 1: CONFIGURATION & CUSTOMER DETAILS
+             ═══════════════════════════════════════════════════════════════════ -->
         <div class="checkout-step active" id="kco-step-1">
           <div class="checkout-order-summary">
             <div class="cos-row">
@@ -316,15 +449,15 @@
               <span class="cos-val" id="kco-sum-plan">PWR Extreme (5.7GHz)</span>
             </div>
             <div class="cos-row">
-              <span class="cos-label">Specifications</span>
+              <span class="cos-label">Hardware Specs</span>
               <span class="cos-val" id="kco-sum-specs">4 vCPU · 8GB RAM · 80GB NVMe</span>
             </div>
             <div class="cos-row">
-              <span class="cos-label">Datacenter</span>
+              <span class="cos-label">Datacenter Region</span>
               <span class="cos-val" id="kco-sum-region">India (Mumbai Tier-4)</span>
             </div>
             <div class="cos-row">
-              <span class="cos-label">Monthly Price</span>
+              <span class="cos-label">Payable Amount</span>
               <span class="cos-val highlight" id="kco-sum-price">₹1,499</span>
             </div>
           </div>
@@ -335,11 +468,11 @@
               <input type="text" class="form-input" id="kco-input-name" placeholder="Tejas Jha" required>
             </div>
             <div class="form-group">
-              <label class="form-label">Email Address (for panel credentials & login) *</label>
+              <label class="form-label">Email Address (for dashboard login & credentials) *</label>
               <input type="email" class="form-input" id="kco-input-email" placeholder="client@example.com" required>
             </div>
             <div class="form-group">
-              <label class="form-label">WhatsApp / Contact (optional for delivery SMS)</label>
+              <label class="form-label">WhatsApp Number (Optional for order alerts)</label>
               <input type="tel" class="form-input" id="kco-input-phone" placeholder="+91 98765 43210">
             </div>
             <div class="form-group">
@@ -363,42 +496,45 @@
             <div id="kco-error-1" style="color:#ef4444; font-size:0.82rem; margin-bottom:12px; display:none;"></div>
 
             <button type="submit" class="btn-checkout-primary" id="kco-btn-step1">
-              Proceed to Manual UPI Billing
+              Proceed to UPI Payment
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
             </button>
           </form>
         </div>
 
-        <!-- STEP 2: 5-MINUTE UPI QR BILLING SCREEN -->
+        <!-- ═══════════════════════════════════════════════════════════════════
+             STEP 2: SCANNER & UPI QR SCREEN (FOCUSED & CLEAN)
+             ═══════════════════════════════════════════════════════════════════ -->
         <div class="checkout-step" id="kco-step-2">
           <div class="timer-banner">
             <div style="display:flex; align-items:center; gap:8px;">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-              <span style="font-size:0.82rem; color:#d1d5db;">Payment Window Remaining:</span>
+              <span style="font-size:0.82rem; color:#d1d5db;">Payment Window:</span>
             </div>
             <div class="timer-clock" id="kco-timer-display">05:00</div>
           </div>
 
-          <div class="checkout-order-summary" style="margin-bottom:14px; padding:12px 16px;">
+          <div class="checkout-order-summary" style="margin-bottom:14px; padding:10px 14px;">
             <div class="cos-row">
-              <span class="cos-label">Invoice ID</span>
+              <span class="cos-label">Order Invoice</span>
               <span class="cos-val" style="font-family:'DM Mono',monospace; color:#38bdf8;" id="kco-invoice-id">#KRYON-ORD-00000</span>
             </div>
             <div class="cos-row">
-              <span class="cos-label">Payable Amount</span>
+              <span class="cos-label">Total Payable</span>
               <span class="cos-val highlight" id="kco-invoice-price">₹1,499</span>
             </div>
           </div>
 
-          <!-- QR Box -->
+          <!-- White QR Code Container -->
           <div class="qr-box-wrap">
             <img src="" alt="Scan UPI QR" class="qr-image" id="kco-qr-img">
-            <div style="margin-top:8px; font-size:0.75rem; color:#111; font-weight:700; letter-spacing:0.02em;">SCAN TO PAY VIA ANY UPI APP</div>
+            <div style="margin-top:6px; font-size:0.7rem; color:#111; font-weight:800; letter-spacing:0.04em;">SCAN TO PAY VIA ANY UPI APP</div>
           </div>
 
+          <!-- UPI ID Copy Bar -->
           <div class="upi-id-pill">
-            <span>UPI ID: <strong style="color:#fff;" id="kco-upi-id-text">tejasjha.in@okaxis</strong></span>
-            <button class="copy-upi-btn" onclick="KryonCheckout.copyUpiId()">Copy UPI</button>
+            <span>UPI ID: <strong style="color:#fff;" id="kco-upi-id-text">8750287172@fam</strong></span>
+            <button type="button" class="copy-upi-btn" onclick="KryonCheckout.copyUpiId()">Copy UPI</button>
           </div>
 
           <div class="upi-apps-icons">
@@ -409,31 +545,65 @@
             <span class="app-tag">CRED / BHIM</span>
           </div>
 
-          <form id="kco-utr-form" onsubmit="event.preventDefault(); KryonCheckout.submitPaymentProof();">
+          <!-- ONLY ONE Prominent Action Button on Scanner Screen -->
+          <button type="button" class="btn-checkout-success" onclick="KryonCheckout.showStep(3)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            I Have Completed The Payment
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+
+          <div style="text-align:center; margin-top:10px;">
+            <button type="button" class="btn-kco-back" onclick="KryonCheckout.showStep(1)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+              Back to Configuration
+            </button>
+          </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════════════
+             STEP 3: PAYMENT VERIFICATION FORM (SEPARATE PAGE)
+             ═══════════════════════════════════════════════════════════════════ -->
+        <div class="checkout-step" id="kco-step-3">
+          <div style="background:#141322; border:1px solid rgba(124,106,255,0.25); border-radius:12px; padding:12px 16px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <div style="font-size:0.75rem; color:#9ca3af;">Verifying Payment For</div>
+              <div style="font-weight:700; font-size:0.92rem; color:#38bdf8;" id="kco-verify-order-id">#KRYON-ORD-00000</div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:0.75rem; color:#9ca3af;">Amount Transferred</div>
+              <div style="font-weight:800; font-size:1.1rem; color:#22c55e; font-family:'DM Mono',monospace;" id="kco-verify-price">₹1,499</div>
+            </div>
+          </div>
+
+          <form id="kco-verify-form" onsubmit="event.preventDefault(); KryonCheckout.submitPaymentProof();">
+            
+            <!-- Sender UPI ID -->
             <div class="form-group">
-              <label class="form-label">Your UPI ID (The ID you paid from) *</label>
-              <input type="text" class="form-input" id="kco-input-sender-upi" placeholder="e.g. yourname@okhdfcbank or 9876543210@paytm" required style="font-family:'DM Mono',monospace; font-size:0.88rem;">
+              <label class="form-label">Your UPI ID (The ID you sent payment from) *</label>
+              <input type="text" class="form-input" id="kco-input-sender-upi" placeholder="e.g. user@okhdfcbank or 9876543210@paytm" required style="font-family:'DM Mono',monospace; font-size:0.88rem;">
             </div>
 
+            <!-- 12-Digit UTR Number -->
             <div class="form-group">
               <label class="form-label">12-Digit UPI Transaction / UTR Ref Number *</label>
               <input type="text" class="form-input" id="kco-input-utr" placeholder="e.g. 427189012345" required maxlength="24" style="font-family:'DM Mono',monospace; letter-spacing:0.08em; font-size:0.95rem; text-align:center;">
             </div>
 
+            <!-- Screenshot File Upload -->
             <div class="form-group">
               <label class="form-label">Payment Screenshot / Receipt *</label>
-              <div class="screenshot-upload-wrap" style="position:relative; background:#151424; border:1px dashed rgba(124,106,255,0.4); border-radius:10px; padding:14px; text-align:center; cursor:pointer;" onclick="document.getElementById('kco-input-screenshot').click()">
+              <div class="screenshot-upload-wrap" onclick="document.getElementById('kco-input-screenshot').click()">
                 <input type="file" id="kco-input-screenshot" accept="image/*" style="display:none;" onchange="KryonCheckout.handleScreenshotSelect(event)">
                 <div id="kco-screenshot-placeholder" style="display:flex; flex-direction:column; align-items:center; gap:6px; color:#9ca3af; font-size:0.8rem;">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7c6aff" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-                  <span><strong style="color:#a78bfa;">Click to attach payment screenshot</strong> (PNG, JPG)</span>
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#7c6aff" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                  <span><strong style="color:#a78bfa;">Click to attach payment receipt</strong> (PNG, JPG)</span>
                 </div>
                 <div id="kco-screenshot-preview-wrap" style="display:none; align-items:center; justify-content:center; gap:12px;">
-                  <img id="kco-screenshot-preview" src="" style="max-height:80px; max-width:120px; border-radius:6px; border:1px solid rgba(255,255,255,0.2); object-fit:contain;">
+                  <img id="kco-screenshot-preview" src="" style="max-height:75px; max-width:110px; border-radius:6px; border:1px solid rgba(255,255,255,0.2); object-fit:contain;">
                   <div style="text-align:left; font-size:0.78rem; color:#34d399;">
-                    <div style="font-weight:700;">✓ Receipt Attached</div>
-                    <div id="kco-screenshot-name" style="color:#9ca3af; font-family:'DM Mono',monospace; font-size:0.72rem;">screenshot.png</div>
-                    <span style="color:#ef4444; cursor:pointer; text-decoration:underline; font-size:0.72rem;" onclick="event.stopPropagation(); KryonCheckout.removeScreenshot();">Remove / Re-upload</span>
+                    <div style="font-weight:700;">✓ Screenshot Attached</div>
+                    <div id="kco-screenshot-name" style="color:#9ca3af; font-family:'DM Mono',monospace; font-size:0.72rem;">receipt.png</div>
+                    <span style="color:#ef4444; cursor:pointer; text-decoration:underline; font-size:0.72rem;" onclick="event.stopPropagation(); KryonCheckout.removeScreenshot();">Remove / Change</span>
                   </div>
                 </div>
               </div>
@@ -443,23 +613,32 @@
 
             <button type="submit" class="btn-checkout-success" id="kco-btn-submit-pay">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-              I Have Made the Payment
+              Submit Payment Verification
             </button>
           </form>
+
+          <div style="text-align:center; margin-top:10px;">
+            <button type="button" class="btn-kco-back" onclick="KryonCheckout.showStep(2)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+              Back to QR Scanner
+            </button>
+          </div>
         </div>
 
-        <!-- STEP 3: SUBMITTED / PENDING VERIFICATION -->
-        <div class="checkout-step" id="kco-step-3">
+        <!-- ═══════════════════════════════════════════════════════════════════
+             STEP 4: SUBMITTED / PENDING ADMIN VERIFICATION
+             ═══════════════════════════════════════════════════════════════════ -->
+        <div class="checkout-step" id="kco-step-4">
           <div class="pending-card">
             <div class="pending-icon-ring">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
             </div>
-            <h3 style="font-size:1.25rem; font-weight:700; color:#fff; margin-bottom:8px;">Payment Proof Submitted!</h3>
-            <p style="font-size:0.85rem; color:#9ca3af; margin-bottom:18px; line-height:1.5;">
-              Order <strong style="color:#38bdf8;" id="kco-done-ord-id">#KRYON-ORD-00000</strong> is now queued for verification. Our NOC team will verify your payment details and activate your service in your dashboard.
+            <h3 style="font-size:1.2rem; font-weight:700; color:#fff; margin-bottom:6px;">Payment Proof Submitted!</h3>
+            <p style="font-size:0.82rem; color:#9ca3af; margin-bottom:16px; line-height:1.5;">
+              Order <strong style="color:#38bdf8;" id="kco-done-ord-id">#KRYON-ORD-00000</strong> has been queued for verification. Our NOC team will verify your transfer and activate your instance in your dashboard.
             </p>
 
-            <div style="background:#151424; border:1px solid rgba(245,158,11,0.3); border-radius:10px; padding:12px; margin-bottom:20px; text-align:left; font-size:0.82rem;">
+            <div style="background:#141322; border:1px solid rgba(245,158,11,0.3); border-radius:10px; padding:12px; margin-bottom:18px; text-align:left; font-size:0.8rem;">
               <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
                 <span style="color:#9ca3af;">Status:</span>
                 <span style="color:#f59e0b; font-weight:700;">● Pending Admin Approval</span>
@@ -516,7 +695,6 @@
   window.KryonCheckout = {
     /**
      * Open Checkout for given plan
-     * @param {Object} planConfig - { name, price, type, tier, cpu, ram, disk, region, os }
      */
     open: function(planConfig = {}) {
       initModalDom();
@@ -574,10 +752,21 @@
       const target = document.getElementById(`kco-step-${stepNum}`);
       if (target) target.classList.add('active');
 
+      // Update Stepper Dots
+      for (let i = 1; i <= 4; i++) {
+        const ind = document.getElementById(`kco-step-ind-${i}`);
+        if (ind) {
+          ind.classList.remove('active', 'completed');
+          if (i === stepNum) ind.classList.add('active');
+          else if (i < stepNum) ind.classList.add('completed');
+        }
+      }
+
       const titleEl = document.getElementById('kco-header-title');
       if (stepNum === 1) titleEl.textContent = 'Configure & Deploy';
-      else if (stepNum === 2) titleEl.textContent = 'Manual UPI Billing (5:00)';
-      else if (stepNum === 3) titleEl.textContent = 'Order Under Review';
+      else if (stepNum === 2) titleEl.textContent = 'Scan UPI QR Code';
+      else if (stepNum === 3) titleEl.textContent = 'Verify Payment Transfer';
+      else if (stepNum === 4) titleEl.textContent = 'Order Under Review';
     },
 
     handleScreenshotSelect: function(event) {
@@ -618,7 +807,7 @@
             screenshotUploadedUrl = uploadJson.object.url;
           }
         } catch (uploadErr) {
-          console.warn('[Screenshot upload to SDX warning]:', uploadErr);
+          console.warn('[Screenshot upload warning]:', uploadErr);
         }
       };
 
@@ -676,7 +865,7 @@
         const json = await res.json();
 
         btn.disabled = false;
-        btn.innerHTML = `Proceed to Manual UPI Billing <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>`;
+        btn.innerHTML = `Proceed to UPI Payment <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>`;
 
         if (!json.success || !json.data) {
           errEl.textContent = json.error || 'Failed to initialize order. Please try again.';
@@ -686,10 +875,14 @@
 
         currentOrder = json.data;
 
-        // Populate Step 2
+        // Populate Step 2 (QR Scanner)
         document.getElementById('kco-invoice-id').textContent = `#${currentOrder.id}`;
         document.getElementById('kco-invoice-price').textContent = `₹${currentOrder.amount.toLocaleString('en-IN')}`;
         
+        // Populate Step 3 (Verification Form summary)
+        document.getElementById('kco-verify-order-id').textContent = `#${currentOrder.id}`;
+        document.getElementById('kco-verify-price').textContent = `₹${currentOrder.amount.toLocaleString('en-IN')}`;
+
         const upiId = currentOrder.upi_id || '8750287172@fam';
         document.getElementById('kco-upi-id-text').textContent = upiId;
 
@@ -702,7 +895,7 @@
 
       } catch (err) {
         btn.disabled = false;
-        btn.innerHTML = `Proceed to Manual UPI Billing <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>`;
+        btn.innerHTML = `Proceed to UPI Payment <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>`;
         errEl.textContent = 'Connection error: ' + err.message;
         errEl.style.display = 'block';
       }
@@ -756,7 +949,7 @@
 
       const btn = document.getElementById('kco-btn-submit-pay');
       btn.disabled = true;
-      btn.innerHTML = 'Verifying & Submitting Proof...';
+      btn.innerHTML = 'Submitting Payment Proof...';
 
       try {
         const payload = {
@@ -774,7 +967,7 @@
         const json = await res.json();
 
         btn.disabled = false;
-        btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> I Have Made the Payment`;
+        btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Submit Payment Verification`;
 
         if (!json.success) {
           errEl.textContent = json.error || 'Submission failed. Please try again.';
@@ -784,7 +977,7 @@
 
         if (timerInterval) clearInterval(timerInterval);
 
-        // Populate Step 3
+        // Populate Step 4 (Confirmation)
         document.getElementById('kco-done-ord-id').textContent = `#${currentOrder.id}`;
         document.getElementById('kco-done-email').textContent = currentOrder.customer_email;
         document.getElementById('kco-done-sender-upi').textContent = senderUpi;
@@ -793,11 +986,11 @@
         // Save email in localStorage for panel auto-lookup
         localStorage.setItem('kryon_customer_email', currentOrder.customer_email);
 
-        this.showStep(3);
+        this.showStep(4);
 
       } catch (err) {
         btn.disabled = false;
-        btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> I Have Made the Payment`;
+        btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Submit Payment Verification`;
         errEl.textContent = 'Error: ' + err.message;
         errEl.style.display = 'block';
       }
