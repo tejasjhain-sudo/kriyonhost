@@ -590,25 +590,14 @@ async function loadAiKeyStatus() {
       const region = data.data.metadata?.region || localStorage.getItem(`colide_region_${userId}`) || 'India (Mumbai Tier-4 Datacenter)';
       renderClaimedAiKey(data.data.key, name, region);
     } else {
-      const localCached = localStorage.getItem(`colide_key_${userId}`);
-      if (localCached) {
-        const name = localStorage.getItem(`colide_name_${userId}`) || 'My Production AI';
-        const region = localStorage.getItem(`colide_region_${userId}`) || 'India (Mumbai Tier-4 Datacenter)';
-        renderClaimedAiKey(localCached, name, region);
-      } else {
-        renderUnclaimedAiKey();
-      }
+      localStorage.removeItem(`colide_key_${userId}`);
+      localStorage.removeItem(`colide_name_${userId}`);
+      localStorage.removeItem(`colide_region_${userId}`);
+      renderUnclaimedAiKey();
     }
   } catch (err) {
     console.warn('AI key status fetch:', err);
-    const localCached = localStorage.getItem(`colide_key_${userId}`);
-    if (localCached) {
-      const name = localStorage.getItem(`colide_name_${userId}`) || 'My Production AI';
-      const region = localStorage.getItem(`colide_region_${userId}`) || 'India (Mumbai Tier-4 Datacenter)';
-      renderClaimedAiKey(localCached, name, region);
-    } else {
-      renderUnclaimedAiKey();
-    }
+    renderUnclaimedAiKey();
   }
 }
 

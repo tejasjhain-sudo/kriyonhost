@@ -9,21 +9,5 @@
     "970d94bd988774af0482c03a7b052d24cfaf320df6149052b963ce8250b66983",
     "9fc29e90f876d054e39bf70d64434b6e1165851a5c6b09af65dbc4967cfeaaf2"
   ],
-  "assignments": {
-    "tejasjha.in": {
-      "key": "9279ebfb9004ab8efb89bf0fb8b534d4260d52c1dca1ef9272fbeb07ff0c9ed9",
-      "model": "Colide Pro",
-      "modelDescription": "Advanced AI model for complex reasoning, coding, analysis, and production workloads. Perfect for applications requiring high-quality outputs.",
-      "tier": "Free Tier",
-      "dailyRequestsLimit": 800,
-      "monthlyTokensLimit": 25000,
-      "assignedAt": "2026-09-30T04:46:21.560Z",
-      "user": "tejasjha.in",
-      "gatewayUrl": "https://api.colidelabs.com/v1",
-      "metadata": {
-        "ip": "::1",
-        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/27.0 Safari/605.1.15"
-      }
-    }
-  }
+  "assignments": {}
 }
