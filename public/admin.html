@@ -90,6 +90,38 @@
 </head>
 <body>
 
+  <!-- ADMIN PASSKEY SECURITY GATE OVERLAY -->
+  <div id="admin-gate-overlay" style="position:fixed; inset:0; background:#05050a; z-index:99999; display:flex; align-items:center; justify-content:center; padding:20px;">
+    <div style="background:#0d0c18; border:1px solid rgba(245,158,11,0.3); border-radius:20px; padding:38px; width:100%; max-width:440px; box-shadow:0 25px 70px rgba(0,0,0,0.85);">
+      <div style="text-align:center; margin-bottom:24px;">
+        <div style="width:52px; height:52px; border-radius:14px; background:rgba(245,158,11,0.12); border:1px solid rgba(245,158,11,0.3); display:inline-flex; align-items:center; justify-content:center; margin-bottom:14px; color:#f59e0b;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <h2 style="font-family:'Bricolage Grotesque',sans-serif; font-size:1.65rem; color:#fff; margin:0 0 6px 0;">Administrator Gate</h2>
+        <p style="color:var(--muted); font-size:0.85rem; margin:0;">Enter your master administrator security passkey to access the control center.</p>
+      </div>
+
+      <form id="admin-gate-form" onsubmit="verifyAdminPasskey(event)">
+        <div style="margin-bottom:18px;">
+          <label style="display:block; font-size:0.8rem; font-weight:600; color:var(--muted); margin-bottom:8px;">Admin Security Key</label>
+          <div style="position:relative; display:flex; align-items:center;">
+            <input type="password" id="admin-gate-passkey" placeholder="Enter master key (e.g. kryon@admin2026)..." required style="width:100%; padding:13px 16px; border-radius:10px; border:1px solid rgba(255,255,255,0.15); background:#141324; color:#fff; font-family:'DM Mono',monospace; font-size:0.95rem; outline:none;" autocomplete="current-password">
+          </div>
+        </div>
+
+        <div id="admin-gate-msg" style="display:none; font-size:0.85rem; padding:10px; border-radius:8px; margin-bottom:16px; text-align:center;"></div>
+
+        <button type="submit" id="btn-gate-submit" style="width:100%; padding:14px; background:#f59e0b; border:none; border-radius:10px; color:#000; font-weight:700; font-size:0.95rem; cursor:pointer; transition:0.2s; display:flex; align-items:center; justify-content:center; gap:8px;">
+          <span>Unlock Admin Center</span> &rarr;
+        </button>
+
+        <div style="text-align:center; margin-top:20px;">
+          <a href="/panel" style="color:var(--muted); font-size:0.82rem; text-decoration:none;">&larr; Return to Client Dashboard</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <div class="sidebar">
     <div class="sidebar-brand">
       <img src="/images/logo.jpg" alt="KryonHost" style="width:26px;height:26px;object-fit:contain;border-radius:5px;">
@@ -121,6 +153,12 @@
           <span>Users</span>
         </div>
       </a>
+      <a href="/panel" class="sidebar-link">
+        <div class="sidebar-link-inner">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/><path d="M15 9h6"/></svg>
+          <span>Client Dashboard</span>
+        </div>
+      </a>
       <a href="/" class="sidebar-link">
         <div class="sidebar-link-inner">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
@@ -130,8 +168,8 @@
     </div>
     <div class="sidebar-user">
       <div style="margin-bottom:4px;">Signed in as Admin</div>
-      <div class="user-email" id="u-email">Loading...</div>
-      <button onclick="handleLogout()" style="margin-top:10px; background:transparent; border:1px solid rgba(255,255,255,0.1); color:var(--muted); font-size:0.75rem; padding:6px 12px; border-radius:6px; cursor:pointer; width:100%; transition:0.2s;" onmouseover="this.style.borderColor='#ef4444';this.style.color='#ef4444'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='var(--muted)'">Sign Out</button>
+      <div class="user-email" id="u-email">Administrator</div>
+      <button onclick="handleLockAdmin()" style="margin-top:10px; background:transparent; border:1px solid rgba(255,255,255,0.1); color:var(--muted); font-size:0.75rem; padding:6px 12px; border-radius:6px; cursor:pointer; width:100%; transition:0.2s;" onmouseover="this.style.borderColor='#ef4444';this.style.color='#ef4444'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='var(--muted)'">Lock Admin Center</button>
     </div>
   </div>
 
@@ -352,33 +390,79 @@
 
   <script src="/js/supabase-config.js"></script>
   <script>
-    const ADMIN_EMAILS = [
-      'admin@kryonhost.com',
-      'tejasjha.in@gmail.com',
-      'tejas@kryonhost.com',
-      'admin@gmail.com'
-    ];
     let editingId = null;
     let selectedOrderForApproval = null;
 
-    /* ── Auth Guard ─────────────────────────────────────────────────────────── */
+    /* ── Passkey Admin Auth Guard ───────────────────────────────────────────── */
+    async function verifyAdminPasskey(e) {
+      if (e) e.preventDefault();
+      const passkey = document.getElementById('admin-gate-passkey').value.trim();
+      const msg = document.getElementById('admin-gate-msg');
+      const btn = document.getElementById('btn-gate-submit');
+      
+      if (!passkey) return;
+      btn.disabled = true;
+      btn.textContent = 'Verifying Passkey...';
+      msg.style.display = 'none';
+
+      try {
+        const res = await fetch('/api/admin/auth/verify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ passkey })
+        });
+        const data = await res.json();
+        if (data.success) {
+          sessionStorage.setItem('kryon_admin_unlocked', 'true');
+          document.getElementById('admin-gate-overlay').style.display = 'none';
+          initAdminDashboard();
+        } else {
+          msg.style.display = 'block';
+          msg.style.background = 'rgba(239, 68, 68, 0.12)';
+          msg.style.border = '1px solid rgba(239, 68, 68, 0.3)';
+          msg.style.color = '#ef4444';
+          msg.textContent = data.error || 'Invalid Admin Passkey';
+        }
+      } catch (err) {
+        msg.style.display = 'block';
+        msg.style.background = 'rgba(239, 68, 68, 0.12)';
+        msg.style.border = '1px solid rgba(239, 68, 68, 0.3)';
+        msg.style.color = '#ef4444';
+        msg.textContent = 'Connection error: ' + err.message;
+      }
+      btn.disabled = false;
+      btn.innerHTML = '<span>Unlock Admin Center</span> &rarr;';
+    }
+
+    function handleLockAdmin() {
+      sessionStorage.removeItem('kryon_admin_unlocked');
+      window.location.href = '/panel';
+    }
+
     async function init() {
-      const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-      let userEmail = 'tejasjha.in@gmail.com';
+      const isUnlocked = sessionStorage.getItem('kryon_admin_unlocked') === 'true';
+      const gate = document.getElementById('admin-gate-overlay');
+
+      if (!isUnlocked) {
+        gate.style.display = 'flex';
+        document.getElementById('admin-gate-passkey').focus();
+        return;
+      }
+
+      gate.style.display = 'none';
+      initAdminDashboard();
+    }
+
+    async function initAdminDashboard() {
+      let userEmail = 'admin@kryonhost.com';
 
       if (typeof supabaseClient !== 'undefined') {
-        const { data: { session } } = await supabaseClient.auth.getSession();
-        if (session && session.user) {
-          userEmail = session.user.email;
-          const isAdmin = ADMIN_EMAILS.includes(userEmail.toLowerCase()) || userEmail.toLowerCase().includes('tejas') || userEmail.toLowerCase().includes('admin');
-          if (!isAdmin && !isLocalhost) {
-            window.location.href = '/panel';
-            return;
+        try {
+          const { data: { session } } = await supabaseClient.auth.getSession();
+          if (session && session.user) {
+            userEmail = session.user.email;
           }
-        } else if (!isLocalhost) {
-          window.location.href = '/login?redirect=/admin';
-          return;
-        }
+        } catch (e) {}
       }
 
       document.getElementById('u-email').textContent = userEmail;
@@ -388,12 +472,6 @@
       setInterval(updatePendingOrdersCount, 10000);
 
       loadSection('overview');
-    }
-
-
-    async function handleLogout() {
-      await supabaseClient.auth.signOut();
-      window.location.href = '/login';
     }
 
     async function updatePendingOrdersCount() {

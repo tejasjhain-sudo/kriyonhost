@@ -1,14 +1,24 @@
 const fs = require('fs');
 const path = require('path');
+const { createClient } = require('@supabase/supabase-js');
 const discord = require('./discordService');
 
-// Determine writable data path (supports local dev and Vercel serverless /tmp)
+// Supabase client for global order persistence across Vercel lambdas
+const SUPABASE_URL = process.env.SUPABASE_URL || 'https://gqxacwybumcroargnwkq.supabase.co';
+const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdxeGFjd3lidW1jcm9hcmdud2txIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc5MDYxNzUzOSwiZXhwIjoyMTA2MTkzNTM5fQ.5xea24fdKrZBXYUDlGjw6TB4SzXbmkDP_rtrP0NIwB4';
+const BUCKET_NAME = 'kryon_orders';
+const REMOTE_ORDERS_FILE = 'orders.json';
+
+const supabaseAdmin = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+
+// Determine writable local data path (supports local dev and Vercel serverless /tmp)
 const isVercel = !!process.env.VERCEL || !!process.env.NOW_REGION;
 const DATA_DIR = isVercel 
   ? path.join('/tmp', 'kryon_data') 
   : path.join(__dirname, '..', 'data');
 
 const ORDERS_FILE = path.join(DATA_DIR, 'orders.json');
+const BUNDLED_ORDERS_FILE = path.join(__dirname, '..', 'data', 'orders.json');
 
 class OrderService {
   constructor() {
@@ -22,63 +32,84 @@ class OrderService {
         fs.mkdirSync(DATA_DIR, { recursive: true });
       }
 
+      // Check writable local orders file first
       if (fs.existsSync(ORDERS_FILE)) {
         const raw = fs.readFileSync(ORDERS_FILE, 'utf8');
         this.orders = JSON.parse(raw);
+      } else if (fs.existsSync(BUNDLED_ORDERS_FILE)) {
+        // Fallback to bundled repo data/orders.json
+        const raw = fs.readFileSync(BUNDLED_ORDERS_FILE, 'utf8');
+        this.orders = JSON.parse(raw);
+        this.saveLocal();
       } else {
-        this.orders = [
-          {
-            id: 'KRYON-ORD-10482',
-            created_at: new Date(Date.now() - 3600 * 1000 * 24).toISOString(),
-            expires_at: new Date(Date.now() - 3600 * 1000 * 24 + 300000).toISOString(),
-            customer_name: 'Tejas Jha',
-            customer_email: 'tejasjha.in@gmail.com',
-            customer_phone: '+91 98765 43210',
-            service_type: 'vps',
-            plan_name: 'PWR Extreme (Ryzen 9 5.7GHz)',
-            specs: {
-              cpu: 6,
-              ram: 16,
-              disk: 120,
-              tier: 'pwr',
-              os: 'Ubuntu 24.04 LTS',
-              region: 'India (Mumbai Tier-4)',
-              server_name: 'srv-ender-alpha'
-            },
-            amount: 2499,
-            payment_method: 'UPI Manual QR',
-            upi_id: '8750287172@fam',
-            utr_number: '427189012345',
-            status: 'approved',
-            server_details: {
-              ip: '103.189.89.44',
-              port: '22',
-              username: 'root',
-              password: 'EnderPass_892!x',
-              os: 'Ubuntu 24.04 LTS',
-              region: 'India (Mumbai)',
-              allocated_at: new Date(Date.now() - 3600 * 1000 * 23).toISOString(),
-              notes: 'Cloud VM online. Connect via SSH: ssh root@103.189.89.44'
-            }
-          }
-        ];
-        this.save();
+        this.orders = [];
       }
     } catch (err) {
-      console.warn('[OrderService] Warning during storage initialization:', err.message);
+      console.warn('[OrderService] Warning during local storage initialization:', err.message);
       this.orders = [];
     }
+
+    // Trigger async remote sync on startup
+    this.syncFromRemote().catch(() => {});
   }
 
-  save() {
+  /**
+   * Synchronize orders from Supabase Storage bucket kryon_orders/orders.json
+   */
+  async syncFromRemote() {
+    try {
+      const { data, error } = await supabaseAdmin.storage.from(BUCKET_NAME).download(REMOTE_ORDERS_FILE);
+      if (error) {
+        // If remote doesn't exist yet, upload local data if available
+        if (this.orders && this.orders.length > 0) {
+          await this.saveRemote();
+        }
+        return this.orders;
+      }
+
+      if (data) {
+        const text = await data.text();
+        const remoteOrders = JSON.parse(text);
+        if (Array.isArray(remoteOrders)) {
+          this.orders = remoteOrders;
+          this.saveLocal();
+        }
+      }
+    } catch (err) {
+      console.warn('[OrderService] Remote sync warning:', err.message);
+    }
+    return this.orders;
+  }
+
+  saveLocal() {
     try {
       if (!fs.existsSync(DATA_DIR)) {
         fs.mkdirSync(DATA_DIR, { recursive: true });
       }
       fs.writeFileSync(ORDERS_FILE, JSON.stringify(this.orders, null, 2), 'utf8');
     } catch (err) {
-      console.warn('[OrderService] Save failed:', err.message);
+      console.warn('[OrderService] Local save failed:', err.message);
     }
+  }
+
+  async saveRemote() {
+    try {
+      const jsonContent = JSON.stringify(this.orders, null, 2);
+      await supabaseAdmin.storage
+        .from(BUCKET_NAME)
+        .upload(REMOTE_ORDERS_FILE, jsonContent, { 
+          upsert: true, 
+          cacheControl: '0',
+          contentType: 'application/json' 
+        });
+    } catch (err) {
+      console.warn('[OrderService] Remote save failed:', err.message);
+    }
+  }
+
+  async save() {
+    this.saveLocal();
+    await this.saveRemote();
   }
 
   generateOrderId() {
@@ -89,7 +120,8 @@ class OrderService {
   /**
    * Create a new pending manual order
    */
-  createOrder(data) {
+  async createOrder(data) {
+    await this.syncFromRemote();
     const orderId = this.generateOrderId();
     const now = Date.now();
     const expiresAt = new Date(now + 5 * 60 * 1000).toISOString(); // 5 minute timer
@@ -116,7 +148,7 @@ class OrderService {
     };
 
     this.orders.unshift(order);
-    this.save();
+    await this.save();
 
     // Trigger Discord notification in background
     discord.notifyOrderCreated(order).catch(() => {});
@@ -127,7 +159,8 @@ class OrderService {
   /**
    * Customer submits UTR payment proof, Sender UPI ID & Screenshot
    */
-  submitPaymentProof(orderId, paymentData) {
+  async submitPaymentProof(orderId, paymentData) {
+    await this.syncFromRemote();
     const order = this.orders.find(o => o.id === orderId);
     if (!order) return { success: false, error: 'Order not found' };
 
@@ -166,7 +199,7 @@ class OrderService {
     order.status = 'pending_approval';
     if (note) order.customer_note = note;
 
-    this.save();
+    await this.save();
 
     // Trigger Discord alert for immediate admin verification
     discord.notifyPaymentSubmitted(order).catch(() => {});
@@ -174,19 +207,20 @@ class OrderService {
     return { success: true, data: order };
   }
 
-
   /**
    * Retrieve order by ID
    */
-  getOrder(orderId) {
+  async getOrder(orderId) {
+    await this.syncFromRemote();
     return this.orders.find(o => o.id === orderId) || null;
   }
 
   /**
    * Retrieve orders for a user email
    */
-  getOrdersByUser(email) {
+  async getOrdersByUser(email) {
     if (!email) return [];
+    await this.syncFromRemote();
     const cleanEmail = email.trim().toLowerCase();
     return this.orders.filter(o => o.customer_email === cleanEmail);
   }
@@ -194,7 +228,8 @@ class OrderService {
   /**
    * List all orders (Admin view)
    */
-  getAllOrders(status = null) {
+  async getAllOrders(status = null) {
+    await this.syncFromRemote();
     if (status && status !== 'all') {
       return this.orders.filter(o => o.status === status);
     }
@@ -204,7 +239,8 @@ class OrderService {
   /**
    * Admin approves order & provides server details
    */
-  approveOrder(orderId, serverDetails, adminNotes = '') {
+  async approveOrder(orderId, serverDetails, adminNotes = '') {
+    await this.syncFromRemote();
     const order = this.orders.find(o => o.id === orderId);
     if (!order) return null;
 
@@ -222,7 +258,7 @@ class OrderService {
       notes: serverDetails.notes || 'Your server is active and online!'
     };
 
-    this.save();
+    await this.save();
 
     // Trigger Discord notification
     discord.notifyOrderApproved(order).catch(() => {});
@@ -233,7 +269,8 @@ class OrderService {
   /**
    * Admin rejects order
    */
-  rejectOrder(orderId, reason = 'Payment verification failed or UTR not found') {
+  async rejectOrder(orderId, reason = 'Payment verification failed or UTR not found') {
+    await this.syncFromRemote();
     const order = this.orders.find(o => o.id === orderId);
     if (!order) return null;
 
@@ -241,7 +278,7 @@ class OrderService {
     order.rejected_at = new Date().toISOString();
     order.rejection_reason = reason;
 
-    this.save();
+    await this.save();
 
     // Trigger Discord notification
     discord.notifyOrderRejected(order, reason).catch(() => {});

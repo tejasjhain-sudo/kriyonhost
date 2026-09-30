@@ -428,9 +428,12 @@
         <!-- Toast Notice -->
         <div id="auth-msg"></div>
 
-        <div style="text-align:center; margin-top:24px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:24px;">
           <a href="/" style="color:var(--muted); font-size:0.8rem; text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
             &larr; Return to main website
+          </a>
+          <a href="/admin" style="color:rgba(124,106,255,0.7); font-size:0.75rem; text-decoration:none; font-family:'DM Mono',monospace;">
+            Admin Portal &rarr;
           </a>
         </div>
 
@@ -442,19 +445,7 @@
   <script src="/js/supabase-config.js"></script>
   <script>
     let currentAuthMode = 'login';
-    const ADMIN_EMAILS = [
-      'admin@kryonhost.com',
-      'tejasjha.in@gmail.com',
-      'tejas@kryonhost.com',
-      'admin@gmail.com'
-    ];
-    function isUserAdmin(email) {
-      if (!email) return false;
-      const e = email.toLowerCase();
-      return ADMIN_EMAILS.includes(e) || e.includes('tejas') || e.includes('admin');
-    }
     const authMsg = document.getElementById('auth-msg');
-
 
     function setAuthMode(mode) {
       currentAuthMode = mode;
@@ -513,16 +504,23 @@
       let session = null;
 
       if (currentAuthMode === 'signup') {
-        const res = await supabaseClient.auth.signUp({ email, password });
-        error = res.error;
-        session = res.data.session;
-
-        if (!error && !session) {
-          authMsg.className = 'succ-msg';
-          authMsg.innerHTML = '✅ Account created! If email confirmation is enabled, please verify your inbox, otherwise sign in.';
-          btn.disabled = false;
-          btnText.textContent = 'Register New Account';
-          return;
+        try {
+          const resp = await fetch('/api/auth/signup', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+          });
+          const signupResult = await resp.json();
+          if (!signupResult.success) {
+            error = { message: signupResult.error || 'Account creation failed' };
+          } else {
+            // Auto sign in immediately after confirmed creation without email links
+            const loginRes = await supabaseClient.auth.signInWithPassword({ email, password });
+            error = loginRes.error;
+            session = loginRes.data.session;
+          }
+        } catch (apiErr) {
+          error = { message: apiErr.message || 'Connection error creating account' };
         }
       } else {
         const res = await supabaseClient.auth.signInWithPassword({ email, password });
@@ -538,26 +536,34 @@
         btnText.textContent = currentAuthMode === 'login' ? 'Sign In to Platform' : 'Register New Account';
       } else if (session) {
         authMsg.className = 'succ-msg';
-        authMsg.textContent = 'Authentication successful! Redirecting...';
+        authMsg.textContent = 'Authentication successful! Redirecting to Client Dashboard...';
         btnText.textContent = 'Redirecting...';
 
+        const urlParams = new URLSearchParams(window.location.search);
+        const redirectUrl = urlParams.get('redirect');
+
         setTimeout(() => {
-          if (isUserAdmin(session.user.email)) {
-            window.location.href = '/admin';
+          if (redirectUrl && redirectUrl.startsWith('/')) {
+            window.location.href = redirectUrl;
           } else {
             window.location.href = '/panel';
           }
-        }, 600);
+        }, 500);
       }
     }
 
     document.getElementById('auth-form').addEventListener('submit', handleAuth);
 
-    // Auto-redirect if already logged in
+    // Auto-redirect if already logged in - ALWAYS goes to /panel
     supabaseClient.auth.getSession().then(({ data: { session } }) => {
       if (session) {
-        if (isUserAdmin(session.user.email)) window.location.href = '/admin';
-        else window.location.href = '/panel';
+        const urlParams = new URLSearchParams(window.location.search);
+        const redirectUrl = urlParams.get('redirect');
+        if (redirectUrl && redirectUrl.startsWith('/')) {
+          window.location.href = redirectUrl;
+        } else {
+          window.location.href = '/panel';
+        }
       }
     });
   </script>
