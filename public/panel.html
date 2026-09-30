@@ -794,6 +794,52 @@
       transform: scale(1.05);
     }
 
+    /* Top-Right Real-Time Order Toast Notifications */
+    .top-right-toast-container {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      z-index: 99999;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      pointer-events: none;
+      max-width: 420px;
+      width: calc(100% - 48px);
+    }
+    .order-popup-toast {
+      pointer-events: auto;
+      background: #0d0c15;
+      border-radius: 14px;
+      padding: 16px 18px;
+      box-shadow: 0 20px 40px -10px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.4);
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      animation: toastSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+    }
+    .order-popup-toast.approved {
+      background: #081711;
+      border-color: rgba(34, 197, 94, 0.4);
+      box-shadow: 0 20px 40px -10px rgba(0,0,0,0.8), 0 0 24px rgba(34, 197, 94, 0.2);
+    }
+    .order-popup-toast.rejected {
+      background: #1a0a0d;
+      border-color: rgba(239, 68, 68, 0.4);
+      box-shadow: 0 20px 40px -10px rgba(0,0,0,0.8), 0 0 24px rgba(239, 68, 68, 0.2);
+    }
+    @keyframes toastSlideIn {
+      from { opacity: 0; transform: translateX(50px) scale(0.95); }
+      to { opacity: 1; transform: translateX(0) scale(1); }
+    }
+    @keyframes toastSlideOut {
+      from { opacity: 1; transform: translateX(0); }
+      to { opacity: 0; transform: translateX(50px); }
+    }
+
     @media (max-width: 960px) {
       .metric-summary-grid {
         grid-template-columns: 1fr;
@@ -808,6 +854,9 @@
   </style>
 </head>
 <body>
+
+  <!-- Top-Right Real-Time Notification Container -->
+  <div class="top-right-toast-container" id="top-right-toast-container"></div>
 
   <!-- PLATFORM HEADER -->
   <header class="platform-header">

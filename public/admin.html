@@ -140,6 +140,81 @@
     <div style="color:var(--muted); margin-top:4rem; text-align:center;">Loading dashboard...</div>
   </div>
 
+  <!-- ORDER FULL DETAILS MODAL -->
+  <div class="modal-overlay" id="order-detail-modal">
+    <div class="modal-box" style="max-width:660px; max-height:90vh; overflow-y:auto;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:12px;">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span style="font-size:1.15rem; font-weight:800; color:#38bdf8;" id="dt-order-id">#KRYON-ORD-00000</span>
+          <span id="dt-order-status-badge"></span>
+        </div>
+        <button class="btn-cancel" onclick="closeDetailModal()" style="padding:4px 8px; font-size:0.8rem;">✕ Close</button>
+      </div>
+
+      <!-- Customer & Plan Info Grid -->
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:14px;">
+        <div style="background:#151424; border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:14px;">
+          <div style="font-size:0.75rem; text-transform:uppercase; color:var(--muted); font-weight:700; margin-bottom:8px; letter-spacing:0.04em;">Customer Information</div>
+          <div style="font-size:0.84rem; margin-bottom:4px;"><strong>Name:</strong> <span id="dt-cust-name" style="color:#fff;">-</span></div>
+          <div style="font-size:0.84rem; margin-bottom:4px;"><strong>Email:</strong> <span id="dt-cust-email" style="color:#38bdf8; font-family:'DM Mono',monospace;">-</span></div>
+          <div style="font-size:0.84rem;"><strong>Phone:</strong> <span id="dt-cust-phone" style="color:var(--muted2);">-</span></div>
+        </div>
+
+        <div style="background:#151424; border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:14px;">
+          <div style="font-size:0.75rem; text-transform:uppercase; color:var(--muted); font-weight:700; margin-bottom:8px; letter-spacing:0.04em;">Service & Plan</div>
+          <div style="font-size:0.84rem; margin-bottom:4px;"><strong>Plan:</strong> <span id="dt-plan-name" style="color:#f59e0b; font-weight:700;">-</span></div>
+          <div style="font-size:0.84rem; margin-bottom:4px;"><strong>Specs:</strong> <span id="dt-specs" style="color:var(--muted2);">-</span></div>
+          <div style="font-size:0.84rem;"><strong>Region:</strong> <span id="dt-region" style="color:#34d399;">-</span></div>
+        </div>
+      </div>
+
+      <!-- Payment & Transaction Details -->
+      <div style="background:#151424; border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:14px; margin-bottom:14px;">
+        <div style="font-size:0.75rem; text-transform:uppercase; color:var(--muted); font-weight:700; margin-bottom:10px; letter-spacing:0.04em;">Payment Verification Information</div>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:10px; margin-bottom:12px;">
+          <div><span style="color:var(--muted); font-size:0.75rem; display:block;">Amount Paid</span><strong style="color:#22c55e; font-size:1.1rem; font-family:'DM Mono',monospace;" id="dt-amount">₹0</strong></div>
+          <div><span style="color:var(--muted); font-size:0.75rem; display:block;">Sender UPI ID</span><strong style="color:#a78bfa; font-family:'DM Mono',monospace; font-size:0.88rem;" id="dt-sender-upi">Not provided</strong></div>
+          <div><span style="color:var(--muted); font-size:0.75rem; display:block;">12-Digit UTR Number</span><strong style="color:#f59e0b; font-family:'DM Mono',monospace; font-size:0.88rem;" id="dt-utr">Awaiting</strong></div>
+          <div><span style="color:var(--muted); font-size:0.75rem; display:block;">Order Created</span><span style="color:var(--muted2); font-size:0.78rem;" id="dt-created-at">-</span></div>
+        </div>
+
+        <!-- Screenshot Preview Box -->
+        <div id="dt-screenshot-container" style="border-top:1px dashed rgba(255,255,255,0.1); padding-top:12px; margin-top:8px;">
+          <span style="color:var(--muted); font-size:0.78rem; font-weight:600; display:block; margin-bottom:8px;">Customer Payment Screenshot / Receipt:</span>
+          <div id="dt-screenshot-box" style="display:flex; align-items:center; gap:14px; background:#0e0d18; border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:10px;">
+            <img id="dt-screenshot-img" src="" style="max-height:110px; max-width:160px; border-radius:6px; object-fit:contain; cursor:pointer;" onclick="viewProofModal(this.src)" title="Click to view full size">
+            <div>
+              <div style="font-size:0.82rem; font-weight:600; color:#fff; margin-bottom:4px;">Receipt Image Attached</div>
+              <div style="font-size:0.74rem; color:var(--muted); margin-bottom:8px;">Click to view full-resolution screenshot</div>
+              <button class="btn-sm btn-amber" onclick="viewProofModal(document.getElementById('dt-screenshot-img').src)">Enlarge Screenshot</button>
+            </div>
+          </div>
+          <div id="dt-no-screenshot" style="display:none; color:var(--muted); font-size:0.8rem; font-style:italic;">No screenshot uploaded by customer.</div>
+        </div>
+      </div>
+
+      <!-- Provisioned Server Details (if already approved) -->
+      <div id="dt-server-details-box" style="display:none; background:rgba(34,197,94,0.06); border:1px solid rgba(34,197,94,0.3); border-radius:10px; padding:14px; margin-bottom:14px;">
+        <div style="font-size:0.75rem; text-transform:uppercase; color:#22c55e; font-weight:700; margin-bottom:8px; letter-spacing:0.04em;">✓ Provisioned Server Credentials</div>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:8px; font-family:'DM Mono',monospace; font-size:0.82rem;">
+          <div><span style="color:var(--muted);">IP:</span> <strong style="color:#38bdf8;" id="dt-srv-ip">-</strong></div>
+          <div><span style="color:var(--muted);">Port:</span> <strong style="color:#fff;" id="dt-srv-port">-</strong></div>
+          <div><span style="color:var(--muted);">User:</span> <strong style="color:#fff;" id="dt-srv-user">-</strong></div>
+          <div><span style="color:var(--muted);">Password:</span> <strong style="color:#34d399;" id="dt-srv-pass">-</strong></div>
+        </div>
+      </div>
+
+      <!-- Action Footer -->
+      <div style="display:flex; justify-content:space-between; align-items:center; padding-top:12px; border-top:1px solid rgba(255,255,255,0.08);" id="dt-action-bar">
+        <button class="btn-cancel" onclick="closeDetailModal()">Close</button>
+        <div style="display:flex; gap:8px;" id="dt-action-buttons">
+          <button class="btn-sm btn-danger" id="dt-btn-reject" onclick="rejectFromDetailModal()">Reject</button>
+          <button class="btn-sm btn-emerald" id="dt-btn-approve" onclick="approveFromDetailModal()">Approve & Deliver Server</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- APPROVE ORDER MODAL -->
   <div class="modal-overlay" id="approve-modal">
     <div class="modal-box">
@@ -495,12 +570,13 @@
                   </td>
                   <td>${proofHtml}</td>
                   <td>${statusBadge}</td>
-                  <td style="display:flex; gap:6px; flex-wrap:wrap;">
+                  <td style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+                    <button class="btn-sm btn-add" style="background:#1e1b4b; border-color:#6366f1; color:#a5b4fc; font-size:0.75rem;" onclick="openDetailModal('${o.id}')">See Details</button>
                     ${o.status === 'pending_approval' || o.status === 'pending_payment' ? `
-                      <button class="btn-sm btn-emerald" onclick="openApproveModal('${o.id}')">Approve & Deliver</button>
+                      <button class="btn-sm btn-emerald" onclick="openApproveModal('${o.id}')">Approve</button>
                       <button class="btn-sm btn-danger" onclick="rejectOrder('${o.id}')">Reject</button>
                     ` : o.status === 'approved' ? `
-                      <span style="font-size:0.75rem; color:#22c55e; font-weight:600;">✓ In Client Panel</span>
+                      <span style="font-size:0.75rem; color:#22c55e; font-weight:600;">✓ Delivered</span>
                     ` : `<span style="font-size:0.75rem; color:var(--muted);">Closed</span>`}
                   </td>
                 </tr>`;
@@ -508,6 +584,89 @@
             </tbody>
           </table>
         </div>`;
+    }
+
+    /* ── Order Full Details Modal ───────────────────────────────────────────── */
+    let currentDetailOrderId = null;
+
+    async function openDetailModal(orderId) {
+      currentDetailOrderId = orderId;
+      const res = await fetch(`/api/orders/${orderId}`);
+      const json = await res.json();
+      if (!json.success || !json.data) return alert('Order not found');
+
+      const o = json.data;
+      document.getElementById('dt-order-id').textContent = `#${o.id}`;
+      
+      let badgeHtml = `<span class="badge" style="background:rgba(245,158,11,0.15);color:#f59e0b;">Pending Approval</span>`;
+      if (o.status === 'approved') badgeHtml = `<span class="badge" style="background:rgba(34,197,94,0.15);color:#22c55e;">Done · Delivered</span>`;
+      else if (o.status === 'rejected') badgeHtml = `<span class="badge" style="background:rgba(239,68,68,0.15);color:#ef4444;">Rejected</span>`;
+      else if (o.status === 'pending_payment') badgeHtml = `<span class="badge" style="background:rgba(156,163,175,0.15);color:#9ca3af;">Awaiting Payment</span>`;
+      document.getElementById('dt-order-status-badge').innerHTML = badgeHtml;
+
+      document.getElementById('dt-cust-name').textContent = o.customer_name || 'Client';
+      document.getElementById('dt-cust-email').textContent = o.customer_email || '-';
+      document.getElementById('dt-cust-phone').textContent = o.customer_phone || 'None provided';
+
+      document.getElementById('dt-plan-name').textContent = o.plan_name || 'Cloud Plan';
+      document.getElementById('dt-specs').textContent = `${o.specs?.cpu || 2} vCPU · ${o.specs?.ram || 4}GB RAM · ${o.specs?.disk || 40}GB NVMe · ${o.specs?.os || 'Ubuntu 24.04'}`;
+      document.getElementById('dt-region').textContent = o.specs?.region || 'India (Mumbai Tier-4)';
+
+      document.getElementById('dt-amount').textContent = `₹${o.amount.toLocaleString('en-IN')}`;
+      document.getElementById('dt-sender-upi').textContent = o.sender_upi_id || 'Not specified';
+      document.getElementById('dt-utr').textContent = o.utr_number || 'Awaiting UTR';
+      document.getElementById('dt-created-at').textContent = new Date(o.created_at).toLocaleString();
+
+      // Screenshot preview
+      const proofSrc = o.screenshot_url || o.screenshot_data;
+      const sBox = document.getElementById('dt-screenshot-box');
+      const sNone = document.getElementById('dt-no-screenshot');
+      const sImg = document.getElementById('dt-screenshot-img');
+
+      if (proofSrc) {
+        sImg.src = proofSrc;
+        sBox.style.display = 'flex';
+        sNone.style.display = 'none';
+      } else {
+        sBox.style.display = 'none';
+        sNone.style.display = 'block';
+      }
+
+      // Provisioned Server Details Box
+      const srvBox = document.getElementById('dt-server-details-box');
+      if (o.status === 'approved' && o.server_details) {
+        document.getElementById('dt-srv-ip').textContent = o.server_details.ip || '-';
+        document.getElementById('dt-srv-port').textContent = o.server_details.port || '22';
+        document.getElementById('dt-srv-user').textContent = o.server_details.username || 'root';
+        document.getElementById('dt-srv-pass').textContent = o.server_details.password || '-';
+        srvBox.style.display = 'block';
+      } else {
+        srvBox.style.display = 'none';
+      }
+
+      // Action buttons
+      const actButtons = document.getElementById('dt-action-buttons');
+      if (o.status === 'pending_approval' || o.status === 'pending_payment') {
+        actButtons.style.display = 'flex';
+      } else {
+        actButtons.style.display = 'none';
+      }
+
+      document.getElementById('order-detail-modal').classList.add('open');
+    }
+
+    function closeDetailModal() {
+      document.getElementById('order-detail-modal').classList.remove('open');
+    }
+
+    function approveFromDetailModal() {
+      closeDetailModal();
+      if (currentDetailOrderId) openApproveModal(currentDetailOrderId);
+    }
+
+    function rejectFromDetailModal() {
+      closeDetailModal();
+      if (currentDetailOrderId) rejectOrder(currentDetailOrderId);
     }
 
     /* ── Proof Lightbox Modal ────────────────────────────────────────────────── */

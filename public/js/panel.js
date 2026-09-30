@@ -960,6 +960,63 @@ function escapeHtml(str) {
 /* ── Manual Order Tracking & Live Approval Listener ───────────────────────── */
 let orderPollInterval = null;
 const injectedOrderIds = new Set();
+const seenOrderStates = new Map();
+
+function showTopRightPopup(type, order) {
+  const container = document.getElementById('top-right-toast-container');
+  if (!container) return;
+
+  const toast = document.createElement('div');
+  toast.className = `order-popup-toast ${type}`;
+  
+  if (type === 'approved') {
+    toast.innerHTML = `
+      <div style="width:36px; height:36px; border-radius:50%; background:rgba(34,197,94,0.18); border:1px solid rgba(34,197,94,0.4); display:flex; align-items:center; justify-content:center; color:#22c55e; flex-shrink:0;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <div style="flex:1;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+          <strong style="color:#22c55e; font-size:0.88rem;">Order #${escapeHtml(order.id)} Approved!</strong>
+          <span style="font-size:0.7rem; color:var(--text-muted); font-family:'DM Mono',monospace;">Just now</span>
+        </div>
+        <div style="font-size:0.78rem; color:var(--text-secondary); line-height:1.4; margin-bottom:10px;">
+          Your <strong>${escapeHtml(order.plan_name)}</strong> instance has been provisioned and added to your dashboard.
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button class="btn-restore-pill" style="background:#22c55e; color:#051a0e; font-weight:700; font-size:0.72rem; padding:4px 10px; border:none;" onclick="navigateToView('${order.service_type === 'minecraft' ? 'mc-list' : 'vps-list'}'); this.closest('.order-popup-toast').remove();">Manage Server &rarr;</button>
+          <button class="btn-restore-pill" style="font-size:0.72rem; padding:4px 8px; color:var(--text-muted);" onclick="this.closest('.order-popup-toast').remove()">Dismiss</button>
+        </div>
+      </div>
+      <button style="background:transparent; border:none; color:var(--text-muted); cursor:pointer; padding:2px;" onclick="this.closest('.order-popup-toast').remove()">✕</button>
+    `;
+  } else if (type === 'rejected') {
+    toast.innerHTML = `
+      <div style="width:36px; height:36px; border-radius:50%; background:rgba(239,68,68,0.18); border:1px solid rgba(239,68,68,0.4); display:flex; align-items:center; justify-content:center; color:#ef4444; flex-shrink:0;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </div>
+      <div style="flex:1;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+          <strong style="color:#ef4444; font-size:0.88rem;">Order #${escapeHtml(order.id)} Declined</strong>
+          <span style="font-size:0.7rem; color:var(--text-muted); font-family:'DM Mono',monospace;">Just now</span>
+        </div>
+        <div style="font-size:0.78rem; color:var(--text-secondary); line-height:1.4; margin-bottom:6px;">
+          Payment verification failed: <span style="color:#fff;">${escapeHtml(order.rejection_reason || 'UTR could not be verified in bank records')}</span>
+        </div>
+      </div>
+      <button style="background:transparent; border:none; color:var(--text-muted); cursor:pointer; padding:2px;" onclick="this.closest('.order-popup-toast').remove()">✕</button>
+    `;
+  }
+
+  container.appendChild(toast);
+
+  // Auto remove after 10 seconds
+  setTimeout(() => {
+    if (toast.parentNode) {
+      toast.style.animation = 'toastSlideOut 0.3s ease forwards';
+      setTimeout(() => toast.remove(), 300);
+    }
+  }, 10000);
+}
 
 function injectApprovedServiceToDashboard(o) {
   if (!o || !o.server_details || injectedOrderIds.has(o.id)) return;
@@ -1084,6 +1141,20 @@ async function initPendingOrdersTracker() {
       }
 
       const orders = json.data;
+
+      // Check for real-time status transitions to trigger top-right popup
+      orders.forEach(o => {
+        const prevStatus = seenOrderStates.get(o.id);
+        if (prevStatus && prevStatus !== o.status) {
+          if (o.status === 'approved') {
+            showTopRightPopup('approved', o);
+          } else if (o.status === 'rejected') {
+            showTopRightPopup('rejected', o);
+          }
+        }
+        seenOrderStates.set(o.id, o.status);
+      });
+
       const pendingOrders = orders.filter(o => o.status === 'pending_approval' || o.status === 'pending_payment');
       const approvedOrders = orders.filter(o => o.status === 'approved' && o.server_details);
 
