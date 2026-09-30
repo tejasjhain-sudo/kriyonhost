@@ -396,7 +396,9 @@ const BOT_PLANS = [
   {
     id: 'bot-beginner',
     name: 'Beginner',
-    price: 30,
+    price: 49,
+    wholesaleCost: 30,
+    margin: 19,
     period: 'mo',
     billing: 'Billed monthly',
     description: 'Perfect for new developers — host small Discord or Telegram bots with ease.',
@@ -425,7 +427,9 @@ const BOT_PLANS = [
   {
     id: 'bot-developer',
     name: 'Developer',
-    price: 85,
+    price: 119,
+    wholesaleCost: 85,
+    margin: 34,
     period: 'month',
     billing: 'Billed monthly',
     description: 'Great for active bots handling moderate commands or growing user bases.',
@@ -457,7 +461,9 @@ const BOT_PLANS = [
   {
     id: 'bot-enterprise',
     name: 'Enterprise',
-    price: 150,
+    price: 189,
+    wholesaleCost: 150,
+    margin: 39,
     period: 'mo',
     billing: 'Billed monthly',
     description: 'High-performance plan for large-scale bots, APIs, or production workloads.',
