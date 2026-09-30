@@ -721,7 +721,7 @@ app.post('/api/orders/create', async (req, res) => {
 
 app.post('/api/orders/:id/pay', async (req, res) => {
   try {
-    const { utr_number, sender_upi_id, screenshot_url, screenshot_data, note } = req.body;
+    const { utr_number, sender_upi_id, screenshot_url, screenshot_data, note, order_backup } = req.body;
     if (!utr_number || String(utr_number).trim().length < 4) {
       return res.status(400).json({ success: false, error: 'Please enter a valid 12-digit UPI reference / UTR number' });
     }
@@ -731,7 +731,8 @@ app.post('/api/orders/:id/pay', async (req, res) => {
       sender_upi_id,
       screenshot_url,
       screenshot_data,
-      note
+      note,
+      order_backup
     });
 
     if (!result.success) {

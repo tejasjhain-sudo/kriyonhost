@@ -234,6 +234,7 @@ class OrderService {
     order.screenshot_data = screenshotData || null;
     order.payment_submitted_at = new Date().toISOString();
     order.status = 'pending_approval';
+    order.rejection_reason = null;
     if (note) order.customer_note = note;
 
     await this.save();
