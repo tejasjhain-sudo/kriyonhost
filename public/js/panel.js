@@ -664,8 +664,6 @@ function renderClaimedAiKey(key) {
     input.value = key;
     input.type = isAiKeyRevealed ? 'text' : 'password';
   }
-
-  updateAiCurlSnippet(key);
 }
 
 function renderUnclaimedAiKey() {
@@ -686,7 +684,6 @@ function renderUnclaimedAiKey() {
     btn.disabled = false;
     btn.textContent = 'Create API Key';
   }
-  updateAiCurlSnippet('<YOUR_API_KEY>');
 }
 
 function toggleAiKeyVisibility() {
@@ -708,29 +705,6 @@ function copyAiKey() {
   }
   navigator.clipboard.writeText(currentAiKey);
   showVpsToast('ColideLabs API key copied to clipboard');
-}
-
-function updateAiCurlSnippet(key) {
-  const snippet = document.getElementById('ai-curl-snippet');
-  if (snippet) {
-    snippet.textContent = `curl https://api.colidelabs.com/v1/chat/completions \\
-  -H "Content-Type: application/json" \\
-  -H "Authorization: Bearer ${key}" \\
-  -d '{
-    "model": "colide-pro",
-    "messages": [
-      {"role": "user", "content": "Hello Colide Pro"}
-    ]
-  }'`;
-  }
-}
-
-function copyAiCurlCode() {
-  const snippet = document.getElementById('ai-curl-snippet');
-  if (snippet) {
-    navigator.clipboard.writeText(snippet.textContent);
-    showVpsToast('cURL example copied to clipboard');
-  }
 }
 
 document.addEventListener('DOMContentLoaded', initPanel);
