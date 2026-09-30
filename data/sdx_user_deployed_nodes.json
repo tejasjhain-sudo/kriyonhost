@@ -1,1 +1,16 @@
-{}
+{
+  "trial-iabe": {
+    "id": "trial-iabe",
+    "name": "Free Trial Node #IABE",
+    "region": "in-north-1",
+    "location": "India",
+    "baseUrl": "https://in-north-1.shulker.in/",
+    "key": "sdx-xwy8mgOo2Z6oZBPU4GZnBaozqsWdYvghAvN1x4jKxqzLQsGImVHYRl5aYNynRq48lP3BRAoFhwQVH060cBKHxjwucd6Xp9Hx",
+    "bucket": "3_node_4f23b526",
+    "createdDate": "Sep 30, 2026",
+    "maxQuotaGb": 5,
+    "isTrial": true,
+    "expiresAt": 1790784189354,
+    "user": "DevUser"
+  }
+}

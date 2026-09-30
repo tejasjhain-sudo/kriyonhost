@@ -172,9 +172,28 @@ function deleteDeployedNode(nodeId) {
   return { success: false, error: 'Node not found or already deleted' };
 }
 
-function getNode(nodeId) {
+function getNode(identifier) {
   loadUserNodes();
-  return USER_DEPLOYED_NODES[nodeId] || MASTER_SDX_POOL[nodeId] || MASTER_SDX_POOL['node-1'];
+  if (!identifier) return MASTER_SDX_POOL['node-1'];
+
+  // Direct match by ID in user deployed nodes
+  if (USER_DEPLOYED_NODES[identifier]) return USER_DEPLOYED_NODES[identifier];
+  // Direct match by ID in master pool
+  if (MASTER_SDX_POOL[identifier]) return MASTER_SDX_POOL[identifier];
+
+  const cleanIdent = String(identifier).trim();
+
+  // Match by API Key across user deployed nodes
+  const userNodes = Object.values(USER_DEPLOYED_NODES);
+  const matchedUserNode = userNodes.find(n => n.key && n.key.trim() === cleanIdent);
+  if (matchedUserNode) return matchedUserNode;
+
+  // Match by API Key across master pool
+  const masterNodes = Object.values(MASTER_SDX_POOL);
+  const matchedMasterNode = masterNodes.find(n => n.key && n.key.trim() === cleanIdent);
+  if (matchedMasterNode) return matchedMasterNode;
+
+  return MASTER_SDX_POOL['node-1'];
 }
 
 const DEFAULT_NODE_ID = 'node-1';

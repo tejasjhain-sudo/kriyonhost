@@ -11,3 +11,6 @@ fix_index.js
 replace_caps.js
 update_index.js
 update_mc.js
+
+# Storage uploads
+data/sdx_storage/

@@ -678,16 +678,39 @@ app.delete('/api/storage/delete-trial', (req, res) => {
   res.json(result);
 });
 
+function resolveStorageNode(req) {
+  const authHeader = req.headers['authorization'];
+  let bearerKey = '';
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    bearerKey = authHeader.substring(7).trim();
+  } else if (authHeader) {
+    bearerKey = authHeader.trim();
+  }
+
+  const apiKey = req.headers['x-api-key'] || req.query.key || (req.body && req.body.key) || bearerKey;
+  const requestedNode = req.query.node || req.query.node_id || (req.body && (req.body.node || req.body.node_id));
+
+  if (apiKey) {
+    const matched = storage.getNode(apiKey);
+    if (matched) return matched.id;
+  }
+  if (requestedNode) {
+    const matched = storage.getNode(requestedNode);
+    if (matched) return matched.id;
+  }
+  return storage.DEFAULT_NODE_ID;
+}
+
 app.get('/api/storage/account-info', (req, res) => {
   storage.incrementRequestCount();
-  const nodeId = req.query.node || req.query.node_id || storage.DEFAULT_NODE_ID;
+  const nodeId = resolveStorageNode(req);
   const usage = storage.calculateNodeUsage(nodeId);
   res.json({ success: true, ...usage });
 });
 
 app.get('/api/storage/list-contents', (req, res) => {
   storage.incrementRequestCount();
-  const nodeId = req.query.node || req.query.node_id || storage.DEFAULT_NODE_ID;
+  const nodeId = resolveStorageNode(req);
   const targetPath = req.query.path || '/';
   const result = storage.listContents(nodeId, targetPath);
   res.json(result);
@@ -695,7 +718,7 @@ app.get('/api/storage/list-contents', (req, res) => {
 
 app.post('/api/storage/create-folder', (req, res) => {
   storage.incrementRequestCount();
-  const nodeId = req.query.node || req.body.node || storage.DEFAULT_NODE_ID;
+  const nodeId = resolveStorageNode(req);
   const folderName = req.body.folderName || req.body.name || req.body.folder_name;
   const targetPath = req.query.path || req.body.path || '/';
   const result = storage.createFolder(nodeId, folderName, targetPath);
@@ -704,7 +727,7 @@ app.post('/api/storage/create-folder', (req, res) => {
 
 app.post('/api/storage/rename', (req, res) => {
   storage.incrementRequestCount();
-  const nodeId = req.query.node || req.body.node || storage.DEFAULT_NODE_ID;
+  const nodeId = resolveStorageNode(req);
   const oldPath = req.body.oldPath || req.body.path;
   const newName = req.body.newName || req.body.name;
   const result = storage.renameItem(nodeId, oldPath, newName);
@@ -713,7 +736,7 @@ app.post('/api/storage/rename', (req, res) => {
 
 app.post('/api/storage/move', (req, res) => {
   storage.incrementRequestCount();
-  const nodeId = req.query.node || req.body.node || storage.DEFAULT_NODE_ID;
+  const nodeId = resolveStorageNode(req);
   const sourcePath = req.body.sourcePath || req.body.path;
   const targetDir = req.body.targetDir || req.body.targetPath || '/';
   const result = storage.moveItem(nodeId, sourcePath, targetDir);
@@ -722,7 +745,7 @@ app.post('/api/storage/move', (req, res) => {
 
 app.delete('/api/storage/delete', (req, res) => {
   storage.incrementRequestCount();
-  const nodeId = req.query.node || req.body.node || storage.DEFAULT_NODE_ID;
+  const nodeId = resolveStorageNode(req);
   const targetPath = req.query.path || req.body.path;
   const result = storage.deleteItem(nodeId, targetPath);
   res.json(result);
@@ -730,7 +753,7 @@ app.delete('/api/storage/delete', (req, res) => {
 
 app.post('/api/storage/delete', (req, res) => {
   storage.incrementRequestCount();
-  const nodeId = req.query.node || req.body.node || storage.DEFAULT_NODE_ID;
+  const nodeId = resolveStorageNode(req);
   const targetPath = req.body.path || req.query.path;
   const result = storage.deleteItem(nodeId, targetPath);
   res.json(result);
@@ -738,7 +761,7 @@ app.post('/api/storage/delete', (req, res) => {
 
 app.get('/api/storage/read-file', (req, res) => {
   storage.incrementRequestCount();
-  const nodeId = req.query.node || storage.DEFAULT_NODE_ID;
+  const nodeId = resolveStorageNode(req);
   const targetPath = req.query.path;
   const result = storage.readFileContent(nodeId, targetPath);
   if (!result.success) {
@@ -749,7 +772,7 @@ app.get('/api/storage/read-file', (req, res) => {
 
 app.post('/api/storage/save-file', (req, res) => {
   storage.incrementRequestCount();
-  const nodeId = req.query.node || req.body.node || storage.DEFAULT_NODE_ID;
+  const nodeId = resolveStorageNode(req);
   const targetPath = req.body.path || req.query.path;
   const content = req.body.content !== undefined ? req.body.content : '';
   const result = storage.saveFileContent(nodeId, targetPath, content);
@@ -758,7 +781,7 @@ app.post('/api/storage/save-file', (req, res) => {
 
 app.get('/api/storage/download', (req, res) => {
   storage.incrementRequestCount();
-  const nodeId = req.query.node || storage.DEFAULT_NODE_ID;
+  const nodeId = resolveStorageNode(req);
   const targetPath = req.query.path;
   const fileObj = storage.getFileForDownload(nodeId, targetPath);
   if (!fileObj) {
@@ -772,7 +795,7 @@ app.get('/api/storage/download', (req, res) => {
 // Chunked Upload Endpoints
 app.post('/api/storage/upload-init', (req, res) => {
   storage.incrementRequestCount();
-  const nodeId = req.query.node || req.body.node || storage.DEFAULT_NODE_ID;
+  const nodeId = resolveStorageNode(req);
   const { fileName, fileSize, totalChunks, mimeType } = req.body;
   const targetPath = req.query.path || req.body.path || '/';
   const result = storage.initUpload(nodeId, fileName, fileSize, totalChunks, mimeType, targetPath);
@@ -803,41 +826,57 @@ app.post('/api/storage/upload-complete', (req, res) => {
 
 app.post('/api/storage/upload-direct', (req, res) => {
   storage.incrementRequestCount();
-  const nodeId = req.query.node || req.body.node || storage.DEFAULT_NODE_ID;
+  const nodeId = resolveStorageNode(req);
   const targetPath = req.query.path || req.body.path || '/';
-  const { name, base64 } = req.body;
-  if (!name) {
+  const { name, base64, content } = req.body;
+  const fileName = name || req.query.name || req.headers['x-file-name'];
+  if (!fileName) {
     return res.status(400).json({ success: false, error: 'File name is required' });
   }
-  const fileBuffer = base64 ? Buffer.from(base64, 'base64') : Buffer.from('');
-  const result = storage.saveDirectFile(nodeId, name, fileBuffer, targetPath);
+  let fileBuffer = Buffer.from('');
+  if (base64) {
+    fileBuffer = Buffer.from(base64, 'base64');
+  } else if (content !== undefined) {
+    fileBuffer = Buffer.from(content, 'utf8');
+  }
+  const result = storage.saveDirectFile(nodeId, fileName, fileBuffer, targetPath);
   res.json(result);
 });
 
 // Legacy Aliases for backward compatibility
 app.get('/api/v1/storage/overview', (req, res) => {
   storage.incrementRequestCount();
-  const usage = storage.calculateNodeUsage('node-1');
+  const nodeId = resolveStorageNode(req);
+  const usage = storage.calculateNodeUsage(nodeId);
   res.json({ success: true, ...usage });
 });
 
 app.get('/api/v1/storage/files', (req, res) => {
   storage.incrementRequestCount();
-  const result = storage.listContents('node-1', '/');
+  const nodeId = resolveStorageNode(req);
+  const result = storage.listContents(nodeId, '/');
   res.json({ success: true, files: result.items });
 });
 
 app.post('/api/v1/storage/upload', (req, res) => {
   storage.incrementRequestCount();
-  const { name, base64 } = req.body;
-  const buffer = base64 ? Buffer.from(base64, 'base64') : Buffer.from('');
-  const result = storage.saveDirectFile('node-1', name || 'file.bin', buffer, '/');
+  const nodeId = resolveStorageNode(req);
+  const { name, base64, content } = req.body;
+  const fileName = name || 'file.bin';
+  let buffer = Buffer.from('');
+  if (base64) {
+    buffer = Buffer.from(base64, 'base64');
+  } else if (content !== undefined) {
+    buffer = Buffer.from(content, 'utf8');
+  }
+  const result = storage.saveDirectFile(nodeId, fileName, buffer, '/');
   res.json({ success: true, message: 'Uploaded successfully', object: result });
 });
 
 app.get('/api/v1/storage/files/:filename', (req, res) => {
   storage.incrementRequestCount();
-  const fileObj = storage.getFileForDownload('node-1', '/' + req.params.filename);
+  const nodeId = resolveStorageNode(req);
+  const fileObj = storage.getFileForDownload(nodeId, '/' + req.params.filename);
   if (!fileObj) {
     return res.status(404).json({ success: false, error: 'File not found' });
   }
@@ -847,7 +886,8 @@ app.get('/api/v1/storage/files/:filename', (req, res) => {
 
 app.delete('/api/v1/storage/files/:filename', (req, res) => {
   storage.incrementRequestCount();
-  const result = storage.deleteItem('node-1', '/' + req.params.filename);
+  const nodeId = resolveStorageNode(req);
+  const result = storage.deleteItem(nodeId, '/' + req.params.filename);
   res.json(result);
 });
 
