@@ -112,12 +112,12 @@ function navigateToView(viewName) {
   const viewDash = document.getElementById('view-dashboard');
   const viewVps = document.getElementById('view-vps');
   const viewMc = document.getElementById('view-minecraft');
-  const viewShare = document.getElementById('view-share');
+  const viewAi = document.getElementById('view-ai');
 
   if (viewDash) viewDash.style.display = 'none';
   if (viewVps) viewVps.style.display = 'none';
   if (viewMc) viewMc.style.display = 'none';
-  if (viewShare) viewShare.style.display = 'none';
+  if (viewAi) viewAi.style.display = 'none';
 
   document.querySelectorAll('.subnav-link-item').forEach(link => link.classList.remove('active'));
 
@@ -144,10 +144,11 @@ function navigateToView(viewName) {
       if (mcActive) mcActive.style.display = 'none';
       if (mcEmpty) mcEmpty.style.display = 'block';
     }
-  } else if (viewName === 'share') {
-    if (viewShare) viewShare.style.display = 'block';
-    const link = document.getElementById('nav-share');
+  } else if (viewName === 'ai') {
+    if (viewAi) viewAi.style.display = 'block';
+    const link = document.getElementById('nav-ai');
     if (link) link.classList.add('active');
+    loadAiKeyStatus();
   }
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -559,6 +560,176 @@ function showVpsToast(msg) {
     text.textContent = msg;
     toast.classList.add('visible');
     setTimeout(() => toast.classList.remove('visible'), 3000);
+  }
+}
+
+/* ── AI Studio Controller (ColideLabs Gateway) ────────────────────────────── */
+let currentAiKey = '';
+let isAiKeyRevealed = false;
+
+function getActiveUserIdentifier() {
+  const uDisp = document.getElementById('u-display-name');
+  if (uDisp && uDisp.textContent.trim()) {
+    return uDisp.textContent.trim().toLowerCase();
+  }
+  let localId = localStorage.getItem('colidelabs_user_id');
+  if (!localId) {
+    localId = 'usr_' + Math.random().toString(36).substring(2, 10);
+    localStorage.setItem('colidelabs_user_id', localId);
+  }
+  return localId;
+}
+
+async function loadAiKeyStatus() {
+  const userId = getActiveUserIdentifier();
+  try {
+    const res = await fetch(`/api/ai/key?user=${encodeURIComponent(userId)}`);
+    const data = await res.json();
+    if (data.success && data.hasKey && data.data) {
+      renderClaimedAiKey(data.data.key);
+    } else {
+      // Check localStorage cached key
+      const localCached = localStorage.getItem(`colide_key_${userId}`);
+      if (localCached) {
+        renderClaimedAiKey(localCached);
+      } else {
+        renderUnclaimedAiKey();
+      }
+    }
+  } catch (err) {
+    console.warn('AI key status fetch:', err);
+    const localCached = localStorage.getItem(`colide_key_${userId}`);
+    if (localCached) {
+      renderClaimedAiKey(localCached);
+    } else {
+      renderUnclaimedAiKey();
+    }
+  }
+}
+
+async function generateAiKey() {
+  const userId = getActiveUserIdentifier();
+  const btn = document.getElementById('btn-generate-ai-key');
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = 'Generating Key...';
+  }
+
+  try {
+    const res = await fetch('/api/ai/key/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user: userId })
+    });
+    const data = await res.json();
+
+    if (data.success && data.data) {
+      const key = data.data.key;
+      localStorage.setItem(`colide_key_${userId}`, key);
+      renderClaimedAiKey(key);
+      showVpsToast('ColideLabs AI Key created! 800 req/day quota activated.');
+    } else {
+      showVpsToast(data.error || 'Unable to generate API key. Quota full.');
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = 'Create API Key';
+      }
+    }
+  } catch (err) {
+    console.error('Key generation error:', err);
+    showVpsToast('Connection error generating key. Please try again.');
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = 'Create API Key';
+    }
+  }
+}
+
+function renderClaimedAiKey(key) {
+  currentAiKey = key;
+  const unclaimed = document.getElementById('ai-key-unclaimed-view');
+  const claimed = document.getElementById('ai-key-claimed-view');
+  const input = document.getElementById('ai-key-display-input');
+  const tag = document.getElementById('ai-key-status-tag');
+
+  if (unclaimed) unclaimed.style.display = 'none';
+  if (claimed) claimed.style.display = 'block';
+  if (tag) {
+    tag.textContent = 'ACTIVE (1 KEY PER CUSTOMER)';
+    tag.style.color = 'var(--color-emerald-text)';
+    tag.style.borderColor = 'var(--color-emerald-border)';
+  }
+
+  if (input) {
+    input.value = key;
+    input.type = isAiKeyRevealed ? 'text' : 'password';
+  }
+
+  updateAiCurlSnippet(key);
+}
+
+function renderUnclaimedAiKey() {
+  currentAiKey = '';
+  const unclaimed = document.getElementById('ai-key-unclaimed-view');
+  const claimed = document.getElementById('ai-key-claimed-view');
+  const tag = document.getElementById('ai-key-status-tag');
+  const btn = document.getElementById('btn-generate-ai-key');
+
+  if (unclaimed) unclaimed.style.display = 'block';
+  if (claimed) claimed.style.display = 'none';
+  if (tag) {
+    tag.textContent = '1 KEY PER CUSTOMER';
+    tag.style.color = 'var(--text-muted)';
+    tag.style.borderColor = 'var(--border-subtle)';
+  }
+  if (btn) {
+    btn.disabled = false;
+    btn.textContent = 'Create API Key';
+  }
+  updateAiCurlSnippet('<YOUR_API_KEY>');
+}
+
+function toggleAiKeyVisibility() {
+  isAiKeyRevealed = !isAiKeyRevealed;
+  const input = document.getElementById('ai-key-display-input');
+  const label = document.getElementById('ai-key-mask-label');
+  if (input) {
+    input.type = isAiKeyRevealed ? 'text' : 'password';
+  }
+  if (label) {
+    label.textContent = isAiKeyRevealed ? 'Hide' : 'Reveal';
+  }
+}
+
+function copyAiKey() {
+  if (!currentAiKey) {
+    showVpsToast('No active API key to copy');
+    return;
+  }
+  navigator.clipboard.writeText(currentAiKey);
+  showVpsToast('ColideLabs API key copied to clipboard');
+}
+
+function updateAiCurlSnippet(key) {
+  const snippet = document.getElementById('ai-curl-snippet');
+  if (snippet) {
+    snippet.textContent = `curl https://api.colidelabs.com/v1/chat/completions \\
+  -H "Content-Type: application/json" \\
+  -H "Authorization: Bearer ${key}" \\
+  -d '{
+    "model": "colide-pro",
+    "messages": [
+      {"role": "user", "content": "Hello Colide Pro"}
+    ]
+  }'`;
+  }
+}
+
+function copyAiCurlCode() {
+  const snippet = document.getElementById('ai-curl-snippet');
+  if (snippet) {
+    navigator.clipboard.writeText(snippet.textContent);
+    showVpsToast('cURL example copied to clipboard');
   }
 }
 

@@ -848,7 +848,7 @@
       </div>
     </div>
 
-    <!-- Horizontal Navigation Tabs (Like Reference Image) -->
+    <!-- Horizontal Navigation Tabs -->
     <nav class="top-subnav-strip">
       <a class="subnav-link-item active" id="nav-dash" onclick="navigateToView('dashboard')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
@@ -862,13 +862,9 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
         Minecraft Servers
       </a>
-      <a class="subnav-link-item" id="nav-share" onclick="navigateToView('share')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>
-        Teams
-      </a>
-      <a class="subnav-link-item" href="https://discord.gg/kt9yPDwYT4" target="_blank">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        Supervisor
+      <a class="subnav-link-item" id="nav-ai" onclick="navigateToView('ai')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+        AI Studio
       </a>
       <a class="subnav-link-item" onclick="showVpsToast('No recent security audit anomalies detected')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
@@ -877,10 +873,6 @@
       <a class="subnav-link-item" href="/#configurator-section">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
         Orders
-      </a>
-      <a class="subnav-link-item" href="/minecraft">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
-        Stores
       </a>
     </nav>
   </header>
@@ -1516,20 +1508,204 @@ root@srv-7f3a9c2e:~# </div>
     </section>
 
     <!-- ══════════════════════════════════════════════════════════════════════
-         VIEW 4: MULTIPLAYER SHARE
+         VIEW 4: AI STUDIO (COLIDELABS AI GATEWAY)
          ══════════════════════════════════════════════════════════════════════ -->
-    <section id="view-share" style="display:none;">
-      <div class="breadcrumb-row" style="margin-bottom:20px;">
+    <section id="view-ai" style="display:none;">
+      
+      <!-- Top Breadcrumb & Hero Header -->
+      <div class="breadcrumb-row" style="margin-bottom:18px;">
         <a onclick="navigateToView('dashboard')">Deployments</a>
         <span>&rsaquo;</span>
-        <strong>Teams</strong>
+        <strong>AI Studio</strong>
       </div>
 
-      <div class="clean-box-card" style="padding:24px;">
-        <div style="font-size:1.1rem; font-weight:700; margin-bottom:4px;">Team Sub-User Management</div>
-        <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:20px;">Invite co-administrators to help manage your server nodes.</div>
-        <button class="btn-primary-deploy" style="padding:7px 16px; font-size:0.78rem;" onclick="showVpsToast('Invite link generated and copied!')">+ Add Sub-User</button>
+      <div class="hero-instance-header" style="margin-bottom:24px;">
+        <div>
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:4px;">
+            <span class="hero-instance-title">AI Studio</span>
+            <span class="status-badge-live">
+              <span class="status-dot-solid"></span>
+              Free Tier Available
+            </span>
+          </div>
+          <div class="hero-instance-specs">
+            Access free high-performance AI models powered by ColideLabs AI Gateway.
+          </div>
+        </div>
       </div>
+
+      <!-- Free Tier Limits Notice Strip -->
+      <div class="clean-box-card" style="padding:18px 20px; margin-bottom:24px; background:var(--bg-surface); border-left:4px solid var(--color-brand-btn);">
+        <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:16px; flex-wrap:wrap;">
+          <div>
+            <div style="font-size:0.9rem; font-weight:700; color:var(--text-primary); margin-bottom:4px;">
+              Free Tier AI Access
+            </div>
+            <div style="font-size:0.82rem; color:var(--text-secondary); line-height:1.5;">
+              Your API key will be created with Free tier limits. You'll be able to make <strong>800 requests per day</strong> with a monthly token limit of <strong>25,000</strong>.
+            </div>
+          </div>
+          <div style="display:flex; gap:10px; align-items:center;">
+            <div style="font-size:0.72rem; padding:4px 10px; border-radius:6px; background:var(--bg-surface-elevated); border:1px solid var(--border-subtle); color:var(--text-muted); font-weight:600;">
+              Limit: 1 API Key per Account
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Columns Grid: Left (Model & Key), Right (Quickstart Integration & Metrics) -->
+      <div class="dash-columns-grid">
+        
+        <!-- Left Main Column -->
+        <div class="dash-main-column">
+          
+          <!-- AVAILABLE MODEL CARD -->
+          <div class="clean-box-card">
+            <div class="box-card-header">
+              <div class="box-card-title">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="12 8 8 12 12 16 16 12 12 8"/></svg>
+                AVAILABLE MODEL
+              </div>
+              <span class="plan-badge-pill" style="color:var(--color-emerald-text); border-color:var(--color-emerald-border);">PRODUCTION READY</span>
+            </div>
+            <div style="padding:22px;">
+              <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+                <div style="font-size:1.15rem; font-weight:800; color:var(--text-primary);">Colide Pro</div>
+                <div style="font-size:0.75rem; color:var(--text-muted); font-family:'JetBrains Mono', monospace;">model: colide-pro</div>
+              </div>
+              <div style="font-size:0.84rem; color:var(--text-secondary); line-height:1.6; margin-bottom:20px;">
+                Advanced AI model for complex reasoning, coding, analysis, and production workloads. Perfect for applications requiring high-quality outputs.
+              </div>
+
+              <!-- Model Specs Grid -->
+              <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:12px;">
+                <div style="background:var(--bg-surface-elevated); border:1px solid var(--border-subtle); border-radius:8px; padding:12px;">
+                  <div style="font-size:0.68rem; color:var(--text-muted); text-transform:uppercase; font-weight:600;">Daily Quota</div>
+                  <div style="font-size:0.95rem; font-weight:700; color:var(--text-primary); margin-top:2px;">800 Req / Day</div>
+                </div>
+                <div style="background:var(--bg-surface-elevated); border:1px solid var(--border-subtle); border-radius:8px; padding:12px;">
+                  <div style="font-size:0.68rem; color:var(--text-muted); text-transform:uppercase; font-weight:600;">Monthly Limit</div>
+                  <div style="font-size:0.95rem; font-weight:700; color:var(--text-primary); margin-top:2px;">25,000 Tokens</div>
+                </div>
+                <div style="background:var(--bg-surface-elevated); border:1px solid var(--border-subtle); border-radius:8px; padding:12px;">
+                  <div style="font-size:0.68rem; color:var(--text-muted); text-transform:uppercase; font-weight:600;">Max Context</div>
+                  <div style="font-size:0.95rem; font-weight:700; color:var(--text-primary); margin-top:2px;">128,000 Tokens</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CREATE / MANAGE API KEY CARD -->
+          <div class="clean-box-card">
+            <div class="box-card-header">
+              <div class="box-card-title">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-1.5 1.5L4 19l-2 3 3-2 13.5-13.5z"/><line x1="16" y1="5" x2="19" y2="8"/></svg>
+                ColideLabs AI Gateway API Key
+              </div>
+              <span id="ai-key-status-tag" class="plan-badge-pill">1 KEY PER CUSTOMER</span>
+            </div>
+            
+            <!-- State 1: Key Not Yet Created -->
+            <div id="ai-key-unclaimed-view" style="padding:24px; display:block;">
+              <div style="font-size:0.96rem; font-weight:700; color:var(--text-primary); margin-bottom:6px;">
+                Create API Key
+              </div>
+              <div style="font-size:0.82rem; color:var(--text-muted); line-height:1.5; margin-bottom:20px;">
+                Generate a new API key for ColideLabs AI Gateway. Your key is uniquely assigned to your account and grants instant access to Colide Pro.
+              </div>
+              <button class="btn-primary-deploy" id="btn-generate-ai-key" style="padding:9px 20px; font-size:0.82rem;" onclick="generateAiKey()">
+                Create API Key
+              </button>
+            </div>
+
+            <!-- State 2: Key Claimed & Active -->
+            <div id="ai-key-claimed-view" style="padding:24px; display:none;">
+              <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; flex-wrap:wrap; gap:8px;">
+                <div>
+                  <div style="font-size:0.9rem; font-weight:700; color:var(--text-primary);">Your Active API Key</div>
+                  <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">Use this secret key to authenticate your requests against the ColideLabs AI Gateway.</div>
+                </div>
+                <span class="status-badge-live">
+                  <span class="status-dot-solid"></span>
+                  Active
+                </span>
+              </div>
+
+              <!-- Key Input & Copy Bar -->
+              <div style="display:flex; gap:8px; margin-bottom:16px;">
+                <input type="password" id="ai-key-display-input" class="form-control-input" style="flex:1; font-family:'JetBrains Mono', monospace; font-size:0.8rem; background:var(--bg-surface-elevated);" readonly value="">
+                <button class="btn-restore-pill" onclick="toggleAiKeyVisibility()" id="btn-toggle-key-mask" title="Reveal / Hide Key" style="display:flex; align-items:center; gap:4px; padding:0 12px;">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  <span id="ai-key-mask-label">Reveal</span>
+                </button>
+                <button class="btn-primary-deploy" onclick="copyAiKey()" style="display:flex; align-items:center; gap:6px; padding:0 14px; font-size:0.78rem;">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  <span>Copy Key</span>
+                </button>
+              </div>
+
+              <div style="font-size:0.74rem; color:var(--text-muted); line-height:1.4;">
+                <span style="font-weight:600; color:var(--text-secondary);">Account Policy:</span> Exactly 1 Free tier API key is allocated per account. Keep your API key secret and do not expose it in public client-side applications.
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- Right Side Column: Integration & Endpoints -->
+        <div class="dash-side-column">
+          
+          <!-- Gateway Endpoint Config -->
+          <div class="clean-box-card">
+            <div class="box-card-header">
+              <div class="box-card-title">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                Gateway Endpoints
+              </div>
+            </div>
+            <div style="padding:16px 20px;">
+              <div style="margin-bottom:12px;">
+                <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; font-weight:600; margin-bottom:4px;">Base URL</div>
+                <div style="font-family:'JetBrains Mono', monospace; font-size:0.78rem; background:var(--bg-surface-elevated); padding:7px 10px; border-radius:6px; border:1px solid var(--border-subtle); color:var(--text-primary); word-break:break-all;">
+                  https://api.colidelabs.com/v1
+                </div>
+              </div>
+              <div>
+                <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; font-weight:600; margin-bottom:4px;">OpenAI SDK Compatible</div>
+                <div style="font-size:0.78rem; color:var(--text-secondary); line-height:1.4;">
+                  Direct drop-in replacement for OpenAI SDKs using custom <code style="font-family:'JetBrains Mono', monospace; font-size:0.72rem; background:var(--bg-surface-elevated); padding:2px 4px; border-radius:4px;">baseURL</code>.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick cURL Test -->
+          <div class="clean-box-card">
+            <div class="box-card-header">
+              <div class="box-card-title">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+                Quick cURL Request
+              </div>
+              <button class="btn-restore-pill" style="font-size:0.7rem; padding:3px 8px;" onclick="copyAiCurlCode()">Copy</button>
+            </div>
+            <div style="padding:0;">
+              <div id="ai-curl-snippet" style="background:#0d1117; color:#e6edf3; font-family:'JetBrains Mono', monospace; font-size:0.72rem; padding:14px; line-height:1.6; overflow-x:auto; white-space:pre;">curl https://api.colidelabs.com/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer &lt;YOUR_API_KEY&gt;" \
+  -d '{
+    "model": "colide-pro",
+    "messages": [
+      {"role": "user", "content": "Hello Colide Pro"}
+    ]
+  }'</div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
     </section>
 
   </main>

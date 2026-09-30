@@ -16,6 +16,7 @@ const {
 } = require('./config/pricing');
 const shulker = require('./services/shulkerService');
 const minecraft = require('./services/minecraftService');
+const ai = require('./services/aiService');
 
 // Supabase admin client (service_role — server-side only, never exposed to browser)
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdxeGFjd3lidW1jcm9hcmdud2txIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc5MDYxNzUzOSwiZXhwIjoyMTA2MTkzNTM5fQ.5xea24fdKrZBXYUDlGjw6TB4SzXbmkDP_rtrP0NIwB4';
@@ -556,6 +557,62 @@ app.get('/api/admin/overview', async (req, res) => {
         services: services, activeRegions: ['India (Mumbai)', 'India (Delhi)', 'Germany (Frankfurt)'],
         ddosProtection: '92 Tbps Anycast Shield'
       }
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+// ─── AI Studio: ColideLabs AI Gateway Key Management ───────────────────────
+app.get('/api/ai/key', async (req, res) => {
+  try {
+    const userIdentifier = req.query.user || req.query.email || 'guest-user';
+    const keyData = ai.getUserKey(userIdentifier);
+    const stats = ai.getPoolStats();
+    res.json({
+      success: true,
+      hasKey: !!keyData,
+      data: keyData,
+      stats
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.post('/api/ai/key/generate', async (req, res) => {
+  try {
+    const { user, email } = req.body;
+    const userIdentifier = user || email || 'tejas';
+    const result = ai.generateKeyForUser(userIdentifier, {
+      ip: req.ip || req.headers['x-forwarded-for'],
+      userAgent: req.headers['user-agent']
+    });
+    res.json({
+      success: true,
+      data: result
+    });
+  } catch (err) {
+    res.status(400).json({ success: false, error: err.message });
+  }
+});
+
+app.post('/api/ai/admin/add-keys', async (req, res) => {
+  try {
+    const { keys } = req.body;
+    if (!Array.isArray(keys) || keys.length === 0) {
+      return res.status(400).json({ success: false, error: 'keys array required' });
+    }
+    keys.forEach(k => {
+      const cleanKey = String(k).trim();
+      if (cleanKey && !ai.store.pool.includes(cleanKey)) {
+        ai.store.pool.push(cleanKey);
+      }
+    });
+    ai.saveStore();
+    res.json({
+      success: true,
+      message: `Added ${keys.length} keys to AI pool`,
+      stats: ai.getPoolStats()
     });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
