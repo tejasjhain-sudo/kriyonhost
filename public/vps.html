@@ -217,11 +217,8 @@
 
       <div style="display:flex; justify-content:center; gap:14px; flex-wrap:wrap;">
         <a href="#vps-builder" class="btn btn-primary" style="padding:13px 28px; font-size:0.95rem;">
-          Build Custom VM
+          Build Custom VM &rarr;
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-        </a>
-        <a href="#popular-vps-plans" class="btn btn-ghost" style="padding:13px 24px; font-size:0.95rem;">
-          View Popular Configurations
         </a>
       </div>
 
@@ -249,116 +246,9 @@
   </section>
 
   <!-- ═══════════════════════════════════════════════════════════════════════
-       POPULAR PRE-CONFIGURED PLANS
-       ═══════════════════════════════════════════════════════════════════════ -->
-  <section class="s" id="popular-vps-plans">
-    <div class="wrap">
-      <div class="sec-head">
-        <span class="eyebrow"><span class="eyebrow-dot"></span> Ready To Launch</span>
-        <h2 class="sh">Popular Pre-Built VPS Plans</h2>
-        <p class="sub">Instant deployment packages calibrated for balanced workloads, Minecraft SMPs, and heavy databases.</p>
-      </div>
-
-      <div class="grid-4" style="gap:20px;">
-        <!-- Card 1 -->
-        <div class="pricing-card">
-          <div class="badge b-blue" style="align-self:flex-start; margin-bottom:12px;">ENTRY CLOUD</div>
-          <h3 style="font-size:1.3rem; font-weight:600; color:#fff;">Cloud Starter</h3>
-          <p style="font-size:0.8rem; color:var(--muted2); margin-top:4px;">Web apps, bots &amp; testing</p>
-          
-          <div class="pricing-price" style="margin:1.4rem 0;">
-            <span style="font-size:2rem; font-weight:700; color:#fff;">₹949</span>
-            <span style="font-size:0.82rem; color:var(--muted);">/month</span>
-          </div>
-
-          <ul class="pricing-features">
-            <li><strong>2 vCPU</strong> Cores (AMD EPYC)</li>
-            <li><strong>4 GB</strong> DDR4 ECC RAM</li>
-            <li><strong>50 GB</strong> Gen4 NVMe Storage</li>
-            <li>1 Dedicated IPv4 + /64 IPv6</li>
-            <li>1 Gbps Unmetered Uplink</li>
-            <li>Full Root &amp; Web VNC Console</li>
-          </ul>
-
-          <button onclick="deployDirectPlan('Cloud Starter', 949, 2, 4, 50, 'std')" class="btn btn-ghost" style="width:100%; margin-top:1.5rem;">Configure &amp; Deploy</button>
-        </div>
-
-        <!-- Card 2 -->
-        <div class="pricing-card" style="border-color:rgba(124,106,255,0.4); background:rgba(124,106,255,0.04);">
-          <div class="badge b-purple" style="align-self:flex-start; margin-bottom:12px;">BESTSELLER · SMP</div>
-          <h3 style="font-size:1.3rem; font-weight:600; color:#fff;">Gaming Node</h3>
-          <p style="font-size:0.8rem; color:var(--muted2); margin-top:4px;">Modded servers &amp; game daemons</p>
-          
-          <div class="pricing-price" style="margin:1.4rem 0;">
-            <span style="font-size:2rem; font-weight:700; color:#fff;">₹2,399</span>
-            <span style="font-size:0.82rem; color:var(--muted);">/month</span>
-          </div>
-
-          <ul class="pricing-features">
-            <li><strong>4 vCPU</strong> High-Freq Cores</li>
-            <li><strong>16 GB</strong> High-Speed RAM</li>
-            <li><strong>100 GB</strong> Gen4 NVMe Storage</li>
-            <li>1 Dedicated IPv4 + /64 IPv6</li>
-            <li>Sub-10ms India Peering</li>
-            <li>Automated Daily Snapshots</li>
-          </ul>
-
-          <button onclick="deployDirectPlan('Gaming Node', 2399, 4, 16, 100, 'perf')" class="btn btn-primary" style="width:100%; margin-top:1.5rem;">Configure &amp; Deploy</button>
-        </div>
-
-        <!-- Card 3 -->
-        <div class="pricing-card" style="border-color:rgba(245,158,11,0.4); background:rgba(245,158,11,0.03);">
-          <div class="badge b-gold" style="align-self:flex-start; margin-bottom:12px;">FLAGSHIP · RYZEN 9</div>
-          <h3 style="font-size:1.3rem; font-weight:600; color:#fff;">Power Beast</h3>
-          <p style="font-size:0.8rem; color:var(--muted2); margin-top:4px;">Heavy multi-threading &amp; networks</p>
-          
-          <div class="pricing-price" style="margin:1.4rem 0;">
-            <span style="font-size:2rem; font-weight:700; color:#fff;">₹5,948</span>
-            <span style="font-size:0.82rem; color:var(--muted);">/month</span>
-          </div>
-
-          <ul class="pricing-features">
-            <li><strong>8 vCPU</strong> AMD Ryzen 9 (5.7GHz)</li>
-            <li><strong>40 GB</strong> DDR5 5600MHz RAM</li>
-            <li><strong>200 GB</strong> Enterprise NVMe</li>
-            <li>1 Dedicated IPv4 + /64 IPv6</li>
-            <li>500+ Tbps L7 DDoS Filter</li>
-            <li>Priority Hypervisor Pinning</li>
-          </ul>
-
-          <button onclick="deployDirectPlan('Power Beast', 5948, 8, 40, 200, 'pwr')" class="btn btn-primary" style="width:100%; margin-top:1.5rem; background:#f59e0b; border-color:#f59e0b; color:#000;">Deploy Flagship</button>
-        </div>
-
-        <!-- Card 4 -->
-        <div class="pricing-card">
-          <div class="badge b-green" style="align-self:flex-start; margin-bottom:12px;">ENTERPRISE</div>
-          <h3 style="font-size:1.3rem; font-weight:600; color:#fff;">Titan Cluster</h3>
-          <p style="font-size:0.8rem; color:var(--muted2); margin-top:4px;">Big data, AI inference &amp; builds</p>
-          
-          <div class="pricing-price" style="margin:1.4rem 0;">
-            <span style="font-size:2rem; font-weight:700; color:#fff;">₹10,499</span>
-            <span style="font-size:0.82rem; color:var(--muted);">/month</span>
-          </div>
-
-          <ul class="pricing-features">
-            <li><strong>16 vCPU</strong> Dedicated Cores</li>
-            <li><strong>64 GB</strong> Registered ECC RAM</li>
-            <li><strong>400 GB</strong> Gen4 NVMe RAID</li>
-            <li>1 Dedicated IPv4 + /64 IPv6</li>
-            <li>10 Gbps Redundant Uplink</li>
-            <li>Custom BGP Anycast Available</li>
-          </ul>
-
-          <button onclick="deployDirectPlan('Titan Cluster', 10499, 16, 64, 400, 'pwr')" class="btn btn-ghost" style="width:100%; margin-top:1.5rem;">Configure &amp; Deploy</button>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══════════════════════════════════════════════════════════════════════
        CUSTOM VPS MAKER
        ═══════════════════════════════════════════════════════════════════════ -->
-  <section class="s" id="vps-builder" style="background:rgba(255,255,255,0.01);">
+  <section class="s" id="vps-builder" style="background:rgba(255,255,255,0.01); padding-top:4rem;">
     <div class="wrap">
       <div class="sec-head">
         <span class="eyebrow"><span class="eyebrow-dot"></span> Custom VPS Maker</span>
