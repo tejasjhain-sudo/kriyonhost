@@ -125,11 +125,27 @@ class OrderService {
   }
 
   /**
-   * Customer submits UTR payment proof
+   * Customer submits UTR payment proof, Sender UPI ID & Screenshot
    */
-  submitPaymentProof(orderId, utrNumber, note = '') {
+  submitPaymentProof(orderId, paymentData) {
     const order = this.orders.find(o => o.id === orderId);
     if (!order) return { success: false, error: 'Order not found' };
+
+    let utrNumber = '';
+    let senderUpiId = '';
+    let screenshotUrl = '';
+    let screenshotData = '';
+    let note = '';
+
+    if (typeof paymentData === 'object' && paymentData !== null) {
+      utrNumber = paymentData.utr_number || '';
+      senderUpiId = paymentData.sender_upi_id || '';
+      screenshotUrl = paymentData.screenshot_url || '';
+      screenshotData = paymentData.screenshot_data || '';
+      note = paymentData.note || '';
+    } else {
+      utrNumber = paymentData;
+    }
 
     const cleanUtr = String(utrNumber).trim();
 
@@ -143,6 +159,9 @@ class OrderService {
     }
 
     order.utr_number = cleanUtr;
+    order.sender_upi_id = String(senderUpiId).trim() || null;
+    order.screenshot_url = screenshotUrl || null;
+    order.screenshot_data = screenshotData || null;
     order.payment_submitted_at = new Date().toISOString();
     order.status = 'pending_approval';
     if (note) order.customer_note = note;

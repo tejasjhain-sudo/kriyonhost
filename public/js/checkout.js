@@ -411,8 +411,32 @@
 
           <form id="kco-utr-form" onsubmit="event.preventDefault(); KryonCheckout.submitPaymentProof();">
             <div class="form-group">
+              <label class="form-label">Your UPI ID (The ID you paid from) *</label>
+              <input type="text" class="form-input" id="kco-input-sender-upi" placeholder="e.g. yourname@okhdfcbank or 9876543210@paytm" required style="font-family:'DM Mono',monospace; font-size:0.88rem;">
+            </div>
+
+            <div class="form-group">
               <label class="form-label">12-Digit UPI Transaction / UTR Ref Number *</label>
-              <input type="text" class="form-input" id="kco-input-utr" placeholder="e.g. 427189012345" required maxlength="24" style="font-family:'DM Mono',monospace; letter-spacing:0.08em; font-size:1rem; text-align:center;">
+              <input type="text" class="form-input" id="kco-input-utr" placeholder="e.g. 427189012345" required maxlength="24" style="font-family:'DM Mono',monospace; letter-spacing:0.08em; font-size:0.95rem; text-align:center;">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Payment Screenshot / Receipt *</label>
+              <div class="screenshot-upload-wrap" style="position:relative; background:#151424; border:1px dashed rgba(124,106,255,0.4); border-radius:10px; padding:14px; text-align:center; cursor:pointer;" onclick="document.getElementById('kco-input-screenshot').click()">
+                <input type="file" id="kco-input-screenshot" accept="image/*" style="display:none;" onchange="KryonCheckout.handleScreenshotSelect(event)">
+                <div id="kco-screenshot-placeholder" style="display:flex; flex-direction:column; align-items:center; gap:6px; color:#9ca3af; font-size:0.8rem;">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7c6aff" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                  <span><strong style="color:#a78bfa;">Click to attach payment screenshot</strong> (PNG, JPG)</span>
+                </div>
+                <div id="kco-screenshot-preview-wrap" style="display:none; align-items:center; justify-content:center; gap:12px;">
+                  <img id="kco-screenshot-preview" src="" style="max-height:80px; max-width:120px; border-radius:6px; border:1px solid rgba(255,255,255,0.2); object-fit:contain;">
+                  <div style="text-align:left; font-size:0.78rem; color:#34d399;">
+                    <div style="font-weight:700;">✓ Receipt Attached</div>
+                    <div id="kco-screenshot-name" style="color:#9ca3af; font-family:'DM Mono',monospace; font-size:0.72rem;">screenshot.png</div>
+                    <span style="color:#ef4444; cursor:pointer; text-decoration:underline; font-size:0.72rem;" onclick="event.stopPropagation(); KryonCheckout.removeScreenshot();">Remove / Re-upload</span>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div id="kco-error-2" style="color:#ef4444; font-size:0.82rem; margin-bottom:12px; display:none;"></div>
@@ -432,17 +456,21 @@
             </div>
             <h3 style="font-size:1.25rem; font-weight:700; color:#fff; margin-bottom:8px;">Payment Proof Submitted!</h3>
             <p style="font-size:0.85rem; color:#9ca3af; margin-bottom:18px; line-height:1.5;">
-              Order <strong style="color:#38bdf8;" id="kco-done-ord-id">#KRYON-ORD-00000</strong> is now queued for verification. Our NOC team will verify your UTR and provision your server details shortly.
+              Order <strong style="color:#38bdf8;" id="kco-done-ord-id">#KRYON-ORD-00000</strong> is now queued for verification. Our NOC team will verify your payment details and activate your service in your dashboard.
             </p>
 
             <div style="background:#151424; border:1px solid rgba(245,158,11,0.3); border-radius:10px; padding:12px; margin-bottom:20px; text-align:left; font-size:0.82rem;">
-              <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+              <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
                 <span style="color:#9ca3af;">Status:</span>
                 <span style="color:#f59e0b; font-weight:700;">● Pending Admin Approval</span>
               </div>
-              <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+              <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
                 <span style="color:#9ca3af;">Client Email:</span>
                 <span style="color:#fff;" id="kco-done-email">client@example.com</span>
+              </div>
+              <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                <span style="color:#9ca3af;">Sender UPI ID:</span>
+                <span style="color:#a78bfa; font-family:'DM Mono',monospace;" id="kco-done-sender-upi">user@upi</span>
               </div>
               <div style="display:flex; justify-content:space-between;">
                 <span style="color:#9ca3af;">UTR Number:</span>
@@ -481,6 +509,9 @@
   let currentOrder = null;
   let timerInterval = null;
   let timerSecondsLeft = 300; // 5 minutes
+  let screenshotBase64 = null;
+  let screenshotUploadedUrl = null;
+  let screenshotFileName = null;
 
   window.KryonCheckout = {
     /**
@@ -521,7 +552,11 @@
       // Reset errors & fields
       document.getElementById('kco-error-1').style.display = 'none';
       document.getElementById('kco-error-2').style.display = 'none';
-      document.getElementById('kco-input-utr').value = '';
+      const utrInput = document.getElementById('kco-input-utr');
+      if (utrInput) utrInput.value = '';
+      const senderUpiInput = document.getElementById('kco-input-sender-upi');
+      if (senderUpiInput) senderUpiInput.value = '';
+      this.removeScreenshot();
 
       // Switch to Step 1
       this.showStep(1);
@@ -543,6 +578,69 @@
       if (stepNum === 1) titleEl.textContent = 'Configure & Deploy';
       else if (stepNum === 2) titleEl.textContent = 'Manual UPI Billing (5:00)';
       else if (stepNum === 3) titleEl.textContent = 'Order Under Review';
+    },
+
+    handleScreenshotSelect: function(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+
+      screenshotFileName = file.name;
+      const reader = new FileReader();
+
+      reader.onload = async function(e) {
+        screenshotBase64 = e.target.result;
+        
+        // Show preview
+        const previewImg = document.getElementById('kco-screenshot-preview');
+        const previewWrap = document.getElementById('kco-screenshot-preview-wrap');
+        const placeholder = document.getElementById('kco-screenshot-placeholder');
+        const nameEl = document.getElementById('kco-screenshot-name');
+
+        if (previewImg) previewImg.src = screenshotBase64;
+        if (nameEl) nameEl.textContent = file.name;
+        if (placeholder) placeholder.style.display = 'none';
+        if (previewWrap) previewWrap.style.display = 'flex';
+
+        // Upload to SDX bucket in background
+        try {
+          const cleanBase64 = screenshotBase64.split(',')[1] || screenshotBase64;
+          const uploadRes = await fetch('/api/v1/storage/upload', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              name: `proof_${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g, '')}`,
+              base64: cleanBase64,
+              contentType: file.type
+            })
+          });
+          const uploadJson = await uploadRes.json();
+          if (uploadJson.success && uploadJson.object?.url) {
+            screenshotUploadedUrl = uploadJson.object.url;
+          }
+        } catch (uploadErr) {
+          console.warn('[Screenshot upload to SDX warning]:', uploadErr);
+        }
+      };
+
+      reader.readAsDataURL(file);
+    },
+
+    removeScreenshot: function() {
+      screenshotBase64 = null;
+      screenshotUploadedUrl = null;
+      screenshotFileName = null;
+      
+      const fileInput = document.getElementById('kco-input-screenshot');
+      if (fileInput) fileInput.value = '';
+      
+      const previewImg = document.getElementById('kco-screenshot-preview');
+      if (previewImg) previewImg.src = '';
+      
+      const previewWrap = document.getElementById('kco-screenshot-preview-wrap');
+      if (previewWrap) previewWrap.style.display = 'none';
+      
+      const placeholder = document.getElementById('kco-screenshot-placeholder');
+      if (placeholder) placeholder.style.display = 'flex';
     },
 
     proceedToBilling: async function() {
@@ -598,7 +696,6 @@
         // Use User's exact UPI QR Code image
         document.getElementById('kco-qr-img').src = currentOrder.qr_image_url || '/images/upi-qr.png';
 
-
         // Start 5-minute timer
         this.startTimer(300);
         this.showStep(2);
@@ -642,7 +739,14 @@
 
     submitPaymentProof: async function() {
       const utr = document.getElementById('kco-input-utr').value.trim();
+      const senderUpi = document.getElementById('kco-input-sender-upi').value.trim();
       const errEl = document.getElementById('kco-error-2');
+
+      if (!senderUpi || senderUpi.length < 3) {
+        errEl.textContent = 'Please enter the UPI ID you sent the payment from.';
+        errEl.style.display = 'block';
+        return;
+      }
 
       if (!utr || utr.length < 4) {
         errEl.textContent = 'Please enter a valid UPI transaction reference / UTR number.';
@@ -652,13 +756,20 @@
 
       const btn = document.getElementById('kco-btn-submit-pay');
       btn.disabled = true;
-      btn.innerHTML = 'Verifying & Submitting...';
+      btn.innerHTML = 'Verifying & Submitting Proof...';
 
       try {
+        const payload = {
+          utr_number: utr,
+          sender_upi_id: senderUpi,
+          screenshot_url: screenshotUploadedUrl || null,
+          screenshot_data: screenshotBase64 || null
+        };
+
         const res = await fetch(`/api/orders/${currentOrder.id}/pay`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ utr_number: utr })
+          body: JSON.stringify(payload)
         });
         const json = await res.json();
 
@@ -676,6 +787,7 @@
         // Populate Step 3
         document.getElementById('kco-done-ord-id').textContent = `#${currentOrder.id}`;
         document.getElementById('kco-done-email').textContent = currentOrder.customer_email;
+        document.getElementById('kco-done-sender-upi').textContent = senderUpi;
         document.getElementById('kco-done-utr').textContent = utr;
 
         // Save email in localStorage for panel auto-lookup

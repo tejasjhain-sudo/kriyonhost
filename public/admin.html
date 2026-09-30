@@ -144,11 +144,16 @@
   <div class="modal-overlay" id="approve-modal">
     <div class="modal-box">
       <div class="modal-title" style="color:#10b981;">Approve Payment & Assign Server</div>
-      <div style="background:#151424; border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:12px; margin-bottom:18px; font-size:0.85rem;">
-        <div>Order: <strong style="color:#38bdf8;" id="app-order-id">#KRYON-ORD-00000</strong></div>
-        <div>Client: <span style="color:#fff;" id="app-order-client">client@example.com</span></div>
-        <div>Plan: <span style="color:#f59e0b;" id="app-order-plan">PWR Extreme</span> (₹<span id="app-order-amount">1,499</span>)</div>
-        <div>UTR Submitted: <span style="color:#34d399; font-family:'DM Mono',monospace;" id="app-order-utr">427189012345</span></div>
+      <div style="background:#151424; border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:14px; margin-bottom:18px; font-size:0.85rem;">
+        <div style="margin-bottom:4px;">Order: <strong style="color:#38bdf8;" id="app-order-id">#KRYON-ORD-00000</strong></div>
+        <div style="margin-bottom:4px;">Client: <span style="color:#fff;" id="app-order-client">client@example.com</span></div>
+        <div style="margin-bottom:4px;">Plan: <span style="color:#f59e0b;" id="app-order-plan">PWR Extreme</span> (₹<span id="app-order-amount">1,499</span>)</div>
+        <div style="margin-bottom:4px;">Sender UPI: <span style="color:#a78bfa; font-family:'DM Mono',monospace;" id="app-order-sender-upi">user@upi</span></div>
+        <div style="margin-bottom:4px;">UTR Reference: <span style="color:#34d399; font-family:'DM Mono',monospace;" id="app-order-utr">427189012345</span></div>
+        <div id="app-order-screenshot-wrap" style="display:none; margin-top:10px; padding-top:10px; border-top:1px dashed rgba(255,255,255,0.1);">
+          <span style="color:var(--muted); font-size:0.8rem; display:block; margin-bottom:6px;">Payment Screenshot:</span>
+          <img id="app-order-screenshot-img" src="" style="max-height:90px; border-radius:6px; border:1px solid rgba(255,255,255,0.2); cursor:pointer;" onclick="viewProofModal(this.src)" title="Click to enlarge">
+        </div>
       </div>
 
       <div class="form-grid">
@@ -178,6 +183,19 @@
       <div class="modal-actions">
         <button class="btn-cancel" onclick="closeApproveModal()">Cancel</button>
         <button class="btn-approve-submit" onclick="executeOrderApproval()">✓ Deliver Server to Client</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROOF SCREENSHOT LIGHTBOX MODAL -->
+  <div class="modal-overlay" id="proof-modal" onclick="closeProofModal()">
+    <div class="modal-box" style="max-width:640px; text-align:center; background:#0d0c14;" onclick="event.stopPropagation()">
+      <div class="modal-title" style="display:flex; justify-content:space-between; align-items:center; color:#38bdf8;">
+        <span>Payment Receipt Screenshot</span>
+        <button class="btn-cancel" onclick="closeProofModal()" style="padding:4px 8px; font-size:0.8rem;">✕ Close</button>
+      </div>
+      <div style="margin-top:14px; max-height:75vh; overflow:auto; display:flex; justify-content:center;">
+        <img id="proof-img-full" src="" style="max-width:100%; border-radius:8px; border:1px solid rgba(255,255,255,0.15);" alt="Payment Proof">
       </div>
     </div>
   </div>
@@ -433,7 +451,7 @@
 
       main.innerHTML = `
         <h1 class="page-title">Manual Orders & Approvals</h1>
-        <p class="page-sub">Review incoming UPI QR transactions, verify UTR reference numbers, and assign dedicated servers.</p>
+        <p class="page-sub">Review incoming UPI QR transactions, verify UTR reference numbers & screenshots, and deliver servers to client dashboards.</p>
 
         <div class="admin-card">
           <div class="admin-card-head">
@@ -441,14 +459,19 @@
           </div>
           <table>
             <thead><tr>
-              <th>Order ID</th><th>Customer Info</th><th>Plan & Specs</th><th>Amount</th><th>UTR Reference</th><th>Status</th><th>Actions</th>
+              <th>Order ID</th><th>Customer Info</th><th>Plan & Specs</th><th>Amount</th><th>UTR & Sender UPI</th><th>Proof Receipt</th><th>Status</th><th>Actions</th>
             </tr></thead>
             <tbody>
               ${orders.map(o => {
                 let statusBadge = `<span class="badge" style="background:rgba(245,158,11,0.15);color:#f59e0b;">Pending Approval</span>`;
-                if (o.status === 'approved') statusBadge = `<span class="badge" style="background:rgba(34,197,94,0.15);color:#22c55e;">Approved & Delivered</span>`;
+                if (o.status === 'approved') statusBadge = `<span class="badge" style="background:rgba(34,197,94,0.15);color:#22c55e;">Done · Delivered</span>`;
                 else if (o.status === 'rejected') statusBadge = `<span class="badge" style="background:rgba(239,68,68,0.15);color:#ef4444;">Rejected</span>`;
                 else if (o.status === 'pending_payment') statusBadge = `<span class="badge" style="background:rgba(156,163,175,0.15);color:#9ca3af;">Awaiting Payment</span>`;
+
+                const proofSrc = o.screenshot_url || o.screenshot_data;
+                const proofHtml = proofSrc 
+                  ? `<button class="btn-sm btn-amber" onclick="viewProofModal('${proofSrc}')" style="display:flex; align-items:center; gap:4px; font-size:0.75rem;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg> View Receipt</button>` 
+                  : `<span style="color:var(--muted); font-size:0.75rem;">None</span>`;
 
                 return `
                 <tr>
@@ -468,21 +491,34 @@
                   <td style="font-family:'DM Mono',monospace; font-weight:700; color:#22c55e;">₹${o.amount.toLocaleString('en-IN')}</td>
                   <td>
                     ${o.utr_number ? `<span style="font-family:'DM Mono',monospace; font-weight:700; color:#f59e0b; background:rgba(245,158,11,0.1); padding:2px 6px; border-radius:4px;">${o.utr_number}</span>` : `<span style="color:var(--muted); font-size:0.8rem;">Not submitted yet</span>`}
+                    ${o.sender_upi_id ? `<br><span style="font-size:0.74rem; color:#a78bfa; font-family:'DM Mono',monospace;">UPI: ${o.sender_upi_id}</span>` : ''}
                   </td>
+                  <td>${proofHtml}</td>
                   <td>${statusBadge}</td>
                   <td style="display:flex; gap:6px; flex-wrap:wrap;">
                     ${o.status === 'pending_approval' || o.status === 'pending_payment' ? `
                       <button class="btn-sm btn-emerald" onclick="openApproveModal('${o.id}')">Approve & Deliver</button>
                       <button class="btn-sm btn-danger" onclick="rejectOrder('${o.id}')">Reject</button>
                     ` : o.status === 'approved' ? `
-                      <span style="font-size:0.75rem; color:#22c55e; font-family:'DM Mono',monospace;">IP: ${o.server_details?.ip || 'Assigned'}</span>
+                      <span style="font-size:0.75rem; color:#22c55e; font-weight:600;">✓ In Client Panel</span>
                     ` : `<span style="font-size:0.75rem; color:var(--muted);">Closed</span>`}
                   </td>
                 </tr>`;
-              }).join('') || `<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--muted);">No manual orders recorded yet.</td></tr>`}
+              }).join('') || `<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--muted);">No manual orders recorded yet.</td></tr>`}
             </tbody>
           </table>
         </div>`;
+    }
+
+    /* ── Proof Lightbox Modal ────────────────────────────────────────────────── */
+    function viewProofModal(src) {
+      if (!src) return;
+      document.getElementById('proof-img-full').src = src;
+      document.getElementById('proof-modal').classList.add('open');
+    }
+
+    function closeProofModal() {
+      document.getElementById('proof-modal').classList.remove('open');
     }
 
     /* ── Approve Modal ──────────────────────────────────────────────────────── */
@@ -498,7 +534,20 @@
       document.getElementById('app-order-client').textContent = `${order.customer_name} (${order.customer_email})`;
       document.getElementById('app-order-plan').textContent = order.plan_name;
       document.getElementById('app-order-amount').textContent = order.amount.toLocaleString('en-IN');
+      document.getElementById('app-order-sender-upi').textContent = order.sender_upi_id || 'Not specified';
       document.getElementById('app-order-utr').textContent = order.utr_number || 'Awaiting UTR';
+
+      // Screenshot preview in approval modal
+      const shotWrap = document.getElementById('app-order-screenshot-wrap');
+      const shotImg = document.getElementById('app-order-screenshot-img');
+      const proofSrc = order.screenshot_url || order.screenshot_data;
+
+      if (proofSrc) {
+        shotImg.src = proofSrc;
+        shotWrap.style.display = 'block';
+      } else {
+        shotWrap.style.display = 'none';
+      }
 
       // Prefill realistic defaults
       const randomOctet = Math.floor(20 + Math.random() * 200);
@@ -506,7 +555,7 @@
       document.getElementById('app-port').value = order.service_type === 'minecraft' ? '25565' : '22';
       document.getElementById('app-user').value = order.service_type === 'minecraft' ? 'admin' : 'root';
       document.getElementById('app-pass').value = `KryonSec_${Math.random().toString(36).slice(-6)}!x`;
-      document.getElementById('app-notes').value = `Your server is provisioned and online. Connect via SSH: ssh root@103.189.89.${randomOctet}`;
+      document.getElementById('app-notes').value = `Your server is provisioned and online.`;
 
       document.getElementById('app-modal-msg').textContent = '';
       document.getElementById('approve-modal').classList.add('open');

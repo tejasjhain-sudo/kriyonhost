@@ -710,12 +710,19 @@ app.post('/api/orders/create', (req, res) => {
 
 app.post('/api/orders/:id/pay', (req, res) => {
   try {
-    const { utr_number, note } = req.body;
+    const { utr_number, sender_upi_id, screenshot_url, screenshot_data, note } = req.body;
     if (!utr_number || String(utr_number).trim().length < 4) {
       return res.status(400).json({ success: false, error: 'Please enter a valid 12-digit UPI reference / UTR number' });
     }
 
-    const result = orderService.submitPaymentProof(req.params.id, utr_number, note);
+    const result = orderService.submitPaymentProof(req.params.id, {
+      utr_number,
+      sender_upi_id,
+      screenshot_url,
+      screenshot_data,
+      note
+    });
+
     if (!result.success) {
       return res.status(400).json({ success: false, error: result.error });
     }

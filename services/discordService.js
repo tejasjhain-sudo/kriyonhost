@@ -73,21 +73,29 @@ class DiscordService {
   }
 
   /**
-   * Notify when customer submits UTR payment reference
+   * Notify when customer submits UTR payment reference & screenshot
    */
   async notifyPaymentSubmitted(order) {
+    const fields = [
+      { name: 'Order ID', value: `#${order.id}`, inline: true },
+      { name: 'Customer', value: `${order.customer_name}\n\`${order.customer_email}\``, inline: true },
+      { name: 'Amount Paid', value: `**₹${order.amount.toLocaleString('en-IN')}**`, inline: true },
+      { name: 'UTR Reference ID', value: `\`\`\`${order.utr_number}\`\`\``, inline: true },
+      { name: 'Sender UPI ID', value: `\`${order.sender_upi_id || 'Not provided'}\``, inline: true },
+      { name: 'Service Plan', value: `${order.plan_name} (${order.specs?.os || 'Ubuntu 24.04'})`, inline: true }
+    ];
+
+    if (order.screenshot_url) {
+      fields.push({ name: 'Payment Screenshot', value: `[View Receipt Screenshot](${order.screenshot_url})`, inline: false });
+    }
+
+    fields.push({ name: 'Action', value: '[Click Here to Open Admin Control Center](https://kriyonhost.vercel.app/admin)', inline: false });
+
     return await this.sendEmbed({
       title: `🚨 Payment Proof Submitted — Action Required!`,
-      description: `Customer submitted 12-digit UTR for order **#${order.id}**. Please verify the bank credit and assign server details in the Admin Center.`,
+      description: `Customer submitted payment verification for order **#${order.id}**. Verify the UPI credit in your bank app and approve to deliver the server.`,
       color: 0xf59e0b, // Amber / Alert
-      fields: [
-        { name: 'Order ID', value: `#${order.id}`, inline: true },
-        { name: 'Customer', value: `${order.customer_name}\n\`${order.customer_email}\``, inline: true },
-        { name: 'Amount Paid', value: `**₹${order.amount.toLocaleString('en-IN')}**`, inline: true },
-        { name: 'UTR Reference ID', value: `\`\`\`${order.utr_number}\`\`\``, inline: false },
-        { name: 'Service Plan', value: `${order.plan_name} (${order.specs?.os || 'Ubuntu 24.04'})`, inline: true },
-        { name: 'Action', value: '[Click Here to Open Admin Control Center](https://kriyonhost.vercel.app/admin)', inline: true }
-      ]
+      fields: fields
     });
   }
 

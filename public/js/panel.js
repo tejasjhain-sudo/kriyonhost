@@ -959,6 +959,105 @@ function escapeHtml(str) {
 
 /* ── Manual Order Tracking & Live Approval Listener ───────────────────────── */
 let orderPollInterval = null;
+const injectedOrderIds = new Set();
+
+function injectApprovedServiceToDashboard(o) {
+  if (!o || !o.server_details || injectedOrderIds.has(o.id)) return;
+  injectedOrderIds.add(o.id);
+
+  const isMc = o.service_type === 'minecraft';
+  const instanceId = o.specs?.server_name || `srv-${o.id.replace(/[^a-zA-Z0-9]/g, '').slice(-8).toLowerCase()}`;
+  const instanceName = o.specs?.server_name || o.plan_name;
+  const ip = o.server_details.ip || '103.189.89.100';
+  const os = o.server_details.os || o.specs?.os || 'Ubuntu 24.04 LTS';
+  const region = o.server_details.region || o.specs?.region || 'India (Mumbai Node)';
+  const cpu = o.specs?.cpu || 4;
+  const ram = o.specs?.ram || 8;
+  const disk = o.specs?.disk || 80;
+
+  if (isMc) {
+    mcServers[instanceId] = {
+      name: `${instanceName} (${o.specs?.os || 'Paper 1.21.1'})`,
+      ip: `${ip}:${o.server_details.port || '25565'}`,
+      software: o.specs?.os || 'Paper 1.21.1',
+      players: '0 / 100 Players',
+      banner: 'https://images.unsplash.com/photo-1627856013091-fed6e4e30025?w=280&auto=format&fit=crop&q=80'
+    };
+    userPurchasedMinecraft = true;
+
+    // Add to selector if exists
+    const mcSel = document.getElementById('mc-server-selector');
+    if (mcSel && !mcSel.querySelector(`option[value="${instanceId}"]`)) {
+      const opt = document.createElement('option');
+      opt.value = instanceId;
+      opt.textContent = `${instanceName} (Active)`;
+      mcSel.appendChild(opt);
+    }
+  } else {
+    vpsInstances[instanceId] = {
+      name: instanceName,
+      ip: ip,
+      os: os,
+      location: region,
+      specs: `${cpu} vCPU · ${ram} GB RAM · ${disk} GB NVMe`,
+      disk: `2.4 / ${disk} GB (3%)`,
+      cpuPercent: 8,
+      ramPercent: 16,
+      diskPercent: 3
+    };
+
+    // Add to VPS selector if exists
+    const vpsSel = document.getElementById('vps-instance-selector');
+    if (vpsSel && !vpsSel.querySelector(`option[value="${instanceId}"]`)) {
+      const opt = document.createElement('option');
+      opt.value = instanceId;
+      opt.textContent = `${instanceId} — ${instanceName}`;
+      vpsSel.appendChild(opt);
+    }
+
+    // Prepend to VPS table on dashboard
+    const vpsTable = document.querySelector('#view-dashboard .table-container-card');
+    if (vpsTable) {
+      const row = document.createElement('div');
+      row.className = 'table-data-row grid-vps-cols';
+      row.id = `dyn-row-${o.id}`;
+      row.style.background = 'rgba(16,185,129,0.03)';
+      row.onclick = () => openSpecificVps(instanceId, instanceName, ip, os);
+      row.innerHTML = `
+        <div class="cell-identity">
+          <div class="cell-icon-wrap" style="color:#22c55e;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/></svg>
+          </div>
+          <div>
+            <div class="cell-title-text" style="color:#22c55e;">${escapeHtml(instanceId)} <span style="font-size:0.68rem; background:rgba(34,197,94,0.15); color:#22c55e; padding:1px 5px; border-radius:3px; margin-left:4px;">NEW</span></div>
+            <div class="cell-sub-text">${escapeHtml(instanceName)} · ${escapeHtml(os)}</div>
+          </div>
+        </div>
+        <div>
+          <div style="font-family:'JetBrains Mono'; font-size:0.82rem; font-weight:600;">${escapeHtml(ip)}</div>
+          <div style="font-size:0.72rem; color:var(--text-muted);">${escapeHtml(region)}</div>
+        </div>
+        <div>
+          <div style="font-size:0.82rem; font-weight:500;">${cpu} vCPU · ${ram} GB RAM</div>
+          <div style="font-size:0.72rem; color:var(--text-muted);">${disk} GB NVMe Gen4</div>
+        </div>
+        <div>
+          <span class="status-badge-live"><span class="status-dot-solid"></span> Running</span>
+        </div>
+        <div style="display:flex; justify-content:flex-end;">
+          <button class="btn-restore-pill" style="font-weight:600; font-size:0.75rem; padding:4px 12px;" onclick="event.stopPropagation(); openSpecificVps('${instanceId}', '${instanceName}', '${ip}', '${os}')">Manage &rarr;</button>
+        </div>
+      `;
+      // Insert after header row
+      const headerRow = vpsTable.querySelector('.table-header-row');
+      if (headerRow && headerRow.nextSibling) {
+        vpsTable.insertBefore(row, headerRow.nextSibling);
+      } else {
+        vpsTable.appendChild(row);
+      }
+    }
+  }
+}
 
 async function initPendingOrdersTracker() {
   const container = document.getElementById('pending-orders-container');
@@ -988,6 +1087,9 @@ async function initPendingOrdersTracker() {
       const pendingOrders = orders.filter(o => o.status === 'pending_approval' || o.status === 'pending_payment');
       const approvedOrders = orders.filter(o => o.status === 'approved' && o.server_details);
 
+      // Dynamically inject all approved orders into client's dashboard state
+      approvedOrders.forEach(o => injectApprovedServiceToDashboard(o));
+
       if (pendingOrders.length === 0 && approvedOrders.length === 0) {
         container.style.display = 'none';
         return;
@@ -996,7 +1098,7 @@ async function initPendingOrdersTracker() {
       container.style.display = 'block';
       let html = '';
 
-      // 1. Render Pending Approvals
+      // 1. Render Pending Approvals Banner
       pendingOrders.forEach(o => {
         html += `
           <div style="background:#161208; border:1px solid rgba(245,158,11,0.4); border-radius:12px; padding:18px 22px; margin-bottom:14px; box-shadow:0 4px 18px rgba(245,158,11,0.08);">
@@ -1009,42 +1111,33 @@ async function initPendingOrdersTracker() {
             </div>
             
             <div style="font-size:0.84rem; color:var(--text-secondary); margin-bottom:12px; line-height:1.5;">
-              Plan: <strong style="color:var(--text-primary);">${escapeHtml(o.plan_name)}</strong> (₹${o.amount.toLocaleString('en-IN')}) &bull; UTR Reference: <strong style="color:#f59e0b; font-family:'JetBrains Mono',monospace;">${escapeHtml(o.utr_number || 'Awaiting Payment')}</strong>
+              Plan: <strong style="color:var(--text-primary);">${escapeHtml(o.plan_name)}</strong> (₹${o.amount.toLocaleString('en-IN')}) &bull; UTR: <strong style="color:#f59e0b; font-family:'JetBrains Mono',monospace;">${escapeHtml(o.utr_number || 'Awaiting Payment')}</strong>${o.sender_upi_id ? ` &bull; Sender UPI: <strong style="color:#a78bfa; font-family:'JetBrains Mono',monospace;">${escapeHtml(o.sender_upi_id)}</strong>` : ''}
             </div>
 
             <div style="background:rgba(255,255,255,0.03); border:1px dashed rgba(245,158,11,0.25); border-radius:8px; padding:10px 14px; font-size:0.78rem; color:#d1d5db; display:flex; align-items:center; gap:10px;">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-              <span>Our administrator is verifying your UTR against the payment gateway. Your server credentials, IP, and control panel access will unlock here automatically once approved.</span>
+              <span>Our administrator is verifying your UTR & receipt against the bank gateway. Your server will be provisioned and added to your dashboard list below automatically once approved.</span>
             </div>
           </div>
         `;
       });
 
-      // 2. Render Approved / Delivered Servers from Manual Checkout
+      // 2. Render Clean "Done / Delivered" Banner (No raw credentials exposed)
       approvedOrders.forEach(o => {
-        const sd = o.server_details;
         html += `
-          <div style="background:rgba(16,185,129,0.06); border:1px solid rgba(16,185,129,0.3); border-radius:12px; padding:18px 22px; margin-bottom:14px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:12px;">
-              <div style="display:flex; align-items:center; gap:10px;">
-                <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#22c55e; box-shadow:0 0 8px #22c55e;"></span>
-                <span style="font-weight:700; font-size:0.95rem; color:#22c55e;">Delivered & Online: ${escapeHtml(o.plan_name)}</span>
+          <div style="background:rgba(16,185,129,0.07); border:1px solid rgba(16,185,129,0.35); border-radius:12px; padding:16px 20px; margin-bottom:14px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
+            <div style="display:flex; align-items:center; gap:14px;">
+              <div style="width:36px; height:36px; border-radius:50%; background:rgba(34,197,94,0.15); border:1px solid rgba(34,197,94,0.35); display:flex; align-items:center; justify-content:center; color:#22c55e; flex-shrink:0;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
               </div>
-              <span style="font-size:0.75rem; font-family:'JetBrains Mono',monospace; color:var(--text-muted);">#${o.id}</span>
+              <div>
+                <div style="font-weight:700; font-size:0.92rem; color:#22c55e;">✓ Order #${o.id} Done — Service Added to Dashboard</div>
+                <div style="font-size:0.78rem; color:var(--text-secondary); margin-top:2px;">
+                  Your <strong style="color:var(--text-primary);">${escapeHtml(o.plan_name)}</strong> instance is provisioned and active in your server list below.
+                </div>
+              </div>
             </div>
-
-            <!-- Credentials Box -->
-            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:10px; background:#070710; border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:12px; font-family:'JetBrains Mono',monospace; font-size:0.8rem; margin-bottom:10px;">
-              <div><span style="color:#9ca3af;">IP Address:</span> <strong style="color:#38bdf8;">${escapeHtml(sd.ip)}</strong></div>
-              <div><span style="color:#9ca3af;">Port:</span> <strong style="color:#fff;">${escapeHtml(sd.port || '22')}</strong></div>
-              <div><span style="color:#9ca3af;">User:</span> <strong style="color:#fff;">${escapeHtml(sd.username || 'root')}</strong></div>
-              <div><span style="color:#9ca3af;">Password:</span> <strong style="color:#34d399;">${escapeHtml(sd.password)}</strong></div>
-            </div>
-
-            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; font-size:0.78rem; color:var(--text-muted);">
-              <span>${escapeHtml(sd.notes || 'Server ready for SSH/Console connection')}</span>
-              <button class="btn-restore-pill" onclick="navigator.clipboard.writeText('ssh ${sd.username || 'root'}@${sd.ip}'); showVpsToast('SSH login command copied!');">Copy SSH Command</button>
-            </div>
+            <button class="btn-restore-pill" style="font-weight:600; font-size:0.78rem; padding:6px 14px; background:rgba(34,197,94,0.15); border:1px solid rgba(34,197,94,0.35); color:#22c55e;" onclick="navigateToView('${o.service_type === 'minecraft' ? 'mc-list' : 'vps-list'}')">Manage Instance &rarr;</button>
           </div>
         `;
       });
@@ -1059,9 +1152,9 @@ async function initPendingOrdersTracker() {
   // Initial check
   checkOrders();
 
-  // Poll every 6 seconds for real-time approval detection
+  // Poll every 5 seconds for real-time approval detection
   if (orderPollInterval) clearInterval(orderPollInterval);
-  orderPollInterval = setInterval(checkOrders, 6000);
+  orderPollInterval = setInterval(checkOrders, 5000);
 }
 
 document.addEventListener('DOMContentLoaded', initPanel);
