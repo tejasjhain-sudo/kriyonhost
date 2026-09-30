@@ -13,7 +13,7 @@ const vpsInstances = {
     name: 'Production App Node',
     ip: '103.10.180.129',
     os: 'Ubuntu 24.04 LTS',
-    location: 'India (Mumbai Tier-4)',
+    location: 'India (Mumbai Node)',
     specs: '4 vCPU · 8 GB RAM · 160 GB NVMe',
     disk: '67.2 / 160 GB (42%)',
     cpuPercent: 18,
@@ -24,7 +24,7 @@ const vpsInstances = {
     name: 'Database Cluster Master',
     ip: '103.189.89.44',
     os: 'Debian 12 Bookworm',
-    location: 'India (Mumbai Tier-4)',
+    location: 'India (Mumbai Node)',
     specs: '8 vCPU · 16 GB RAM · 320 GB NVMe',
     disk: '204.8 / 320 GB (64%)',
     cpuPercent: 26,
@@ -35,7 +35,7 @@ const vpsInstances = {
     name: 'Staging & CI/CD Pipeline',
     ip: '103.10.180.155',
     os: 'Ubuntu 22.04 LTS',
-    location: 'Singapore Edge Node',
+    location: 'Singapore (SG1 Node)',
     specs: '2 vCPU · 4 GB RAM · 80 GB NVMe',
     disk: '15.2 / 80 GB (19%)',
     cpuPercent: 12,
@@ -46,7 +46,7 @@ const vpsInstances = {
     name: 'Backup Storage Node',
     ip: '103.189.89.92',
     os: 'Rocky Linux 9',
-    location: 'India (Mumbai Tier-4)',
+    location: 'India (Mumbai Node)',
     specs: '2 vCPU · 4 GB RAM · 500 GB Storage',
     disk: '390.0 / 500 GB (78%)',
     cpuPercent: 6,
@@ -115,6 +115,7 @@ function navigateToView(viewName) {
   const viewVps = document.getElementById('view-vps');
   const viewMc = document.getElementById('view-minecraft');
   const viewAi = document.getElementById('view-ai');
+  const viewSdx = document.getElementById('view-sdx');
 
   if (viewDash) viewDash.style.display = 'none';
   if (viewVpsList) viewVpsList.style.display = 'none';
@@ -122,6 +123,7 @@ function navigateToView(viewName) {
   if (viewVps) viewVps.style.display = 'none';
   if (viewMc) viewMc.style.display = 'none';
   if (viewAi) viewAi.style.display = 'none';
+  if (viewSdx) viewSdx.style.display = 'none';
 
   document.querySelectorAll('.subnav-link-item').forEach(link => link.classList.remove('active'));
 
@@ -161,6 +163,11 @@ function navigateToView(viewName) {
     const link = document.getElementById('nav-ai');
     if (link) link.classList.add('active');
     loadAiKeyStatus();
+  } else if (viewName === 'sdx' || viewName === 'storage') {
+    if (viewSdx) viewSdx.style.display = 'block';
+    const link = document.getElementById('nav-sdx');
+    if (link) link.classList.add('active');
+    renderSdxFilesTable();
   }
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -730,6 +737,172 @@ function copyAiKey() {
   }
   navigator.clipboard.writeText(currentAiKey);
   showVpsToast('ColideLabs API key copied to clipboard');
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SDX OBJECT STORAGE CONTROLLER
+   ═══════════════════════════════════════════════════════════════════════════ */
+let isSdxKeyRevealed = false;
+let sdxSecretKey = 'sdx-khCLYNoZudUxuHPb3GN28vficM2ximHcwYzhDay8zmAcFK9uekDqo9wyNR0jw2Dqkhg0kJwPs3xtDwO2PFLPgb33uTSxB9A1';
+let sdxFiles = JSON.parse(localStorage.getItem('kryon_sdx_files') || '[]');
+
+function toggleSdxKeyVisibility() {
+  isSdxKeyRevealed = !isSdxKeyRevealed;
+  const input = document.getElementById('sdx-key-display-input');
+  const label = document.getElementById('sdx-key-mask-label');
+  if (input) {
+    input.type = isSdxKeyRevealed ? 'text' : 'password';
+  }
+  if (label) {
+    label.textContent = isSdxKeyRevealed ? 'Hide Key' : 'Show Key';
+  }
+}
+
+function copySdxKey() {
+  if (!sdxSecretKey) {
+    showVpsToast('No active SDX key to copy');
+    return;
+  }
+  navigator.clipboard.writeText(sdxSecretKey);
+  showVpsToast('SDX Secret Key copied to clipboard');
+}
+
+function resetSdxKey() {
+  if (confirm('Are you sure you want to regenerate your SDX Secret Key? Any connected applications will need to be updated with the new key.')) {
+    const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let newKey = 'sdx-';
+    for (let i = 0; i < 68; i++) {
+      newKey += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    sdxSecretKey = newKey;
+    const input = document.getElementById('sdx-key-display-input');
+    if (input) {
+      input.value = newKey;
+    }
+    showVpsToast('SDX Secret Key rotated successfully');
+  }
+}
+
+function triggerSdxFileInput() {
+  const fileInput = document.getElementById('sdx-file-uploader-input');
+  if (fileInput) fileInput.click();
+}
+
+function handleSdxFileUpload(event) {
+  const files = event.target.files;
+  if (!files || files.length === 0) return;
+
+  const nowStr = new Date().toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+    sdxFiles.unshift({
+      name: file.name,
+      size: file.size,
+      type: file.type || 'application/octet-stream',
+      date: nowStr
+    });
+  }
+
+  localStorage.setItem('kryon_sdx_files', JSON.stringify(sdxFiles));
+  event.target.value = '';
+  renderSdxFilesTable();
+  showVpsToast(`Uploaded ${files.length} file(s) to SDX bucket`);
+}
+
+function formatBytes(bytes) {
+  if (bytes === 0) return '0 B';
+  const k = 1024;
+  const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+function renderSdxFilesTable() {
+  const emptyState = document.getElementById('sdx-empty-state');
+  const tableContainer = document.getElementById('sdx-files-table-container');
+  const tbody = document.getElementById('sdx-files-tbody');
+  const uploadCountEl = document.getElementById('sdx-uploads-count');
+  const storageUsageEl = document.getElementById('sdx-storage-usage-val');
+
+  // Calculate total bytes
+  let totalBytes = 0;
+  sdxFiles.forEach(f => {
+    totalBytes += (f.size || 0);
+  });
+
+  const usedGb = (totalBytes / (1024 * 1024 * 1024)).toFixed(2);
+  if (storageUsageEl) {
+    storageUsageEl.textContent = `${usedGb} / 10 GB`;
+  }
+  if (uploadCountEl) {
+    uploadCountEl.textContent = sdxFiles.length;
+  }
+
+  if (sdxFiles.length === 0) {
+    if (emptyState) emptyState.style.display = 'block';
+    if (tableContainer) tableContainer.style.display = 'none';
+  } else {
+    if (emptyState) emptyState.style.display = 'none';
+    if (tableContainer) tableContainer.style.display = 'block';
+
+    if (tbody) {
+      tbody.innerHTML = sdxFiles.map((file, idx) => `
+        <tr style="border-bottom:1px solid var(--border-subtle);">
+          <td style="padding:12px 16px; font-weight:600; color:var(--text-primary); display:flex; align-items:center; gap:8px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--text-muted);"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+            <span style="font-family:'JetBrains Mono', monospace; font-size:0.78rem;">${escapeHtml(file.name)}</span>
+          </td>
+          <td style="padding:12px 16px; font-size:0.78rem; color:var(--text-secondary); font-family:'JetBrains Mono', monospace;">
+            ${formatBytes(file.size)}
+          </td>
+          <td style="padding:12px 16px; font-size:0.75rem; color:var(--text-muted);">
+            ${escapeHtml(file.type || 'binary')}
+          </td>
+          <td style="padding:12px 16px; font-size:0.75rem; color:var(--text-muted);">
+            ${file.date}
+          </td>
+          <td style="padding:12px 16px; text-align:right;">
+            <div style="display:inline-flex; gap:6px;">
+              <button class="btn-restore-pill" style="font-size:0.7rem; padding:3px 8px;" onclick="copySdxFileUrl('${escapeHtml(file.name)}')">Copy S3 URL</button>
+              <button class="btn-restore-pill" style="font-size:0.7rem; padding:3px 8px; color:var(--color-rose);" onclick="deleteSdxFile(${idx})">Delete</button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+  }
+}
+
+function copySdxFileUrl(fileName) {
+  const url = `https://storage.kryonhost.net/v1/s3/1_31fcee88/${fileName}`;
+  navigator.clipboard.writeText(url);
+  showVpsToast(`S3 endpoint URL for ${fileName} copied`);
+}
+
+function deleteSdxFile(index) {
+  if (confirm('Delete this object from your SDX bucket?')) {
+    sdxFiles.splice(index, 1);
+    localStorage.setItem('kryon_sdx_files', JSON.stringify(sdxFiles));
+    renderSdxFilesTable();
+    showVpsToast('Object removed from SDX bucket');
+  }
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
 }
 
 document.addEventListener('DOMContentLoaded', initPanel);
