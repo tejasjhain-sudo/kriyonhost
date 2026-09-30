@@ -4,7 +4,7 @@
  * Fallback to realistic local orchestrator for development/testing
  */
 
-const SHULKER_API_KEY = process.env.SHULKER_API_KEY || 'sk_1e14aecda1a06bc22062f8fcb8e90cbde309d29d1e7955378b1aeaf6c130cdc3';
+const SHULKER_API_KEY = process.env.SHULKER_API_KEY || 'sk_f8424466bcdfa98850ede3dfde92f5aaac7133bcfc256eaa090838240683857f';
 const SHULKER_V2_BASE = process.env.SHULKER_V2_BASE || 'https://shulker.in/api/v2/';
 
 class MinecraftService {
