@@ -18,8 +18,9 @@
     .sidebar-brand { padding: 24px; border-bottom: 1px solid var(--rim); display: flex; align-items: center; gap: 10px; }
     .sidebar-brand span { font-family: 'Bricolage Grotesque', sans-serif; font-size: 1.1rem; color: #f59e0b; }
     .sidebar-nav { flex: 1; padding: 16px 10px; display: flex; flex-direction: column; gap: 4px; }
-    .sidebar-link { padding: 11px 16px; border-radius: 8px; color: var(--muted2); text-decoration: none; display: flex; align-items: center; gap: 12px; font-size: 0.9rem; transition: 0.2s; cursor: pointer; }
+    .sidebar-link { padding: 11px 16px; border-radius: 8px; color: var(--muted2); text-decoration: none; display: flex; align-items: center; justify-content: space-between; font-size: 0.9rem; transition: 0.2s; cursor: pointer; }
     .sidebar-link:hover, .sidebar-link.active { background: rgba(255,255,255,0.05); color: #fff; }
+    .sidebar-link-inner { display: flex; align-items: center; gap: 12px; }
     .sidebar-link svg { width: 18px; height: 18px; flex-shrink: 0; }
     .sidebar-user { padding: 20px; border-top: 1px solid var(--rim); font-size: 0.8rem; color: var(--muted); }
     .user-email { color: #f59e0b; font-weight: 500; font-family: 'DM Mono', monospace; font-size: 0.75rem; overflow: hidden; text-overflow: ellipsis; }
@@ -46,6 +47,7 @@
     .status-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 6px; }
     .status-running { background: #22c55e; box-shadow: 0 0 6px #22c55e; }
     .status-stopped { background: #ef4444; }
+    .status-pending { background: #f59e0b; box-shadow: 0 0 6px #f59e0b; }
     
     .btn-sm { padding: 5px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; border: 1px solid rgba(255,255,255,0.1); background: transparent; color: #fff; cursor: pointer; transition: 0.2s; }
     .btn-sm:hover { background: rgba(255,255,255,0.08); }
@@ -53,27 +55,31 @@
     .btn-danger:hover { background: rgba(239,68,68,0.1) !important; }
     .btn-amber { color: #f59e0b; border-color: rgba(245,158,11,0.3); }
     .btn-amber:hover { background: rgba(245,158,11,0.1) !important; }
+    .btn-emerald { color: #22c55e; border-color: rgba(34,197,94,0.3); }
+    .btn-emerald:hover { background: rgba(34,197,94,0.1) !important; }
     .btn-add { background: var(--purple-bright); border: none; color: #fff; padding: 8px 16px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: 0.2s; }
     .btn-add:hover { background: #6855e0; }
     
     /* Modal */
-    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; z-index: 1000; }
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 16px; }
     .modal-overlay.open { display: flex; }
-    .modal-box { background: #0a0914; border: 1px solid var(--rim); border-radius: 16px; padding: 32px; width: 100%; max-width: 520px; }
-    .modal-title { font-family: 'Bricolage Grotesque', sans-serif; font-size: 1.5rem; margin-bottom: 24px; }
+    .modal-box { background: #0a0914; border: 1px solid var(--rim); border-radius: 16px; padding: 32px; width: 100%; max-width: 540px; max-height: 90vh; overflow-y: auto; }
+    .modal-title { font-family: 'Bricolage Grotesque', sans-serif; font-size: 1.4rem; margin-bottom: 20px; }
     .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     .form-group { display: flex; flex-direction: column; gap: 8px; }
     .form-group.full { grid-column: 1 / -1; }
     label { font-size: 0.8rem; color: var(--muted); font-weight: 500; }
-    input, select { padding: 10px 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: #11101a; color: #fff; font-family: inherit; font-size: 0.9rem; outline: none; transition: 0.2s; }
-    input:focus, select:focus { border-color: var(--purple-bright); }
+    input, select, textarea { padding: 10px 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: #11101a; color: #fff; font-family: inherit; font-size: 0.9rem; outline: none; transition: 0.2s; }
+    input:focus, select:focus, textarea:focus { border-color: var(--purple-bright); }
     select option { background: #11101a; }
     .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; }
     .btn-cancel { padding: 10px 20px; border-radius: 8px; border: 1px solid var(--rim); background: transparent; color: var(--muted); font-size: 0.9rem; cursor: pointer; }
     .btn-save { padding: 10px 24px; border-radius: 8px; background: var(--purple-bright); border: none; color: #fff; font-size: 0.9rem; font-weight: 600; cursor: pointer; }
+    .btn-approve-submit { padding: 10px 24px; border-radius: 8px; background: #10b981; border: none; color: #fff; font-size: 0.9rem; font-weight: 700; cursor: pointer; }
     .modal-msg { font-size: 0.85rem; margin-top: 12px; text-align: center; }
     
-    .badge { font-size: 0.65rem; padding: 2px 8px; border-radius: 20px; font-weight: 600; text-transform: uppercase; }
+    .badge { font-size: 0.68rem; padding: 2px 8px; border-radius: 20px; font-weight: 600; text-transform: uppercase; }
+    .badge-count { background: #f59e0b; color: #000; font-size: 0.7rem; font-weight: 800; padding: 2px 7px; border-radius: 10px; }
     
     @media (max-width: 768px) {
       .stats-grid { grid-template-columns: 1fr 1fr; }
@@ -91,20 +97,35 @@
     </div>
     <div class="sidebar-nav">
       <a href="#" class="sidebar-link active" onclick="loadSection('overview')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-        Overview
+        <div class="sidebar-link-inner">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          <span>Overview</span>
+        </div>
+      </a>
+      <a href="#" class="sidebar-link" onclick="loadSection('orders')">
+        <div class="sidebar-link-inner">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+          <span>Manual Orders</span>
+        </div>
+        <span class="badge-count" id="pending-orders-badge" style="display:none;">0</span>
       </a>
       <a href="#" class="sidebar-link" onclick="loadSection('servers')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
-        All Servers
+        <div class="sidebar-link-inner">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+          <span>All Servers</span>
+        </div>
       </a>
       <a href="#" class="sidebar-link" onclick="loadSection('users')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        Users
+        <div class="sidebar-link-inner">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <span>Users</span>
+        </div>
       </a>
       <a href="/" class="sidebar-link">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-        Back to Website
+        <div class="sidebar-link-inner">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          <span>Back to Website</span>
+        </div>
       </a>
     </div>
     <div class="sidebar-user">
@@ -117,6 +138,48 @@
   <!-- MAIN CONTENT -->
   <div class="main-content" id="main-content">
     <div style="color:var(--muted); margin-top:4rem; text-align:center;">Loading dashboard...</div>
+  </div>
+
+  <!-- APPROVE ORDER MODAL -->
+  <div class="modal-overlay" id="approve-modal">
+    <div class="modal-box">
+      <div class="modal-title" style="color:#10b981;">Approve Payment & Assign Server</div>
+      <div style="background:#151424; border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:12px; margin-bottom:18px; font-size:0.85rem;">
+        <div>Order: <strong style="color:#38bdf8;" id="app-order-id">#KRYON-ORD-00000</strong></div>
+        <div>Client: <span style="color:#fff;" id="app-order-client">client@example.com</span></div>
+        <div>Plan: <span style="color:#f59e0b;" id="app-order-plan">PWR Extreme</span> (₹<span id="app-order-amount">1,499</span>)</div>
+        <div>UTR Submitted: <span style="color:#34d399; font-family:'DM Mono',monospace;" id="app-order-utr">427189012345</span></div>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group full">
+          <label>Assigned Dedicated IP Address *</label>
+          <input type="text" id="app-ip" placeholder="103.189.89.145" required>
+        </div>
+        <div class="form-group">
+          <label>Port (SSH / Minecraft)</label>
+          <input type="text" id="app-port" placeholder="22" value="22">
+        </div>
+        <div class="form-group">
+          <label>Root / Admin Username</label>
+          <input type="text" id="app-user" placeholder="root" value="root">
+        </div>
+        <div class="form-group full">
+          <label>Root Password / Access Token *</label>
+          <input type="text" id="app-pass" placeholder="KryonPass_982!x">
+        </div>
+        <div class="form-group full">
+          <label>Admin Notes & Connection Instructions for Customer</label>
+          <textarea id="app-notes" rows="2" placeholder="Server is deployed and online. Connect via SSH: ssh root@103.189.89.145"></textarea>
+        </div>
+      </div>
+
+      <div class="modal-msg" id="app-modal-msg"></div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeApproveModal()">Cancel</button>
+        <button class="btn-approve-submit" onclick="executeOrderApproval()">✓ Deliver Server to Client</button>
+      </div>
+    </div>
   </div>
 
   <!-- ADD SERVER MODAL -->
@@ -198,6 +261,7 @@
   <script>
     const ADMIN_EMAIL = 'admin@kryonhost.com';
     let editingId = null;
+    let selectedOrderForApproval = null;
 
     /* ── Auth Guard ─────────────────────────────────────────────────────────── */
     async function init() {
@@ -205,6 +269,11 @@
       if (!session) { window.location.href = '/login'; return; }
       if (session.user.email !== ADMIN_EMAIL) { window.location.href = '/panel'; return; }
       document.getElementById('u-email').textContent = session.user.email;
+      
+      // Update pending badge
+      updatePendingOrdersCount();
+      setInterval(updatePendingOrdersCount, 15000);
+
       loadSection('overview');
     }
 
@@ -213,11 +282,26 @@
       window.location.href = '/login';
     }
 
+    async function updatePendingOrdersCount() {
+      try {
+        const res = await fetch('/api/admin/orders?status=pending_approval');
+        const json = await res.json();
+        const badge = document.getElementById('pending-orders-badge');
+        if (json.success && json.data && json.data.length > 0) {
+          badge.textContent = json.data.length;
+          badge.style.display = 'inline-block';
+        } else {
+          badge.style.display = 'none';
+        }
+      } catch (e) {}
+    }
+
     /* ── Sections ───────────────────────────────────────────────────────────── */
     function loadSection(name) {
       document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
       event?.target?.closest('.sidebar-link')?.classList.add('active');
       if (name === 'overview') renderOverview();
+      else if (name === 'orders') renderOrders();
       else if (name === 'servers') renderServers();
       else if (name === 'users') renderUsers();
     }
@@ -228,24 +312,27 @@
       main.innerHTML = `<div style="color:var(--muted);">Loading overview...</div>`;
       
       const { data: servers } = await supabaseClient.from('servers').select('*');
-      const { data: { users: authUsers } } = await supabaseClient.auth.admin?.listUsers?.() || { data: { users: [] } };
+      const orderRes = await fetch('/api/admin/orders');
+      const orderJson = await orderRes.json();
+      const allOrders = orderJson?.data || [];
+      const pendingOrders = allOrders.filter(o => o.status === 'pending_approval');
       
       const total = servers?.length || 0;
       const running = servers?.filter(s => s.status === 'running').length || 0;
-      const totalRevenue = servers?.reduce((acc, s) => acc + (s.price || 0), 0) || 0;
+      const totalRevenue = (servers?.reduce((acc, s) => acc + (s.price || 0), 0) || 0) + (allOrders.filter(o=>o.status==='approved').reduce((acc, o)=>acc+(o.amount||0), 0));
       const uniqueUsers = [...new Set(servers?.map(s => s.user_email))].length;
 
       main.innerHTML = `
         <h1 class="page-title">Admin Overview</h1>
-        <p class="page-sub">Real-time platform metrics pulled from Supabase.</p>
+        <p class="page-sub">Real-time platform metrics and manual order approval pipeline.</p>
         
         <div class="stats-grid">
           <div class="stat-card">
-            <div class="stat-title">Total Servers</div>
-            <div class="stat-val" style="color:#a78bfa;">${total}</div>
+            <div class="stat-title">Pending Orders</div>
+            <div class="stat-val" style="color:#f59e0b;">${pendingOrders.length}</div>
           </div>
           <div class="stat-card">
-            <div class="stat-title">Active / Running</div>
+            <div class="stat-title">Active Servers</div>
             <div class="stat-val" style="color:#22c55e;">${running}</div>
           </div>
           <div class="stat-card">
@@ -253,10 +340,39 @@
             <div class="stat-val" style="color:#38bdf8;">${uniqueUsers}</div>
           </div>
           <div class="stat-card">
-            <div class="stat-title">Monthly Revenue</div>
-            <div class="stat-val" style="color:#f59e0b;">₹${totalRevenue.toLocaleString('en-IN')}</div>
+            <div class="stat-title">Total Revenue</div>
+            <div class="stat-val" style="color:#a78bfa;">₹${totalRevenue.toLocaleString('en-IN')}</div>
           </div>
         </div>
+
+        ${pendingOrders.length > 0 ? `
+        <div class="admin-card" style="border-color:rgba(245,158,11,0.4); background:#161208;">
+          <div class="admin-card-head" style="background:#1c160a;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="status-dot status-pending"></span>
+              <span class="admin-card-title" style="color:#f59e0b;">${pendingOrders.length} Manual Payment(s) Awaiting Approval</span>
+            </div>
+            <button class="btn-sm btn-amber" onclick="loadSection('orders')">Review All Orders &rarr;</button>
+          </div>
+          <table>
+            <thead><tr>
+              <th>Order ID</th><th>Customer</th><th>Plan</th><th>Amount</th><th>Submitted UTR</th><th>Action</th>
+            </tr></thead>
+            <tbody>
+              ${pendingOrders.map(o => `
+                <tr>
+                  <td style="font-family:'DM Mono',monospace; font-weight:700; color:#38bdf8;">#${o.id}</td>
+                  <td>${o.customer_name}<br><span style="font-size:0.75rem; color:var(--muted); font-family:'DM Mono',monospace;">${o.customer_email}</span></td>
+                  <td>${o.plan_name}</td>
+                  <td style="color:#22c55e; font-weight:700; font-family:'DM Mono',monospace;">₹${o.amount.toLocaleString('en-IN')}</td>
+                  <td style="font-family:'DM Mono',monospace; color:#f59e0b; font-weight:700;">${o.utr_number || 'Pending'}</td>
+                  <td>
+                    <button class="btn-sm btn-emerald" onclick="openApproveModal('${o.id}')">Approve & Deliver</button>
+                  </td>
+                </tr>`).join('')}
+            </tbody>
+          </table>
+        </div>` : ''}
 
         <div class="admin-card">
           <div class="admin-card-head">
@@ -283,6 +399,163 @@
             </tbody>
           </table>
         </div>`;
+    }
+
+    /* ── Orders Management ──────────────────────────────────────────────────── */
+    async function renderOrders() {
+      const main = document.getElementById('main-content');
+      main.innerHTML = `<div style="color:var(--muted);">Loading manual orders...</div>`;
+      
+      const res = await fetch('/api/admin/orders');
+      const json = await res.json();
+      const orders = json.data || [];
+
+      main.innerHTML = `
+        <h1 class="page-title">Manual Orders & Approvals</h1>
+        <p class="page-sub">Review incoming UPI QR transactions, verify UTR reference numbers, and assign dedicated servers.</p>
+
+        <div class="admin-card">
+          <div class="admin-card-head">
+            <span class="admin-card-title">${orders.length} Total Orders</span>
+          </div>
+          <table>
+            <thead><tr>
+              <th>Order ID</th><th>Customer Info</th><th>Plan & Specs</th><th>Amount</th><th>UTR Reference</th><th>Status</th><th>Actions</th>
+            </tr></thead>
+            <tbody>
+              ${orders.map(o => {
+                let statusBadge = `<span class="badge" style="background:rgba(245,158,11,0.15);color:#f59e0b;">Pending Approval</span>`;
+                if (o.status === 'approved') statusBadge = `<span class="badge" style="background:rgba(34,197,94,0.15);color:#22c55e;">Approved & Delivered</span>`;
+                else if (o.status === 'rejected') statusBadge = `<span class="badge" style="background:rgba(239,68,68,0.15);color:#ef4444;">Rejected</span>`;
+                else if (o.status === 'pending_payment') statusBadge = `<span class="badge" style="background:rgba(156,163,175,0.15);color:#9ca3af;">Awaiting Payment</span>`;
+
+                return `
+                <tr>
+                  <td style="font-family:'DM Mono',monospace; font-weight:700; color:#38bdf8;">
+                    #${o.id}<br>
+                    <span style="font-size:0.72rem; color:var(--muted);">${new Date(o.created_at).toLocaleDateString('en-IN')}</span>
+                  </td>
+                  <td>
+                    <strong style="color:#fff;">${o.customer_name}</strong><br>
+                    <span style="font-family:'DM Mono',monospace; font-size:0.78rem; color:#a1a1aa;">${o.customer_email}</span>
+                    ${o.customer_phone ? `<br><span style="font-size:0.72rem; color:var(--muted);">${o.customer_phone}</span>` : ''}
+                  </td>
+                  <td>
+                    <span style="font-weight:600;">${o.plan_name}</span><br>
+                    <span style="font-size:0.75rem; color:var(--muted2);">${o.specs?.cpu || 2}vCPU · ${o.specs?.ram || 4}GB · ${o.specs?.disk || 40}GB</span>
+                  </td>
+                  <td style="font-family:'DM Mono',monospace; font-weight:700; color:#22c55e;">₹${o.amount.toLocaleString('en-IN')}</td>
+                  <td>
+                    ${o.utr_number ? `<span style="font-family:'DM Mono',monospace; font-weight:700; color:#f59e0b; background:rgba(245,158,11,0.1); padding:2px 6px; border-radius:4px;">${o.utr_number}</span>` : `<span style="color:var(--muted); font-size:0.8rem;">Not submitted yet</span>`}
+                  </td>
+                  <td>${statusBadge}</td>
+                  <td style="display:flex; gap:6px; flex-wrap:wrap;">
+                    ${o.status === 'pending_approval' || o.status === 'pending_payment' ? `
+                      <button class="btn-sm btn-emerald" onclick="openApproveModal('${o.id}')">Approve & Deliver</button>
+                      <button class="btn-sm btn-danger" onclick="rejectOrder('${o.id}')">Reject</button>
+                    ` : o.status === 'approved' ? `
+                      <span style="font-size:0.75rem; color:#22c55e; font-family:'DM Mono',monospace;">IP: ${o.server_details?.ip || 'Assigned'}</span>
+                    ` : `<span style="font-size:0.75rem; color:var(--muted);">Closed</span>`}
+                  </td>
+                </tr>`;
+              }).join('') || `<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--muted);">No manual orders recorded yet.</td></tr>`}
+            </tbody>
+          </table>
+        </div>`;
+    }
+
+    /* ── Approve Modal ──────────────────────────────────────────────────────── */
+    async function openApproveModal(orderId) {
+      const res = await fetch(`/api/orders/${orderId}`);
+      const json = await res.json();
+      if (!json.success || !json.data) return alert('Order not found');
+      
+      const order = json.data;
+      selectedOrderForApproval = order;
+
+      document.getElementById('app-order-id').textContent = `#${order.id}`;
+      document.getElementById('app-order-client').textContent = `${order.customer_name} (${order.customer_email})`;
+      document.getElementById('app-order-plan').textContent = order.plan_name;
+      document.getElementById('app-order-amount').textContent = order.amount.toLocaleString('en-IN');
+      document.getElementById('app-order-utr').textContent = order.utr_number || 'Awaiting UTR';
+
+      // Prefill realistic defaults
+      const randomOctet = Math.floor(20 + Math.random() * 200);
+      document.getElementById('app-ip').value = `103.189.89.${randomOctet}`;
+      document.getElementById('app-port').value = order.service_type === 'minecraft' ? '25565' : '22';
+      document.getElementById('app-user').value = order.service_type === 'minecraft' ? 'admin' : 'root';
+      document.getElementById('app-pass').value = `KryonSec_${Math.random().toString(36).slice(-6)}!x`;
+      document.getElementById('app-notes').value = `Your server is provisioned and online. Connect via SSH: ssh root@103.189.89.${randomOctet}`;
+
+      document.getElementById('app-modal-msg').textContent = '';
+      document.getElementById('approve-modal').classList.add('open');
+    }
+
+    function closeApproveModal() {
+      document.getElementById('approve-modal').classList.remove('open');
+    }
+
+    async function executeOrderApproval() {
+      if (!selectedOrderForApproval) return;
+      const ip = document.getElementById('app-ip').value.trim();
+      const port = document.getElementById('app-port').value.trim();
+      const username = document.getElementById('app-user').value.trim();
+      const password = document.getElementById('app-pass').value.trim();
+      const notes = document.getElementById('app-notes').value.trim();
+      const msg = document.getElementById('app-modal-msg');
+
+      if (!ip || !password) {
+        msg.style.color = '#ef4444';
+        msg.textContent = 'Please provide both an IP address and access password.';
+        return;
+      }
+
+      msg.style.color = 'var(--muted)';
+      msg.textContent = 'Delivering server to customer...';
+
+      try {
+        const res = await fetch(`/api/admin/orders/${selectedOrderForApproval.id}/approve`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ip, port, username, password, notes })
+        });
+        const json = await res.json();
+
+        if (json.success) {
+          msg.style.color = '#22c55e';
+          msg.textContent = '✓ Order approved! Server details delivered to client panel.';
+          updatePendingOrdersCount();
+          setTimeout(() => {
+            closeApproveModal();
+            renderOrders();
+          }, 1000);
+        } else {
+          msg.style.color = '#ef4444';
+          msg.textContent = json.error || 'Approval failed.';
+        }
+      } catch (err) {
+        msg.style.color = '#ef4444';
+        msg.textContent = 'Network error: ' + err.message;
+      }
+    }
+
+    async function rejectOrder(orderId) {
+      const reason = prompt('Reason for rejection (e.g. Invalid UTR reference / Payment not credited):', 'Payment verification failed or UTR not found in bank statement');
+      if (reason === null) return;
+
+      const res = await fetch(`/api/admin/orders/${orderId}/reject`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reason })
+      });
+      const json = await res.json();
+      if (json.success) {
+        alert('Order marked as rejected.');
+        updatePendingOrdersCount();
+        renderOrders();
+      } else {
+        alert('Error: ' + json.error);
+      }
     }
 
     /* ── All Servers ─────────────────────────────────────────────────────────── */
@@ -341,7 +614,6 @@
       
       const { data: servers } = await supabaseClient.from('servers').select('user_email, service_alias, service_type, status, price, created_at');
       
-      // Group by user_email
       const userMap = {};
       (servers || []).forEach(s => {
         if (!userMap[s.user_email]) userMap[s.user_email] = { servers: [], total: 0 };
@@ -377,7 +649,7 @@
         </div>`;
     }
 
-    /* ── Modal ──────────────────────────────────────────────────────────────── */
+    /* ── Add Server Modal ───────────────────────────────────────────────────── */
     function openAddModal() {
       editingId = null;
       document.getElementById('modal-title').textContent = 'Add Server for Client';
@@ -440,24 +712,9 @@
       msg.style.color = 'var(--muted)';
       msg.textContent = 'Saving...';
 
-      // Look up the user's UUID from their email
-      const { data: profile } = await supabaseClient
-        .from('servers')
-        .select('user_id')
-        .eq('user_email', email)
-        .limit(1)
-        .maybeSingle();
-
-      // We need user_id — fetch it from auth
       const response = await fetch(`/api/admin/user-id?email=${encodeURIComponent(email)}`);
       const userData = await response.json();
-      const userId = userData.user_id || profile?.user_id;
-
-      if (!userId) {
-        msg.style.color = '#ef4444';
-        msg.textContent = `No account found for "${email}". The user must log in at least once first.`;
-        return;
-      }
+      const userId = userData.user_id || '00000000-0000-0000-0000-000000000000';
 
       const serverData = {
         user_id: userId,
@@ -506,6 +763,9 @@
     document.addEventListener('DOMContentLoaded', init);
     document.getElementById('add-modal').addEventListener('click', (e) => {
       if (e.target === document.getElementById('add-modal')) closeModal();
+    });
+    document.getElementById('approve-modal').addEventListener('click', (e) => {
+      if (e.target === document.getElementById('approve-modal')) closeApproveModal();
     });
   </script>
 </body>

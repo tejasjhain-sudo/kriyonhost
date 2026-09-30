@@ -18,6 +18,7 @@ const shulker = require('./services/shulkerService');
 const minecraft = require('./services/minecraftService');
 const ai = require('./services/aiService');
 const storage = require('./services/storageService');
+const orderService = require('./services/orderService');
 
 // Supabase admin client (service_role — server-side only, never exposed to browser)
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdxeGFjd3lidW1jcm9hcmdud2txIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc5MDYxNzUzOSwiZXhwIjoyMTA2MTkzNTM5fQ.5xea24fdKrZBXYUDlGjw6TB4SzXbmkDP_rtrP0NIwB4';
@@ -683,10 +684,145 @@ app.delete('/api/v1/storage/files/:filename', (req, res) => {
   }
 });
 
+// ─── Manual Orders & QR UPI Payment Endpoints ─────────────────────────────────
+app.post('/api/orders/create', (req, res) => {
+  try {
+    const { customer_name, customer_email, customer_phone, service_type, plan_name, specs, amount } = req.body;
+    if (!customer_email || !amount) {
+      return res.status(400).json({ success: false, error: 'Customer email and amount are required' });
+    }
+
+    const order = orderService.createOrder({
+      customer_name,
+      customer_email,
+      customer_phone,
+      service_type,
+      plan_name,
+      specs,
+      amount
+    });
+
+    res.json({ success: true, data: order });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.post('/api/orders/:id/pay', (req, res) => {
+  try {
+    const { utr_number, note } = req.body;
+    if (!utr_number || String(utr_number).trim().length < 4) {
+      return res.status(400).json({ success: false, error: 'Please enter a valid 12-digit UPI reference / UTR number' });
+    }
+
+    const updated = orderService.submitPaymentProof(req.params.id, utr_number, note);
+    if (!updated) {
+      return res.status(404).json({ success: false, error: 'Order not found' });
+    }
+
+    res.json({ success: true, message: 'Payment submitted for verification', data: updated });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.get('/api/orders/:id', (req, res) => {
+  try {
+    const order = orderService.getOrder(req.params.id);
+    if (!order) return res.status(404).json({ success: false, error: 'Order not found' });
+    res.json({ success: true, data: order });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.get('/api/orders', (req, res) => {
+  try {
+    const { email } = req.query;
+    if (!email) return res.status(400).json({ success: false, error: 'Email parameter required' });
+    const orders = orderService.getOrdersByUser(email);
+    res.json({ success: true, data: orders });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// Admin routes for manual order review & approval
+app.get('/api/admin/orders', (req, res) => {
+  try {
+    const { status } = req.query;
+    const orders = orderService.getAllOrders(status);
+    res.json({ success: true, data: orders });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.post('/api/admin/orders/:id/approve', async (req, res) => {
+  try {
+    const { ip, port, username, password, os, region, notes } = req.body;
+    if (!ip) {
+      return res.status(400).json({ success: false, error: 'Server IP address is required for approval' });
+    }
+
+    const order = orderService.approveOrder(req.params.id, {
+      ip, port, username, password, os, region, notes
+    });
+
+    if (!order) {
+      return res.status(404).json({ success: false, error: 'Order not found' });
+    }
+
+    // Attempt to automatically provision/insert into Supabase 'servers' table so user sees it in their panel
+    try {
+      const { data: userData } = await supabaseAdmin.auth.admin.listUsers();
+      const user = userData?.users?.find(u => u.email === order.customer_email);
+      const userId = user ? user.id : '00000000-0000-0000-0000-000000000000';
+
+      const serverData = {
+        user_id: userId,
+        user_email: order.customer_email,
+        service_alias: order.specs?.server_name || order.plan_name || 'Cloud Server',
+        service_type: order.service_type || 'vps',
+        service_tier: order.specs?.tier || 'std',
+        status: 'running',
+        cpu_cores: Number(order.specs?.cpu) || 2,
+        ram_gb: Number(order.specs?.ram) || 4,
+        disk_gb: Number(order.specs?.disk) || 40,
+        ip: ip,
+        region: region || order.specs?.region || 'India (Mumbai)',
+        os: os || order.specs?.os || 'Ubuntu 24.04 LTS',
+        price: order.amount || 0
+      };
+
+      await supabaseAdmin.from('servers').insert([serverData]);
+      console.log(`[Order Approved] Server auto-created in Supabase for ${order.customer_email}`);
+    } catch (dbErr) {
+      console.warn('[Order Approval DB Warning] Could not insert into Supabase:', dbErr.message);
+    }
+
+    res.json({ success: true, message: 'Order approved and server delivered to customer', data: order });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.post('/api/admin/orders/:id/reject', (req, res) => {
+  try {
+    const { reason } = req.body;
+    const order = orderService.rejectOrder(req.params.id, reason);
+    if (!order) return res.status(404).json({ success: false, error: 'Order not found' });
+    res.json({ success: true, message: 'Order rejected', data: order });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 // Wildcard route to serve index.html for SPA
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
+
 
 if (require.main === module && !process.env.VERCEL && !process.env.NOW_REGION) {
   app.listen(PORT, () => {

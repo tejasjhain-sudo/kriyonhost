@@ -411,13 +411,18 @@
   </div>
 
   <script src="/js/app.js"></script>
+  <script src="/js/checkout.js"></script>
   <script>
     function orderDedicated(planName, price) {
-      document.getElementById('modal-dedicated-plan').textContent = planName;
-      document.getElementById('modal-dedicated-price').textContent = `${price} / month`;
-      document.getElementById('dedicated-order-form').style.display = 'block';
-      document.getElementById('dedicated-order-done').style.display = 'none';
-      document.getElementById('dedicated-order-modal').style.display = 'flex';
+      const cleanPrice = Number(String(price).replace(/[^0-9]/g, '')) || 7499;
+      if (window.KryonCheckout) {
+        window.KryonCheckout.open({
+          name: `Dedicated Bare-Metal (${planName})`,
+          price: cleanPrice,
+          type: 'dedicated',
+          region: 'India (Mumbai Equinix MB1)'
+        });
+      }
     }
 
     function closeDedicatedModal() {
@@ -429,5 +434,6 @@
       document.getElementById('dedicated-order-done').style.display = 'block';
     }
   </script>
+
 </body>
 </html>

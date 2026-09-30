@@ -671,6 +671,7 @@
 
   <!-- Scripts -->
   <script src="/js/app.js"></script>
+  <script src="/js/checkout.js"></script>
   <script>
     let vpsCurrentTier = 'std';
     const VPS_RATES = {
@@ -731,20 +732,27 @@
     }
 
     function openVpsDeployModal() {
-      const cpu = document.getElementById('vps-slider-cpu').value;
-      const ram = document.getElementById('vps-slider-ram').value;
-      const disk = document.getElementById('vps-slider-disk').value;
-      const price = document.getElementById('vps-price-display').textContent;
+      const cpu = Number(document.getElementById('vps-slider-cpu').value);
+      const ram = Number(document.getElementById('vps-slider-ram').value);
+      const disk = Number(document.getElementById('vps-slider-disk').value);
+      const rawPrice = document.getElementById('vps-price-display').textContent.replace(/[^0-9]/g, '');
+      const price = Number(rawPrice) || 1499;
       const tierName = VPS_RATES[vpsCurrentTier].name;
 
-      document.getElementById('modal-spec-summary').textContent = `${tierName} · ${cpu} vCPU · ${ram}GB RAM · ${disk}GB NVMe`;
-      document.getElementById('modal-cost-summary').textContent = `${price} / month`;
-
-      document.getElementById('deploy-step-config').style.display = 'block';
-      document.getElementById('deploy-step-progress').style.display = 'none';
-      document.getElementById('deploy-step-done').style.display = 'none';
-      document.getElementById('vps-deploy-modal').style.display = 'flex';
+      if (window.KryonCheckout) {
+        window.KryonCheckout.open({
+          name: tierName,
+          price: price,
+          type: 'vps',
+          tier: vpsCurrentTier,
+          cpu: cpu,
+          ram: ram,
+          disk: disk,
+          region: 'India (Mumbai Tier-4)'
+        });
+      }
     }
+
 
     function closeVpsDeployModal() {
       document.getElementById('vps-deploy-modal').style.display = 'none';

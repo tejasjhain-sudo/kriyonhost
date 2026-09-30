@@ -415,13 +415,18 @@
   </div>
 
   <script src="/js/app.js"></script>
+  <script src="/js/checkout.js"></script>
   <script>
     function orderDevspace(planName, price) {
-      document.getElementById('modal-devspace-plan').textContent = `DevSpace ${planName}`;
-      document.getElementById('modal-devspace-price').textContent = `${price} / month`;
-      document.getElementById('devspace-form').style.display = 'block';
-      document.getElementById('devspace-done').style.display = 'none';
-      document.getElementById('devspace-order-modal').style.display = 'flex';
+      const cleanPrice = Number(String(price).replace(/[^0-9]/g, '')) || 99;
+      if (window.KryonCheckout) {
+        window.KryonCheckout.open({
+          name: `DevSpace (${planName})`,
+          price: cleanPrice,
+          type: 'devspace',
+          region: 'India (Mumbai Tier-4)'
+        });
+      }
     }
 
     function closeDevspaceModal() {
@@ -433,5 +438,6 @@
       document.getElementById('devspace-done').style.display = 'block';
     }
   </script>
+
 </body>
 </html>

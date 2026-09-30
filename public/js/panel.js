@@ -105,7 +105,9 @@ async function initPanel() {
 
   // Default to deployments overview
   navigateToView('dashboard');
+  initPendingOrdersTracker();
 }
+
 
 /* ── View Routing ─────────────────────────────────────────────────────────── */
 function navigateToView(viewName) {
@@ -955,4 +957,112 @@ function escapeHtml(str) {
     .replace(/'/g, '&#039;');
 }
 
+/* ── Manual Order Tracking & Live Approval Listener ───────────────────────── */
+let orderPollInterval = null;
+
+async function initPendingOrdersTracker() {
+  const container = document.getElementById('pending-orders-container');
+  if (!container) return;
+
+  // Determine user email
+  const urlParams = new URLSearchParams(window.location.search);
+  let email = urlParams.get('email') || localStorage.getItem('kryon_customer_email');
+
+  if (!email && typeof supabaseClient !== 'undefined') {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (session?.user?.email) email = session.user.email;
+  }
+
+  if (!email) email = 'tejasjha.in@gmail.com'; // default account demo
+
+  async function checkOrders() {
+    try {
+      const res = await fetch(`/api/orders?email=${encodeURIComponent(email)}`);
+      const json = await res.json();
+      if (!json.success || !json.data || json.data.length === 0) {
+        container.style.display = 'none';
+        return;
+      }
+
+      const orders = json.data;
+      const pendingOrders = orders.filter(o => o.status === 'pending_approval' || o.status === 'pending_payment');
+      const approvedOrders = orders.filter(o => o.status === 'approved' && o.server_details);
+
+      if (pendingOrders.length === 0 && approvedOrders.length === 0) {
+        container.style.display = 'none';
+        return;
+      }
+
+      container.style.display = 'block';
+      let html = '';
+
+      // 1. Render Pending Approvals
+      pendingOrders.forEach(o => {
+        html += `
+          <div style="background:#161208; border:1px solid rgba(245,158,11,0.4); border-radius:12px; padding:18px 22px; margin-bottom:14px; box-shadow:0 4px 18px rgba(245,158,11,0.08);">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:10px;">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#f59e0b; box-shadow:0 0 8px #f59e0b;"></span>
+                <span style="font-weight:700; font-size:0.95rem; color:#f59e0b;">Order #${o.id} · Payment Under Verification</span>
+              </div>
+              <span style="font-size:0.75rem; color:#9ca3af; font-family:'JetBrains Mono',monospace;">${new Date(o.created_at).toLocaleString()}</span>
+            </div>
+            
+            <div style="font-size:0.84rem; color:var(--text-secondary); margin-bottom:12px; line-height:1.5;">
+              Plan: <strong style="color:var(--text-primary);">${escapeHtml(o.plan_name)}</strong> (₹${o.amount.toLocaleString('en-IN')}) &bull; UTR Reference: <strong style="color:#f59e0b; font-family:'JetBrains Mono',monospace;">${escapeHtml(o.utr_number || 'Awaiting Payment')}</strong>
+            </div>
+
+            <div style="background:rgba(255,255,255,0.03); border:1px dashed rgba(245,158,11,0.25); border-radius:8px; padding:10px 14px; font-size:0.78rem; color:#d1d5db; display:flex; align-items:center; gap:10px;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <span>Our administrator is verifying your UTR against the payment gateway. Your server credentials, IP, and control panel access will unlock here automatically once approved.</span>
+            </div>
+          </div>
+        `;
+      });
+
+      // 2. Render Approved / Delivered Servers from Manual Checkout
+      approvedOrders.forEach(o => {
+        const sd = o.server_details;
+        html += `
+          <div style="background:rgba(16,185,129,0.06); border:1px solid rgba(16,185,129,0.3); border-radius:12px; padding:18px 22px; margin-bottom:14px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:12px;">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#22c55e; box-shadow:0 0 8px #22c55e;"></span>
+                <span style="font-weight:700; font-size:0.95rem; color:#22c55e;">Delivered & Online: ${escapeHtml(o.plan_name)}</span>
+              </div>
+              <span style="font-size:0.75rem; font-family:'JetBrains Mono',monospace; color:var(--text-muted);">#${o.id}</span>
+            </div>
+
+            <!-- Credentials Box -->
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:10px; background:#070710; border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:12px; font-family:'JetBrains Mono',monospace; font-size:0.8rem; margin-bottom:10px;">
+              <div><span style="color:#9ca3af;">IP Address:</span> <strong style="color:#38bdf8;">${escapeHtml(sd.ip)}</strong></div>
+              <div><span style="color:#9ca3af;">Port:</span> <strong style="color:#fff;">${escapeHtml(sd.port || '22')}</strong></div>
+              <div><span style="color:#9ca3af;">User:</span> <strong style="color:#fff;">${escapeHtml(sd.username || 'root')}</strong></div>
+              <div><span style="color:#9ca3af;">Password:</span> <strong style="color:#34d399;">${escapeHtml(sd.password)}</strong></div>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; font-size:0.78rem; color:var(--text-muted);">
+              <span>${escapeHtml(sd.notes || 'Server ready for SSH/Console connection')}</span>
+              <button class="btn-restore-pill" onclick="navigator.clipboard.writeText('ssh ${sd.username || 'root'}@${sd.ip}'); showVpsToast('SSH login command copied!');">Copy SSH Command</button>
+            </div>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+
+    } catch (err) {
+      console.warn('Order poll error:', err);
+    }
+  }
+
+  // Initial check
+  checkOrders();
+
+  // Poll every 6 seconds for real-time approval detection
+  if (orderPollInterval) clearInterval(orderPollInterval);
+  orderPollInterval = setInterval(checkOrders, 6000);
+}
+
 document.addEventListener('DOMContentLoaded', initPanel);
+

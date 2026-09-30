@@ -484,12 +484,24 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="/js/supabase-config.js"></script>
   <script src="/js/app.js"></script>
+  <script src="/js/checkout.js"></script>
   <script>
     let selectedTunnelKey = 'pro';
     let selectedTunnelName = 'Pro';
     let selectedTunnelPrice = '₹1,499';
 
     function orderTunnel(tierKey, planName, price) {
+      const cleanPrice = Number(String(price).replace(/[^0-9]/g, '')) || 499;
+      if (window.KryonCheckout) {
+        window.KryonCheckout.open({
+          name: `Anycast Tunnel (${planName})`,
+          price: cleanPrice,
+          type: 'tunnel',
+          region: 'India (Mumbai Anycast PoP)'
+        });
+        return;
+      }
+
       selectedTunnelKey = tierKey.toLowerCase();
       selectedTunnelName = planName;
       selectedTunnelPrice = price;
@@ -503,6 +515,7 @@
     }
 
     function closeTunnelModal() {
+
       document.getElementById('tunnel-order-modal').style.display = 'none';
     }
 

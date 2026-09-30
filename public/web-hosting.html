@@ -407,13 +407,18 @@
   </div>
 
   <script src="/js/app.js"></script>
+  <script src="/js/checkout.js"></script>
   <script>
     function orderWebHosting(planName, price) {
-      document.getElementById('modal-web-plan').textContent = planName;
-      document.getElementById('modal-web-price').textContent = `${price} / month`;
-      document.getElementById('web-order-form').style.display = 'block';
-      document.getElementById('web-order-done').style.display = 'none';
-      document.getElementById('web-order-modal').style.display = 'flex';
+      const cleanPrice = Number(String(price).replace(/[^0-9]/g, '')) || 199;
+      if (window.KryonCheckout) {
+        window.KryonCheckout.open({
+          name: `Web Hosting (${planName})`,
+          price: cleanPrice,
+          type: 'web-hosting',
+          region: 'India (Mumbai Tier-4)'
+        });
+      }
     }
 
     function closeWebModal() {
@@ -425,5 +430,6 @@
       document.getElementById('web-order-done').style.display = 'block';
     }
   </script>
+
 </body>
 </html>

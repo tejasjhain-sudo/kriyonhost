@@ -1,0 +1,71 @@
+[
+  {
+    "id": "KRYON-ORD-36873",
+    "created_at": "2026-09-30T07:52:23.142Z",
+    "expires_at": "2026-09-30T07:57:23.142Z",
+    "customer_name": "Rahul Sharma",
+    "customer_email": "rahul@example.com",
+    "customer_phone": "+91 98111 22334",
+    "service_type": "vps",
+    "plan_name": "PWR Extreme (Ryzen 9 5.7GHz)",
+    "specs": {
+      "cpu": 6,
+      "ram": 16,
+      "disk": 120,
+      "tier": "pwr"
+    },
+    "amount": 1799,
+    "currency": "INR",
+    "payment_method": "UPI Manual QR",
+    "upi_id": "tejasjha.in@okaxis",
+    "utr_number": "429018274619",
+    "status": "approved",
+    "server_details": {
+      "ip": "103.189.89.188",
+      "port": "22",
+      "username": "root",
+      "password": "KryonPass_921!x",
+      "os": "Ubuntu 24.04 LTS",
+      "region": "India (Mumbai)",
+      "allocated_at": "2026-09-30T07:52:23.151Z",
+      "notes": "Connect via SSH: ssh root@103.189.89.188"
+    },
+    "admin_notes": "Verified in ICICI bank UPI portal",
+    "payment_submitted_at": "2026-09-30T07:52:23.150Z",
+    "customer_note": "Paid via Google Pay",
+    "approved_at": "2026-09-30T07:52:23.151Z"
+  },
+  {
+    "id": "KRYON-ORD-10482",
+    "created_at": "2026-09-29T07:52:23.118Z",
+    "expires_at": "2026-09-29T07:57:23.126Z",
+    "customer_name": "Tejas Jha",
+    "customer_email": "tejasjha.in@gmail.com",
+    "customer_phone": "+91 98765 43210",
+    "service_type": "vps",
+    "plan_name": "PWR Extreme (Ryzen 9 5.7GHz)",
+    "specs": {
+      "cpu": 6,
+      "ram": 16,
+      "disk": 120,
+      "tier": "pwr",
+      "os": "Ubuntu 24.04 LTS",
+      "region": "India (Mumbai Tier-4)",
+      "server_name": "srv-ender-alpha"
+    },
+    "amount": 2499,
+    "payment_method": "UPI Manual QR",
+    "utr_number": "427189012345",
+    "status": "approved",
+    "server_details": {
+      "ip": "103.189.89.44",
+      "port": "22",
+      "username": "root",
+      "password": "EnderPass_892!x",
+      "os": "Ubuntu 24.04 LTS",
+      "region": "India (Mumbai)",
+      "allocated_at": "2026-09-29T08:52:23.126Z",
+      "notes": "Cloud VM online. Connect via SSH: ssh root@103.189.89.44"
+    }
+  }
+]

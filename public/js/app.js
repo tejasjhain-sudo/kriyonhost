@@ -324,54 +324,44 @@ function updateQuote() {
 
 // ─── Instant Deploy ────────────────────────────────────────────────────────
 async function deployConfiguredServer() {
-  const deployBtn = document.getElementById('btn-deploy-server');
-  if (deployBtn) {
-    deployBtn.disabled = true;
-    deployBtn.innerHTML = `<span class="live-pulse" style="background:#fff;"></span> Provisioning Node...`;
-  }
+  const priceDisplay = document.getElementById('quote-retail-price');
+  const rawPrice = priceDisplay ? priceDisplay.textContent.replace(/[^0-9]/g, '') : '847';
+  const price = Number(rawPrice) || 847;
+  const tier = TIER_RATES[currentTier];
 
-  try {
-    const res = await fetch('/api/servers/deploy', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        tier: currentTier,
-        cpu_cores: cpuCores,
-        ram_gb: ramGb,
-        disk_gb: diskGb,
-        os: currentOS,
-        region: currentRegion,
-        alias: currentMode === 'minecraft' ? `Minecraft SMP (${currentTier.toUpperCase()})` : `Production VPS (${currentTier.toUpperCase()})`,
-        type: currentMode === 'minecraft' ? 'minecraft' : 'vps'
-      })
+  if (window.KryonCheckout) {
+    window.KryonCheckout.open({
+      name: currentMode === 'minecraft' ? `Minecraft Server (${tier.name})` : `Cloud VPS (${tier.name})`,
+      price: price,
+      type: currentMode === 'minecraft' ? 'minecraft' : 'vps',
+      tier: currentTier,
+      cpu: cpuCores,
+      ram: ramGb,
+      disk: diskGb,
+      region: currentRegion || 'India (Mumbai Tier-4)',
+      os: currentOS
     });
-
-    const data = await res.json();
-    if (data.success) {
-      showToast(`🚀 Server provisioned in 2.6s! Assigned IP: ${data.data.ip}`);
-      await fetchServers();
-      const panel = document.getElementById('control-panel-section');
-      if (panel) panel.scrollIntoView({ behavior: 'smooth' });
-    } else {
-      showToast(`Notice: ${data.message || 'Server provisioned'}`);
-    }
-  } catch (err) {
-    showToast('Notice: Server provisioned successfully.');
-  } finally {
-    if (deployBtn) {
-      deployBtn.disabled = false;
-      deployBtn.innerHTML = `Deploy Instance Now <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>`;
-    }
+    return;
   }
 }
 
 // ─── Deploy Turnkey Product (Tunnels, Web, DevSpace) ───────────────────────
 function orderTurnkey(productName, price) {
-  showToast(`Order initiated for ${productName} (₹${price}/mo). Preparing Anycast routing...`);
-  setTimeout(() => {
-    showToast(`✅ ${productName} provisioned! Ready for traffic.`);
-  }, 1600);
+  if (window.KryonCheckout) {
+    window.KryonCheckout.open({
+      name: productName,
+      price: Number(price) || 499,
+      type: 'vps',
+      tier: 'std',
+      cpu: 2,
+      ram: 4,
+      disk: 40,
+      region: 'India (Mumbai Tier-4)'
+    });
+    return;
+  }
 }
+
 
 // ─── Pre-Configured Plans Handler ──────────────────────────────────────────
 function selectPlan(tier, cpu, ram, disk) {
