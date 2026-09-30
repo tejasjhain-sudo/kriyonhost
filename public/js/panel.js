@@ -1844,7 +1844,11 @@ function injectApprovedServiceToDashboard(o) {
           <div style="font-size:0.72rem; color:var(--text-muted);">${disk} GB NVMe Gen4</div>
         </div>
         <div>
-          <span class="status-badge-live"><span class="status-dot-solid"></span> Running</span>
+          ${o.status === 'suspended' ? `
+            <span class="badge" style="background:rgba(239,68,68,0.15); color:#ef4444; padding:3px 8px; border-radius:12px; font-weight:700; display:inline-flex; align-items:center; gap:4px;"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#ef4444;"></span> Suspended</span>
+          ` : `
+            <span class="status-badge-live"><span class="status-dot-solid"></span> Running</span>
+          `}
         </div>
         <div style="display:flex; justify-content:flex-end;">
           <button class="btn-restore-pill" style="font-weight:600; font-size:0.75rem; padding:4px 12px;" onclick="event.stopPropagation(); openSpecificVps('${instanceId}', '${instanceName}', '${ip}', '${os}')">Manage &rarr;</button>

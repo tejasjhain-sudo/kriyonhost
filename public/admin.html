@@ -145,7 +145,7 @@
       <a href="#" class="sidebar-link" onclick="loadSection('servers')">
         <div class="sidebar-link-inner">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
-          <span>All Servers</span>
+          <span>All Services & Suspensions</span>
         </div>
       </a>
       <a href="#" class="sidebar-link" onclick="loadSection('users')">
@@ -385,6 +385,94 @@
       <div class="modal-actions">
         <button class="btn-cancel" onclick="closeModal()">Cancel</button>
         <button class="btn-save" onclick="saveServer()">Save Server</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- AUTO-SUSPEND SCHEDULE MODAL -->
+  <div class="modal-overlay" id="auto-suspend-modal">
+    <div class="modal-box" style="max-width: 500px;">
+      <div class="modal-title" style="color:#f59e0b; display:flex; align-items:center; gap:8px;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span>Schedule Auto-Suspension</span>
+      </div>
+
+      <div style="background:#151424; border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:14px; margin-bottom:18px; font-size:0.85rem;">
+        <div style="margin-bottom:4px;">Service: <strong style="color:#fff;" id="as-service-name">-</strong></div>
+        <div style="margin-bottom:4px;">Client: <span style="color:#38bdf8; font-family:'DM Mono',monospace;" id="as-client-email">-</span></div>
+        <div style="margin-bottom:4px;">IP / Node: <span style="color:var(--muted2); font-family:'DM Mono',monospace;" id="as-service-ip">-</span></div>
+        <div>Current Status: <span id="as-current-status-badge">-</span></div>
+      </div>
+
+      <!-- Quick Preset Buttons -->
+      <div style="margin-bottom:16px;">
+        <label style="display:block; font-size:0.8rem; color:var(--muted); margin-bottom:8px;">Quick Expiry Presets:</label>
+        <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:8px;">
+          <button type="button" class="btn-sm" onclick="setPresetSuspendTime(2)" style="padding:7px; font-size:0.75rem; text-align:center;">+ 2 Hours</button>
+          <button type="button" class="btn-sm" onclick="setPresetSuspendTime(24)" style="padding:7px; font-size:0.75rem; text-align:center;">+ 24 Hours</button>
+          <button type="button" class="btn-sm" onclick="setPresetSuspendTime(24*7)" style="padding:7px; font-size:0.75rem; text-align:center;">+ 7 Days</button>
+          <button type="button" class="btn-sm" onclick="setPresetSuspendTime(24*30)" style="padding:7px; font-size:0.75rem; text-align:center;">+ 30 Days</button>
+        </div>
+      </div>
+
+      <div class="form-group full" style="margin-bottom:16px;">
+        <label>Exact Auto-Suspend Date & Time *</label>
+        <input type="datetime-local" id="as-datetime" style="width:100%; color:#fff;">
+      </div>
+
+      <div class="form-group full" style="margin-bottom:16px;">
+        <label>Suspension Reason / Internal Note</label>
+        <input type="text" id="as-reason" placeholder="e.g. Monthly billing cycle due / Trial expiration">
+      </div>
+
+      <div class="modal-msg" id="as-modal-msg"></div>
+
+      <div class="modal-actions" style="display:flex; justify-content:space-between; align-items:center;">
+        <button type="button" class="btn-sm btn-danger" id="as-btn-clear" onclick="clearAutoSuspendSchedule()" style="padding:8px 12px;">Remove Schedule</button>
+        <div style="display:flex; gap:8px;">
+          <button type="button" class="btn-cancel" onclick="closeAutoSuspendModal()">Cancel</button>
+          <button type="button" class="btn-save" style="background:#f59e0b; color:#000;" onclick="saveAutoSuspendSchedule()">Save Schedule</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MANUAL SUSPEND CONFIRMATION MODAL -->
+  <div class="modal-overlay" id="manual-suspend-modal">
+    <div class="modal-box" style="max-width: 480px;">
+      <div class="modal-title" style="color:#ef4444; display:flex; align-items:center; gap:8px;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span id="ms-modal-title">Suspend Service</span>
+      </div>
+
+      <p style="color:var(--muted); font-size:0.88rem; margin-bottom:16px;" id="ms-modal-desc">
+        Are you sure you want to suspend this service? The client will see a suspension notice in their dashboard.
+      </p>
+
+      <div style="background:#151424; border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:14px; margin-bottom:18px; font-size:0.85rem;">
+        <div style="margin-bottom:4px;">Service: <strong style="color:#fff;" id="ms-service-name">-</strong></div>
+        <div style="margin-bottom:4px;">Client: <span style="color:#38bdf8; font-family:'DM Mono',monospace;" id="ms-client-email">-</span></div>
+        <div>IP: <span style="color:var(--muted2); font-family:'DM Mono',monospace;" id="ms-service-ip">-</span></div>
+      </div>
+
+      <div class="form-group full" style="margin-bottom:16px;" id="ms-reason-group">
+        <label>Reason for Suspension</label>
+        <select id="ms-reason-select" onchange="handleSuspendReasonChange(this.value)" style="margin-bottom:8px;">
+          <option value="Overdue Invoice / Payment Pending">Overdue Invoice / Payment Pending</option>
+          <option value="Resource & CPU Abuse">Resource & CPU Abuse</option>
+          <option value="Terms of Service Violation">Terms of Service Violation</option>
+          <option value="Client Requested Suspension">Client Requested Suspension</option>
+          <option value="Scheduled Maintenance">Scheduled Maintenance</option>
+          <option value="custom">Custom Reason...</option>
+        </select>
+        <input type="text" id="ms-reason-custom" placeholder="Enter custom suspension reason..." style="display:none; width:100%;">
+      </div>
+
+      <div class="modal-msg" id="ms-modal-msg"></div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel" onclick="closeManualSuspendModal()">Cancel</button>
+        <button type="button" class="btn-sm btn-danger" id="ms-btn-action" style="padding:9px 18px; font-size:0.88rem;" onclick="executeManualSuspendAction()">Confirm Suspension</button>
       </div>
     </div>
   </div>
@@ -894,53 +982,536 @@
       }
     }
 
-    /* ── All Servers ─────────────────────────────────────────────────────────── */
+    /* ── All Services & Server Management & Suspensions ──────────────────────── */
+    let allServicesCache = [];
+    let currentServiceFilter = 'all';
+    let currentServiceSearch = '';
+    let currentAutoSuspendServiceId = null;
+    let currentManualSuspendServiceId = null;
+    let currentManualSuspendAction = 'suspend';
+
     async function renderServers() {
       const main = document.getElementById('main-content');
-      main.innerHTML = `<div style="color:var(--muted);">Loading servers...</div>`;
+      main.innerHTML = `<div style="color:var(--muted); text-align:center; margin-top:2rem;">Loading client services & servers...</div>`;
       
-      const { data: servers, error } = await supabaseClient.from('servers').select('*').order('created_at', { ascending: false });
-      if (error) { main.innerHTML = `<div style="color:#ef4444;">Error: ${error.message}</div>`; return; }
+      try {
+        let services = [];
+        try {
+          const res = await fetch(`/api/admin/services?_t=${Date.now()}`, { cache: 'no-store' });
+          const json = await res.json();
+          if (json.success && Array.isArray(json.data)) {
+            services = json.data;
+          }
+        } catch (e) {
+          console.warn('API services fetch error, falling back to Supabase:', e);
+        }
+
+        // Fallback or blend with Supabase servers if needed
+        if (services.length === 0 && typeof supabaseClient !== 'undefined') {
+          const { data: dbServers } = await supabaseClient.from('servers').select('*').order('created_at', { ascending: false });
+          if (dbServers) {
+            services = dbServers.map(s => ({
+              id: s.id,
+              name: s.service_alias || 'Cloud Server',
+              user_email: s.user_email || '-',
+              user_id: s.user_id,
+              service_type: s.service_type || 'vps',
+              service_tier: s.service_tier || 'std',
+              status: s.status || 'running',
+              ip: s.ip || '103.189.89.x',
+              region: s.region || 'India (Mumbai)',
+              os: s.os || 'Ubuntu 24.04 LTS',
+              cpu_cores: s.cpu_cores || 2,
+              ram_gb: s.ram_gb || 4,
+              disk_gb: s.disk_gb || 40,
+              price: Number(s.price) || 0,
+              created_at: s.created_at || new Date().toISOString(),
+              auto_suspend_at: s.auto_suspend_at || null,
+              suspended_at: s.suspended_at || null,
+              suspension_reason: s.suspension_reason || null,
+              source: 'supabase'
+            }));
+          }
+        }
+
+        allServicesCache = services;
+        buildServicesView(main);
+      } catch (err) {
+        main.innerHTML = `<div style="color:#ef4444; padding:20px;">Error loading services: ${err.message}</div>`;
+      }
+    }
+
+    function buildServicesView(main) {
+      const services = allServicesCache;
+      const totalCount = services.length;
+      const runningCount = services.filter(s => s.status === 'running').length;
+      const suspendedCount = services.filter(s => s.status === 'suspended').length;
+      const scheduledCount = services.filter(s => s.auto_suspend_at && new Date(s.auto_suspend_at).getTime() > Date.now()).length;
+
+      // Filter services
+      let filtered = services.filter(s => {
+        // Tab filter
+        if (currentServiceFilter === 'running' && s.status !== 'running') return false;
+        if (currentServiceFilter === 'suspended' && s.status !== 'suspended') return false;
+        if (currentServiceFilter === 'scheduled' && (!s.auto_suspend_at || new Date(s.auto_suspend_at).getTime() <= Date.now())) return false;
+        if (currentServiceFilter === 'sdx' && s.service_type !== 'sdx') return false;
+
+        // Search text
+        if (currentServiceSearch) {
+          const q = currentServiceSearch.toLowerCase();
+          const matchName = (s.name || '').toLowerCase().includes(q);
+          const matchEmail = (s.user_email || '').toLowerCase().includes(q);
+          const matchIp = (s.ip || '').toLowerCase().includes(q);
+          const matchType = (s.service_type || '').toLowerCase().includes(q);
+          const matchId = (s.id || '').toLowerCase().includes(q);
+          if (!matchName && !matchEmail && !matchIp && !matchType && !matchId) return false;
+        }
+
+        return true;
+      });
 
       main.innerHTML = `
-        <h1 class="page-title">All Servers</h1>
-        <p class="page-sub">Every server deployed across all clients on the platform.</p>
-
-        <div class="admin-card">
-          <div class="admin-card-head">
-            <span class="admin-card-title">${servers?.length || 0} Total Services</span>
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:16px; margin-bottom:12px;">
+          <div>
+            <h1 class="page-title">Client Services & Suspensions</h1>
+            <p class="page-sub">Monitor all users' servers, suspend instances manually or schedule auto-suspension dates.</p>
+          </div>
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button class="btn-sm btn-amber" onclick="triggerAutoSuspendCheck()" style="display:flex; align-items:center; gap:6px; padding:8px 14px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <span>Run Expiry Checker</span>
+            </button>
             <button class="btn-add" onclick="openAddModal()">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              Add Server for Client
+              <span>Deploy Server for Client</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Metrics Grid -->
+        <div class="stats-grid" style="margin-bottom:24px;">
+          <div class="stat-card" style="cursor:pointer;" onclick="setServiceFilter('all')">
+            <div class="stat-title">Total User Services</div>
+            <div class="stat-val" style="color:#fff;">${totalCount}</div>
+          </div>
+          <div class="stat-card" style="cursor:pointer;" onclick="setServiceFilter('running')">
+            <div class="stat-title">Active & Running</div>
+            <div class="stat-val" style="color:#22c55e;">${runningCount}</div>
+          </div>
+          <div class="stat-card" style="cursor:pointer; border-color:${suspendedCount > 0 ? 'rgba(239,68,68,0.4)' : 'var(--rim)'};" onclick="setServiceFilter('suspended')">
+            <div class="stat-title">Suspended Services</div>
+            <div class="stat-val" style="color:#ef4444;">${suspendedCount}</div>
+          </div>
+          <div class="stat-card" style="cursor:pointer; border-color:${scheduledCount > 0 ? 'rgba(245,158,11,0.4)' : 'var(--rim)'};" onclick="setServiceFilter('scheduled')">
+            <div class="stat-title">Scheduled Auto-Suspend</div>
+            <div class="stat-val" style="color:#f59e0b;">${scheduledCount}</div>
+          </div>
+        </div>
+
+        <!-- Filter & Search Controls -->
+        <div class="admin-card" style="margin-bottom:20px; padding:16px 20px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px;">
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+              <button class="btn-sm ${currentServiceFilter==='all'?'btn-amber':''}" onclick="setServiceFilter('all')">All (${totalCount})</button>
+              <button class="btn-sm ${currentServiceFilter==='running'?'btn-emerald':''}" onclick="setServiceFilter('running')">🟢 Running (${runningCount})</button>
+              <button class="btn-sm ${currentServiceFilter==='suspended'?'btn-danger':''}" onclick="setServiceFilter('suspended')">🔴 Suspended (${suspendedCount})</button>
+              <button class="btn-sm ${currentServiceFilter==='scheduled'?'btn-amber':''}" onclick="setServiceFilter('scheduled')">⏰ Auto-Suspend Set (${scheduledCount})</button>
+              <button class="btn-sm ${currentServiceFilter==='sdx'?'btn-amber':''}" onclick="setServiceFilter('sdx')">📦 SDX Storage</button>
+            </div>
+            
+            <div style="position:relative; min-width:260px;">
+              <input type="text" placeholder="Search by email, name, IP, or type..." value="${escapeHtml(currentServiceSearch)}" oninput="onServiceSearchInput(this.value)" style="width:100%; padding:8px 12px 8px 32px; border-radius:8px; font-size:0.85rem;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" style="position:absolute; left:10px; top:11px;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Services Table -->
+        <div class="admin-card">
+          <div class="admin-card-head">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="admin-card-title">${filtered.length} Services Shown</span>
+              ${currentServiceFilter !== 'all' ? `<span class="badge" style="background:rgba(245,158,11,0.15); color:#f59e0b;">Filter: ${currentServiceFilter}</span>` : ''}
+            </div>
+            <button class="btn-sm btn-amber" onclick="renderServers()" style="display:flex; align-items:center; gap:6px;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+              Refresh
             </button>
           </div>
           <table>
             <thead><tr>
-              <th>Alias</th><th>Client Email</th><th>Specs</th><th>IP Address</th><th>Status</th><th>Price</th><th>Actions</th>
+              <th>Service & Type</th><th>Client Account</th><th>IP / Node</th><th>Specs & Price</th><th>Status</th><th>Auto-Suspend Schedule</th><th>Actions</th>
             </tr></thead>
-            <tbody id="servers-tbody">
-              ${(servers||[]).map(s => `
-                <tr id="row-${s.id}">
-                  <td><span style="font-weight:500;">${s.service_alias}</span><br><span style="font-size:0.72rem;color:var(--muted);">${s.service_type||'vps'} · ${s.service_tier||'std'}</span></td>
-                  <td style="font-family:'DM Mono',monospace; font-size:0.78rem; color:#38bdf8;">${s.user_email}</td>
-                  <td style="font-size:0.82rem; color:var(--muted2);">${s.cpu_cores}c / ${s.ram_gb}GB / ${s.disk_gb}GB</td>
-                  <td style="font-family:'DM Mono',monospace; font-size:0.8rem;">${s.ip}</td>
+            <tbody>
+              ${filtered.map(s => {
+                const isSuspended = s.status === 'suspended';
+                const isRunning = s.status === 'running';
+
+                // Status pill
+                let statusPill = `<span class="badge" style="background:rgba(34,197,94,0.15); color:#22c55e; display:inline-flex; align-items:center; gap:5px;"><span class="status-dot status-running"></span> Running</span>`;
+                if (isSuspended) {
+                  statusPill = `<span class="badge" style="background:rgba(239,68,68,0.15); color:#ef4444; display:inline-flex; align-items:center; gap:5px;"><span class="status-dot status-stopped"></span> Suspended</span>`;
+                } else if (s.status === 'stopped') {
+                  statusPill = `<span class="badge" style="background:rgba(245,158,11,0.15); color:#f59e0b; display:inline-flex; align-items:center; gap:5px;"><span class="status-dot status-pending"></span> Stopped</span>`;
+                }
+
+                // Type badge color
+                let typeColor = '#a78bfa';
+                let typeBg = 'rgba(167,139,250,0.12)';
+                if (s.service_type === 'minecraft') { typeColor = '#34d399'; typeBg = 'rgba(52,211,153,0.12)'; }
+                else if (s.service_type === 'tunnel') { typeColor = '#38bdf8'; typeBg = 'rgba(56,189,248,0.12)'; }
+                else if (s.service_type === 'sdx') { typeColor = '#f59e0b'; typeBg = 'rgba(245,158,11,0.12)'; }
+                else if (s.service_type === 'bot') { typeColor = '#ec4899'; typeBg = 'rgba(236,72,153,0.12)'; }
+
+                // Auto-Suspend column calculation
+                let autoSuspendHtml = `<span style="color:var(--muted); font-size:0.8rem;">— None</span> <button class="btn-sm" onclick="openAutoSuspendModal('${s.id}')" style="margin-left:6px; font-size:0.7rem; padding:2px 6px;">+ Set</button>`;
+                
+                if (s.auto_suspend_at) {
+                  const targetTime = new Date(s.auto_suspend_at).getTime();
+                  const now = Date.now();
+                  const diffMs = targetTime - now;
+
+                  if (diffMs > 0) {
+                    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+                    const diffDays = Math.floor(diffHours / 24);
+                    const remHours = diffHours % 24;
+                    const countdownText = diffDays > 0 ? `${diffDays}d ${remHours}h` : `${diffHours}h`;
+
+                    autoSuspendHtml = `
+                      <div>
+                        <span class="badge" style="background:rgba(245,158,11,0.15); color:#f59e0b; font-weight:700;">
+                          ⏳ in ${countdownText}
+                        </span>
+                        <div style="font-size:0.72rem; color:var(--muted); margin-top:3px; font-family:'DM Mono',monospace;">
+                          ${new Date(s.auto_suspend_at).toLocaleDateString('en-IN', { month:'short', day:'numeric' })}, ${new Date(s.auto_suspend_at).toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit' })}
+                        </div>
+                        <div style="margin-top:2px;">
+                          <button class="btn-sm btn-amber" onclick="openAutoSuspendModal('${s.id}')" style="font-size:0.68rem; padding:1px 5px;">Edit / Clear</button>
+                        </div>
+                      </div>
+                    `;
+                  } else {
+                    autoSuspendHtml = `
+                      <div>
+                        <span class="badge" style="background:rgba(239,68,68,0.15); color:#ef4444; font-weight:700;">
+                          ⚠️ Due (${new Date(s.auto_suspend_at).toLocaleDateString('en-IN', { month:'short', day:'numeric' })})
+                        </span>
+                        <div style="margin-top:2px;">
+                          <button class="btn-sm" onclick="openAutoSuspendModal('${s.id}')" style="font-size:0.68rem; padding:1px 5px;">Change</button>
+                        </div>
+                      </div>
+                    `;
+                  }
+                }
+
+                return `
+                <tr id="service-row-${s.id}">
                   <td>
-                    <select onchange="updateStatus('${s.id}', this.value)" style="background:#11101a; border:1px solid rgba(255,255,255,0.08); color:${s.status==='running'?'#22c55e':'#ef4444'}; border-radius:6px; padding:4px 8px; font-size:0.8rem; cursor:pointer;">
-                      <option value="running" ${s.status==='running'?'selected':''}>● Running</option>
-                      <option value="stopped" ${s.status==='stopped'?'selected':''}>● Stopped</option>
-                      <option value="suspended" ${s.status==='suspended'?'selected':''}>● Suspended</option>
-                    </select>
+                    <div style="font-weight:600; color:#fff;">${escapeHtml(s.name)}</div>
+                    <div style="display:flex; align-items:center; gap:6px; margin-top:3px;">
+                      <span class="badge" style="background:${typeBg}; color:${typeColor}; font-size:0.68rem;">${escapeHtml(s.service_type.toUpperCase())}</span>
+                      <span style="font-size:0.72rem; color:var(--muted); font-family:'DM Mono',monospace;">#${s.id}</span>
+                    </div>
+                    ${s.suspension_reason ? `<div style="font-size:0.72rem; color:#ef4444; margin-top:4px; max-width:220px;">Reason: ${escapeHtml(s.suspension_reason)}</div>` : ''}
                   </td>
-                  <td style="color:#22c55e; font-family:'DM Mono',monospace;">₹${(s.price||0).toLocaleString()}/mo</td>
-                  <td style="display:flex; gap:6px; flex-wrap:wrap;">
-                    <button class="btn-sm btn-amber" onclick="openEditModal('${s.id}')">Edit</button>
-                    <button class="btn-sm btn-danger" onclick="deleteServer('${s.id}', '${s.service_alias}')">Delete</button>
+                  <td>
+                    <div style="font-family:'DM Mono',monospace; font-size:0.82rem; color:#38bdf8; font-weight:600;">${escapeHtml(s.user_email)}</div>
+                    <div style="font-size:0.72rem; color:var(--muted); margin-top:2px;">Created: ${new Date(s.created_at).toLocaleDateString('en-IN')}</div>
                   </td>
-                </tr>`).join('') || `<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--muted);">No servers yet.</td></tr>`}
+                  <td>
+                    <div style="font-family:'DM Mono',monospace; font-size:0.82rem; font-weight:600; color:#fff;">${escapeHtml(s.ip)}</div>
+                    <div style="font-size:0.72rem; color:var(--muted);">${escapeHtml(s.region)}</div>
+                  </td>
+                  <td>
+                    <div style="font-size:0.82rem; color:var(--muted2); font-weight:500;">${s.cpu_cores} vCPU · ${s.ram_gb}GB · ${s.disk_gb}GB</div>
+                    <div style="font-size:0.82rem; font-weight:700; color:#22c55e; font-family:'DM Mono',monospace;">₹${(s.price||0).toLocaleString('en-IN')}/mo</div>
+                  </td>
+                  <td>
+                    ${statusPill}
+                    <div style="margin-top:6px;">
+                      <select onchange="updateServiceStatusDirect('${s.id}', this.value)" style="background:#11101a; border:1px solid rgba(255,255,255,0.1); color:${isSuspended?'#ef4444':'#22c55e'}; border-radius:6px; padding:3px 6px; font-size:0.75rem; cursor:pointer;">
+                        <option value="running" ${isRunning?'selected':''}>Running</option>
+                        <option value="suspended" ${isSuspended?'selected':''}>Suspended</option>
+                        <option value="stopped" ${s.status==='stopped'?'selected':''}>Stopped</option>
+                      </select>
+                    </div>
+                  </td>
+                  <td>
+                    ${autoSuspendHtml}
+                  </td>
+                  <td>
+                    <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+                      ${isSuspended ? `
+                        <button class="btn-sm btn-emerald" onclick="openManualSuspendModal('${s.id}', 'unsuspend')" style="font-size:0.75rem; padding:4px 8px; font-weight:700;">
+                          🟢 Unsuspend
+                        </button>
+                      ` : `
+                        <button class="btn-sm btn-danger" onclick="openManualSuspendModal('${s.id}', 'suspend')" style="font-size:0.75rem; padding:4px 8px; font-weight:700;">
+                          🛑 Suspend
+                        </button>
+                      `}
+                      <button class="btn-sm btn-amber" onclick="openAutoSuspendModal('${s.id}')" title="Set Auto-Suspend Date & Time" style="padding:4px 8px;">
+                        ⏰ Schedule
+                      </button>
+                      ${s.source === 'supabase' ? `
+                        <button class="btn-sm" onclick="openEditModal('${s.id}')" style="padding:4px 8px;">Edit</button>
+                        <button class="btn-sm btn-danger" onclick="deleteServer('${s.id}', '${s.name}')" style="padding:4px 8px;">Delete</button>
+                      ` : ''}
+                    </div>
+                  </td>
+                </tr>`;
+              }).join('') || `<tr><td colspan="7" style="text-align:center;padding:36px;color:var(--muted);">No matching services found.</td></tr>`}
             </tbody>
           </table>
-        </div>`;
+        </div>
+      `;
+    }
+
+    function setServiceFilter(filter) {
+      currentServiceFilter = filter;
+      const main = document.getElementById('main-content');
+      buildServicesView(main);
+    }
+
+    function onServiceSearchInput(val) {
+      currentServiceSearch = val;
+      const main = document.getElementById('main-content');
+      buildServicesView(main);
+    }
+
+    /* ── Auto-Suspend Modal Operations ───────────────────────────────────────── */
+    function openAutoSuspendModal(serviceId) {
+      const s = allServicesCache.find(x => x.id === serviceId);
+      if (!s) return;
+
+      currentAutoSuspendServiceId = serviceId;
+      document.getElementById('as-service-name').textContent = s.name;
+      document.getElementById('as-client-email').textContent = s.user_email;
+      document.getElementById('as-service-ip').textContent = s.ip;
+      
+      const isSuspended = s.status === 'suspended';
+      document.getElementById('as-current-status-badge').innerHTML = isSuspended
+        ? `<span class="badge" style="background:rgba(239,68,68,0.15); color:#ef4444;">Suspended</span>`
+        : `<span class="badge" style="background:rgba(34,197,94,0.15); color:#22c55e;">Running</span>`;
+
+      // Prefill datetime input
+      const dtInput = document.getElementById('as-datetime');
+      if (s.auto_suspend_at) {
+        const d = new Date(s.auto_suspend_at);
+        // Format for input datetime-local: YYYY-MM-DDTHH:mm
+        const localIso = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+        dtInput.value = localIso;
+        document.getElementById('as-btn-clear').style.display = 'inline-block';
+      } else {
+        // Default to +7 days from now
+        setPresetSuspendTime(24 * 7);
+        document.getElementById('as-btn-clear').style.display = 'none';
+      }
+
+      document.getElementById('as-reason').value = s.suspension_reason || 'Scheduled billing / trial expiration';
+      document.getElementById('as-modal-msg').textContent = '';
+      document.getElementById('auto-suspend-modal').classList.add('open');
+    }
+
+    function setPresetSuspendTime(hours) {
+      const targetTime = new Date(Date.now() + hours * 3600 * 1000);
+      const localIso = new Date(targetTime.getTime() - targetTime.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+      document.getElementById('as-datetime').value = localIso;
+    }
+
+    function closeAutoSuspendModal() {
+      document.getElementById('auto-suspend-modal').classList.remove('open');
+      currentAutoSuspendServiceId = null;
+    }
+
+    async function saveAutoSuspendSchedule() {
+      if (!currentAutoSuspendServiceId) return;
+      const dtVal = document.getElementById('as-datetime').value;
+      const reason = document.getElementById('as-reason').value.trim();
+      const msg = document.getElementById('as-modal-msg');
+
+      if (!dtVal) {
+        msg.style.color = '#ef4444';
+        msg.textContent = 'Please select a date and time for auto-suspension.';
+        return;
+      }
+
+      const isoDate = new Date(dtVal).toISOString();
+      msg.style.color = 'var(--muted)';
+      msg.textContent = 'Saving auto-suspend schedule...';
+
+      try {
+        const res = await fetch(`/api/admin/services/${currentAutoSuspendServiceId}/auto-suspend`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ auto_suspend_at: isoDate, reason })
+        });
+        const json = await res.json();
+
+        if (json.success) {
+          msg.style.color = '#22c55e';
+          msg.textContent = '✓ Auto-suspend schedule saved successfully!';
+          setTimeout(() => {
+            closeAutoSuspendModal();
+            renderServers();
+          }, 800);
+        } else {
+          msg.style.color = '#ef4444';
+          msg.textContent = json.error || 'Failed to save schedule';
+        }
+      } catch (err) {
+        msg.style.color = '#ef4444';
+        msg.textContent = 'Network error: ' + err.message;
+      }
+    }
+
+    async function clearAutoSuspendSchedule() {
+      if (!currentAutoSuspendServiceId) return;
+      if (!confirm('Remove scheduled auto-suspension for this service?')) return;
+
+      const msg = document.getElementById('as-modal-msg');
+      msg.style.color = 'var(--muted)';
+      msg.textContent = 'Clearing schedule...';
+
+      try {
+        const res = await fetch(`/api/admin/services/${currentAutoSuspendServiceId}/auto-suspend`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ auto_suspend_at: null })
+        });
+        const json = await res.json();
+
+        if (json.success) {
+          closeAutoSuspendModal();
+          renderServers();
+        } else {
+          msg.style.color = '#ef4444';
+          msg.textContent = json.error || 'Failed to clear schedule';
+        }
+      } catch (err) {
+        msg.style.color = '#ef4444';
+        msg.textContent = 'Network error: ' + err.message;
+      }
+    }
+
+    /* ── Manual Suspend & Unsuspend Operations ───────────────────────────────── */
+    function openManualSuspendModal(serviceId, action) {
+      const s = allServicesCache.find(x => x.id === serviceId);
+      if (!s) return;
+
+      currentManualSuspendServiceId = serviceId;
+      currentManualSuspendAction = action;
+
+      document.getElementById('ms-service-name').textContent = s.name;
+      document.getElementById('ms-client-email').textContent = s.user_email;
+      document.getElementById('ms-service-ip').textContent = s.ip;
+
+      const title = document.getElementById('ms-modal-title');
+      const desc = document.getElementById('ms-modal-desc');
+      const btn = document.getElementById('ms-btn-action');
+      const reasonGroup = document.getElementById('ms-reason-group');
+
+      if (action === 'unsuspend') {
+        title.style.color = '#22c55e';
+        title.textContent = 'Unsuspend Service';
+        desc.textContent = 'Are you sure you want to unsuspend this service and restore full access to the client?';
+        btn.className = 'btn-sm btn-emerald';
+        btn.textContent = 'Confirm Unsuspension';
+        reasonGroup.style.display = 'none';
+      } else {
+        title.style.color = '#ef4444';
+        title.textContent = 'Suspend Service';
+        desc.textContent = 'Are you sure you want to suspend this service? The client will be unable to run tasks or access the server until unsuspended.';
+        btn.className = 'btn-sm btn-danger';
+        btn.textContent = 'Confirm Suspension';
+        reasonGroup.style.display = 'block';
+      }
+
+      document.getElementById('ms-modal-msg').textContent = '';
+      document.getElementById('manual-suspend-modal').classList.add('open');
+    }
+
+    function handleSuspendReasonChange(val) {
+      const customInput = document.getElementById('ms-reason-custom');
+      if (val === 'custom') {
+        customInput.style.display = 'block';
+        customInput.focus();
+      } else {
+        customInput.style.display = 'none';
+      }
+    }
+
+    function closeManualSuspendModal() {
+      document.getElementById('manual-suspend-modal').classList.remove('open');
+      currentManualSuspendServiceId = null;
+    }
+
+    async function executeManualSuspendAction() {
+      if (!currentManualSuspendServiceId) return;
+      const msg = document.getElementById('ms-modal-msg');
+      const isUnsuspend = currentManualSuspendAction === 'unsuspend';
+      const targetStatus = isUnsuspend ? 'running' : 'suspended';
+
+      let reason = 'Restored by Administrator';
+      if (!isUnsuspend) {
+        const selectVal = document.getElementById('ms-reason-select').value;
+        reason = selectVal === 'custom'
+          ? (document.getElementById('ms-reason-custom').value.trim() || 'Suspended by Administrator')
+          : selectVal;
+      }
+
+      msg.style.color = 'var(--muted)';
+      msg.textContent = isUnsuspend ? 'Unsuspending service...' : 'Applying suspension...';
+
+      try {
+        const res = await fetch(`/api/admin/services/${currentManualSuspendServiceId}/status`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: targetStatus, reason })
+        });
+        const json = await res.json();
+
+        if (json.success) {
+          msg.style.color = '#22c55e';
+          msg.textContent = isUnsuspend ? '✓ Service unsuspended!' : '✓ Service suspended!';
+          setTimeout(() => {
+            closeManualSuspendModal();
+            renderServers();
+          }, 700);
+        } else {
+          msg.style.color = '#ef4444';
+          msg.textContent = json.error || 'Operation failed';
+        }
+      } catch (err) {
+        msg.style.color = '#ef4444';
+        msg.textContent = 'Network error: ' + err.message;
+      }
+    }
+
+    async function updateServiceStatusDirect(serviceId, newStatus) {
+      try {
+        await fetch(`/api/admin/services/${serviceId}/status`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: newStatus, reason: `Status updated to ${newStatus}` })
+        });
+        renderServers();
+      } catch (e) {
+        alert('Error updating status: ' + e.message);
+      }
+    }
+
+    async function triggerAutoSuspendCheck() {
+      try {
+        const res = await fetch(`/api/admin/run-auto-suspend-check?_t=${Date.now()}`);
+        const json = await res.json();
+        if (json.success) {
+          alert(`Auto-suspend check completed. Overdue services suspended: ${json.suspendedCount}`);
+          renderServers();
+        }
+      } catch (e) {
+        alert('Checker failed: ' + e.message);
+      }
     }
 
     /* ── Users ──────────────────────────────────────────────────────────────── */
@@ -1085,15 +1656,16 @@
       }
     }
 
-    async function updateStatus(id, newStatus) {
-      await supabaseClient.from('servers').update({ status: newStatus }).eq('id', id);
-    }
-
     async function deleteServer(id, name) {
       if (!confirm(`Permanently delete "${name}"? This will remove it from the client's panel.`)) return;
       const { error } = await supabaseClient.from('servers').delete().eq('id', id);
       if (error) alert('Delete failed: ' + error.message);
-      else { document.getElementById(`row-${id}`)?.remove(); }
+      else { document.getElementById(`service-row-${id}`)?.remove(); }
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     }
 
     document.addEventListener('DOMContentLoaded', init);
@@ -1102,6 +1674,12 @@
     });
     document.getElementById('approve-modal').addEventListener('click', (e) => {
       if (e.target === document.getElementById('approve-modal')) closeApproveModal();
+    });
+    document.getElementById('auto-suspend-modal').addEventListener('click', (e) => {
+      if (e.target === document.getElementById('auto-suspend-modal')) closeAutoSuspendModal();
+    });
+    document.getElementById('manual-suspend-modal').addEventListener('click', (e) => {
+      if (e.target === document.getElementById('manual-suspend-modal')) closeManualSuspendModal();
     });
   </script>
 </body>

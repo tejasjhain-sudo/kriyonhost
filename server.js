@@ -20,6 +20,7 @@ const minecraft = require('./services/minecraftService');
 const ai = require('./services/aiService');
 const storage = require('./services/storageService');
 const orderService = require('./services/orderService');
+const adminService = require('./services/adminService');
 
 // Supabase admin client (service_role — server-side only, never exposed to browser)
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdxeGFjd3lidW1jcm9hcmdud2txIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc5MDYxNzUzOSwiZXhwIjoyMTA2MTkzNTM5fQ.5xea24fdKrZBXYUDlGjw6TB4SzXbmkDP_rtrP0NIwB4';
@@ -78,6 +79,47 @@ app.post('/api/admin/auth/verify', (req, res) => {
     return res.json({ success: true, message: 'Administrator passkey verified' });
   }
   return res.status(401).json({ success: false, error: 'Invalid Administrator Security Passkey' });
+});
+
+// ─── Admin: Service & Server Management & Suspensions ────────────────────────
+app.get('/api/admin/services', async (req, res) => {
+  try {
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    const services = await adminService.getAllServices();
+    res.json({ success: true, data: services });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.post('/api/admin/services/:id/status', async (req, res) => {
+  try {
+    const { status, reason } = req.body;
+    if (!status) return res.status(400).json({ success: false, error: 'Status is required' });
+    const result = await adminService.updateServiceStatus(req.params.id, status, reason);
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.post('/api/admin/services/:id/auto-suspend', async (req, res) => {
+  try {
+    const { auto_suspend_at, reason } = req.body;
+    const result = await adminService.setAutoSuspend(req.params.id, auto_suspend_at, reason);
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.get('/api/admin/run-auto-suspend-check', async (req, res) => {
+  try {
+    const result = await adminService.checkAndRunAutoSuspends();
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
 });
 
 

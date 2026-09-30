@@ -1,0 +1,9 @@
+{
+  "trial-iabe": {
+    "status": "suspended",
+    "suspended_at": "2026-09-30T14:18:07.965Z",
+    "suspension_reason": "Scheduled expiry test",
+    "auto_suspend_at": "2026-09-30T14:17:40.054Z",
+    "scheduled_reason": "Scheduled expiry test"
+  }
+}
