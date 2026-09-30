@@ -748,6 +748,7 @@ app.post('/api/orders/:id/pay', async (req, res) => {
 
 app.get('/api/orders/:id', async (req, res) => {
   try {
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     const order = await orderService.getOrder(req.params.id);
     if (!order) return res.status(404).json({ success: false, error: 'Order not found' });
     res.json({ success: true, data: order });
@@ -758,6 +759,7 @@ app.get('/api/orders/:id', async (req, res) => {
 
 app.get('/api/orders', async (req, res) => {
   try {
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     const { email } = req.query;
     if (!email) return res.status(400).json({ success: false, error: 'Email parameter required' });
     const orders = await orderService.getOrdersByUser(email);
@@ -770,6 +772,7 @@ app.get('/api/orders', async (req, res) => {
 // Admin routes for manual order review & approval
 app.get('/api/admin/orders', async (req, res) => {
   try {
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     const { status } = req.query;
     const orders = await orderService.getAllOrders(status);
     res.json({ success: true, data: orders });

@@ -1,7 +1,35 @@
 [
   {
-    "id": "KRYON-ORD-TEST-123",
-    "amount": 799,
-    "status": "pending_payment"
+    "id": "KRYON-ORD-92931",
+    "created_at": "2026-09-30T11:02:55.046Z",
+    "expires_at": "2026-09-30T11:07:55.046Z",
+    "customer_name": "Tejas Jha",
+    "customer_email": "tejasjha.in@gmail.com",
+    "customer_phone": "8750287172",
+    "service_type": "minecraft",
+    "plan_name": "Minecraft Ender (64GB)",
+    "specs": {
+      "cpu": 12,
+      "ram": 64,
+      "disk": 280,
+      "tier": "std",
+      "region": "India (Mumbai Tier-4)",
+      "server_name": "Minecraft Ender (64GB) (Tejas Jha)",
+      "os": "Ubuntu 24.04 LTS"
+    },
+    "amount": 6499,
+    "currency": "INR",
+    "payment_method": "UPI Manual QR",
+    "upi_id": "8750287172@fam",
+    "qr_image_url": "/images/upi-qr.png",
+    "utr_number": "8750287172",
+    "status": "pending_approval",
+    "server_details": null,
+    "admin_notes": null,
+    "sender_upi_id": "user@hdfc",
+    "screenshot_url": null,
+    "screenshot_data": null,
+    "payment_submitted_at": "2026-09-30T11:03:08.849Z",
+    "rejection_reason": null
   }
 ]

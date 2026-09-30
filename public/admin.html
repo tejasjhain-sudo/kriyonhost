@@ -470,14 +470,14 @@
       
       // Update pending badge
       updatePendingOrdersCount();
-      setInterval(updatePendingOrdersCount, 10000);
+      setInterval(updatePendingOrdersCount, 5000);
 
       loadSection('overview');
     }
 
     async function updatePendingOrdersCount() {
       try {
-        const res = await fetch('/api/admin/orders?status=pending_approval');
+        const res = await fetch(`/api/admin/orders?status=pending_approval&_t=${Date.now()}`, { cache: 'no-store' });
         const json = await res.json();
         const badge = document.getElementById('pending-orders-badge');
         if (json.success && json.data && json.data.length > 0) {
@@ -515,7 +515,7 @@
 
         let allOrders = [];
         try {
-          const orderRes = await fetch('/api/admin/orders');
+          const orderRes = await fetch(`/api/admin/orders?_t=${Date.now()}`, { cache: 'no-store' });
           const orderJson = await orderRes.json();
           allOrders = orderJson?.data || [];
         } catch (e) {
@@ -617,7 +617,7 @@
       main.innerHTML = `<div style="color:var(--muted); text-align:center; margin-top:2rem;">Loading manual orders...</div>`;
       
       try {
-        const res = await fetch('/api/admin/orders');
+        const res = await fetch(`/api/admin/orders?_t=${Date.now()}`, { cache: 'no-store' });
         const json = await res.json();
         const orders = (json.data || []).filter(o => o && o.id);
 
@@ -698,7 +698,7 @@
 
     async function openDetailModal(orderId) {
       currentDetailOrderId = orderId;
-      const res = await fetch(`/api/orders/${orderId}`);
+      const res = await fetch(`/api/orders/${orderId}?_t=${Date.now()}`, { cache: 'no-store' });
       const json = await res.json();
       if (!json.success || !json.data) return alert('Order not found');
 
@@ -789,7 +789,7 @@
 
     /* ── Approve Modal ──────────────────────────────────────────────────────── */
     async function openApproveModal(orderId) {
-      const res = await fetch(`/api/orders/${orderId}`);
+      const res = await fetch(`/api/orders/${orderId}?_t=${Date.now()}`, { cache: 'no-store' });
       const json = await res.json();
       if (!json.success || !json.data) return alert('Order not found');
       
