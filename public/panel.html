@@ -1604,32 +1604,63 @@ root@srv-7f3a9c2e:~# </div>
           
           <!-- State 1: Key Not Yet Created -->
           <div id="ai-key-unclaimed-view" style="padding:24px; display:block;">
-            <div style="font-size:0.96rem; font-weight:700; color:var(--text-primary); margin-bottom:6px;">
+            <div style="font-size:0.96rem; font-weight:700; color:var(--text-primary); margin-bottom:4px;">
               Create API Key
             </div>
             <div style="font-size:0.82rem; color:var(--text-muted); line-height:1.5; margin-bottom:20px;">
-              Generate a new API key for ColideLabs AI Gateway. Your key is uniquely assigned to your account and grants instant access to Colide Pro.
+              Configure your AI application details to generate a dedicated ColideLabs AI Gateway key. Free compute is routed exclusively through low-latency India nodes.
             </div>
-            <button class="btn-primary-deploy" id="btn-generate-ai-key" style="padding:9px 20px; font-size:0.82rem;" onclick="generateAiKey()">
+
+            <!-- Form Fields -->
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
+              <div class="form-group-item" style="margin-bottom:0;">
+                <label class="form-group-label" for="ai-app-name-input">AI / Project Name</label>
+                <input type="text" class="form-control-input" id="ai-app-name-input" placeholder="e.g. My Next.js Copilot" value="My Production AI">
+              </div>
+
+              <div class="form-group-item" style="margin-bottom:0;">
+                <label class="form-group-label" for="ai-region-select">Region (India Only)</label>
+                <select class="form-control-select" id="ai-region-select">
+                  <option value="India (Mumbai Tier-4 Datacenter)">India (Mumbai Tier-4 Datacenter)</option>
+                  <option value="India (Delhi NCR Edge Cluster)">India (Delhi NCR Edge Cluster)</option>
+                  <option value="India (Bangalore Hyperscale Hub)">India (Bangalore Hyperscale Hub)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- User Agreement Checkbox -->
+            <div style="margin:16px 0 22px 0; display:flex; align-items:flex-start; gap:10px; background:var(--bg-surface-elevated); padding:12px 14px; border-radius:8px; border:1px solid var(--border-subtle);">
+              <input type="checkbox" id="ai-terms-check" style="margin-top:2px; cursor:pointer; accent-color:var(--text-primary);" checked>
+              <label for="ai-terms-check" style="font-size:0.78rem; color:var(--text-secondary); cursor:pointer; line-height:1.45; user-select:none;">
+                I acknowledge the ColideLabs Free Tier limits (<strong style="color:var(--text-primary);">800 requests/day</strong> and <strong style="color:var(--text-primary);">25,000 monthly tokens</strong>) and agree to 1 API key per customer account policy.
+              </label>
+            </div>
+
+            <button class="btn-primary-deploy" id="btn-generate-ai-key" style="padding:9px 24px; font-size:0.82rem;" onclick="generateAiKey()">
               Create API Key
             </button>
           </div>
 
           <!-- State 2: Key Claimed & Active -->
           <div id="ai-key-claimed-view" style="padding:24px; display:none;">
-            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; flex-wrap:wrap; gap:8px;">
+            <div style="display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
               <div>
-                <div style="font-size:0.9rem; font-weight:700; color:var(--text-primary);">Your Active API Key</div>
-                <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">Use this secret key to authenticate your requests against the ColideLabs AI Gateway.</div>
+                <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+                  <div style="font-size:1rem; font-weight:700; color:var(--text-primary);" id="ai-display-app-name">My Production AI</div>
+                  <span class="status-badge-live">
+                    <span class="status-dot-solid"></span>
+                    Active
+                  </span>
+                </div>
+                <div style="font-size:0.75rem; color:var(--text-muted); display:flex; align-items:center; gap:6px;">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                  <span id="ai-display-region">India (Mumbai Tier-4 Datacenter)</span>
+                </div>
               </div>
-              <span class="status-badge-live">
-                <span class="status-dot-solid"></span>
-                Active
-              </span>
             </div>
 
             <!-- Key Input & Copy Bar -->
-            <div style="display:flex; gap:8px; margin-bottom:16px;">
+            <div style="display:flex; gap:8px;">
               <input type="password" id="ai-key-display-input" class="form-control-input" style="flex:1; font-family:'JetBrains Mono', monospace; font-size:0.8rem; background:var(--bg-surface-elevated);" readonly value="">
               <button class="btn-restore-pill" onclick="toggleAiKeyVisibility()" id="btn-toggle-key-mask" title="Reveal / Hide Key" style="display:flex; align-items:center; gap:4px; padding:0 12px;">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -1639,10 +1670,6 @@ root@srv-7f3a9c2e:~# </div>
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
                 <span>Copy Key</span>
               </button>
-            </div>
-
-            <div style="font-size:0.74rem; color:var(--text-muted); line-height:1.4;">
-              <span style="font-weight:600; color:var(--text-secondary);">Account Policy:</span> Exactly 1 Free tier API key is allocated per account. Keep your API key secret and do not expose it in public client-side applications.
             </div>
           </div>
 

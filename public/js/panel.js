@@ -586,12 +586,15 @@ async function loadAiKeyStatus() {
     const res = await fetch(`/api/ai/key?user=${encodeURIComponent(userId)}`);
     const data = await res.json();
     if (data.success && data.hasKey && data.data) {
-      renderClaimedAiKey(data.data.key);
+      const name = data.data.metadata?.name || localStorage.getItem(`colide_name_${userId}`) || 'My Production AI';
+      const region = data.data.metadata?.region || localStorage.getItem(`colide_region_${userId}`) || 'India (Mumbai Tier-4 Datacenter)';
+      renderClaimedAiKey(data.data.key, name, region);
     } else {
-      // Check localStorage cached key
       const localCached = localStorage.getItem(`colide_key_${userId}`);
       if (localCached) {
-        renderClaimedAiKey(localCached);
+        const name = localStorage.getItem(`colide_name_${userId}`) || 'My Production AI';
+        const region = localStorage.getItem(`colide_region_${userId}`) || 'India (Mumbai Tier-4 Datacenter)';
+        renderClaimedAiKey(localCached, name, region);
       } else {
         renderUnclaimedAiKey();
       }
@@ -600,7 +603,9 @@ async function loadAiKeyStatus() {
     console.warn('AI key status fetch:', err);
     const localCached = localStorage.getItem(`colide_key_${userId}`);
     if (localCached) {
-      renderClaimedAiKey(localCached);
+      const name = localStorage.getItem(`colide_name_${userId}`) || 'My Production AI';
+      const region = localStorage.getItem(`colide_region_${userId}`) || 'India (Mumbai Tier-4 Datacenter)';
+      renderClaimedAiKey(localCached, name, region);
     } else {
       renderUnclaimedAiKey();
     }
@@ -608,6 +613,18 @@ async function loadAiKeyStatus() {
 }
 
 async function generateAiKey() {
+  const terms = document.getElementById('ai-terms-check');
+  if (terms && !terms.checked) {
+    showVpsToast('Please accept the Free Tier usage agreement to proceed');
+    return;
+  }
+
+  const nameInput = document.getElementById('ai-app-name-input');
+  const regionSelect = document.getElementById('ai-region-select');
+
+  const appName = nameInput ? (nameInput.value.trim() || 'My Production AI') : 'My Production AI';
+  const appRegion = regionSelect ? regionSelect.value : 'India (Mumbai Tier-4 Datacenter)';
+
   const userId = getActiveUserIdentifier();
   const btn = document.getElementById('btn-generate-ai-key');
   if (btn) {
@@ -619,14 +636,16 @@ async function generateAiKey() {
     const res = await fetch('/api/ai/key/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ user: userId })
+      body: JSON.stringify({ user: userId, name: appName, region: appRegion })
     });
     const data = await res.json();
 
     if (data.success && data.data) {
       const key = data.data.key;
       localStorage.setItem(`colide_key_${userId}`, key);
-      renderClaimedAiKey(key);
+      localStorage.setItem(`colide_name_${userId}`, appName);
+      localStorage.setItem(`colide_region_${userId}`, appRegion);
+      renderClaimedAiKey(key, appName, appRegion);
       showVpsToast('ColideLabs AI Key created! 800 req/day quota activated.');
     } else {
       showVpsToast(data.error || 'Unable to generate API key. Quota full.');
@@ -645,12 +664,14 @@ async function generateAiKey() {
   }
 }
 
-function renderClaimedAiKey(key) {
+function renderClaimedAiKey(key, name, region) {
   currentAiKey = key;
   const unclaimed = document.getElementById('ai-key-unclaimed-view');
   const claimed = document.getElementById('ai-key-claimed-view');
   const input = document.getElementById('ai-key-display-input');
   const tag = document.getElementById('ai-key-status-tag');
+  const nameDisp = document.getElementById('ai-display-app-name');
+  const regionDisp = document.getElementById('ai-display-region');
 
   if (unclaimed) unclaimed.style.display = 'none';
   if (claimed) claimed.style.display = 'block';
@@ -659,6 +680,9 @@ function renderClaimedAiKey(key) {
     tag.style.color = 'var(--color-emerald-text)';
     tag.style.borderColor = 'var(--color-emerald-border)';
   }
+
+  if (nameDisp && name) nameDisp.textContent = name;
+  if (regionDisp && region) regionDisp.textContent = region;
 
   if (input) {
     input.value = key;

@@ -581,9 +581,11 @@ app.get('/api/ai/key', async (req, res) => {
 
 app.post('/api/ai/key/generate', async (req, res) => {
   try {
-    const { user, email } = req.body;
+    const { user, email, name, region } = req.body;
     const userIdentifier = user || email || 'tejas';
     const result = ai.generateKeyForUser(userIdentifier, {
+      name: name || 'Production AI Node',
+      region: region || 'India (Mumbai Tier-4)',
       ip: req.ip || req.headers['x-forwarded-for'],
       userAgent: req.headers['user-agent']
     });
