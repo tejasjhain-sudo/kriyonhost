@@ -592,15 +592,12 @@
         document.getElementById('kco-invoice-id').textContent = `#${currentOrder.id}`;
         document.getElementById('kco-invoice-price').textContent = `₹${currentOrder.amount.toLocaleString('en-IN')}`;
         
-        const upiId = currentOrder.upi_id || 'tejasjha.in@okaxis';
+        const upiId = currentOrder.upi_id || '8750287172@fam';
         document.getElementById('kco-upi-id-text').textContent = upiId;
 
-        // Generate UPI URL
-        // Standard UPI Intent format: upi://pay?pa=...&pn=KryonHost&am=...&tn=...&cu=INR
-        const upiUri = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=KryonHost&am=${currentOrder.amount}&tn=${encodeURIComponent(currentOrder.id)}&cu=INR`;
-        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=1&data=${encodeURIComponent(upiUri)}`;
-        
-        document.getElementById('kco-qr-img').src = qrUrl;
+        // Use User's exact UPI QR Code image
+        document.getElementById('kco-qr-img').src = currentOrder.qr_image_url || '/images/upi-qr.png';
+
 
         // Start 5-minute timer
         this.startTimer(300);

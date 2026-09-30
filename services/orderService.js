@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const discord = require('./discordService');
 
 // Determine writable data path (supports local dev and Vercel serverless /tmp)
 const isVercel = !!process.env.VERCEL || !!process.env.NOW_REGION;
@@ -25,7 +26,6 @@ class OrderService {
         const raw = fs.readFileSync(ORDERS_FILE, 'utf8');
         this.orders = JSON.parse(raw);
       } else {
-        // Initial seed with a sample completed order for demonstration
         this.orders = [
           {
             id: 'KRYON-ORD-10482',
@@ -47,8 +47,9 @@ class OrderService {
             },
             amount: 2499,
             payment_method: 'UPI Manual QR',
+            upi_id: '8750287172@fam',
             utr_number: '427189012345',
-            status: 'approved', // 'pending_payment' | 'pending_approval' | 'approved' | 'rejected'
+            status: 'approved',
             server_details: {
               ip: '103.189.89.44',
               port: '22',
@@ -106,15 +107,20 @@ class OrderService {
       amount: Number(data.amount) || 999,
       currency: 'INR',
       payment_method: 'UPI Manual QR',
-      upi_id: process.env.UPI_ID || 'tejasjha.in@okaxis',
+      upi_id: process.env.UPI_ID || '8750287172@fam',
+      qr_image_url: '/images/upi-qr.png',
       utr_number: null,
-      status: 'pending_payment', // pending_payment -> pending_approval -> approved / rejected
+      status: 'pending_payment',
       server_details: null,
       admin_notes: null
     };
 
     this.orders.unshift(order);
     this.save();
+
+    // Trigger Discord notification in background
+    discord.notifyOrderCreated(order).catch(() => {});
+
     return order;
   }
 
@@ -131,6 +137,10 @@ class OrderService {
     if (note) order.customer_note = note;
 
     this.save();
+
+    // Trigger Discord alert for immediate admin verification
+    discord.notifyPaymentSubmitted(order).catch(() => {});
+
     return order;
   }
 
@@ -182,6 +192,10 @@ class OrderService {
     };
 
     this.save();
+
+    // Trigger Discord notification
+    discord.notifyOrderApproved(order).catch(() => {});
+
     return order;
   }
 
@@ -197,6 +211,10 @@ class OrderService {
     order.rejection_reason = reason;
 
     this.save();
+
+    // Trigger Discord notification
+    discord.notifyOrderRejected(order, reason).catch(() => {});
+
     return order;
   }
 }
