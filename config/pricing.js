@@ -389,6 +389,104 @@ const DEVSPACE_PLANS = [
   }
 ];
 
+/**
+ * Discord & Telegram Bot Hosting Plans
+ */
+const BOT_PLANS = [
+  {
+    id: 'bot-beginner',
+    name: 'Beginner',
+    price: 30,
+    period: 'mo',
+    billing: 'Billed monthly',
+    description: 'Perfect for new developers — host small Discord or Telegram bots with ease.',
+    specs: {
+      ram: '512MB',
+      ramMb: 512,
+      disk: '3GB',
+      diskGb: 3,
+      cpu: 'Intel Xeon V3 (1 Core)',
+      cpuCores: 1,
+      uplink: '1Gbps Uplink',
+      protection: 'Standard DDoS Shield'
+    },
+    popular: false,
+    badge: null,
+    features: [
+      '512MB RAM',
+      '3GB NVMe SSD Storage',
+      'Intel Xeon V3 (1 Core)',
+      '1Gbps High-Speed Uplink',
+      'Node.js 18/20/22 & Python 3.10-3.12',
+      '24/7 Always-On Background Uptime',
+      'SFTP & Web Console Access'
+    ]
+  },
+  {
+    id: 'bot-developer',
+    name: 'Developer',
+    price: 85,
+    period: 'month',
+    billing: 'Billed monthly',
+    description: 'Great for active bots handling moderate commands or growing user bases.',
+    specs: {
+      ram: '1GB',
+      ramMb: 1024,
+      disk: '10GB',
+      diskGb: 10,
+      cpu: 'Intel Xeon V3 (2 Cores)',
+      cpuCores: 2,
+      uplink: '1Gbps Uplink',
+      protection: 'Basic XDP DDoS Protection'
+    },
+    popular: true,
+    badge: 'MOST POPULAR',
+    subBadge: 'Best for active bots',
+    perks: ['Instant setup', 'Always-on uptime', 'Cancel anytime'],
+    features: [
+      '1GB High-Speed RAM',
+      '10GB NVMe SSD Storage',
+      'Intel Xeon V3 (2 Cores)',
+      '1Gbps High-Speed Uplink',
+      'Basic XDP DDoS Protection',
+      'Node.js, Python, Java & Go Support',
+      'PM2 Crash Auto-Restart Engine',
+      'Instant Setup & Sub-3s Deploy'
+    ]
+  },
+  {
+    id: 'bot-enterprise',
+    name: 'Enterprise',
+    price: 150,
+    period: 'mo',
+    billing: 'Billed monthly',
+    description: 'High-performance plan for large-scale bots, APIs, or production workloads.',
+    specs: {
+      ram: '3GB',
+      ramMb: 3072,
+      disk: '15GB',
+      diskGb: 15,
+      cpu: 'Intel Xeon V3 (2 Cores)',
+      cpuCores: 2,
+      uplink: '1Gbps Uplink',
+      protection: 'Advanced XDP DDoS Shield'
+    },
+    popular: false,
+    badge: 'ENTERPRISE POWER',
+    subBadge: null,
+    features: [
+      '3GB High-Speed RAM',
+      '15GB NVMe SSD Storage',
+      'Intel Xeon V3 (2 Cores)',
+      '1Gbps High-Speed Uplink',
+      'Advanced XDP DDoS Protection',
+      'Lavalink Music & Database Ready',
+      'Multi-Bot Clustering Support',
+      'Automated Daily Snapshots'
+    ]
+  }
+];
+
 module.exports = {
   TIERS,
   FLAT_IP_CHARGE,
@@ -398,5 +496,6 @@ module.exports = {
   POPULAR_PLANS,
   TUNNEL_PLANS,
   WEB_HOSTING_PLANS,
-  DEVSPACE_PLANS
+  DEVSPACE_PLANS,
+  BOT_PLANS
 };

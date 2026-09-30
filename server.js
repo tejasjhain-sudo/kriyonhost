@@ -12,7 +12,8 @@ const {
   POPULAR_PLANS,
   TUNNEL_PLANS,
   WEB_HOSTING_PLANS,
-  DEVSPACE_PLANS
+  DEVSPACE_PLANS,
+  BOT_PLANS
 } = require('./config/pricing');
 const shulker = require('./services/shulkerService');
 const minecraft = require('./services/minecraftService');
@@ -39,6 +40,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 // ─── Dedicated Product Pages ────────────────────────────────────────────────
 app.get('/vps', (req, res) => res.sendFile(path.join(__dirname, 'public', 'vps.html')));
 app.get('/minecraft', (req, res) => res.sendFile(path.join(__dirname, 'public', 'minecraft.html')));
+app.get('/bot-hosting', (req, res) => res.sendFile(path.join(__dirname, 'public', 'bot-hosting.html')));
+app.get('/bots', (req, res) => res.sendFile(path.join(__dirname, 'public', 'bot-hosting.html')));
 app.get('/tunnels', (req, res) => res.sendFile(path.join(__dirname, 'public', 'tunnels.html')));
 app.get('/devspace', (req, res) => res.sendFile(path.join(__dirname, 'public', 'devspace.html')));
 app.get('/web-hosting', (req, res) => res.sendFile(path.join(__dirname, 'public', 'web-hosting.html')));
@@ -168,7 +171,8 @@ app.get('/api/pricing', (req, res) => {
       }),
       tunnels: TUNNEL_PLANS,
       webHosting: WEB_HOSTING_PLANS,
-      devspace: DEVSPACE_PLANS
+      devspace: DEVSPACE_PLANS,
+      botPlans: BOT_PLANS
     }
   });
 });

@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Discord &amp; Telegram Bot Hosting India — From ₹30/mo | KryonHost</title>
+  <meta name="description" content="Host 24/7 Discord bots, Telegram bots, Python &amp; Node.js applications in India. Low-latency Mumbai node, 1Gbps uplink, PM2 auto-restart, and XDP DDoS protection starting at ₹30/month.">
+  <meta name="keywords" content="discord bot hosting india, telegram bot hosting, cheap bot hosting, python bot hosting, nodejs bot hosting, discord.js hosting, lavalink hosting india, 24/7 bot hosting, kryonhost bot hosting">
+  <meta name="author" content="KryonHost Cloud Infrastructure">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <link rel="canonical" href="https://kryonhost.net/bot-hosting">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="product">
+  <meta property="og:url" content="https://kryonhost.net/bot-hosting">
+  <meta property="og:title" content="Discord &amp; Telegram Bot Hosting India — From ₹30/mo | KryonHost">
+  <meta property="og:description" content="High-performance 24/7 runtime for Discord bots, Python, Node.js &amp; Telegram bots from ₹30/mo.">
+  <meta property="og:image" content="https://kryonhost.net/images/logo.jpg">
+  <meta property="og:site_name" content="KryonHost">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Discord &amp; Telegram Bot Hosting India — KryonHost">
+  <meta name="twitter:description" content="Host Discord &amp; Telegram bots 24/7 in India with 1Gbps uplink and zero packet loss.">
+  <meta name="twitter:image" content="https://kryonhost.net/images/logo.jpg">
+
+  <!-- Favicons -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="shortcut icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" sizes="192x192" href="/favicon-192x192.png">
+  <meta name="theme-color" content="#09090b">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,600;12..96,700&family=Inter:wght@300;400;500;600;700&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/style.css">
+
+  <style>
+    :root {
+      --bot-glow: rgba(88, 101, 242, 0.25);
+      --bot-accent: #5865F2;
+      --bot-cyan: #38bdf8;
+    }
+    
+    .bot-hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      background: rgba(88, 101, 242, 0.12);
+      border: 1px solid rgba(88, 101, 242, 0.35);
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #a5b4fc;
+      margin-bottom: 24px;
+      letter-spacing: 0.04em;
+    }
+    .bot-hero-badge .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #5865F2;
+      box-shadow: 0 0 10px #5865F2;
+      animation: pulse 1.8s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(88, 101, 242, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(88, 101, 242, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(88, 101, 242, 0); }
+    }
+
+    .plans-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 36px;
+      align-items: stretch;
+    }
+    @media (max-width: 960px) {
+      .plans-grid-3 { grid-template-columns: 1fr; max-width: 480px; margin-left: auto; margin-right: auto; }
+    }
+
+    .plan-card-bot {
+      background: #0d0c18;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      padding: 32px 28px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+    .plan-card-bot:hover {
+      transform: translateY(-6px);
+      border-color: rgba(88, 101, 242, 0.4);
+      box-shadow: 0 20px 40px -15px rgba(88, 101, 242, 0.25);
+    }
+    .plan-card-bot.popular {
+      background: linear-gradient(180deg, #131126 0%, #0d0c18 100%);
+      border: 1px solid rgba(88, 101, 242, 0.5);
+      box-shadow: 0 20px 45px -15px rgba(88, 101, 242, 0.35);
+      transform: scale(1.02);
+    }
+    .plan-card-bot.popular:hover {
+      transform: scale(1.02) translateY(-6px);
+    }
+
+    .popular-tag-badge {
+      position: absolute;
+      top: -13px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, #5865F2, #7c6aff);
+      color: #fff;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      padding: 4px 14px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      box-shadow: 0 4px 12px rgba(88, 101, 242, 0.4);
+      white-space: nowrap;
+    }
+
+    .plan-name-title {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 1.55rem;
+      font-weight: 700;
+      color: #fff;
+      margin: 0 0 6px 0;
+    }
+    .plan-sub-tag {
+      font-size: 0.78rem;
+      color: #9ca3af;
+      margin-bottom: 20px;
+      min-height: 38px;
+      line-height: 1.45;
+    }
+    .plan-price-wrap {
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+      margin-bottom: 4px;
+    }
+    .plan-currency {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #a5b4fc;
+    }
+    .plan-amount {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 3.2rem;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1;
+      letter-spacing: -0.03em;
+    }
+    .plan-period {
+      font-size: 0.9rem;
+      color: #9ca3af;
+      font-weight: 500;
+    }
+    .plan-billing-note {
+      font-size: 0.75rem;
+      color: #6b7280;
+      margin-bottom: 24px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .specs-list {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 28px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex: 1;
+    }
+    .specs-list li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.88rem;
+      color: #d1d5db;
+    }
+    .specs-list li svg {
+      width: 16px;
+      height: 16px;
+      color: #5865F2;
+      flex-shrink: 0;
+    }
+    .specs-list li strong {
+      color: #fff;
+    }
+
+    .btn-plan-action {
+      width: 100%;
+      padding: 14px 20px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.05);
+      color: #fff;
+      text-decoration: none;
+    }
+    .btn-plan-action:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.25);
+      transform: translateY(-2px);
+    }
+    .btn-plan-action.popular-btn {
+      background: linear-gradient(135deg, #5865F2, #7c6aff);
+      border: none;
+      color: #fff;
+      box-shadow: 0 8px 24px -6px rgba(88, 101, 242, 0.5);
+    }
+    .btn-plan-action.popular-btn:hover {
+      background: linear-gradient(135deg, #6976f5, #8c7bff);
+      box-shadow: 0 12px 30px -6px rgba(88, 101, 242, 0.7);
+    }
+
+    .plan-perks-strip {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 0.74rem;
+      color: #9ca3af;
+      margin-top: 14px;
+      text-align: center;
+    }
+
+    .tech-pill-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 24px;
+    }
+    .tech-pill {
+      background: #11101d;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      padding: 10px 18px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #e5e7eb;
+    }
+    .tech-pill img, .tech-pill svg {
+      width: 18px;
+      height: 18px;
+    }
+  </style>
+
+  <!-- Schema.org Product Markup -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "KryonHost Discord & Telegram Bot Hosting",
+    "image": "https://kryonhost.net/images/logo.jpg",
+    "description": "24/7 Always-On Discord and Telegram bot hosting in Mumbai India from ₹30/month.",
+    "brand": { "@type": "Brand", "name": "KryonHost" },
+    "offers": {
+      "@type": "AggregateOffer",
+      "priceCurrency": "INR",
+      "lowPrice": "30",
+      "highPrice": "150",
+      "offerCount": "3"
+    }
+  }
+  </script>
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       NAVBAR
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <header class="nav-header">
+    <div class="wrap nav-inner">
+      <a href="/" class="nav-brand">
+        <div class="brand-icon"><img src="/images/logo.jpg" alt="KryonHost" style="width:26px;height:26px;object-fit:contain;border-radius:5px;"></div>
+        <span class="brand-name">KryonHost</span>
+        <span class="brand-tag">BETA</span>
+      </a>
+
+      <ul class="nav-links">
+        <li class="nav-dropdown" id="nav-products-dropdown">
+          <button class="nav-dropdown-btn" onclick="toggleProductsMenu(event)">
+            Products
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          
+          <div class="mega-menu" id="mega-menu-box">
+            <div class="mega-menu-grid">
+              <!-- COMPUTE -->
+              <div>
+                <div class="mega-col-title">COMPUTE</div>
+                <a href="/vps" class="mega-item">
+                  <div class="mega-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+                  </div>
+                  <div class="mega-text">
+                    <div class="mega-title">VPS Hosting</div>
+                    <div class="mega-sub">Enterprise virtual machines</div>
+                  </div>
+                </a>
+                <a href="/dedicated" class="mega-item">
+                  <div class="mega-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+                  </div>
+                  <div class="mega-text">
+                    <div class="mega-title">Dedicated Server</div>
+                    <div class="mega-sub">Pure bare-metal performance</div>
+                  </div>
+                </a>
+              </div>
+
+              <!-- GAME & APP HOSTING -->
+              <div>
+                <div class="mega-col-title">APP &amp; GAME HOSTING</div>
+                <a href="/bot-hosting" class="mega-item active-link" style="background:rgba(88,101,242,0.12); border-radius:10px;">
+                  <div class="mega-icon" style="color:#5865F2;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="15" x2="8" y2="15.01"/><line x1="16" y1="15" x2="16" y2="15.01"/></svg>
+                  </div>
+                  <div class="mega-text">
+                    <div class="mega-title" style="display:flex; align-items:center; gap:6px;">
+                      Bot Hosting
+                      <span style="background:rgba(88,101,242,0.2); color:#a5b4fc; border:1px solid rgba(88,101,242,0.4); font-size:0.58rem; padding:1px 6px; border-radius:5px; font-family:'DM Mono',monospace; font-weight:700;">FROM ₹30</span>
+                    </div>
+                    <div class="mega-sub">Discord &amp; Telegram 24/7</div>
+                  </div>
+                </a>
+                <a href="/minecraft" class="mega-item">
+                  <div class="mega-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                  </div>
+                  <div class="mega-text">
+                    <div class="mega-title" style="display:flex; align-items:center; gap:6px;">
+                      Minecraft Hosting
+                      <span style="background:rgba(34,197,94,0.15); color:#22c55e; border:1px solid rgba(34,197,94,0.3); font-size:0.58rem; padding:1px 6px; border-radius:5px; font-family:'DM Mono',monospace; text-transform:uppercase; letter-spacing:0.06em; font-weight:600;">LIVE</span>
+                    </div>
+                    <div class="mega-sub">Ryzen 9 · 5.7GHz · 500+ Tbps</div>
+                  </div>
+                </a>
+              </div>
+
+              <!-- NETWORK & SECURITY -->
+              <div>
+                <div class="mega-col-title">NETWORK &amp; SECURITY</div>
+                <a href="/tunnels" class="mega-item">
+                  <div class="mega-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                  </div>
+                  <div class="mega-text">
+                    <div class="mega-title">Anycast Tunnels <span class="badge b-purple" style="font-size:0.6rem; padding:1px 5px;">NEW</span></div>
+                    <div class="mega-sub">Anycast Mesh · 500+ Tbps</div>
+                  </div>
+                </a>
+                <a href="/devspace" class="mega-item">
+                  <div class="mega-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                  </div>
+                  <div class="mega-text">
+                    <div class="mega-title">DevSpace <span class="badge b-blue" style="font-size:0.6rem; padding:1px 5px;">CONTAINERS</span></div>
+                    <div class="mega-sub">Docker, Python, Node &amp; Bots</div>
+                  </div>
+                </a>
+              </div>
+
+              <!-- WEB & TOOLS -->
+              <div>
+                <div class="mega-col-title">WEB &amp; TOOLS</div>
+                <a href="/web-hosting" class="mega-item">
+                  <div class="mega-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                  </div>
+                  <div class="mega-text">
+                    <div class="mega-title">Web Hosting</div>
+                    <div class="mega-sub">Fast NVMe NVMe Caching</div>
+                  </div>
+                </a>
+                <a href="/status" class="mega-item">
+                  <div class="mega-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                  </div>
+                  <div class="mega-text">
+                    <div class="mega-title">Network Status</div>
+                    <div class="mega-sub">99.99% Uptime Metrics</div>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </li>
+
+        <li><a href="/vps" class="nav-link">VPS</a></li>
+        <li><a href="/bot-hosting" class="nav-link active" style="color:#a5b4fc;">Bot Hosting</a></li>
+        <li><a href="/minecraft" class="nav-link">Minecraft</a></li>
+        <li><a href="/tunnels" class="nav-link">Tunnels</a></li>
+        <li><a href="/web-hosting" class="nav-link">Web Hosting</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <a href="/panel" class="btn-ghost">Client Panel</a>
+        <a href="#plans" class="btn-primary" style="background:#5865F2;">Deploy Bot &rarr;</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       HERO SECTION
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <section class="hero-wrap" style="padding-top: 130px; padding-bottom: 50px; text-align: center;">
+    <div class="wrap">
+      <div class="bot-hero-badge">
+        <span class="pulse-dot"></span>
+        <span>24/7 ALWAYS-ON CLOUD RUNTIME · MUMBAI TIER-4</span>
+      </div>
+
+      <h1 style="font-family:'Bricolage Grotesque',sans-serif; font-size:clamp(2.4rem, 5.5vw, 4.2rem); font-weight:700; line-height:1.1; margin:0 auto 18px auto; max-width:850px; color:#fff;">
+        Discord &amp; Telegram <span style="background:linear-gradient(135deg, #5865F2, #38bdf8); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">Bot Hosting</span> in India
+      </h1>
+
+      <p style="font-size:clamp(1rem, 2vw, 1.2rem); color:#9ca3af; max-width:680px; margin:0 auto 36px auto; line-height:1.6;">
+        Keep your Discord bots, Telegram automations, and Python/Node.js scripts online 24/7 with zero lag, 1Gbps uplink, PM2 auto-restart, and basic XDP DDoS protection. Starting from just <strong>₹30/month</strong>.
+      </p>
+
+      <div style="display:flex; justify-content:center; gap:16px; flex-wrap:wrap; margin-bottom:40px;">
+        <a href="#plans" class="btn-primary" style="background:#5865F2; padding:14px 32px; font-size:1rem;">
+          View Bot Plans &rarr;
+        </a>
+        <a href="/panel" class="btn-ghost" style="padding:14px 28px; font-size:1rem;">
+          Open Control Panel
+        </a>
+      </div>
+
+      <!-- Stats Bar -->
+      <div style="display:flex; justify-content:center; gap:36px; flex-wrap:wrap; border-top:1px solid rgba(255,255,255,0.06); border-bottom:1px solid rgba(255,255,255,0.06); padding:20px 0; max-width:900px; margin:0 auto;">
+        <div>
+          <div style="font-family:'DM Mono',monospace; font-size:1.35rem; font-weight:700; color:#5865F2;">&lt;5ms</div>
+          <div style="font-size:0.75rem; color:#9ca3af; text-transform:uppercase; letter-spacing:0.04em;">Discord Gateway Ping</div>
+        </div>
+        <div>
+          <div style="font-family:'DM Mono',monospace; font-size:1.35rem; font-weight:700; color:#22c55e;">99.99%</div>
+          <div style="font-size:0.75rem; color:#9ca3af; text-transform:uppercase; letter-spacing:0.04em;">Always-On SLA</div>
+        </div>
+        <div>
+          <div style="font-family:'DM Mono',monospace; font-size:1.35rem; font-weight:700; color:#38bdf8;">1 Gbps</div>
+          <div style="font-size:0.75rem; color:#9ca3af; text-transform:uppercase; letter-spacing:0.04em;">High-Speed Uplink</div>
+        </div>
+        <div>
+          <div style="font-family:'DM Mono',monospace; font-size:1.35rem; font-weight:700; color:#f59e0b;">&lt;3s</div>
+          <div style="font-size:0.75rem; color:#9ca3af; text-transform:uppercase; letter-spacing:0.04em;">Instant Provisioning</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       FEATURED PLANS (EXACT USER SPECIFICATIONS)
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <section id="plans" style="padding: 70px 0;">
+    <div class="wrap">
+      <div style="text-align:center; max-width:680px; margin:0 auto 20px auto;">
+        <div style="font-size:0.8rem; font-weight:700; color:#5865F2; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:8px;">FEATURED PLANS</div>
+        <h2 style="font-family:'Bricolage Grotesque',sans-serif; font-size:clamp(1.9rem, 4vw, 2.7rem); font-weight:700; color:#fff; margin:0 0 12px 0;">
+          Transparent Pricing for Every Bot Developer
+        </h2>
+        <p style="color:#9ca3af; font-size:0.95rem; margin:0;">
+          Deploy instantly with zero setup fees. Upgrade or scale your resources anytime as your bot community grows.
+        </p>
+      </div>
+
+      <div class="plans-grid-3">
+
+        <!-- 1. BEGINNER PLAN -->
+        <div class="plan-card-bot">
+          <h3 class="plan-name-title">Beginner</h3>
+          <p class="plan-sub-tag">Perfect for new developers — host small Discord or Telegram bots with ease.</p>
+          
+          <div class="plan-price-wrap">
+            <span class="plan-currency">₹</span>
+            <span class="plan-amount">30</span>
+            <span class="plan-period">/mo</span>
+          </div>
+          <div class="plan-billing-note">Billed monthly</div>
+
+          <ul class="specs-list">
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <span><strong>512MB</strong> High-Speed RAM</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <span><strong>3GB</strong> NVMe SSD Storage</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <span><strong>Intel Xeon V3</strong> (1 Core)</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <span><strong>1Gbps</strong> High-Speed Uplink</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Node.js 22 &amp; Python 3.12 Engine</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>24/7 Always-On Background Uptime</span>
+            </li>
+          </ul>
+
+          <button class="btn-plan-action" onclick="orderBotPlan('Beginner', 30, '512MB RAM · 3GB NVMe · 1 vCPU Xeon', { cpu: 1, ram: 0.5, disk: 3, tier: 'eco' })">
+            Select Beginner Plan
+          </button>
+        </div>
+
+        <!-- 2. DEVELOPER PLAN (MOST POPULAR) -->
+        <div class="plan-card-bot popular">
+          <div class="popular-tag-badge">MOST POPULAR · Best for active bots</div>
+          
+          <h3 class="plan-name-title" style="color:#a5b4fc;">Developer</h3>
+          <p class="plan-sub-tag">Great for active bots handling moderate commands or growing user bases.</p>
+          
+          <div class="plan-price-wrap">
+            <span class="plan-currency">₹</span>
+            <span class="plan-amount" style="color:#fff;">85</span>
+            <span class="plan-period">/month</span>
+          </div>
+          <div class="plan-billing-note" style="color:#a5b4fc;">Billed monthly</div>
+
+          <ul class="specs-list">
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <span><strong>1GB</strong> Dedicated RAM</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <span><strong>10GB</strong> NVMe SSD Storage</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <span><strong>Intel Xeon V3</strong> (2 Cores)</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <span><strong>1Gbps</strong> High-Speed Uplink</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <span><strong>Basic XDP DDoS Protection</strong></span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>PM2 Auto-Restart on Crash</span>
+            </li>
+          </ul>
+
+          <button class="btn-plan-action popular-btn" onclick="orderBotPlan('Developer', 85, '1GB RAM · 10GB NVMe · 2 vCPU Xeon', { cpu: 2, ram: 1, disk: 10, tier: 'eco' })">
+            Deploy Developer Plan &rarr;
+          </button>
+
+          <div class="plan-perks-strip">
+            <span>Instant setup</span> · <span>Always-on uptime</span> · <span>Cancel anytime</span>
+          </div>
+        </div>
+
+        <!-- 3. ENTERPRISE PLAN -->
+        <div class="plan-card-bot">
+          <h3 class="plan-name-title">Enterprise</h3>
+          <p class="plan-sub-tag">High-performance plan for large-scale bots, APIs, or production workloads.</p>
+          
+          <div class="plan-price-wrap">
+            <span class="plan-currency">₹</span>
+            <span class="plan-amount">150</span>
+            <span class="plan-period">/mo</span>
+          </div>
+          <div class="plan-billing-note">Billed monthly</div>
+
+          <ul class="specs-list">
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <span><strong>3GB</strong> High-Speed RAM</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <span><strong>15GB</strong> NVMe SSD Storage</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <span><strong>Intel Xeon V3</strong> (2 Cores)</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <span><strong>1Gbps</strong> High-Speed Uplink</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Lavalink Audio &amp; SQLite Ready</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Multi-Bot Clustering Support</span>
+            </li>
+          </ul>
+
+          <button class="btn-plan-action" onclick="orderBotPlan('Enterprise', 150, '3GB RAM · 15GB NVMe · 2 vCPU Xeon', { cpu: 2, ram: 3, disk: 15, tier: 'eco' })">
+            Select Enterprise Plan
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       SUPPORTED FRAMEWORKS & LANGUAGES
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <section style="padding: 50px 0; background:#080712; border-top:1px solid rgba(255,255,255,0.05); border-bottom:1px solid rgba(255,255,255,0.05);">
+    <div class="wrap" style="text-align:center;">
+      <h3 style="font-family:'Bricolage Grotesque',sans-serif; font-size:1.6rem; color:#fff; margin:0 0 8px 0;">
+        Supports All Major Bot Frameworks &amp; Languages
+      </h3>
+      <p style="color:#9ca3af; font-size:0.9rem; margin:0 auto 24px auto; max-width:600px;">
+        Zero lock-in. Run any runtime or script seamlessly in isolated, high-performance environments.
+      </p>
+
+      <div class="tech-pill-grid">
+        <div class="tech-pill">
+          <svg viewBox="0 0 24 24" fill="#5865F2" width="18" height="18"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/></svg>
+          <span>Discord.js v14</span>
+        </div>
+        <div class="tech-pill">
+          <svg viewBox="0 0 24 24" fill="#38bdf8" width="18" height="18"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          <span>Discord.py / Nextcord</span>
+        </div>
+        <div class="tech-pill">
+          <svg viewBox="0 0 24 24" fill="#22c55e" width="18" height="18"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          <span>Node.js 18 / 20 / 22</span>
+        </div>
+        <div class="tech-pill">
+          <svg viewBox="0 0 24 24" fill="#f59e0b" width="18" height="18"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          <span>Python 3.10 / 3.11 / 3.12</span>
+        </div>
+        <div class="tech-pill">
+          <svg viewBox="0 0 24 24" fill="#0088cc" width="18" height="18"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          <span>Telegram Bot API (Telegraf / Pyrogram)</span>
+        </div>
+        <div class="tech-pill">
+          <svg viewBox="0 0 24 24" fill="#ef4444" width="18" height="18"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <span>Java JDA / Lavalink</span>
+        </div>
+        <div class="tech-pill">
+          <svg viewBox="0 0 24 24" fill="#a78bfa" width="18" height="18"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          <span>PM2 Process Manager</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       WHY KRYONHOST BOT HOSTING
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <section style="padding: 70px 0;">
+    <div class="wrap">
+      <div style="text-align:center; max-width:680px; margin:0 auto 40px auto;">
+        <h2 style="font-family:'Bricolage Grotesque',sans-serif; font-size:2.2rem; color:#fff; margin:0 0 10px 0;">
+          Built for Developers, Gamers &amp; Communities
+        </h2>
+        <p style="color:#9ca3af; font-size:0.95rem;">
+          Everything you need to deploy, monitor, and scale your automations with confidence.
+        </p>
+      </div>
+
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:20px;">
+        
+        <div style="background:#0e0d1a; border:1px solid rgba(255,255,255,0.08); border-radius:16px; padding:24px;">
+          <div style="width:42px; height:42px; border-radius:10px; background:rgba(88,101,242,0.15); display:flex; align-items:center; justify-content:center; color:#5865F2; margin-bottom:16px;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
+          </div>
+          <h4 style="font-size:1.1rem; color:#fff; margin:0 0 8px 0; font-weight:600;">24/7 Always-On Background</h4>
+          <p style="color:#9ca3af; font-size:0.85rem; line-height:1.55; margin:0;">
+            No sleep mode. Your bots stay active even when your PC is turned off, ensuring 100% response rates for your community members.
+          </p>
+        </div>
+
+        <div style="background:#0e0d1a; border:1px solid rgba(255,255,255,0.08); border-radius:16px; padding:24px;">
+          <div style="width:42px; height:42px; border-radius:10px; background:rgba(34,197,94,0.15); display:flex; align-items:center; justify-content:center; color:#22c55e; margin-bottom:16px;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <h4 style="font-size:1.1rem; color:#fff; margin:0 0 8px 0; font-weight:600;">XDP Hardware DDoS Shield</h4>
+          <p style="color:#9ca3af; font-size:0.85rem; line-height:1.55; margin:0;">
+            Automatic kernel-level packet inspection filters out syn floods, UDP attacks, and malicious bot attacks before reaching your application.
+          </p>
+        </div>
+
+        <div style="background:#0e0d1a; border:1px solid rgba(255,255,255,0.08); border-radius:16px; padding:24px;">
+          <div style="width:42px; height:42px; border-radius:10px; background:rgba(56,189,248,0.15); display:flex; align-items:center; justify-content:center; color:#38bdf8; margin-bottom:16px;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+          </div>
+          <h4 style="font-size:1.1rem; color:#fff; margin:0 0 8px 0; font-weight:600;">PM2 Crash Auto-Restart</h4>
+          <p style="color:#9ca3af; font-size:0.85rem; line-height:1.55; margin:0;">
+            If your bot encounters an uncaught exception or memory leak, the system auto-restarts your script in milliseconds without manual intervention.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       FAQ SECTION
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <section style="padding: 60px 0; background:#080712; border-top:1px solid rgba(255,255,255,0.05);">
+    <div class="wrap" style="max-width:750px;">
+      <h2 style="font-family:'Bricolage Grotesque',sans-serif; font-size:2rem; text-align:center; color:#fff; margin:0 0 30px 0;">
+        Frequently Asked Questions
+      </h2>
+
+      <div style="display:flex; flex-direction:column; gap:14px;">
+        <div style="background:#11101d; border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:18px 22px;">
+          <h4 style="margin:0 0 6px 0; font-size:0.98rem; color:#fff;">How fast is my bot server deployed after payment?</h4>
+          <p style="margin:0; font-size:0.85rem; color:#9ca3af; line-height:1.5;">
+            Server credentials and access details are generated immediately upon UPI verification. You can begin uploading your bot files instantly.
+          </p>
+        </div>
+
+        <div style="background:#11101d; border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:18px 22px;">
+          <h4 style="margin:0 0 6px 0; font-size:0.98rem; color:#fff;">Can I host multiple bots on the Developer or Enterprise plan?</h4>
+          <p style="margin:0; font-size:0.85rem; color:#9ca3af; line-height:1.5;">
+            Yes! With PM2 or separate screen sessions, you can run multiple Discord bots, Telegram bots, or webhooks simultaneously on a single instance.
+          </p>
+        </div>
+
+        <div style="background:#11101d; border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:18px 22px;">
+          <h4 style="margin:0 0 6px 0; font-size:0.98rem; color:#fff;">What payment methods are supported?</h4>
+          <p style="margin:0; font-size:0.85rem; color:#9ca3af; line-height:1.5;">
+            We support all Indian UPI apps including Google Pay, PhonePe, Paytm, CRED, and BHIM UPI with instant zero-gateway fee QR verification.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       FOOTER
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <footer class="footer">
+    <div class="wrap footer-inner">
+      <div>
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+          <img src="/images/logo.jpg" alt="KryonHost" style="width:24px; height:24px; border-radius:4px;">
+          <span style="font-family:'Bricolage Grotesque',sans-serif; font-size:1.1rem; font-weight:700; color:#fff;">KryonHost</span>
+        </div>
+        <p style="color:var(--muted); font-size:0.82rem; line-height:1.6; max-width:320px;">
+          Next-generation cloud infrastructure in Mumbai India. High-clock compute, gaming VPS, Bot hosting, and anti-DDoS networking.
+        </p>
+      </div>
+
+      <div>
+        <div style="font-weight:700; font-size:0.85rem; color:#fff; margin-bottom:12px; text-transform:uppercase; letter-spacing:0.04em;">Products</div>
+        <div style="display:flex; flex-direction:column; gap:8px; font-size:0.82rem;">
+          <a href="/bot-hosting" style="color:#a5b4fc; text-decoration:none;">Bot Hosting (From ₹30)</a>
+          <a href="/vps" style="color:var(--muted); text-decoration:none;">Cloud VPS</a>
+          <a href="/minecraft" style="color:var(--muted); text-decoration:none;">Minecraft Hosting</a>
+          <a href="/tunnels" style="color:var(--muted); text-decoration:none;">Anycast Tunnels</a>
+          <a href="/web-hosting" style="color:var(--muted); text-decoration:none;">Web Hosting</a>
+        </div>
+      </div>
+
+      <div>
+        <div style="font-weight:700; font-size:0.85rem; color:#fff; margin-bottom:12px; text-transform:uppercase; letter-spacing:0.04em;">Platform</div>
+        <div style="display:flex; flex-direction:column; gap:8px; font-size:0.82rem;">
+          <a href="/panel" style="color:var(--muted); text-decoration:none;">Client Portal</a>
+          <a href="/status" style="color:var(--muted); text-decoration:none;">Uptime &amp; Status</a>
+          <a href="/login" style="color:var(--muted); text-decoration:none;">Login / Register</a>
+          <a href="/admin" style="color:var(--muted); text-decoration:none;">Admin Center</a>
+        </div>
+      </div>
+    </div>
+    <div style="border-top:1px solid rgba(255,255,255,0.06); padding:20px 0; text-align:center; font-size:0.75rem; color:var(--muted);">
+      &copy; 2026 KryonHost Cloud Infrastructure. All rights reserved. Powered by Bare-Metal Tier-4 Mumbai Nodes.
+    </div>
+  </footer>
+
+  <!-- Universal Kryon Checkout Script -->
+  <script src="/js/checkout.js"></script>
+
+  <script>
+    function toggleProductsMenu(e) {
+      e.stopPropagation();
+      const menu = document.getElementById('mega-menu-box');
+      if (menu) menu.classList.toggle('active');
+    }
+
+    document.addEventListener('click', () => {
+      const menu = document.getElementById('mega-menu-box');
+      if (menu) menu.classList.remove('active');
+    });
+
+    function orderBotPlan(planName, price, summarySpecs, rawSpecs) {
+      if (typeof KryonCheckout === 'undefined') {
+        alert('Checkout engine loading... please refresh.');
+        return;
+      }
+
+      KryonCheckout.open({
+        service_type: 'bot',
+        plan_name: `Bot Hosting — ${planName}`,
+        amount: price,
+        specs: {
+          cpu: rawSpecs.cpu || 1,
+          ram: rawSpecs.ram || 0.5,
+          disk: rawSpecs.disk || 3,
+          tier: 'eco',
+          region: 'India (Mumbai Tier-4)',
+          summary: summarySpecs
+        }
+      });
+    }
+  </script>
+</body>
+</html>
