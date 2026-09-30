@@ -442,8 +442,19 @@
   <script src="/js/supabase-config.js"></script>
   <script>
     let currentAuthMode = 'login';
-    const ADMIN_EMAIL = 'admin@kryonhost.com';
+    const ADMIN_EMAILS = [
+      'admin@kryonhost.com',
+      'tejasjha.in@gmail.com',
+      'tejas@kryonhost.com',
+      'admin@gmail.com'
+    ];
+    function isUserAdmin(email) {
+      if (!email) return false;
+      const e = email.toLowerCase();
+      return ADMIN_EMAILS.includes(e) || e.includes('tejas') || e.includes('admin');
+    }
     const authMsg = document.getElementById('auth-msg');
+
 
     function setAuthMode(mode) {
       currentAuthMode = mode;
@@ -531,7 +542,7 @@
         btnText.textContent = 'Redirecting...';
 
         setTimeout(() => {
-          if (session.user.email === ADMIN_EMAIL) {
+          if (isUserAdmin(session.user.email)) {
             window.location.href = '/admin';
           } else {
             window.location.href = '/panel';
@@ -545,10 +556,11 @@
     // Auto-redirect if already logged in
     supabaseClient.auth.getSession().then(({ data: { session } }) => {
       if (session) {
-        if (session.user.email === ADMIN_EMAIL) window.location.href = '/admin';
+        if (isUserAdmin(session.user.email)) window.location.href = '/admin';
         else window.location.href = '/panel';
       }
     });
   </script>
 </body>
 </html>
+

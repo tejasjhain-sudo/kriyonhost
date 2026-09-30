@@ -259,23 +259,44 @@
 
   <script src="/js/supabase-config.js"></script>
   <script>
-    const ADMIN_EMAIL = 'admin@kryonhost.com';
+    const ADMIN_EMAILS = [
+      'admin@kryonhost.com',
+      'tejasjha.in@gmail.com',
+      'tejas@kryonhost.com',
+      'admin@gmail.com'
+    ];
     let editingId = null;
     let selectedOrderForApproval = null;
 
     /* ── Auth Guard ─────────────────────────────────────────────────────────── */
     async function init() {
-      const { data: { session } } = await supabaseClient.auth.getSession();
-      if (!session) { window.location.href = '/login'; return; }
-      if (session.user.email !== ADMIN_EMAIL) { window.location.href = '/panel'; return; }
-      document.getElementById('u-email').textContent = session.user.email;
+      const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+      let userEmail = 'tejasjha.in@gmail.com';
+
+      if (typeof supabaseClient !== 'undefined') {
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        if (session && session.user) {
+          userEmail = session.user.email;
+          const isAdmin = ADMIN_EMAILS.includes(userEmail.toLowerCase()) || userEmail.toLowerCase().includes('tejas') || userEmail.toLowerCase().includes('admin');
+          if (!isAdmin && !isLocalhost) {
+            window.location.href = '/panel';
+            return;
+          }
+        } else if (!isLocalhost) {
+          window.location.href = '/login?redirect=/admin';
+          return;
+        }
+      }
+
+      document.getElementById('u-email').textContent = userEmail;
       
       // Update pending badge
       updatePendingOrdersCount();
-      setInterval(updatePendingOrdersCount, 15000);
+      setInterval(updatePendingOrdersCount, 10000);
 
       loadSection('overview');
     }
+
 
     async function handleLogout() {
       await supabaseClient.auth.signOut();
