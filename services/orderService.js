@@ -129,9 +129,20 @@ class OrderService {
    */
   submitPaymentProof(orderId, utrNumber, note = '') {
     const order = this.orders.find(o => o.id === orderId);
-    if (!order) return null;
+    if (!order) return { success: false, error: 'Order not found' };
 
-    order.utr_number = String(utrNumber).trim();
+    const cleanUtr = String(utrNumber).trim();
+
+    // Anti-fraud: Check if this UTR has already been submitted or approved on another order
+    const existingUtr = this.orders.find(o => o.id !== orderId && o.utr_number === cleanUtr && (o.status === 'approved' || o.status === 'pending_approval'));
+    if (existingUtr) {
+      return { 
+        success: false, 
+        error: 'This UPI UTR / Transaction Reference has already been submitted for order #' + existingUtr.id + '. Duplicate submissions are not permitted.' 
+      };
+    }
+
+    order.utr_number = cleanUtr;
     order.payment_submitted_at = new Date().toISOString();
     order.status = 'pending_approval';
     if (note) order.customer_note = note;
@@ -141,8 +152,9 @@ class OrderService {
     // Trigger Discord alert for immediate admin verification
     discord.notifyPaymentSubmitted(order).catch(() => {});
 
-    return order;
+    return { success: true, data: order };
   }
+
 
   /**
    * Retrieve order by ID

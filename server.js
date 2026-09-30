@@ -715,16 +715,17 @@ app.post('/api/orders/:id/pay', (req, res) => {
       return res.status(400).json({ success: false, error: 'Please enter a valid 12-digit UPI reference / UTR number' });
     }
 
-    const updated = orderService.submitPaymentProof(req.params.id, utr_number, note);
-    if (!updated) {
-      return res.status(404).json({ success: false, error: 'Order not found' });
+    const result = orderService.submitPaymentProof(req.params.id, utr_number, note);
+    if (!result.success) {
+      return res.status(400).json({ success: false, error: result.error });
     }
 
-    res.json({ success: true, message: 'Payment submitted for verification', data: updated });
+    res.json({ success: true, message: 'Payment submitted for verification', data: result.data });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
 });
+
 
 app.get('/api/orders/:id', (req, res) => {
   try {
