@@ -110,11 +110,15 @@ async function initPanel() {
 /* ── View Routing ─────────────────────────────────────────────────────────── */
 function navigateToView(viewName) {
   const viewDash = document.getElementById('view-dashboard');
+  const viewVpsList = document.getElementById('view-vps-list');
+  const viewMcList = document.getElementById('view-mc-list');
   const viewVps = document.getElementById('view-vps');
   const viewMc = document.getElementById('view-minecraft');
   const viewAi = document.getElementById('view-ai');
 
   if (viewDash) viewDash.style.display = 'none';
+  if (viewVpsList) viewVpsList.style.display = 'none';
+  if (viewMcList) viewMcList.style.display = 'none';
   if (viewVps) viewVps.style.display = 'none';
   if (viewMc) viewMc.style.display = 'none';
   if (viewAi) viewAi.style.display = 'none';
@@ -125,12 +129,20 @@ function navigateToView(viewName) {
     if (viewDash) viewDash.style.display = 'block';
     const link = document.getElementById('nav-dash');
     if (link) link.classList.add('active');
-  } else if (viewName === 'vps') {
+  } else if (viewName === 'vps-list' || viewName === 'vps_list') {
+    if (viewVpsList) viewVpsList.style.display = 'block';
+    const link = document.getElementById('nav-vps');
+    if (link) link.classList.add('active');
+  } else if (viewName === 'vps' || viewName === 'vps-control') {
     if (viewVps) viewVps.style.display = 'block';
     const link = document.getElementById('nav-vps');
     if (link) link.classList.add('active');
     setTimeout(() => initMultiLineChart(), 60);
-  } else if (viewName === 'minecraft') {
+  } else if (viewName === 'mc-list' || viewName === 'mc_list') {
+    if (viewMcList) viewMcList.style.display = 'block';
+    const link = document.getElementById('nav-mc');
+    if (link) link.classList.add('active');
+  } else if (viewName === 'minecraft' || viewName === 'mc-control') {
     if (viewMc) viewMc.style.display = 'block';
     const link = document.getElementById('nav-mc');
     if (link) link.classList.add('active');

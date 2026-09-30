@@ -486,11 +486,11 @@
     }
 
     .grid-vps-cols {
-      grid-template-columns: 2.2fr 1.6fr 1.8fr 1fr 40px;
+      grid-template-columns: 2.2fr 1.6fr 1.8fr 1.1fr 100px;
     }
 
     .grid-mc-cols {
-      grid-template-columns: 2.2fr 1.8fr 1.6fr 1.2fr 40px;
+      grid-template-columns: 2.2fr 1.8fr 1.6fr 1.2fr 100px;
     }
 
     .cell-identity {
@@ -854,11 +854,11 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
         Deployments
       </a>
-      <a class="subnav-link-item" id="nav-vps" onclick="navigateToView('vps')">
+      <a class="subnav-link-item" id="nav-vps" onclick="navigateToView('vps-list')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
         VPS Instances
       </a>
-      <a class="subnav-link-item" id="nav-mc" onclick="navigateToView('minecraft')">
+      <a class="subnav-link-item" id="nav-mc" onclick="navigateToView('mc-list')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
         Minecraft Servers
       </a>
@@ -990,8 +990,8 @@
           <div>
             <span class="status-badge-live"><span class="status-dot-solid"></span> Running</span>
           </div>
-          <div class="chevron-right-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          <div style="display:flex; justify-content:flex-end;">
+            <button class="btn-restore-pill" style="font-weight:600; font-size:0.75rem; padding:4px 12px;" onclick="event.stopPropagation(); openSpecificVps('srv-7f3a9c2e', 'Production App Node', '103.10.180.129', 'Ubuntu 24.04 LTS')">Manage &rarr;</button>
           </div>
         </div>
 
@@ -1017,8 +1017,8 @@
           <div>
             <span class="status-badge-live"><span class="status-dot-solid"></span> Running</span>
           </div>
-          <div class="chevron-right-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          <div style="display:flex; justify-content:flex-end;">
+            <button class="btn-restore-pill" style="font-weight:600; font-size:0.75rem; padding:4px 12px;" onclick="event.stopPropagation(); openSpecificVps('srv-8d2e1b4a', 'Database Cluster Master', '103.189.89.44', 'Debian 12 Bookworm')">Manage &rarr;</button>
           </div>
         </div>
 
@@ -1044,8 +1044,8 @@
           <div>
             <span class="status-badge-live"><span class="status-dot-solid"></span> Running</span>
           </div>
-          <div class="chevron-right-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          <div style="display:flex; justify-content:flex-end;">
+            <button class="btn-restore-pill" style="font-weight:600; font-size:0.75rem; padding:4px 12px;" onclick="event.stopPropagation(); openSpecificVps('srv-3b9f1c7d', 'Staging & CI/CD Pipeline', '103.10.180.155', 'Ubuntu 22.04 LTS')">Manage &rarr;</button>
           </div>
         </div>
 
@@ -1071,8 +1071,8 @@
           <div>
             <span class="status-badge-live"><span class="status-dot-solid"></span> Running</span>
           </div>
-          <div class="chevron-right-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          <div style="display:flex; justify-content:flex-end;">
+            <button class="btn-restore-pill" style="font-weight:600; font-size:0.75rem; padding:4px 12px;" onclick="event.stopPropagation(); openSpecificVps('srv-5a1e8c9f', 'Backup Storage Node', '103.189.89.92', 'Rocky Linux 9')">Manage &rarr;</button>
           </div>
         </div>
 
@@ -1091,7 +1091,7 @@
           <div>Direct Address</div>
           <div>Engine &amp; Specs</div>
           <div>Health / Players</div>
-          <div></div>
+          <div style="text-align:right;">Action</div>
         </div>
 
         <!-- MC 1 -->
@@ -1116,8 +1116,8 @@
           <div>
             <span class="status-badge-live"><span class="status-dot-solid"></span> 20.0 TPS (18/100)</span>
           </div>
-          <div class="chevron-right-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          <div style="display:flex; justify-content:flex-end;">
+            <button class="btn-restore-pill" style="font-weight:600; font-size:0.75rem; padding:4px 12px;" onclick="event.stopPropagation(); openSpecificMc('Survival-1', 'play.kryonhost.net:25565', '18 / 100')">Manage &rarr;</button>
           </div>
         </div>
 
@@ -1143,8 +1143,8 @@
           <div>
             <span class="status-badge-live"><span class="status-dot-solid"></span> 20.0 TPS (42/250)</span>
           </div>
-          <div class="chevron-right-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          <div style="display:flex; justify-content:flex-end;">
+            <button class="btn-restore-pill" style="font-weight:600; font-size:0.75rem; padding:4px 12px;" onclick="event.stopPropagation(); openSpecificMc('Lobby-Hub', 'hub.kryonhost.net:25565', '42 / 250')">Manage &rarr;</button>
           </div>
         </div>
 
@@ -1170,8 +1170,8 @@
           <div>
             <span class="status-badge-live"><span class="status-dot-solid"></span> 20.0 TPS (31/150)</span>
           </div>
-          <div class="chevron-right-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          <div style="display:flex; justify-content:flex-end;">
+            <button class="btn-restore-pill" style="font-weight:600; font-size:0.75rem; padding:4px 12px;" onclick="event.stopPropagation(); openSpecificMc('Lifesteal-SMP', 'lifesteal.kryonhost.net:25565', '31 / 150')">Manage &rarr;</button>
           </div>
         </div>
 
@@ -1180,7 +1180,288 @@
     </section>
 
     <!-- ══════════════════════════════════════════════════════════════════════
-         VIEW 2: VPS CONTROL PANEL
+         VIEW 2: VPS INSTANCES LIST (DEDICATED PURCHASED LIST)
+         ══════════════════════════════════════════════════════════════════════ -->
+    <section id="view-vps-list" style="display:none;">
+      
+      <!-- Breadcrumb -->
+      <div class="breadcrumb-row" style="margin-bottom:18px;">
+        <a onclick="navigateToView('dashboard')">Deployments</a>
+        <span>&rsaquo;</span>
+        <strong>VPS Instances</strong>
+      </div>
+
+      <!-- Action & Search Bar -->
+      <div class="filter-actions-row" style="margin-bottom:20px;">
+        <div class="main-search-input-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" placeholder="Search VPS instances..." oninput="filterDashboardRows(this.value)">
+        </div>
+
+        <div class="filter-right-buttons">
+          <a href="/vps" class="btn-primary-deploy">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            + Deploy New VPS
+          </a>
+        </div>
+      </div>
+
+      <div class="section-title-strip">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/></svg>
+        <span>Active VPS Instances</span>
+        <span class="count-pill-tag">4</span>
+      </div>
+
+      <div class="table-container-card">
+        <div class="table-header-row grid-vps-cols">
+          <div>Name / Instance ID</div>
+          <div>IP Address</div>
+          <div>Hardware Specs</div>
+          <div>Status</div>
+          <div style="text-align:right;">Action</div>
+        </div>
+
+        <!-- VPS 1 -->
+        <div class="table-data-row grid-vps-cols" onclick="openSpecificVps('srv-7f3a9c2e', 'Production App Node', '103.10.180.129', 'Ubuntu 24.04 LTS')">
+          <div class="cell-identity">
+            <div class="cell-icon-wrap">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/></svg>
+            </div>
+            <div>
+              <div class="cell-title-text">srv-7f3a9c2e</div>
+              <div class="cell-sub-text">Production App Node · Ubuntu 24.04 LTS</div>
+            </div>
+          </div>
+          <div>
+            <div style="font-family:'JetBrains Mono'; font-size:0.82rem; font-weight:600;">103.10.180.129</div>
+            <div style="font-size:0.72rem; color:var(--text-muted);">Mumbai Tier-4 Yotta</div>
+          </div>
+          <div>
+            <div style="font-size:0.82rem; font-weight:500;">4 vCPU · 8 GB RAM</div>
+            <div style="font-size:0.72rem; color:var(--text-muted);">160 GB NVMe Gen4</div>
+          </div>
+          <div>
+            <span class="status-badge-live"><span class="status-dot-solid"></span> Running</span>
+          </div>
+          <div style="display:flex; justify-content:flex-end;">
+            <button class="btn-restore-pill" style="font-weight:600; font-size:0.75rem; padding:4px 12px;" onclick="event.stopPropagation(); openSpecificVps('srv-7f3a9c2e', 'Production App Node', '103.10.180.129', 'Ubuntu 24.04 LTS')">Manage &rarr;</button>
+          </div>
+        </div>
+
+        <!-- VPS 2 -->
+        <div class="table-data-row grid-vps-cols" onclick="openSpecificVps('srv-8d2e1b4a', 'Database Cluster Master', '103.189.89.44', 'Debian 12 Bookworm')">
+          <div class="cell-identity">
+            <div class="cell-icon-wrap">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/></svg>
+            </div>
+            <div>
+              <div class="cell-title-text">srv-8d2e1b4a</div>
+              <div class="cell-sub-text">Database Cluster Master · Debian 12</div>
+            </div>
+          </div>
+          <div>
+            <div style="font-family:'JetBrains Mono'; font-size:0.82rem; font-weight:600;">103.189.89.44</div>
+            <div style="font-size:0.72rem; color:var(--text-muted);">Mumbai Tier-4 Yotta</div>
+          </div>
+          <div>
+            <div style="font-size:0.82rem; font-weight:500;">8 vCPU · 16 GB RAM</div>
+            <div style="font-size:0.72rem; color:var(--text-muted);">320 GB NVMe Gen4</div>
+          </div>
+          <div>
+            <span class="status-badge-live"><span class="status-dot-solid"></span> Running</span>
+          </div>
+          <div style="display:flex; justify-content:flex-end;">
+            <button class="btn-restore-pill" style="font-weight:600; font-size:0.75rem; padding:4px 12px;" onclick="event.stopPropagation(); openSpecificVps('srv-8d2e1b4a', 'Database Cluster Master', '103.189.89.44', 'Debian 12 Bookworm')">Manage &rarr;</button>
+          </div>
+        </div>
+
+        <!-- VPS 3 -->
+        <div class="table-data-row grid-vps-cols" onclick="openSpecificVps('srv-3b9f1c7d', 'Staging & CI/CD Pipeline', '103.10.180.155', 'Ubuntu 22.04 LTS')">
+          <div class="cell-identity">
+            <div class="cell-icon-wrap">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/></svg>
+            </div>
+            <div>
+              <div class="cell-title-text">srv-3b9f1c7d</div>
+              <div class="cell-sub-text">Staging &amp; CI/CD Pipeline · Ubuntu 22.04</div>
+            </div>
+          </div>
+          <div>
+            <div style="font-family:'JetBrains Mono'; font-size:0.82rem; font-weight:600;">103.10.180.155</div>
+            <div style="font-size:0.72rem; color:var(--text-muted);">Singapore Equinix SG1</div>
+          </div>
+          <div>
+            <div style="font-size:0.82rem; font-weight:500;">2 vCPU · 4 GB RAM</div>
+            <div style="font-size:0.72rem; color:var(--text-muted);">80 GB NVMe Gen4</div>
+          </div>
+          <div>
+            <span class="status-badge-live"><span class="status-dot-solid"></span> Running</span>
+          </div>
+          <div style="display:flex; justify-content:flex-end;">
+            <button class="btn-restore-pill" style="font-weight:600; font-size:0.75rem; padding:4px 12px;" onclick="event.stopPropagation(); openSpecificVps('srv-3b9f1c7d', 'Staging & CI/CD Pipeline', '103.10.180.155', 'Ubuntu 22.04 LTS')">Manage &rarr;</button>
+          </div>
+        </div>
+
+        <!-- VPS 4 -->
+        <div class="table-data-row grid-vps-cols" onclick="openSpecificVps('srv-5a1e8c9f', 'Backup Storage Node', '103.189.89.92', 'Rocky Linux 9')">
+          <div class="cell-identity">
+            <div class="cell-icon-wrap">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/></svg>
+            </div>
+            <div>
+              <div class="cell-title-text">srv-5a1e8c9f</div>
+              <div class="cell-sub-text">Backup Storage Node · Rocky Linux 9</div>
+            </div>
+          </div>
+          <div>
+            <div style="font-family:'JetBrains Mono'; font-size:0.82rem; font-weight:600;">103.189.89.92</div>
+            <div style="font-size:0.72rem; color:var(--text-muted);">Mumbai Tier-4 Yotta</div>
+          </div>
+          <div>
+            <div style="font-size:0.82rem; font-weight:500;">2 vCPU · 4 GB RAM</div>
+            <div style="font-size:0.72rem; color:var(--text-muted);">500 GB Storage Pool</div>
+          </div>
+          <div>
+            <span class="status-badge-live"><span class="status-dot-solid"></span> Running</span>
+          </div>
+          <div style="display:flex; justify-content:flex-end;">
+            <button class="btn-restore-pill" style="font-weight:600; font-size:0.75rem; padding:4px 12px;" onclick="event.stopPropagation(); openSpecificVps('srv-5a1e8c9f', 'Backup Storage Node', '103.189.89.92', 'Rocky Linux 9')">Manage &rarr;</button>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════════════════
+         VIEW 3: MINECRAFT SERVERS LIST (DEDICATED PURCHASED LIST)
+         ══════════════════════════════════════════════════════════════════════ -->
+    <section id="view-mc-list" style="display:none;">
+      
+      <!-- Breadcrumb -->
+      <div class="breadcrumb-row" style="margin-bottom:18px;">
+        <a onclick="navigateToView('dashboard')">Deployments</a>
+        <span>&rsaquo;</span>
+        <strong>Minecraft Servers</strong>
+      </div>
+
+      <!-- Action & Search Bar -->
+      <div class="filter-actions-row" style="margin-bottom:20px;">
+        <div class="main-search-input-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" placeholder="Search Minecraft servers..." oninput="filterDashboardRows(this.value)">
+        </div>
+
+        <div class="filter-right-buttons">
+          <a href="/minecraft" class="btn-primary-deploy">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            + Deploy Minecraft Server
+          </a>
+        </div>
+      </div>
+
+      <div class="section-title-strip">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        <span>Active Minecraft Servers</span>
+        <span class="count-pill-tag">3</span>
+      </div>
+
+      <div class="table-container-card">
+        <div class="table-header-row grid-mc-cols">
+          <div>Server Project Name</div>
+          <div>Direct Address</div>
+          <div>Engine &amp; Specs</div>
+          <div>Health / Players</div>
+          <div style="text-align:right;">Action</div>
+        </div>
+
+        <!-- MC 1 -->
+        <div class="table-data-row grid-mc-cols" onclick="openSpecificMc('Survival-1', 'play.kryonhost.net:25565', '18 / 100')">
+          <div class="cell-identity">
+            <div class="cell-icon-wrap">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+            </div>
+            <div>
+              <div class="cell-title-text">Survival-1</div>
+              <div class="cell-sub-text">EnderCraft SMP · Season 2</div>
+            </div>
+          </div>
+          <div>
+            <div style="font-family:'JetBrains Mono'; font-size:0.82rem; font-weight:600;">play.kryonhost.net:25565</div>
+            <div style="font-size:0.72rem; color:var(--text-muted);">92 Tbps Anycast Shield</div>
+          </div>
+          <div>
+            <div style="font-size:0.82rem; font-weight:500;">Paper 1.21.5</div>
+            <div style="font-size:0.72rem; color:var(--text-muted);">Ryzen 9 7950X · 16 GB DDR5</div>
+          </div>
+          <div>
+            <span class="status-badge-live"><span class="status-dot-solid"></span> 20.0 TPS (18/100)</span>
+          </div>
+          <div style="display:flex; justify-content:flex-end;">
+            <button class="btn-restore-pill" style="font-weight:600; font-size:0.75rem; padding:4px 12px;" onclick="event.stopPropagation(); openSpecificMc('Survival-1', 'play.kryonhost.net:25565', '18 / 100')">Manage &rarr;</button>
+          </div>
+        </div>
+
+        <!-- MC 2 -->
+        <div class="table-data-row grid-mc-cols" onclick="openSpecificMc('Lobby-Hub', 'hub.kryonhost.net:25565', '42 / 250')">
+          <div class="cell-identity">
+            <div class="cell-icon-wrap">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+            </div>
+            <div>
+              <div class="cell-title-text">Lobby-Hub</div>
+              <div class="cell-sub-text">Main Network Proxy &amp; Gateway</div>
+            </div>
+          </div>
+          <div>
+            <div style="font-family:'JetBrains Mono'; font-size:0.82rem; font-weight:600;">hub.kryonhost.net:25565</div>
+            <div style="font-size:0.72rem; color:var(--text-muted);">BGP Anycast Protected</div>
+          </div>
+          <div>
+            <div style="font-size:0.82rem; font-weight:500;">Velocity / Purpur</div>
+            <div style="font-size:0.72rem; color:var(--text-muted);">Ryzen 9 7950X · 8 GB DDR5</div>
+          </div>
+          <div>
+            <span class="status-badge-live"><span class="status-dot-solid"></span> 20.0 TPS (42/250)</span>
+          </div>
+          <div style="display:flex; justify-content:flex-end;">
+            <button class="btn-restore-pill" style="font-weight:600; font-size:0.75rem; padding:4px 12px;" onclick="event.stopPropagation(); openSpecificMc('Lobby-Hub', 'hub.kryonhost.net:25565', '42 / 250')">Manage &rarr;</button>
+          </div>
+        </div>
+
+        <!-- MC 3 -->
+        <div class="table-data-row grid-mc-cols" onclick="openSpecificMc('Lifesteal-SMP', 'lifesteal.kryonhost.net:25565', '31 / 150')">
+          <div class="cell-identity">
+            <div class="cell-icon-wrap">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+            </div>
+            <div>
+              <div class="cell-title-text">Lifesteal-SMP</div>
+              <div class="cell-sub-text">Hardcore Season 4 Tournament</div>
+            </div>
+          </div>
+          <div>
+            <div style="font-family:'JetBrains Mono'; font-size:0.82rem; font-weight:600;">lifesteal.kryonhost.net:25565</div>
+            <div style="font-size:0.72rem; color:var(--text-muted);">92 Tbps Anycast Shield</div>
+          </div>
+          <div>
+            <div style="font-size:0.82rem; font-weight:500;">Fabric 1.21.5</div>
+            <div style="font-size:0.72rem; color:var(--text-muted);">Ryzen 9 7950X · 12 GB DDR5</div>
+          </div>
+          <div>
+            <span class="status-badge-live"><span class="status-dot-solid"></span> 20.0 TPS (31/150)</span>
+          </div>
+          <div style="display:flex; justify-content:flex-end;">
+            <button class="btn-restore-pill" style="font-weight:600; font-size:0.75rem; padding:4px 12px;" onclick="event.stopPropagation(); openSpecificMc('Lifesteal-SMP', 'lifesteal.kryonhost.net:25565', '31 / 150')">Manage &rarr;</button>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════════════════
+         VIEW 4: VPS CONTROL PANEL
          ══════════════════════════════════════════════════════════════════════ -->
     <section id="view-vps" style="display:none;">
       
@@ -1189,7 +1470,7 @@
         <div class="breadcrumb-row">
           <a onclick="navigateToView('dashboard')">Deployments</a>
           <span>&rsaquo;</span>
-          <a onclick="navigateToView('vps')">VPS Control Center</a>
+          <a onclick="navigateToView('vps-list')">VPS Instances</a>
           <span>&rsaquo;</span>
           <strong style="color:var(--text-primary); font-family:'JetBrains Mono';" id="vps-breadcrumb-id">srv-7f3a9c2e</strong>
         </div>
@@ -1378,7 +1659,7 @@ root@srv-7f3a9c2e:~# </div>
         <div class="breadcrumb-row">
           <a onclick="navigateToView('dashboard')">Deployments</a>
           <span>&rsaquo;</span>
-          <a onclick="navigateToView('minecraft')">Minecraft Servers</a>
+          <a onclick="navigateToView('mc-list')">Minecraft Servers</a>
           <span>&rsaquo;</span>
           <strong style="color:var(--text-primary); font-family:'JetBrains Mono';" id="mc-breadcrumb-name">Survival-1</strong>
         </div>
