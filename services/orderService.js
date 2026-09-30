@@ -182,8 +182,24 @@ class OrderService {
    */
   async submitPaymentProof(orderId, paymentData) {
     await this.syncFromRemote();
-    const order = this.orders.find(o => o.id === orderId);
-    if (!order) return { success: false, error: 'Order not found' };
+    let order = this.orders.find(o => o.id === orderId);
+
+    // If order was not found in initial sync, retry once
+    if (!order) {
+      await new Promise(r => setTimeout(r, 300));
+      await this.syncFromRemote();
+      order = this.orders.find(o => o.id === orderId);
+    }
+
+    // Auto-recovery: If client has the order object in session
+    if (!order && paymentData && paymentData.order_backup) {
+      order = { ...paymentData.order_backup };
+      this.orders.unshift(order);
+    }
+
+    if (!order) {
+      return { success: false, error: 'Order not found. Please refresh and try again.' };
+    }
 
     let utrNumber = '';
     let senderUpiId = '';
@@ -203,7 +219,7 @@ class OrderService {
 
     const cleanUtr = String(utrNumber).trim();
 
-    // Anti-fraud: Check if this UTR has already been submitted or approved on another order
+    // Anti-fraud check
     const existingUtr = this.orders.find(o => o.id !== orderId && o.utr_number === cleanUtr && (o.status === 'approved' || o.status === 'pending_approval'));
     if (existingUtr) {
       return { 

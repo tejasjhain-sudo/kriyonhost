@@ -776,39 +776,65 @@
       screenshotFileName = file.name;
       const reader = new FileReader();
 
-      reader.onload = async function(e) {
-        screenshotBase64 = e.target.result;
+      reader.onload = function(e) {
+        const rawBase64 = e.target.result;
         
-        // Show preview
-        const previewImg = document.getElementById('kco-screenshot-preview');
-        const previewWrap = document.getElementById('kco-screenshot-preview-wrap');
-        const placeholder = document.getElementById('kco-screenshot-placeholder');
-        const nameEl = document.getElementById('kco-screenshot-name');
-
-        if (previewImg) previewImg.src = screenshotBase64;
-        if (nameEl) nameEl.textContent = file.name;
-        if (placeholder) placeholder.style.display = 'none';
-        if (previewWrap) previewWrap.style.display = 'flex';
-
-        // Upload to SDX bucket in background
-        try {
-          const cleanBase64 = screenshotBase64.split(',')[1] || screenshotBase64;
-          const uploadRes = await fetch('/api/v1/storage/upload', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              name: `proof_${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g, '')}`,
-              base64: cleanBase64,
-              contentType: file.type
-            })
-          });
-          const uploadJson = await uploadRes.json();
-          if (uploadJson.success && uploadJson.object?.url) {
-            screenshotUploadedUrl = uploadJson.object.url;
+        // Resize and compress via canvas to max 1000px and JPEG quality 0.75
+        const img = new Image();
+        img.onload = async function() {
+          let width = img.width;
+          let height = img.height;
+          const maxDim = 1000;
+          if (width > maxDim || height > maxDim) {
+            if (width > height) {
+              height = Math.round((height * maxDim) / width);
+              width = maxDim;
+            } else {
+              width = Math.round((width * maxDim) / height);
+              height = maxDim;
+            }
           }
-        } catch (uploadErr) {
-          console.warn('[Screenshot upload warning]:', uploadErr);
-        }
+
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          
+          screenshotBase64 = canvas.toDataURL('image/jpeg', 0.75);
+
+          // Show preview
+          const previewImg = document.getElementById('kco-screenshot-preview');
+          const previewWrap = document.getElementById('kco-screenshot-preview-wrap');
+          const placeholder = document.getElementById('kco-screenshot-placeholder');
+          const nameEl = document.getElementById('kco-screenshot-name');
+
+          if (previewImg) previewImg.src = screenshotBase64;
+          if (nameEl) nameEl.textContent = file.name;
+          if (placeholder) placeholder.style.display = 'none';
+          if (previewWrap) previewWrap.style.display = 'flex';
+
+          // Upload lightweight image to SDX bucket in background
+          try {
+            const cleanBase64 = screenshotBase64.split(',')[1] || screenshotBase64;
+            const uploadRes = await fetch('/api/v1/storage/upload', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                name: `proof_${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g, '')}.jpg`,
+                base64: cleanBase64,
+                contentType: 'image/jpeg'
+              })
+            });
+            const uploadJson = await uploadRes.json();
+            if (uploadJson.success && uploadJson.object?.url) {
+              screenshotUploadedUrl = uploadJson.object.url;
+            }
+          } catch (uploadErr) {
+            console.warn('[Screenshot upload warning]:', uploadErr);
+          }
+        };
+        img.src = rawBase64;
       };
 
       reader.readAsDataURL(file);
@@ -956,7 +982,8 @@
           utr_number: utr,
           sender_upi_id: senderUpi,
           screenshot_url: screenshotUploadedUrl || null,
-          screenshot_data: screenshotBase64 || null
+          screenshot_data: screenshotBase64 || null,
+          order_backup: currentOrder
         };
 
         const res = await fetch(`/api/orders/${currentOrder.id}/pay`, {

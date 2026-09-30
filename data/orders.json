@@ -1,5 +1,35 @@
 [
   {
+    "id": "KRYON-ORD-60710",
+    "created_at": "2026-09-30T08:34:51.237Z",
+    "expires_at": "2026-09-30T08:39:51.237Z",
+    "customer_name": "wdad",
+    "customer_email": "aa@gmail.com",
+    "customer_phone": "23123123123",
+    "service_type": "minecraft",
+    "plan_name": "Minecraft Iron (4GB)",
+    "specs": {
+      "cpu": 4,
+      "ram": 4,
+      "disk": 60,
+      "tier": "std",
+      "region": "India (Mumbai Tier-4)",
+      "server_name": "Minecraft Iron (4GB) (wdad)",
+      "os": "Ubuntu 24.04 LTS"
+    },
+    "amount": 799,
+    "currency": "INR",
+    "payment_method": "UPI Manual QR",
+    "upi_id": "8750287172@fam",
+    "qr_image_url": "/images/upi-qr.png",
+    "utr_number": null,
+    "status": "rejected",
+    "server_details": null,
+    "admin_notes": null,
+    "rejected_at": "2026-09-30T08:36:25.381Z",
+    "rejection_reason": "Payment verification failed or UTR not found in bank statement"
+  },
+  {
     "id": "KRYON-ORD-23879",
     "created_at": "2026-09-30T05:32:09.232Z",
     "expires_at": "2026-09-30T05:37:09.239Z",
