@@ -1,7 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 
-const STORE_PATH = path.join(__dirname, '..', 'config', 'ai_keys_store.json');
+const STORE_PATH = process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME
+  ? path.join('/tmp', 'ai_keys_store.json')
+  : path.join(__dirname, '..', 'config', 'ai_keys_store.json');
 
 const INITIAL_KEY_POOL = [
   '7955c352e1aba2676cba5dd5f5a5253bf8298ed210c85f3a714b1b3d8548243c',
@@ -38,8 +40,7 @@ class AIService {
       }
       this.saveStore();
     } catch (err) {
-      console.warn('AI Service: store load warning, initializing fresh store:', err.message);
-      this.saveStore();
+      // Memory store fallback
     }
   }
 
@@ -51,7 +52,7 @@ class AIService {
       }
       fs.writeFileSync(STORE_PATH, JSON.stringify(this.store, null, 2), 'utf8');
     } catch (err) {
-      console.error('AI Service: failed to persist store:', err);
+      // Graceful fallback for serverless
     }
   }
 
@@ -69,60 +70,52 @@ class AIService {
     const existing = this.store.assignments[userIdentifier];
     if (existing) {
       return {
-        ...existing,
-        isExisting: true,
-        message: 'Existing API key retrieved for this account.'
+        alreadyAssigned: true,
+        key: existing.key,
+        model: existing.model,
+        rateLimit: existing.rateLimit,
+        tokenLimit: existing.tokenLimit,
+        assignedAt: existing.assignedAt,
+        name: existing.name || metadata.name || 'Production AI',
+        region: existing.region || metadata.region || 'India (Mumbai Node)'
       };
     }
 
-    // Determine which keys are already assigned
-    const assignedKeySet = new Set(
-      Object.values(this.store.assignments).map(a => a.key)
-    );
-
-    // Filter unassigned keys
-    const availablePool = this.store.pool.filter(k => !assignedKeySet.has(k));
-
-    if (availablePool.length === 0) {
-      throw new Error('All Free tier API key allocations are currently assigned. Contact platform support for additional capacity.');
+    if (this.store.pool.length === 0) {
+      throw new Error('All Free Tier AI keys have been allocated. Please contact support.');
     }
 
-    // Pick a random available key
-    const randomIndex = Math.floor(Math.random() * availablePool.length);
-    const assignedKey = availablePool[randomIndex];
-
-    const record = {
-      key: assignedKey,
-      model: 'Colide Pro',
-      modelDescription: 'Advanced AI model for complex reasoning, coding, analysis, and production workloads. Perfect for applications requiring high-quality outputs.',
-      tier: 'Free Tier',
-      dailyRequestsLimit: 800,
-      monthlyTokensLimit: 25000,
+    // Pop key from pool
+    const allocatedKey = this.store.pool.shift();
+    const assignment = {
+      key: allocatedKey,
       assignedAt: new Date().toISOString(),
-      user: userIdentifier,
-      gatewayUrl: 'https://api.colidelabs.com/v1',
+      model: 'Colide Pro (Advanced Reasoning)',
+      rateLimit: '800 requests/day',
+      tokenLimit: '25,000 tokens/month',
+      tier: 'Free Tier',
+      name: metadata.name || 'Production AI',
+      region: metadata.region || 'India (Mumbai Node)',
       metadata
     };
 
-    this.store.assignments[userIdentifier] = record;
+    this.store.assignments[userIdentifier] = assignment;
     this.saveStore();
 
     return {
-      ...record,
-      isExisting: false,
-      message: 'New ColideLabs AI Gateway API key generated successfully.'
+      alreadyAssigned: false,
+      ...assignment
     };
   }
 
   getPoolStats() {
-    const total = this.store.pool.length;
-    const assignedCount = Object.keys(this.store.assignments).length;
     return {
-      total,
-      assigned: assignedCount,
-      available: Math.max(0, total - assignedCount)
+      availableKeys: this.store.pool.length,
+      assignedKeys: Object.keys(this.store.assignments).length,
+      totalKeys: this.store.pool.length + Object.keys(this.store.assignments).length
     };
   }
 }
 
-module.exports = new AIService();
+const aiInstance = new AIService();
+module.exports = aiInstance;

@@ -688,7 +688,7 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-if (!process.env.VERCEL) {
+if (require.main === module && !process.env.VERCEL && !process.env.NOW_REGION) {
   app.listen(PORT, () => {
     console.log(`\n======================================================`);
     console.log(`🚀 KryonHost Cloud Platform running at http://localhost:${PORT}`);

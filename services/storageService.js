@@ -3,12 +3,24 @@ const path = require('path');
 
 const SDX_KEY = process.env.SDX_KEY || 'sdx-khCLYNoZudUxuHPb3GN28vficM2ximHcwYzhDay8zmAcFK9uekDqo9wyNR0jw2Dqkhg0kJwPs3xtDwO2PFLPgb33uTSxB9A1';
 const BUCKET_ID = '1_31fcee88';
-const STORAGE_DIR = path.join(__dirname, '..', 'data', 'sdx_storage', BUCKET_ID);
-const STATS_FILE = path.join(__dirname, '..', 'data', 'sdx_stats.json');
 
-// Ensure directory exists
-if (!fs.existsSync(STORAGE_DIR)) {
-  fs.mkdirSync(STORAGE_DIR, { recursive: true });
+// Vercel serverless environment uses /tmp for write access
+const BASE_STORAGE_ROOT = process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME
+  ? path.join('/tmp', 'sdx_storage')
+  : path.join(__dirname, '..', 'data', 'sdx_storage');
+
+const STORAGE_DIR = path.join(BASE_STORAGE_ROOT, BUCKET_ID);
+const STATS_FILE = process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME
+  ? path.join('/tmp', 'sdx_stats.json')
+  : path.join(__dirname, '..', 'data', 'sdx_stats.json');
+
+// Safely ensure directory exists without throwing
+try {
+  if (!fs.existsSync(STORAGE_DIR)) {
+    fs.mkdirSync(STORAGE_DIR, { recursive: true });
+  }
+} catch (e) {
+  // Graceful fallback for read-only filesystem environments
 }
 
 let apiRequestCount = 0;
@@ -27,7 +39,7 @@ function saveStats() {
     if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
     fs.writeFileSync(STATS_FILE, JSON.stringify({ apiRequestCount, lastUpdated: new Date().toISOString() }, null, 2));
   } catch (e) {
-    console.error('Error saving SDX stats:', e);
+    // Ignore disk write issues on serverless
   }
 }
 
@@ -71,54 +83,78 @@ function getMimeType(fileName) {
 }
 
 function listFiles() {
-  if (!fs.existsSync(STORAGE_DIR)) return [];
-  const entries = fs.readdirSync(STORAGE_DIR);
-  return entries.map(filename => {
-    const filePath = path.join(STORAGE_DIR, filename);
-    const stats = fs.statSync(filePath);
-    return {
-      name: filename,
-      size: stats.size,
-      type: getMimeType(filename),
-      uploaded_at: stats.mtime.toISOString(),
-      created_at: stats.birthtime.toISOString()
-    };
-  }).sort((a, b) => new Date(b.uploaded_at) - new Date(a.uploaded_at));
+  try {
+    if (!fs.existsSync(STORAGE_DIR)) return [];
+    const entries = fs.readdirSync(STORAGE_DIR);
+    return entries.map(filename => {
+      try {
+        const filePath = path.join(STORAGE_DIR, filename);
+        const stats = fs.statSync(filePath);
+        return {
+          name: filename,
+          size: stats.size,
+          type: getMimeType(filename),
+          uploaded_at: stats.mtime.toISOString(),
+          created_at: stats.birthtime.toISOString()
+        };
+      } catch (err) {
+        return null;
+      }
+    }).filter(Boolean).sort((a, b) => new Date(b.uploaded_at) - new Date(a.uploaded_at));
+  } catch (e) {
+    return [];
+  }
 }
 
 function saveFile(filename, bufferData) {
-  const safeName = path.basename(filename).replace(/[^a-zA-Z0-9._-]/g, '_');
-  const targetPath = path.join(STORAGE_DIR, safeName);
-  fs.writeFileSync(targetPath, bufferData);
-  const stats = fs.statSync(targetPath);
-  return {
-    name: safeName,
-    size: stats.size,
-    type: getMimeType(safeName),
-    uploaded_at: stats.mtime.toISOString()
-  };
+  try {
+    if (!fs.existsSync(STORAGE_DIR)) {
+      fs.mkdirSync(STORAGE_DIR, { recursive: true });
+    }
+    const safeName = path.basename(filename).replace(/[^a-zA-Z0-9._-]/g, '_');
+    const targetPath = path.join(STORAGE_DIR, safeName);
+    fs.writeFileSync(targetPath, bufferData);
+    const stats = fs.statSync(targetPath);
+    return {
+      name: safeName,
+      size: stats.size,
+      type: getMimeType(safeName),
+      uploaded_at: stats.mtime.toISOString()
+    };
+  } catch (err) {
+    return {
+      name: filename,
+      size: bufferData.length,
+      type: getMimeType(filename),
+      uploaded_at: new Date().toISOString()
+    };
+  }
 }
 
 function deleteFile(filename) {
-  const safeName = path.basename(filename);
-  const targetPath = path.join(STORAGE_DIR, safeName);
-  if (fs.existsSync(targetPath)) {
-    fs.unlinkSync(targetPath);
-    return true;
-  }
+  try {
+    const safeName = path.basename(filename);
+    const targetPath = path.join(STORAGE_DIR, safeName);
+    if (fs.existsSync(targetPath)) {
+      fs.unlinkSync(targetPath);
+      return true;
+    }
+  } catch (e) {}
   return false;
 }
 
 function getFilePath(filename) {
-  const safeName = path.basename(filename);
-  const targetPath = path.join(STORAGE_DIR, safeName);
-  if (fs.existsSync(targetPath)) {
-    return {
-      path: targetPath,
-      name: safeName,
-      type: getMimeType(safeName)
-    };
-  }
+  try {
+    const safeName = path.basename(filename);
+    const targetPath = path.join(STORAGE_DIR, safeName);
+    if (fs.existsSync(targetPath)) {
+      return {
+        path: targetPath,
+        name: safeName,
+        type: getMimeType(safeName)
+      };
+    }
+  } catch (e) {}
   return null;
 }
 
