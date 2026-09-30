@@ -17,6 +17,7 @@ const {
 const shulker = require('./services/shulkerService');
 const minecraft = require('./services/minecraftService');
 const ai = require('./services/aiService');
+const storage = require('./services/storageService');
 
 // Supabase admin client (service_role — server-side only, never exposed to browser)
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdxeGFjd3lidW1jcm9hcmdud2txIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc5MDYxNzUzOSwiZXhwIjoyMTA2MTkzNTM5fQ.5xea24fdKrZBXYUDlGjw6TB4SzXbmkDP_rtrP0NIwB4';
@@ -30,7 +31,8 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // ─── Dedicated Product Pages ────────────────────────────────────────────────
@@ -618,6 +620,66 @@ app.post('/api/ai/admin/add-keys', async (req, res) => {
     });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// ─── SDX Object Storage Endpoints ──────────────────────────────────────────
+app.get('/api/v1/storage/overview', (req, res) => {
+  storage.incrementRequestCount();
+  const overview = storage.getStorageOverview();
+  res.json({ success: true, ...overview });
+});
+
+app.get('/api/v1/storage/files', (req, res) => {
+  storage.incrementRequestCount();
+  const files = storage.listFiles();
+  res.json({ success: true, files });
+});
+
+app.post('/api/v1/storage/upload', (req, res) => {
+  storage.incrementRequestCount();
+  const { name, data, base64, contentType } = req.body;
+  if (!name) {
+    return res.status(400).json({ success: false, error: 'File name is required' });
+  }
+
+  let fileBuffer;
+  if (base64) {
+    fileBuffer = Buffer.from(base64, 'base64');
+  } else if (data) {
+    fileBuffer = Buffer.from(data);
+  } else {
+    fileBuffer = Buffer.from('');
+  }
+
+  const saved = storage.saveFile(name, fileBuffer);
+  res.json({
+    success: true,
+    message: 'Object uploaded successfully to SDX bucket',
+    object: {
+      ...saved,
+      url: `/api/v1/storage/files/${saved.name}`
+    }
+  });
+});
+
+app.get('/api/v1/storage/files/:filename', (req, res) => {
+  storage.incrementRequestCount();
+  const fileObj = storage.getFilePath(req.params.filename);
+  if (!fileObj) {
+    return res.status(404).json({ success: false, error: 'Object not found in SDX bucket' });
+  }
+  res.setHeader('Content-Type', fileObj.type);
+  res.sendFile(fileObj.path);
+});
+
+app.delete('/api/v1/storage/files/:filename', (req, res) => {
+  storage.incrementRequestCount();
+  const deleted = storage.deleteFile(req.params.filename);
+  if (deleted) {
+    res.json({ success: true, message: 'Object removed from SDX bucket' });
+  } else {
+    res.status(404).json({ success: false, error: 'Object not found' });
   }
 });
 

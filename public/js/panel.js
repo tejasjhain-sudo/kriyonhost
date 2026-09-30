@@ -740,11 +740,28 @@ function copyAiKey() {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   SDX OBJECT STORAGE CONTROLLER
+   SDX OBJECT STORAGE CONTROLLER (SELF-HOSTED / NO DOMAIN REQUIRED)
    ═══════════════════════════════════════════════════════════════════════════ */
 let isSdxKeyRevealed = false;
 let sdxSecretKey = 'sdx-khCLYNoZudUxuHPb3GN28vficM2ximHcwYzhDay8zmAcFK9uekDqo9wyNR0jw2Dqkhg0kJwPs3xtDwO2PFLPgb33uTSxB9A1';
-let sdxFiles = JSON.parse(localStorage.getItem('kryon_sdx_files') || '[]');
+let sdxFiles = [];
+
+function getSdxBaseUrl() {
+  return `${window.location.origin}/api/v1/storage`;
+}
+
+function updateSdxEndpointDisplay() {
+  const display = document.getElementById('sdx-endpoint-display');
+  if (display) {
+    display.textContent = getSdxBaseUrl();
+  }
+}
+
+function copySdxEndpoint() {
+  const url = getSdxBaseUrl();
+  navigator.clipboard.writeText(url);
+  showVpsToast('Storage API endpoint copied to clipboard');
+}
 
 function toggleSdxKeyVisibility() {
   isSdxKeyRevealed = !isSdxKeyRevealed;
@@ -788,64 +805,83 @@ function triggerSdxFileInput() {
   if (fileInput) fileInput.click();
 }
 
-function handleSdxFileUpload(event) {
+async function handleSdxFileUpload(event) {
   const files = event.target.files;
   if (!files || files.length === 0) return;
 
-  const nowStr = new Date().toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
-  });
+  showVpsToast(`Uploading ${files.length} file(s) to SDX bucket...`);
 
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
-    sdxFiles.unshift({
-      name: file.name,
-      size: file.size,
-      type: file.type || 'application/octet-stream',
-      date: nowStr
-    });
+    try {
+      const base64Data = await readFileAsBase64(file);
+      await fetch('/api/v1/storage/upload', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${sdxSecretKey}`
+        },
+        body: JSON.stringify({
+          name: file.name,
+          base64: base64Data,
+          contentType: file.type || 'application/octet-stream'
+        })
+      });
+    } catch (err) {
+      console.error('File upload error:', err);
+    }
   }
 
-  localStorage.setItem('kryon_sdx_files', JSON.stringify(sdxFiles));
   event.target.value = '';
-  renderSdxFilesTable();
-  showVpsToast(`Uploaded ${files.length} file(s) to SDX bucket`);
+  await renderSdxFilesTable();
+  showVpsToast(`Files uploaded successfully to SDX bucket`);
+}
+
+function readFileAsBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result;
+      const base64 = result.split(',')[1] || '';
+      resolve(base64);
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
 }
 
 function formatBytes(bytes) {
-  if (bytes === 0) return '0 B';
+  if (!bytes || bytes === 0) return '0 B';
   const k = 1024;
   const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
 
-function renderSdxFilesTable() {
+async function renderSdxFilesTable() {
+  updateSdxEndpointDisplay();
+
   const emptyState = document.getElementById('sdx-empty-state');
   const tableContainer = document.getElementById('sdx-files-table-container');
   const tbody = document.getElementById('sdx-files-tbody');
   const uploadCountEl = document.getElementById('sdx-uploads-count');
   const storageUsageEl = document.getElementById('sdx-storage-usage-val');
+  const requestsCountEl = document.getElementById('sdx-requests-count');
 
-  // Calculate total bytes
-  let totalBytes = 0;
-  sdxFiles.forEach(f => {
-    totalBytes += (f.size || 0);
-  });
-
-  const usedGb = (totalBytes / (1024 * 1024 * 1024)).toFixed(2);
-  if (storageUsageEl) {
-    storageUsageEl.textContent = `${usedGb} / 10 GB`;
+  try {
+    const res = await fetch('/api/v1/storage/overview');
+    const data = await res.json();
+    if (data.success) {
+      sdxFiles = data.files || [];
+      if (storageUsageEl) storageUsageEl.textContent = `${data.used_gb} / ${data.max_quota_gb} GB`;
+      if (uploadCountEl) uploadCountEl.textContent = data.total_uploads;
+      if (requestsCountEl) requestsCountEl.textContent = data.api_requests;
+    }
+  } catch (err) {
+    console.warn('Could not fetch storage overview, using local state:', err);
   }
-  if (uploadCountEl) {
-    uploadCountEl.textContent = sdxFiles.length;
-  }
 
-  if (sdxFiles.length === 0) {
+  if (!sdxFiles || sdxFiles.length === 0) {
     if (emptyState) emptyState.style.display = 'block';
     if (tableContainer) tableContainer.style.display = 'none';
   } else {
@@ -853,11 +889,13 @@ function renderSdxFilesTable() {
     if (tableContainer) tableContainer.style.display = 'block';
 
     if (tbody) {
-      tbody.innerHTML = sdxFiles.map((file, idx) => `
+      tbody.innerHTML = sdxFiles.map((file) => `
         <tr style="border-bottom:1px solid var(--border-subtle);">
           <td style="padding:12px 16px; font-weight:600; color:var(--text-primary); display:flex; align-items:center; gap:8px;">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--text-muted);"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
-            <span style="font-family:'JetBrains Mono', monospace; font-size:0.78rem;">${escapeHtml(file.name)}</span>
+            <a href="/api/v1/storage/files/${encodeURIComponent(file.name)}" target="_blank" style="font-family:'JetBrains Mono', monospace; font-size:0.78rem; color:inherit; text-decoration:none; hover:underline;">
+              ${escapeHtml(file.name)}
+            </a>
           </td>
           <td style="padding:12px 16px; font-size:0.78rem; color:var(--text-secondary); font-family:'JetBrains Mono', monospace;">
             ${formatBytes(file.size)}
@@ -866,12 +904,13 @@ function renderSdxFilesTable() {
             ${escapeHtml(file.type || 'binary')}
           </td>
           <td style="padding:12px 16px; font-size:0.75rem; color:var(--text-muted);">
-            ${file.date}
+            ${new Date(file.uploaded_at || Date.now()).toLocaleString('en-US', { month:'short', day:'numeric', year:'numeric', hour:'2-digit', minute:'2-digit' })}
           </td>
           <td style="padding:12px 16px; text-align:right;">
             <div style="display:inline-flex; gap:6px;">
-              <button class="btn-restore-pill" style="font-size:0.7rem; padding:3px 8px;" onclick="copySdxFileUrl('${escapeHtml(file.name)}')">Copy S3 URL</button>
-              <button class="btn-restore-pill" style="font-size:0.7rem; padding:3px 8px; color:var(--color-rose);" onclick="deleteSdxFile(${idx})">Delete</button>
+              <a href="/api/v1/storage/files/${encodeURIComponent(file.name)}" download="${escapeHtml(file.name)}" class="btn-restore-pill" style="font-size:0.7rem; padding:3px 8px; text-decoration:none; color:inherit;">Download</a>
+              <button class="btn-restore-pill" style="font-size:0.7rem; padding:3px 8px;" onclick="copySdxFileUrl('${escapeHtml(file.name)}')">Copy URL</button>
+              <button class="btn-restore-pill" style="font-size:0.7rem; padding:3px 8px; color:var(--color-rose);" onclick="deleteSdxFile('${escapeHtml(file.name)}')">Delete</button>
             </div>
           </td>
         </tr>
@@ -881,17 +920,28 @@ function renderSdxFilesTable() {
 }
 
 function copySdxFileUrl(fileName) {
-  const url = `https://storage.kryonhost.net/v1/s3/1_31fcee88/${fileName}`;
+  const url = `${window.location.origin}/api/v1/storage/files/${encodeURIComponent(fileName)}`;
   navigator.clipboard.writeText(url);
-  showVpsToast(`S3 endpoint URL for ${fileName} copied`);
+  showVpsToast(`Direct file URL for ${fileName} copied`);
 }
 
-function deleteSdxFile(index) {
-  if (confirm('Delete this object from your SDX bucket?')) {
-    sdxFiles.splice(index, 1);
-    localStorage.setItem('kryon_sdx_files', JSON.stringify(sdxFiles));
-    renderSdxFilesTable();
-    showVpsToast('Object removed from SDX bucket');
+async function deleteSdxFile(fileName) {
+  if (confirm(`Delete "${fileName}" from your SDX bucket?`)) {
+    try {
+      const res = await fetch(`/api/v1/storage/files/${encodeURIComponent(fileName)}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${sdxSecretKey}`
+        }
+      });
+      const data = await res.json();
+      if (data.success) {
+        showVpsToast('Object removed from SDX bucket');
+      }
+    } catch (err) {
+      console.error('Delete error:', err);
+    }
+    await renderSdxFilesTable();
   }
 }
 

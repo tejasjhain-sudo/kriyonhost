@@ -2067,10 +2067,13 @@ root@srv-7f3a9c2e:~# </div>
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:18px;">
               <div>
                 <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; font-weight:600; margin-bottom:4px;">API Endpoint</div>
-                <div style="font-family:'JetBrains Mono', monospace; font-size:0.8rem; background:var(--bg-surface-elevated); padding:8px 12px; border-radius:6px; border:1px solid var(--border-subtle); color:var(--text-primary);">
-                  https://storage.kryonhost.net/v1/s3
+                <div style="display:flex; gap:6px;">
+                  <div id="sdx-endpoint-display" style="flex:1; font-family:'JetBrains Mono', monospace; font-size:0.78rem; background:var(--bg-surface-elevated); padding:8px 12px; border-radius:6px; border:1px solid var(--border-subtle); color:var(--text-primary); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+                    /api/v1/storage
+                  </div>
+                  <button class="btn-restore-pill" style="font-size:0.72rem; padding:0 10px;" onclick="copySdxEndpoint()">Copy</button>
                 </div>
-                <div style="font-size:0.7rem; color:var(--text-muted); margin-top:3px;">Based on your selected region (in-north-1).</div>
+                <div style="font-size:0.7rem; color:var(--text-muted); margin-top:3px;">Self-hosted S3 &amp; REST storage endpoint (works without external domain).</div>
               </div>
 
               <div>
