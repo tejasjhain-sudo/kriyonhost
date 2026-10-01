@@ -1041,3 +1041,68 @@ function initSmoothScroll() {
   });
 }
 document.addEventListener('DOMContentLoaded', initSmoothScroll);
+
+// ─── Universal Preloader & Lazy Image Handler ──────────────────────────────
+function dismissPreloader() {
+  const preloader = document.getElementById('kryon-preloader');
+  if (preloader && !preloader.classList.contains('loaded')) {
+    preloader.classList.add('loaded');
+    setTimeout(() => {
+      if (preloader && preloader.parentNode) {
+        preloader.parentNode.removeChild(preloader);
+      }
+    }, 450);
+  }
+}
+
+function initLazyLoading() {
+  const lazyImages = document.querySelectorAll('img[loading="lazy"], img[data-src]');
+  
+  lazyImages.forEach(img => {
+    if (img.complete) {
+      img.classList.add('lazy-loaded');
+    } else {
+      img.classList.add('lazy-loading');
+      img.addEventListener('load', () => {
+        img.classList.remove('lazy-loading');
+        img.classList.add('lazy-loaded');
+      });
+      img.addEventListener('error', () => {
+        img.classList.remove('lazy-loading');
+      });
+    }
+  });
+
+  if ('IntersectionObserver' in window) {
+    const imgObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const image = entry.target;
+          if (image.dataset.src) {
+            image.src = image.dataset.src;
+            image.removeAttribute('data-src');
+          }
+          image.classList.add('lazy-loaded');
+          observer.unobserve(image);
+        }
+      });
+    }, { rootMargin: '100px 0px' });
+
+    lazyImages.forEach(img => imgObserver.observe(img));
+  }
+}
+
+// Fast preloader resolution
+if (document.readyState === 'complete') {
+  dismissPreloader();
+} else {
+  window.addEventListener('load', dismissPreloader);
+  setTimeout(dismissPreloader, 1200); // 1.2s max fail-safe
+}
+
+window.addEventListener('pageshow', (e) => {
+  if (e.persisted) dismissPreloader();
+});
+
+document.addEventListener('DOMContentLoaded', initLazyLoading);
+

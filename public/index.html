@@ -133,12 +133,49 @@
 <body>
 
   <!-- ═══════════════════════════════════════════════════════════════════════
+       KRYONHOST CUSTOM PRELOADER
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <div id="kryon-preloader" aria-label="Loading KryonHost Infrastructure">
+    <div class="kryon-loader-ambient"></div>
+    <div class="kryon-loader-card">
+      <div class="kryon-loader-logo-wrap">
+        <div class="kryon-loader-ring"></div>
+        <img src="/images/logo.jpg" alt="KryonHost" class="kryon-loader-logo" width="52" height="52" loading="eager" decoding="async">
+      </div>
+      <div class="kryon-loader-brand">
+        KryonHost <span class="kryon-loader-badge">CLOUD</span>
+      </div>
+      <div class="kryon-loader-status">
+        <span class="kryon-loader-dot"></span>
+        <span id="kryon-loader-text">Initializing environment...</span>
+      </div>
+      <div class="kryon-loader-progress-track">
+        <div class="kryon-loader-progress-bar"></div>
+      </div>
+    </div>
+  </div>
+  <script>
+    (function(){
+      function dismiss(){
+        var p = document.getElementById('kryon-preloader');
+        if(p && !p.classList.contains('loaded')){
+          p.classList.add('loaded');
+          setTimeout(function(){ if(p && p.parentNode) p.parentNode.removeChild(p); }, 450);
+        }
+      }
+      if(document.readyState === 'complete'){ dismiss(); }
+      else { window.addEventListener('load', dismiss); setTimeout(dismiss, 1200); }
+      window.addEventListener('pageshow', function(e){ if(e.persisted) dismiss(); });
+    })();
+  </script>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
        NAVBAR (Clean & Genuine — No Reseller Mentions)
        ═══════════════════════════════════════════════════════════════════════ -->
   <header class="nav-header">
     <div class="wrap nav-inner">
       <a href="/" class="nav-brand">
-        <div class="brand-icon"><img src="/images/logo.jpg" alt="KryonHost" style="width:26px;height:26px;object-fit:contain;border-radius:5px;"></div>
+        <div class="brand-icon"><img src="/images/logo.jpg" alt="KryonHost" style="width:26px;height:26px;object-fit:contain;border-radius:5px;" loading="lazy" decoding="async"></div>
         <span class="brand-name">KryonHost</span>
         <span class="brand-tag">BETA</span>
       </a>
@@ -290,7 +327,7 @@
   <div id="mobile-nav-drawer" style="position:fixed; inset:0; background:rgba(5,5,10,0.96); backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px); z-index:99999; display:none; flex-direction:column; padding:20px 16px; overflow-y:auto;">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; padding-bottom:14px; border-bottom:1px solid rgba(255,255,255,0.08);">
       <div style="display:flex; align-items:center; gap:8px;">
-        <img src="/images/logo.jpg" alt="KryonHost" style="width:26px; height:26px; border-radius:6px;">
+        <img src="/images/logo.jpg" alt="KryonHost" style="width:26px; height:26px; border-radius:6px;" loading="lazy" decoding="async">
         <span class="brand-name" style="font-size:1.15rem; color:#fff;">KryonHost</span>
       </div>
       <button onclick="toggleMobileNav()" style="background:transparent; border:1px solid rgba(255,255,255,0.15); color:#fff; width:34px; height:34px; border-radius:8px; display:flex; align-items:center; justify-content:center; cursor:pointer;">
@@ -793,7 +830,7 @@
           </div>
           
           <div class="devspace-image-wrap" style="position:relative; width: 100%; border-radius:12px; overflow:hidden; border:1px solid rgba(255,255,255,0.1); box-shadow: 0 30px 60px rgba(0,0,0,0.6); background:#000;">
-            <img src="/images/devspace-terminal.png" alt="DevSpace IDE" style="width:100%; height:auto; display:block;">
+            <img src="/images/devspace-terminal.png" alt="DevSpace IDE" style="width:100%; height:auto; display:block;" loading="lazy" decoding="async">
           </div>
           
         </div>
@@ -1815,7 +1852,7 @@
       <div class="footer-grid">
         <div>
           <div style="display:flex; align-items:center; gap:10px; margin-bottom:1rem;">
-            <div class="brand-icon" style="width:28px;height:28px;"><img src="/images/logo.jpg" alt="KryonHost" style="width:28px;height:28px;object-fit:contain;border-radius:5px;"></div>
+            <div class="brand-icon" style="width:28px;height:28px;"><img src="/images/logo.jpg" alt="KryonHost" style="width:28px;height:28px;object-fit:contain;border-radius:5px;" loading="lazy" decoding="async"></div>
             <span style="font-family:'Bricolage Grotesque',sans-serif; font-size:1.15rem; font-weight:600; color:#fff;">KryonHost</span>
           </div>
           <p style="font-size:0.8rem; color:var(--muted2); line-height:1.7; max-width:280px;">

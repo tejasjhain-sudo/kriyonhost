@@ -51,6 +51,192 @@ html {
   scroll-behavior: smooth;
 }
 
+/* ═════════════════════════════════════════════════════════════════════════
+   KryonHost Custom Loading Screen (Preloader) & Lazy Loading Styles
+   ═════════════════════════════════════════════════════════════════════════ */
+#kryon-preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  background: #05050a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+#kryon-preloader.loaded {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.kryon-loader-ambient {
+  position: absolute;
+  width: 380px;
+  height: 380px;
+  background: radial-gradient(circle, rgba(124, 106, 255, 0.28) 0%, rgba(6, 182, 212, 0.14) 45%, transparent 70%);
+  filter: blur(50px);
+  border-radius: 50%;
+  animation: loaderPulseAmbient 2.4s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+@keyframes loaderPulseAmbient {
+  0% { transform: scale(0.85); opacity: 0.5; }
+  100% { transform: scale(1.25); opacity: 1; }
+}
+
+.kryon-loader-card {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 34px 38px;
+  background: rgba(14, 14, 26, 0.75);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 22px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7), 0 0 50px rgba(124, 106, 255, 0.15);
+  max-width: 350px;
+  width: 88%;
+}
+
+.kryon-loader-logo-wrap {
+  position: relative;
+  width: 68px;
+  height: 68px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.kryon-loader-ring {
+  position: absolute;
+  inset: -5px;
+  border-radius: 20px;
+  border: 2.5px solid transparent;
+  border-top-color: #7c6aff;
+  border-right-color: #06b6d4;
+  animation: loaderSpinRing 1.8s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
+}
+
+@keyframes loaderSpinRing {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.kryon-loader-logo {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  object-fit: contain;
+  background: #0d0d1a;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0 20px rgba(124, 106, 255, 0.35);
+  animation: loaderLogoGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes loaderLogoGlow {
+  0% { box-shadow: 0 0 15px rgba(124, 106, 255, 0.25); transform: scale(0.97); }
+  100% { box-shadow: 0 0 28px rgba(6, 182, 212, 0.45); transform: scale(1.02); }
+}
+
+.kryon-loader-brand {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #f4f3fb;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.kryon-loader-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 100px;
+  background: rgba(124, 106, 255, 0.18);
+  border: 1px solid rgba(124, 106, 255, 0.4);
+  color: #a79eff;
+  letter-spacing: 1px;
+}
+
+.kryon-loader-status {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.72rem;
+  color: #8b8aa8;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.kryon-loader-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 8px #10b981;
+  animation: loaderDotBlink 1.2s infinite ease-in-out;
+}
+
+@keyframes loaderDotBlink {
+  0%, 100% { opacity: 0.3; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+.kryon-loader-progress-track {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 99px;
+  overflow: hidden;
+  position: relative;
+}
+
+.kryon-loader-progress-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #7c6aff, #06b6d4, #10b981);
+  border-radius: 99px;
+  box-shadow: 0 0 10px rgba(6, 182, 212, 0.6);
+  animation: loaderProgressBar 1.4s ease-in-out infinite;
+}
+
+@keyframes loaderProgressBar {
+  0% { left: 0%; width: 0%; }
+  50% { left: 25%; width: 60%; }
+  100% { left: 100%; width: 0%; }
+}
+
+/* Image Lazy Loading Progressive Enhancements */
+img[loading="lazy"] {
+  transition: opacity 0.35s ease-in-out, filter 0.35s ease-in-out;
+}
+img[loading="lazy"].lazy-loading {
+  opacity: 0.4;
+  filter: blur(4px);
+}
+img[loading="lazy"].lazy-loaded {
+  opacity: 1;
+  filter: blur(0);
+}
+
 body {
   background: var(--ink);
   color: var(--cream);

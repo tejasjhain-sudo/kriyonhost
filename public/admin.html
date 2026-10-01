@@ -135,6 +135,43 @@
 </head>
 <body>
 
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       KRYONHOST CUSTOM PRELOADER
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <div id="kryon-preloader" aria-label="Loading KryonHost Infrastructure">
+    <div class="kryon-loader-ambient"></div>
+    <div class="kryon-loader-card">
+      <div class="kryon-loader-logo-wrap">
+        <div class="kryon-loader-ring"></div>
+        <img src="/images/logo.jpg" alt="KryonHost" class="kryon-loader-logo" width="52" height="52" loading="eager" decoding="async">
+      </div>
+      <div class="kryon-loader-brand">
+        KryonHost <span class="kryon-loader-badge" style="color:#f59e0b; border-color:rgba(245,158,11,0.4); background:rgba(245,158,11,0.15);">ADMIN</span>
+      </div>
+      <div class="kryon-loader-status">
+        <span class="kryon-loader-dot" style="background:#f59e0b; box-shadow:0 0 8px #f59e0b;"></span>
+        <span id="kryon-loader-text">Loading management core...</span>
+      </div>
+      <div class="kryon-loader-progress-track">
+        <div class="kryon-loader-progress-bar" style="background:linear-gradient(90deg, #f59e0b, #ef4444, #7c6aff);"></div>
+      </div>
+    </div>
+  </div>
+  <script>
+    (function(){
+      function dismiss(){
+        var p = document.getElementById('kryon-preloader');
+        if(p && !p.classList.contains('loaded')){
+          p.classList.add('loaded');
+          setTimeout(function(){ if(p && p.parentNode) p.parentNode.removeChild(p); }, 450);
+        }
+      }
+      if(document.readyState === 'complete'){ dismiss(); }
+      else { window.addEventListener('load', dismiss); setTimeout(dismiss, 1200); }
+      window.addEventListener('pageshow', function(e){ if(e.persisted) dismiss(); });
+    })();
+  </script>
+
   <!-- ADMIN PASSKEY SECURITY GATE OVERLAY -->
   <div id="admin-gate-overlay" style="position:fixed; inset:0; background:#05050a; z-index:99999; display:flex; align-items:center; justify-content:center; padding:20px;">
     <div style="background:#0d0c18; border:1px solid rgba(245,158,11,0.3); border-radius:20px; padding:38px; width:100%; max-width:440px; box-shadow:0 25px 70px rgba(0,0,0,0.85);">
@@ -180,7 +217,7 @@
 
   <div class="sidebar" id="admin-sidebar">
     <div class="sidebar-brand">
-      <img src="/images/logo.jpg" alt="KryonHost" style="width:26px;height:26px;object-fit:contain;border-radius:5px;">
+      <img src="/images/logo.jpg" alt="KryonHost" style="width:26px;height:26px;object-fit:contain;border-radius:5px;" loading="lazy" decoding="async">
       <span>Admin Center</span>
     </div>
     <div class="sidebar-nav">
@@ -276,7 +313,7 @@
         <div id="dt-screenshot-container" style="border-top:1px dashed rgba(255,255,255,0.1); padding-top:12px; margin-top:8px;">
           <span style="color:var(--muted); font-size:0.78rem; font-weight:600; display:block; margin-bottom:8px;">Customer Payment Screenshot / Receipt:</span>
           <div id="dt-screenshot-box" style="display:flex; align-items:center; gap:14px; background:#0e0d18; border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:10px;">
-            <img id="dt-screenshot-img" src="" style="max-height:110px; max-width:160px; border-radius:6px; object-fit:contain; cursor:pointer;" onclick="viewProofModal(this.src)" title="Click to view full size">
+            <img id="dt-screenshot-img" src="" style="max-height:110px; max-width:160px; border-radius:6px; object-fit:contain; cursor:pointer;" onclick="viewProofModal(this.src)" title="Click to view full size" loading="lazy" decoding="async">
             <div>
               <div style="font-size:0.82rem; font-weight:600; color:#fff; margin-bottom:4px;">Receipt Image Attached</div>
               <div style="font-size:0.74rem; color:var(--muted); margin-bottom:8px;">Click to view full-resolution screenshot</div>

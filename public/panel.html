@@ -1061,6 +1061,43 @@
 </head>
 <body>
 
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       KRYONHOST CUSTOM PRELOADER
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <div id="kryon-preloader" aria-label="Loading KryonHost Infrastructure">
+    <div class="kryon-loader-ambient"></div>
+    <div class="kryon-loader-card">
+      <div class="kryon-loader-logo-wrap">
+        <div class="kryon-loader-ring"></div>
+        <img src="/images/logo.jpg" alt="KryonHost" class="kryon-loader-logo" width="52" height="52" loading="eager" decoding="async">
+      </div>
+      <div class="kryon-loader-brand">
+        KryonHost <span class="kryon-loader-badge">CONTROL</span>
+      </div>
+      <div class="kryon-loader-status">
+        <span class="kryon-loader-dot"></span>
+        <span id="kryon-loader-text">Loading control center...</span>
+      </div>
+      <div class="kryon-loader-progress-track">
+        <div class="kryon-loader-progress-bar"></div>
+      </div>
+    </div>
+  </div>
+  <script>
+    (function(){
+      function dismiss(){
+        var p = document.getElementById('kryon-preloader');
+        if(p && !p.classList.contains('loaded')){
+          p.classList.add('loaded');
+          setTimeout(function(){ if(p && p.parentNode) p.parentNode.removeChild(p); }, 450);
+        }
+      }
+      if(document.readyState === 'complete'){ dismiss(); }
+      else { window.addEventListener('load', dismiss); setTimeout(dismiss, 1200); }
+      window.addEventListener('pageshow', function(e){ if(e.persisted) dismiss(); });
+    })();
+  </script>
+
   <!-- Top-Right Real-Time Notification Container -->
   <div class="top-right-toast-container" id="top-right-toast-container"></div>
 
