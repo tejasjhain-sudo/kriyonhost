@@ -2827,61 +2827,165 @@ input[type=range]::-webkit-slider-thumb:hover {
   }
 }
 
-/* ── Breakpoint: <= 640px (Phones) ──────────────────────────────────────── */
+/* ── Breakpoint: <= 640px (Phones & Small Devices) ──────────────────────── */
 @media (max-width: 640px) {
   .wrap {
-    padding-left: 16px !important;
-    padding-right: 16px !important;
+    padding-left: 14px !important;
+    padding-right: 14px !important;
   }
 
   .nav-header {
-    padding: 12px 16px !important;
+    padding: 10px 14px !important;
   }
 
+  /* Hero Section Mobile Fixes */
   .hero {
-    padding-top: 6.5rem !important;
-    padding-bottom: 3rem !important;
+    padding-top: 5.5rem !important;
+    padding-bottom: 2.5rem !important;
     min-height: auto !important;
   }
 
-  .hero-h1 {
+  .hero-pill {
+    font-size: 0.68rem !important;
+    padding: 5px 12px !important;
+    max-width: 100% !important;
+    white-space: normal !important;
+    text-align: center !important;
+    line-height: 1.3 !important;
+  }
+
+  .hero-title {
     font-size: 2.1rem !important;
+    line-height: 1.15 !important;
+    letter-spacing: -0.03em !important;
+  }
+
+  .hero-chip-badge {
+    padding: 2px 8px !important;
+    font-size: 1.1rem !important;
+    height: 34px !important;
+  }
+
+  .hero-chip-icon svg {
+    width: 20px !important;
+    height: 20px !important;
   }
 
   .hero-sub {
-    font-size: 0.95rem !important;
+    font-size: 0.9rem !important;
+    line-height: 1.5 !important;
+    margin-bottom: 1.5rem !important;
   }
 
   .hero-actions {
-    flex-direction: column;
-    width: 100%;
-    gap: 10px;
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: 10px !important;
   }
 
   .hero-actions .btn {
-    width: 100%;
-    justify-content: center;
+    width: 100% !important;
+    justify-content: center !important;
+    padding: 12px 20px !important;
+    font-size: 0.9rem !important;
   }
 
-  .plans-grid {
+  /* Stats Strip: 2x2 Grid */
+  .stats-strip {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+    padding: 12px !important;
+    margin-top: 2rem !important;
+    border-radius: 12px !important;
+  }
+
+  .stat-box {
+    padding: 8px !important;
+    border-right: none !important;
+  }
+
+  .stat-num {
+    font-size: 1.3rem !important;
+  }
+
+  .stat-lbl {
+    font-size: 0.68rem !important;
+  }
+
+  /* Bento Grid: 1 Column */
+  .bento-grid {
     grid-template-columns: 1fr !important;
+    gap: 14px !important;
   }
 
-  .plan-card {
+  .bento-wide {
+    grid-column: span 1 !important;
+  }
+
+  .bento-card {
     padding: 20px !important;
   }
 
+  .bento-title {
+    font-size: 1.25rem !important;
+  }
+
+  .bento-card-visual {
+    display: none !important;
+  }
+
+  /* Configurator Section Mobile */
+  .configurator-grid, .config-grid {
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
+  }
+
+  .config-presets-pills {
+    overflow-x: auto !important;
+    white-space: nowrap !important;
+    padding-bottom: 4px !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  .config-summary-box {
+    padding: 18px 16px !important;
+  }
+
+  .config-price-display {
+    font-size: 1.8rem !important;
+  }
+
+  /* Plans Grid: 1 Column */
+  .plans-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+
+  .plan-card {
+    padding: 20px 16px !important;
+  }
+
+  /* Tables horizontal scroll */
+  .table-scroll-wrap, table {
+    display: block !important;
+    width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  /* Minecraft hardware showcase */
   .mc-hardware-slideshow {
-    padding: 1.5rem !important;
+    padding: 1.2rem !important;
   }
 
   .mc-slide h3 {
-    font-size: 1.6rem !important;
+    font-size: 1.4rem !important;
   }
 
   .network-map-card {
     border-radius: 12px !important;
-    padding: 12px !important;
+    padding: 12px 8px !important;
   }
 
   .network-section-wrap {
@@ -2889,64 +2993,37 @@ input[type=range]::-webkit-slider-thumb:hover {
     margin-bottom: 2rem !important;
   }
 
-  /* Status page horizontal scroll on bars */
-  .uptime-bar-container {
-    overflow-x: auto;
-    padding-bottom: 6px;
-    -webkit-overflow-scrolling: touch;
-  }
-
   .metrics-strip {
     grid-template-columns: 1fr 1fr !important;
-    gap: 10px !important;
+    gap: 8px !important;
   }
 
   .metric-box {
-    padding: 14px !important;
+    padding: 12px !important;
   }
 
   .metric-box-val {
-    font-size: 1.3rem !important;
+    font-size: 1.2rem !important;
   }
 
   .pop-grid {
     grid-template-columns: 1fr !important;
   }
 
-  /* Client Panel on Mobile */
-  .sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100vh;
-    z-index: 100;
-    transform: translateX(-100%);
-    transition: transform 0.3s ease;
-  }
-
-  .sidebar.mobile-open {
-    transform: translateX(0);
-    box-shadow: 0 0 50px rgba(0,0,0,0.8);
-  }
-
-  .main-area {
-    width: 100% !important;
-  }
-
-  .content-wrap {
-    padding: 20px 16px !important;
-  }
-
-  .top-header {
-    padding: 16px !important;
-  }
-
-  .metrics-grid {
+  /* Footer */
+  .footer-grid {
     grid-template-columns: 1fr !important;
+    gap: 28px !important;
   }
 
-  .hw-grid {
-    grid-template-columns: 1fr 1fr !important;
+  .footer-col {
+    gap: 10px !important;
+  }
+
+  .footer-bottom {
+    flex-direction: column !important;
+    gap: 12px !important;
+    text-align: center !important;
   }
 }
 

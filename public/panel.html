@@ -841,15 +841,220 @@
       to { opacity: 0; transform: translateX(50px); }
     }
 
+    /* ── Comprehensive Responsive & Mobile Design System ── */
     @media (max-width: 960px) {
       .metric-summary-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
       }
       .dash-columns-grid {
         grid-template-columns: 1fr;
+        gap: 16px;
       }
-      .grid-vps-cols, .grid-mc-cols {
+      .top-brand-row {
+        padding: 0 16px;
+      }
+      .top-subnav-strip {
+        padding: 0 16px;
+        gap: 14px;
+      }
+      .main-content-layout {
+        padding: 20px 16px 40px 16px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      /* Header & Subnav */
+      .top-brand-row {
+        padding: 0 12px;
+        height: 54px;
+      }
+      .header-search-box {
+        display: none;
+      }
+      .cluster-selector-pill {
+        padding: 4px 8px;
+        font-size: 0.72rem;
+      }
+      .top-subnav-strip {
+        padding: 0 12px;
+        gap: 12px;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+      }
+      .top-subnav-strip::-webkit-scrollbar {
+        display: none;
+      }
+      .subnav-link-item {
+        font-size: 0.78rem;
+        padding: 10px 4px;
+      }
+
+      /* Filter bar & Actions */
+      .filter-actions-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        margin-bottom: 18px;
+      }
+      .main-search-input-wrap {
+        max-width: 100%;
+        width: 100%;
+      }
+      .filter-right-buttons {
+        display: grid;
         grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        width: 100%;
+      }
+      .filter-right-buttons button, .filter-right-buttons .btn-primary-deploy {
+        width: 100%;
+        justify-content: center;
+        padding: 8px 10px;
+        font-size: 0.75rem;
+      }
+
+      /* Stats Grids */
+      .metric-summary-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        margin-bottom: 18px;
+      }
+      .metric-box-card {
+        padding: 14px 16px;
+      }
+      .metric-value-large {
+        font-size: 1.4rem;
+      }
+
+      /* Responsive Card Tables */
+      .table-header-row {
+        display: none !important;
+      }
+      .grid-vps-cols, .grid-mc-cols, .table-data-row {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 10px !important;
+        padding: 14px 16px !important;
+        border-radius: 12px !important;
+        border: 1px solid var(--border-subtle) !important;
+        margin-bottom: 12px !important;
+        background: var(--bg-surface) !important;
+      }
+      .table-container-card {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+      .table-data-row:hover {
+        background: var(--bg-surface-elevated) !important;
+      }
+
+      /* Instance Management Hero & Tabs */
+      .vps-hero-header {
+        padding: 18px 16px !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 14px !important;
+      }
+      .vps-hero-actions-group {
+        width: 100% !important;
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 8px !important;
+      }
+      .vps-hero-actions-group button, .vps-hero-actions-group select {
+        width: 100% !important;
+        justify-content: center !important;
+      }
+
+      .instance-subnav-strip {
+        padding: 0 12px !important;
+        overflow-x: auto !important;
+        white-space: nowrap !important;
+        scrollbar-width: none !important;
+      }
+      .instance-subnav-strip::-webkit-scrollbar {
+        display: none !important;
+      }
+
+      /* 2-Column Grid inside VPS / Minecraft tabs */
+      .vps-overview-2col, .mc-overview-2col {
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+      }
+      
+      .vps-power-actions-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 8px !important;
+      }
+
+      /* Console & Terminal Windows */
+      #vps-term-window, #mc-console-window {
+        font-size: 0.68rem !important;
+        padding: 10px 12px !important;
+        max-width: 100% !important;
+        overflow-x: auto !important;
+        white-space: pre !important;
+        line-height: 1.4 !important;
+      }
+
+      /* SDX Overview on Mobile */
+      #sdx-subview-overview > div:nth-child(3) {
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+      }
+      .sdx-action-bar-wrap {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 10px !important;
+      }
+      .sdx-action-buttons-group {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 8px !important;
+      }
+      .sdx-file-table-wrap {
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+      }
+
+      /* Modals */
+      .modal-box-card {
+        width: 95vw !important;
+        max-width: 95vw !important;
+        padding: 20px 16px !important;
+        margin: 10px auto !important;
+        max-height: 88vh !important;
+      }
+      .modal-actions-group {
+        flex-direction: column !important;
+        gap: 8px !important;
+      }
+      .modal-actions-group button {
+        width: 100% !important;
+      }
+      .order-modal-plan-options-grid {
+        grid-template-columns: 1fr !important;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .main-content-layout {
+        padding: 14px 10px 30px 10px;
+      }
+      .brand-user-name {
+        font-size: 0.85rem;
+      }
+      .btn-primary-deploy {
+        font-size: 0.75rem;
+        padding: 6px 12px;
+      }
+      .vps-hero-actions-group {
+        grid-template-columns: 1fr !important;
+      }
+      .vps-power-actions-grid {
+        grid-template-columns: 1fr !important;
       }
     }
   </style>
